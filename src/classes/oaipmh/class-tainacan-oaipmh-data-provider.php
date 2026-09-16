@@ -402,7 +402,12 @@ class OAIPMH_Data_Provider {
 					continue;
 				}
 
-				$field = str_replace( 'dc:', '', $mapping['dublin-core'] );
+				$normalized = \Tainacan\Mappers_Handler::get_instance()->normalize_mapping_value( $mapping['dublin-core'] );
+				if ( ! $normalized ) {
+					continue;
+				}
+
+				$field = str_replace( 'dc:', '', $normalized['slug'] );
 				$value = $item_meta->get_value_as_string();
 
 				if ( '' === $value || null === $value ) {

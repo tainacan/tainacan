@@ -661,36 +661,84 @@ abstract class Exporter {
 	}
 	
 	/**
+	 * Column headers for a mapped export: built-in mapper fields first, then extra
+	 * fields added through the mapper UI, in collection metadata order.
+	 *
+	 * @return array<string, string> Map of mapper slug => header label
+	 */
+	protected function get_mapped_column_headers() {
+		$mapper = $this->get_current_mapper();
+		if ( ! $mapper ) {
+			return [];
+		}
+
+		$columns = [];
+		if ( is_array( $mapper->metadata ) ) {
+			foreach ( $mapper->metadata as $meta_slug => $meta ) {
+				$columns[ $meta_slug ] = $meta['field'] ?? $meta_slug;
+			}
+		}
+
+		$mapper_slug = $this->get_mapping_selected();
+		$collection  = $this->get_current_collection_object();
+		if ( ! $collection || ! $mapper_slug ) {
+			return $columns;
+		}
+
+		$mappers_handler = \Tainacan\Mappers_Handler::get_instance();
+		foreach ( $collection->get_metadata() as $metadatum ) {
+			$mappings = $metadatum->get_exposer_mapping();
+			if ( ! is_array( $mappings ) || ! array_key_exists( $mapper_slug, $mappings ) ) {
+				continue;
+			}
+
+			$normalized = $mappers_handler->normalize_mapping_value( $mappings[ $mapper_slug ], $mapper );
+			if ( ! $normalized || array_key_exists( $normalized['slug'], $columns ) ) {
+				continue;
+			}
+
+			$columns[ $normalized['slug'] ] = $normalized['slug'];
+		}
+
+		return $columns;
+	}
+
+	/**
 	* Gets an Item as input and return an array of ItemMetadataObjects
 	* If a mapper is selected, the array keys will be the slugs of the metadata 
 	* declared by the mapper, in the same order. 
 	* Note that if one of the metadata is not mapped, this array item will be null 
 	*/
-	private function map_item_metadata(\Tainacan\Entities\Item $item) {
+	protected function map_item_metadata(\Tainacan\Entities\Item $item) {
 		
 		$mapper = $this->get_current_mapper();
 		$metadata = $item->get_metadata();
 		if (!$mapper) {
 			return $metadata;
 		}
+
 		$pre = [];
+		$mapper_slug = $this->get_mapping_selected();
+		$mappers_handler = \Tainacan\Mappers_Handler::get_instance();
+
 		foreach ($metadata as $item_metadata) {
 			$metadatum = $item_metadata->get_metadatum();
 			$meta_mappings = $metadatum->get_exposer_mapping();
-			if ( array_key_exists($this->get_mapping_selected(), $meta_mappings) ) {
-				
-				$pre[ $meta_mappings[$this->get_mapping_selected()] ] = $item_metadata;
+			if ( ! is_array( $meta_mappings ) || ! array_key_exists( $mapper_slug, $meta_mappings ) ) {
+				continue;
 			}
+
+			$normalized = $mappers_handler->normalize_mapping_value( $meta_mappings[ $mapper_slug ], $mapper );
+			if ( ! $normalized ) {
+				continue;
+			}
+
+			$pre[ $normalized['slug'] ] = $item_metadata;
 		}
 		
-		// reorder
 		$return = [];
-		foreach ( $mapper->metadata as $meta_slug => $meta ) {
-			if ( array_key_exists($meta_slug, $pre) ) {
-				$return[$meta_slug] = $pre[$meta_slug];
-			} else {
-				$return[$meta_slug] = null;
-			}
+		foreach ( array_keys( $this->get_mapped_column_headers() ) as $meta_slug ) {
+			$return[ $meta_slug ] = array_key_exists( $meta_slug, $pre ) ? $pre[ $meta_slug ] : null;
 		}
 		
 		return $return;

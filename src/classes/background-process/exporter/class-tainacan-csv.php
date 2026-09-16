@@ -112,9 +112,7 @@ class CSV extends Exporter {
 		
 		$line = [];
 		if ($mapper) {
-			foreach ($mapper->metadata as $meta_slug => $meta) {
-				$line[] = $meta['field'] ?? $meta_slug;
-			}
+			$line = array_values( $this->get_mapped_column_headers() );
 		} else {
 			$line = ['special_item_id'];
 			if ( $collection = $this->get_current_collection_object() ) {
