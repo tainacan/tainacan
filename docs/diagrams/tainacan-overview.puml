@@ -914,7 +914,8 @@
         -process_footer(current_collection_item, collection_definition)
         +output_footer()
         -get_items(index, collection_definition)
-        -map_item_metadata(item)
+        #get_mapped_metadata_slugs()
+        #map_item_metadata(item)
         +add_new_file(key)
         +append_to_file(key, data)
         +set_accepted_mapping_methods(method, default_mapping, list)
@@ -971,7 +972,6 @@
         -process_header(current_collection_item, collection_definition)
         -process_footer(current_collection_item, collection_definition)
         -get_items(index, collection_definition)
-        -map_item_metadata(item)
         +process_item(item, metadata)
         +addRowToSheet(rowData, sheetIndex)
         +get_file_path()
@@ -2391,6 +2391,7 @@
       +unregister_mapper(class_name)
       +get_mappers(output)
       +get_mapper(slug)
+      +normalize_mapping_value(mapping, mapper)
       +mappers_i18n(i18n_strings)
       {static} +get_mapper_from_request(request)
       #map_metadatum(item_arr, mapper)
@@ -2462,6 +2463,7 @@
   api_endpoints_REST_Collections_Controller ..> repositories_Collections
   api_endpoints_REST_Collections_Controller ..> repositories_Items
   api_endpoints_REST_Exporters_Controller ..> background-process_exporter_Exporter_Handler
+  api_endpoints_REST_Exporters_Controller ..> mappers_Mappers_Handler
   api_endpoints_REST_Exporters_Controller ..> repositories_Collections
   api_endpoints_REST_Exposers_Controller ..> exposers_Exposers_Handler
   api_endpoints_REST_Exposers_Controller ..> mappers_Mappers_Handler
@@ -2749,6 +2751,7 @@
   media-helper_Media ..> repositories_Items
   oaipmh_OAIPMH_Data_Provider ..> entities_Collection
   oaipmh_OAIPMH_Data_Provider ..> entities_Item
+  oaipmh_OAIPMH_Data_Provider ..> mappers_Mappers_Handler
   oaipmh_OAIPMH_Data_Provider ..> repositories_Collections
   oaipmh_OAIPMH_Data_Provider ..> repositories_Items
   oaipmh_OAIPMH_Xml_Generator ..> oaipmh_OAIPMH_Xml_Generator
