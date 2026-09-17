@@ -59,7 +59,7 @@
                                 :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
                         <tainacan-wysiwyg
-                                v-if="tainacan_plugin.tainacan_allow_wysiwyg_editor === true"
+                                v-if="typeof tainacan_plugin !== 'undefined' && tainacan_plugin.tainacan_allow_wysiwyg_editor === true"
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 :invalid="editFormErrors['description'] != undefined"
