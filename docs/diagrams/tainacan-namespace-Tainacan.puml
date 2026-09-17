@@ -126,6 +126,7 @@
     +content_index_last : string
     -THROW_EXCPTION_ON_FATAL_ERROR : 
     {static} +is_index_pdf_content_enabled()
+    {static} +is_image_blurhash_enabled()
     {static} +get_document_content_index_max_characters()
     {static} +prepare_document_content_index_for_storage(content)
     {static} +sanitize_document_content_index_text(content)
