@@ -10,6 +10,7 @@
             ]"
             :style="wrapperStyle">
         <canvas
+                v-if="isBlurhashEnabled"
                 v-show="showCanvas"
                 ref="canvas"
                 class="child"
@@ -70,6 +71,14 @@ function prefersReducedMotion() {
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+function isImageBlurhashEnabled() {
+    if (typeof tainacan_plugin === 'undefined' || typeof tainacan_plugin.tainacan_enable_image_blurhash === 'undefined')
+        return true;
+
+    const enabled = tainacan_plugin.tainacan_enable_image_blurhash;
+    return enabled !== false && enabled !== 0 && enabled !== '0' && enabled !== '';
+}
+
 export default {
     name: 'TainacanProgressiveImage',
     inheritAttrs: false,
@@ -104,15 +113,19 @@ export default {
         }
     },
     data() {
+        const blurhashEnabled = isImageBlurhashEnabled();
         return {
-            imageLoaded: false,
-            isInstant: false,
-            showCanvas: true,
+            imageLoaded: !blurhashEnabled,
+            isInstant: !blurhashEnabled,
+            showCanvas: blurhashEnabled,
             hideCanvasTimeout: null,
             hasMounted: false
         }
     },
     computed: {
+        isBlurhashEnabled() {
+            return isImageBlurhashEnabled();
+        },
         fadeDuration() {
             return Math.max(0, Number(this.transitionDuration) || 0);
         },
@@ -160,9 +173,9 @@ export default {
     methods: {
         resetImageState() {
             this.clearHideCanvasTimeout();
-            this.imageLoaded = false;
-            this.isInstant = false;
-            this.showCanvas = true;
+            this.imageLoaded = !this.isBlurhashEnabled;
+            this.isInstant = !this.isBlurhashEnabled;
+            this.showCanvas = this.isBlurhashEnabled;
             this.$nextTick(() => {
                 this.drawBlurhash();
                 this.syncIfAlreadyComplete();
@@ -200,7 +213,7 @@ export default {
             }
         },
         drawBlurhash() {
-            if (!this.$refs.canvas || !this.hash)
+            if (!this.isBlurhashEnabled || !this.$refs.canvas || !this.hash)
                 return;
 
             try {

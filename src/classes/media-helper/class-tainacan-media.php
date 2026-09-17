@@ -71,6 +71,31 @@ class Media {
 	}
 
 	/**
+	 * Whether BlurHash placeholders are generated and decoded.
+	 *
+	 * Define TAINACAN_DISABLE_BLURHASH as true in wp-config.php to turn them off.
+	 * Themes and plugins can still override that with the tainacan-enable-image-blurhash filter.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return bool
+	 */
+	public static function is_image_blurhash_enabled() {
+		$enabled = defined( 'TAINACAN_DISABLE_BLURHASH' )
+			? ( true !== TAINACAN_DISABLE_BLURHASH )
+			: true;
+
+		/**
+		 * Filters whether BlurHash placeholders are generated and decoded.
+		 *
+		 * @since 1.3.1
+		 *
+		 * @param bool $enabled Whether BlurHash is enabled.
+		 */
+		return (bool) apply_filters( 'tainacan-enable-image-blurhash', $enabled );
+	}
+
+	/**
 	 * Configured maximum document content index length in characters.
 	 *
 	 * @return int
@@ -867,6 +892,10 @@ class Media {
 	}
 
 	public function get_image_blurhash($file_path, $width, $height) {
+		if ( ! self::is_image_blurhash_enabled() ) {
+			return $this->get_default_image_blurhash();
+		}
+
 		try {
 			if (
 				!function_exists('imagecreatefromstring') ||
