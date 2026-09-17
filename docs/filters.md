@@ -1328,7 +1328,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$admin_request_options` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 214](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L214-L344)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 214](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L214-L345)
 
 ---------------------------------
 <br>
@@ -1342,7 +1342,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `false` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 494](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L494-L501)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 495](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L495-L502)
 
 ---------------------------------
 <br>
@@ -1356,7 +1356,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_header_white.svg' : 'tainacan_logo_header.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 503](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L503-L513)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 504](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L504-L514)
 
 ---------------------------------
 <br>
@@ -1370,7 +1370,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_symbol.svg' : 'tainacan_logo_icon.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 515](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L515-L525)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 516](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L516-L526)
 
 ---------------------------------
 <br>
@@ -1384,7 +1384,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$breadcrumbs` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 644](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L644-L647)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 645](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L645-L648)
 
 ---------------------------------
 <br>
@@ -1399,7 +1399,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `array_merge(self::$admin_ui_options, $sanitized_get)` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 726](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L726-L777)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 727](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L727-L778)
 
 ---------------------------------
 <br>
@@ -4280,6 +4280,28 @@ Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/
 ---------------------------------
 <br>
 
+## `tainacan-enable-image-blurhash` <!-- {docsify-ignore} -->
+
+*Filters whether BlurHash placeholders are generated and decoded.*
+
+Ignored when TAINACAN_DISABLE_BLURHASH is true.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`true` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.4` | 
+
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 90](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L90-L99)
+
+---------------------------------
+<br>
+
 ## `tainacan_sanitize_document_content_index` <!-- {docsify-ignore} -->
 
 *Filters sanitized document content index text after automatic extraction cleanup.*
@@ -4289,7 +4311,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$content` | `string` | Sanitized content.
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 151](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L151-L156)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 180](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L180-L185)
 
 ---------------------------------
 <br>
@@ -4304,7 +4326,7 @@ Argument | Type | Description
 `null` |  | 
 `$filepath` | `string` | The pdf filepath in the server
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 496](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L496-L503)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 525](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L525-L532)
 
 ---------------------------------
 <br>
@@ -4320,7 +4342,7 @@ Argument | Type | Description
 `$file` | `string` | Absolute path to the PDF file.
 `$item_id` | `int\|null` | Optional item ID for filters.
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 616](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L616-L634)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 645](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L645-L663)
 
 ---------------------------------
 <br>
@@ -4343,7 +4365,7 @@ Version | Description
 ------- | -----------
 `0.1.0` | 
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L866)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L895)
 
 ---------------------------------
 <br>

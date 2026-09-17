@@ -660,7 +660,7 @@ Argument | Type | Description
 `$filename` | `string` | The filename that will be created
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 393](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L393-L403)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 422](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L422-L432)
 
 ---------------------------------
 <br>
@@ -676,7 +676,7 @@ Argument | Type | Description
 `$attach_data` |  | 
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 393](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L393-L447)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 422](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L422-L476)
 
 ---------------------------------
 <br>
