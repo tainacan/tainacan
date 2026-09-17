@@ -687,11 +687,8 @@ class REST_Collections_Controller extends REST_Controller {
 		foreach ( $fields as $field ) {
 			if ( array_key_exists( $field, $body ) && ! is_array( $body[ $field ] ) ) {
 				return new \WP_REST_Response([
-					'error_message' => sprintf(
-						/* translators: %s: REST field name */
-						__( 'The %s value must be an array.', 'tainacan' ),
-						$field
-					),
+					'error_message' => __( 'This value must be an array.', 'tainacan' ),
+					'param'         => $field,
 				], 400);
 			}
 		}
