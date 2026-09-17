@@ -468,11 +468,22 @@ abstract class Background_Process_Base extends Async_Request {
 			$interval = apply_filters( $this->identifier . '_cron_interval', $this->cron_interval );
 		}
 
+		/**
+		 * This filter runs while the plugin is still loading. Translating here
+		 * would JIT-load the tainacan textdomain before after_setup_theme (WP 6.7+).
+		 *
+		 * @see https://make.wordpress.org/core/2024/10/21/i18n-improvements-6-7/
+		 */
+		$display = sprintf( 'Every %d Minutes', $interval );
+		if ( did_action( 'after_setup_theme' ) || doing_action( 'after_setup_theme' ) ) {
+			/* translators: %d is the number of minutes */
+			$display = sprintf( __( 'Every %d Minutes', 'tainacan' ), $interval );
+		}
+
 		// Adds every 5 minutes to the existing schedules.
 		$schedules[ $this->identifier . '_cron_interval' ] = array(
 			'interval' => MINUTE_IN_SECONDS * $interval,
-			/* translators: %d is the number of minutes */
-			'display'  => sprintf( __( 'Every %d Minutes', 'tainacan' ), $interval ),
+			'display'  => $display,
 		);
 
 		return $schedules;
