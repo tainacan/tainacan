@@ -227,7 +227,7 @@ export default (element) => {
             /* Others */
             app.component('help-button', HelpButton);
             app.component('tainacan-title', TainacanTitle);
-            if (typeof tainacan_plugin !== 'undefined' && tainacan_plugin.tainacan_allow_wysiwyg_editor === true) {
+            if (typeof window !== 'undefined' && window.tainacan_plugin && window.tainacan_plugin.tainacan_allow_wysiwyg_editor === true) {
                 app.component('tainacan-wysiwyg', defineAsyncComponent(() => import('../components/other/tainacan-wysiwyg.vue')));
             }
             app.component('tainacan-external-link', TainacanExternalLink)

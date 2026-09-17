@@ -58,8 +58,9 @@
                         <help-button
                                 :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
-                        <tainacan-wysiwyg
-                                v-if="typeof tainacan_plugin !== 'undefined' && tainacan_plugin.tainacan_allow_wysiwyg_editor === true"
+                        <component
+                                :is="'tainacan-wysiwyg'"
+                                v-if="isWysiwygEditorAllowed"
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 :invalid="editFormErrors['description'] != undefined"
@@ -1221,6 +1222,7 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
+            isWysiwygEditorAllowed: typeof window !== 'undefined' && window.tainacan_plugin && window.tainacan_plugin.tainacan_allow_wysiwyg_editor === true,
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             //collections: [],              DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
             //isFetchingCollections: true,  DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
