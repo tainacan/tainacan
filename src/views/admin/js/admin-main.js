@@ -233,10 +233,8 @@ export default (element) => {
             app.use(eventBusSearch);
 
             // Changing title of pages
-            router.beforeEach((to, from, next) => {
+            router.beforeEach((to) => {
                 document.title = to.meta.title;
-                if (next() != undefined)
-                    next();
             });
 
             app.mount('#tainacan-admin-app');
