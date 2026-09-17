@@ -1,5 +1,16 @@
 <template>
+    <component
+            :is="'tainacan-wysiwyg'"
+            v-if="shouldUseWysiwygEditor"
+            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+            :disabled="disabled"
+            :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
+            :model-value="localValue"
+            @update:model-value="onInput($event)"
+            @blur="onBlur"
+            @focus="onMobileSpecialFocus" />
     <b-input
+            v-else
             :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             :ref="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             :disabled="disabled"
@@ -13,6 +24,8 @@
 </template>
 
 <script>
+    import { isWysiwygEditorAllowed } from '../../../js/wysiwyg-feature-flag';
+
     export default {
         props: {
             itemMetadatum: Object,
@@ -30,6 +43,13 @@
             }
         },
         computed: {
+            shouldUseWysiwygEditor() {
+                return isWysiwygEditorAllowed() &&
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_options &&
+                    this.itemMetadatum.metadatum.metadata_type_options.use_wysiwyg_editor === 'yes';
+            },
             getMaxlength() {
                 if ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== null && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== undefined && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== '' )
                     return Number(this.itemMetadatum.metadatum.metadata_type_options.maxlength);
@@ -43,7 +63,7 @@
         methods: {
             onInput(value) {
                 const inputRef = this.$refs['tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '')];
-                if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
+                if ( inputRef && this.getMaxlength && typeof inputRef.checkHtml5Validity === 'function' && !inputRef.checkHtml5Validity() )
                     return;
 
                 this.localValue = value;
