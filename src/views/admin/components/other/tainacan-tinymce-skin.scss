@@ -68,7 +68,11 @@
 }
 
 .tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-wysiwyg-dialog) {
-    z-index: 10000;
+    z-index: 10000000;
+}
+
+.tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-wysiwyg-menu) {
+    z-index: 10000000;
 }
 
 .tainacan-wysiwyg-dialog {

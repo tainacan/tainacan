@@ -1143,6 +1143,7 @@ import { mapGetters, mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import { permalinkGetter, formHooks } from '../../js/mixins';
+import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
 
 export default {
     name: 'CollectionEditionForm',
@@ -1222,7 +1223,7 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
-            isWysiwygEditorAllowed: typeof window !== 'undefined' && window.tainacan_plugin && window.tainacan_plugin.tainacan_allow_wysiwyg_editor === '1',
+            isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             //collections: [],              DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
             //isFetchingCollections: true,  DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY

@@ -2,6 +2,11 @@
     <div
             class="tainacan-wysiwyg"
             :class="{ 'is-invalid': invalid }">
+        <input
+                v-if="name"
+                type="hidden"
+                :name="name"
+                :value="modelValue">
         <Editor
                 :id="id"
                 :model-value="modelValue"
@@ -45,21 +50,40 @@ const EDITOR_INIT = {
     toolbar_mode: 'wrap',
     setup(editor) {
         let wysiwygDialogMatcher;
+        let shouldMarkWysiwygMenu = false;
         const wysiwygDialogObserver = new MutationObserver(() => {
-            if (!wysiwygDialogMatcher) {
-                return;
+            if (wysiwygDialogMatcher) {
+                const dialogs = document.querySelectorAll('.tox-dialog-wrap');
+                const dialog = dialogs[dialogs.length - 1];
+
+                if (dialog && wysiwygDialogMatcher(dialog)) {
+                    dialog.classList.add('tainacan-wysiwyg-dialog');
+                    wysiwygDialogMatcher = undefined;
+                }
             }
 
-            const dialogs = document.querySelectorAll('.tox-dialog-wrap');
-            const dialog = dialogs[dialogs.length - 1];
+            if (shouldMarkWysiwygMenu) {
+                const menus = document.querySelectorAll('.tox-menu');
+                const menu = menus[menus.length - 1];
 
-            if (dialog && wysiwygDialogMatcher(dialog)) {
-                dialog.classList.add('tainacan-wysiwyg-dialog');
-                wysiwygDialogMatcher = undefined;
+                if (menu && menu.getClientRects().length) {
+                    menu.classList.add('tainacan-wysiwyg-menu');
+                    shouldMarkWysiwygMenu = false;
+                }
             }
         });
 
         wysiwygDialogObserver.observe(document.body, { childList: true, subtree: true });
+        const onToolbarClick = (event) => {
+            const button = event.target.closest('button');
+
+            if (button?.dataset.mceName === 'align') {
+                shouldMarkWysiwygMenu = true;
+            }
+        };
+        editor.on('init', () => {
+            editor.getContainer().addEventListener('click', onToolbarClick);
+        });
         editor.on('BeforeExecCommand', (event) => {
             if (event.command === 'mceLink') {
                 wysiwygDialogMatcher = (dialog) => dialog.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]');
@@ -71,6 +95,7 @@ const EDITOR_INIT = {
         });
         editor.on('remove', () => {
             wysiwygDialogObserver.disconnect();
+            editor.getContainer().removeEventListener('click', onToolbarClick);
         });
     }
 };
@@ -86,6 +111,10 @@ export default {
             default: ''
         },
         id: {
+            type: String,
+            default: undefined
+        },
+        name: {
             type: String,
             default: undefined
         },

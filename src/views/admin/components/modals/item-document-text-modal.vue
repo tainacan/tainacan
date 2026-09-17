@@ -5,7 +5,14 @@
                 {{ $i18n.get('instruction_write_text') }}
             </h2>
         </div>
+        <component
+                :is="'tainacan-wysiwyg'"
+                v-if="isWysiwygEditorAllowed"
+                id="tainacan-item-document-text"
+                v-model="localTextContent"
+                aria-labelledby="item-document-text-modal-title" />
         <b-input
+                v-else
                 ref="item-document-text-input"
                 v-model="localTextContent"
                 aria-labelledby="item-document-text-modal-title"
@@ -34,6 +41,8 @@
 </template>
 
 <script>
+import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
+
 export default {
     props: {
         textContent: ''
@@ -46,13 +55,15 @@ export default {
     ],
     data(){
         return {
-            localTextContent: ''
+            localTextContent: '',
+            isWysiwygEditorAllowed: isWysiwygEditorAllowed()
         }
     },
     mounted() {
         this.localTextContent = this.textContent;
 
         if (
+            !this.isWysiwygEditorAllowed &&
             this.$refs && 
             this.$refs['item-document-text-input'] &&
             this.$refs['item-document-text-input']['$el'] &&

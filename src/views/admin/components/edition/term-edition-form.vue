@@ -129,7 +129,17 @@
                                         :message="$i18n.get('info_help_term_description')"
                                         extra-classes="tainacan-repository-tooltip" />
                             </label>
+                            <component
+                                    :is="'tainacan-wysiwyg'"
+                                    v-if="isWysiwygEditorAllowed"
+                                    id="tainacan-term-description"
+                                    v-model="form.description"
+                                    name="description"
+                                    :invalid="formErrors['description'] !== '' && formErrors['description'] !== undefined"
+                                    @focus="clearErrors('description')" />
                             <b-input
+                                    v-else
+                                    id="tainacan-term-description"
                                     v-model="form.description"
                                     type="textarea"
                                     name="description"
@@ -351,6 +361,7 @@
     import { formHooks } from "../../js/mixins";
     import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
+    import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
 
     export default {
         name: 'TermEditionForm',
@@ -398,6 +409,7 @@
                 coverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
+                isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
                 newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page'
             }
         },
@@ -916,5 +928,4 @@
     }
 
 </style>
-
 
