@@ -273,13 +273,12 @@
                             class="grid-item-thumbnail"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 255)"
                                 :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 255)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
                     </a>
 
@@ -455,7 +454,7 @@
                         </div>
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
@@ -464,7 +463,6 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
 
                         <!-- Actions -->
@@ -740,7 +738,7 @@
                         <div
                                 v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
                                 class="card-thumbnail">
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-masonry-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
@@ -748,7 +746,6 @@
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                    :transition-duration="500"
                                 />
                         </div>
                         
@@ -1003,7 +1000,7 @@
                                 @click.right="onRightClickItem($event, item)">
                             <div class="list-metadata media-body">
                                 <div class="tainacan-record-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-record-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1012,7 +1009,6 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </div>
                                 <span
@@ -1233,13 +1229,12 @@
                                 <span 
                                         v-if="column.metadatum == 'row_thumbnail'"
                                         class="table-thumb">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
                                             :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
                                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </span>
                                 <p
@@ -1594,7 +1589,7 @@
                         <div 
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-list-thumbnail">
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-list-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1603,7 +1598,6 @@
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                    :transition-duration="500"
                                 />
                         </div>
                         <div class="list-metadata media-body">
@@ -1736,7 +1730,7 @@
                                         }"
                                         v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div class="tainacan-map-card-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-map-card-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
@@ -1745,7 +1739,6 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </div>
                             </div>
@@ -2142,7 +2135,7 @@
                                             @click.right="onRightClickItem($event, item)">
                                         <div class="list-metadata media-body">
                                             <div class="tainacan-record-thumbnail">
-                                                <blur-hash-image
+                                                <tainacan-progressive-image
                                                         v-if="item.thumbnail != undefined"
                                                         class="tainacan-record-item-thumbnail"
                                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -2151,7 +2144,6 @@
                                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                                        :transition-duration="500"
                                                     />
                                             </div>
                                             <span
@@ -2217,7 +2209,7 @@
                             @click.right="onRightClickItem($event, item)">
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-mosaic-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-large-full', 320)"
@@ -2226,7 +2218,6 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
 
                         <!-- Title -->
@@ -3197,12 +3188,6 @@ export default {
     @use "../../scss/_view-mode-records.scss";
     @use "../../scss/_view-mode-list.scss";
     @use "../../scss/_view-mode-map.scss";
-    
-    // Vue Blurhash transtition effect
-    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
-    :deep(canvas.child) {
-        max-width: 100%;
-    }
 
     .selection-control {
         margin-bottom: 6px;

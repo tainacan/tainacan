@@ -99,7 +99,7 @@
                                 <div 
                                         v-if="item.thumbnail != undefined"
                                         class="tainacan-record-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-record-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -108,7 +108,6 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                             @click.left="onClickItem($event, item)"
                                         />
                                     <div 

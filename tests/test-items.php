@@ -524,4 +524,23 @@ class Items extends TAINACAN_UnitTestCase {
 		$this->assertContains($blurhash, ['V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj', 'VATI:i~qNG~WNG~qNGxaNGt6M|xaNGxaRk~WNGxaR*s:']);
 	}
 
+	function test_item_blurhash_can_be_disabled() {
+		add_filter( 'tainacan-enable-image-blurhash', '__return_false' );
+
+		$this->assertFalse( \Tainacan\Media::is_image_blurhash_enabled() );
+
+		$orig_file = './tests/attachment/tainacan.jpg';
+		$test_file = '/tmp/tainacan-disabled.jpg';
+		copy( $orig_file, $test_file );
+		$blurhash = \Tainacan\Media::get_instance()->get_image_blurhash( $test_file, 40, 40 );
+
+		$this->assertEquals(
+			\Tainacan\Media::get_instance()->get_default_image_blurhash(),
+			$blurhash
+		);
+
+		remove_filter( 'tainacan-enable-image-blurhash', '__return_false' );
+		$this->assertTrue( \Tainacan\Media::is_image_blurhash_enabled() );
+	}
+
 }
