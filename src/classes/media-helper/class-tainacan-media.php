@@ -76,7 +76,7 @@ class Media {
 	 * Define TAINACAN_DISABLE_BLURHASH as true in wp-config.php to turn them off.
 	 * Themes and plugins can still override that with the tainacan-enable-image-blurhash filter.
 	 *
-	 * @since 1.3.1
+	 * @since 1.4
 	 *
 	 * @return bool
 	 */
@@ -88,7 +88,7 @@ class Media {
 		/**
 		 * Filters whether BlurHash placeholders are generated and decoded.
 		 *
-		 * @since 1.3.1
+		 * @since 1.4
 		 *
 		 * @param bool $enabled Whether BlurHash is enabled.
 		 */
