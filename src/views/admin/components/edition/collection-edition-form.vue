@@ -65,7 +65,7 @@
                                 v-model="form.description"
                                 :invalid="editFormErrors['description'] != undefined"
                                 aria-labelledby="tainacan-text-description-label"
-                                aria-describedby="tainacan-text-description-error"
+                                :aria-describedby="editFormErrors['description'] != undefined ? 'tainacan-text-description-error' : undefined"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
                         <b-input

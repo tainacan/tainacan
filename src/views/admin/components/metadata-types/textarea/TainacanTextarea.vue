@@ -6,6 +6,7 @@
             :disabled="disabled"
             :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
             :model-value="localValue"
+            :max-length="getMaxlength"
             @update:model-value="onInput($event)"
             @blur="onBlur"
             @focus="onMobileSpecialFocus" />

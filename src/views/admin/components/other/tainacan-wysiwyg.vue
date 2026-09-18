@@ -9,15 +9,17 @@
                 :value="modelValue">
         <Editor
                 :id="id"
+                ref="editor"
                 :model-value="modelValue"
                 :init="editorInit"
                 license-key="gpl"
                 :disabled="disabled"
                 @update:model-value="onUpdate"
+                @before-add-undo="onBeforeAddUndo"
                 @focus="onFocus"
                 @blur="onBlur" />
         <p
-                class="tainacan-wysiwyg-keyboard-hint"
+                class="help"
                 aria-hidden="true">
             {{ $i18n.get('instruction_wysiwyg_toolbar_shortcut') }}
         </p>
@@ -43,6 +45,54 @@ import contentCss from 'tinymce/skins/content/default/content.css';
 import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
 
 let nextKeyboardHintId = 0;
+const pendingWysiwygDialogMatchers = new Set();
+const pendingWysiwygMenuMarkers = new Set();
+let wysiwygAuxObserver;
+
+function processPendingWysiwygAux() {
+    if (pendingWysiwygDialogMatchers.size) {
+        const dialogs = document.querySelectorAll('.tox-dialog-wrap');
+        const dialog = dialogs[dialogs.length - 1];
+
+        if (dialog) {
+            for (const matcher of pendingWysiwygDialogMatchers) {
+                if (matcher(dialog)) {
+                    dialog.classList.add('tainacan-wysiwyg-dialog');
+                    pendingWysiwygDialogMatchers.delete(matcher);
+                }
+            }
+        }
+    }
+
+    if (pendingWysiwygMenuMarkers.size) {
+        const menus = document.querySelectorAll('.tox-menu');
+        const menu = menus[menus.length - 1];
+
+        if (menu && menu.getClientRects().length) {
+            menu.classList.add('tainacan-wysiwyg-menu');
+            pendingWysiwygMenuMarkers.clear();
+        }
+    }
+
+    stopWysiwygAuxObserverWhenIdle();
+}
+
+function ensureWysiwygAuxObserver() {
+    if (wysiwygAuxObserver)
+        return;
+
+    wysiwygAuxObserver = new MutationObserver(processPendingWysiwygAux);
+    wysiwygAuxObserver.observe(document.body, { childList: true, subtree: true });
+    processPendingWysiwygAux();
+}
+
+function stopWysiwygAuxObserverWhenIdle() {
+    if (!wysiwygAuxObserver || pendingWysiwygDialogMatchers.size || pendingWysiwygMenuMarkers.size)
+        return;
+
+    wysiwygAuxObserver.disconnect();
+    wysiwygAuxObserver = undefined;
+}
 
 const EDITOR_INIT = {
     menubar: false,
@@ -62,35 +112,26 @@ const EDITOR_INIT = {
     toolbar_mode: 'wrap',
     setup(editor) {
         let wysiwygDialogMatcher;
-        let shouldMarkWysiwygMenu = false;
-        const wysiwygDialogObserver = new MutationObserver(() => {
-            if (wysiwygDialogMatcher) {
-                const dialogs = document.querySelectorAll('.tox-dialog-wrap');
-                const dialog = dialogs[dialogs.length - 1];
+        let wysiwygMenuMarker;
 
-                if (dialog && wysiwygDialogMatcher(dialog)) {
-                    dialog.classList.add('tainacan-wysiwyg-dialog');
-                    wysiwygDialogMatcher = undefined;
-                }
-            }
+        const waitForWysiwygDialog = (matcher) => {
+            if (wysiwygDialogMatcher)
+                pendingWysiwygDialogMatchers.delete(wysiwygDialogMatcher);
 
-            if (shouldMarkWysiwygMenu) {
-                const menus = document.querySelectorAll('.tox-menu');
-                const menu = menus[menus.length - 1];
-
-                if (menu && menu.getClientRects().length) {
-                    menu.classList.add('tainacan-wysiwyg-menu');
-                    shouldMarkWysiwygMenu = false;
-                }
-            }
-        });
-
-        wysiwygDialogObserver.observe(document.body, { childList: true, subtree: true });
+            wysiwygDialogMatcher = matcher;
+            pendingWysiwygDialogMatchers.add(matcher);
+            ensureWysiwygAuxObserver();
+        };
         const onToolbarClick = (event) => {
             const button = event.target.closest('button');
 
             if (button?.dataset.mceName === 'align') {
-                shouldMarkWysiwygMenu = true;
+                if (wysiwygMenuMarker)
+                    pendingWysiwygMenuMarkers.delete(wysiwygMenuMarker);
+
+                wysiwygMenuMarker = {};
+                pendingWysiwygMenuMarkers.add(wysiwygMenuMarker);
+                ensureWysiwygAuxObserver();
             }
         };
         editor.on('init', () => {
@@ -98,15 +139,19 @@ const EDITOR_INIT = {
         });
         editor.on('BeforeExecCommand', (event) => {
             if (event.command === 'mceLink') {
-                wysiwygDialogMatcher = (dialog) => dialog.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]');
+                waitForWysiwygDialog((dialog) => dialog.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]'));
             }
 
             if (event.command === 'mceCodeEditor') {
-                wysiwygDialogMatcher = (dialog) => dialog.querySelector('textarea[data-mce-name="code"]');
+                waitForWysiwygDialog((dialog) => dialog.querySelector('textarea[data-mce-name="code"]'));
             }
         });
         editor.on('remove', () => {
-            wysiwygDialogObserver.disconnect();
+            if (wysiwygDialogMatcher)
+                pendingWysiwygDialogMatchers.delete(wysiwygDialogMatcher);
+            if (wysiwygMenuMarker)
+                pendingWysiwygMenuMarkers.delete(wysiwygMenuMarker);
+            stopWysiwygAuxObserverWhenIdle();
             editor.getContainer().removeEventListener('click', onToolbarClick);
         });
     }
@@ -141,6 +186,10 @@ export default {
         invalid: {
             type: Boolean,
             default: false
+        },
+        maxLength: {
+            type: Number,
+            default: undefined
         },
         ariaLabelledby: {
             type: String,
@@ -177,7 +226,24 @@ export default {
         }
     },
     methods: {
+        getTextContentLength(editor) {
+            return editor.getContent({ format: 'text' }).length;
+        },
+        hasExceededMaxLength(editor) {
+            return this.maxLength && this.getTextContentLength(editor) > this.maxLength;
+        },
+        onBeforeAddUndo(event, editor) {
+            if (this.hasExceededMaxLength(editor))
+                event.preventDefault();
+        },
         onUpdate(value) {
+            const editor = this.$refs.editor && this.$refs.editor.getEditor();
+
+            if (editor && this.hasExceededMaxLength(editor)) {
+                editor.setContent(this.modelValue);
+                return;
+            }
+
             this.$emit('update:modelValue', value);
         },
         onFocus(event) {
@@ -189,12 +255,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss">
-    .tainacan-wysiwyg-keyboard-hint {
-        margin: 0.25rem 0 0;
-        color: var(--tainacan-gray4);
-        font-size: 0.75em;
-        line-height: 1.4;
-    }
-</style>
