@@ -106,9 +106,9 @@ jobs:
         run: |
           php_version="${{ matrix.php }}"
           if [[ "$php_version" == 8.* ]]; then
-            wget https://phar.phpunit.de/phpunit-9.6.16.phar -P /tmp
-            chmod +x /tmp/phpunit-9.6.16.phar
-            mv /tmp/phpunit-9.6.16.phar /usr/local/bin/phpunit
+            wget https://phar.phpunit.de/phpunit-9.6.36.phar -P /tmp
+            chmod +x /tmp/phpunit-9.6.36.phar
+            mv /tmp/phpunit-9.6.36.phar /usr/local/bin/phpunit
           else
             wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp
             chmod +x /tmp/phpunit-6.5.7.phar
