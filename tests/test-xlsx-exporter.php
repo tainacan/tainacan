@@ -14,6 +14,11 @@ class TAINACAN_XLSX_Exporter extends TAINACAN_UnitTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
+
+		if ( version_compare( PHP_VERSION, '8.1', '<' ) ) {
+			$this->markTestSkipped( 'PhpSpreadsheet 5.x requires PHP 8.1 or later.' );
+		}
+
 		$upload_dir = wp_upload_dir();
 		wp_mkdir_p( trailingslashit( $upload_dir['basedir'] ) . 'tainacan/exporter' );
 	}
