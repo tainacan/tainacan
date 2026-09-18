@@ -24,3 +24,18 @@ class TAINACAN_UnitTestCase extends \WP_UnitTestCase {
 		$this->user_id = $new_admin_user;
 	}
 }
+
+/**
+ * Test double used to detect accidental object instantiation via unserialize().
+ */
+class Tainacan_POI_Canary {
+	public static $woke = false;
+
+	public function __wakeup() {
+		self::$woke = true;
+	}
+
+	public static function reset() {
+		self::$woke = false;
+	}
+}

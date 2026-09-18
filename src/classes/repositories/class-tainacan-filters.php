@@ -571,7 +571,6 @@ class Filters extends Repository {
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_filters_order();
 		if ( $order ) {
-			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 
 			if ( is_array( $result ) ) {
 				$result_ordinate = [];

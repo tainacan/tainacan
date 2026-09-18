@@ -169,5 +169,20 @@ class TestUtilities extends TAINACAN_UnitTestCase {
 		$text_input_response = $text->make_clickable_links($text_input);
 		$this->assertEquals($text_input_expected, $text_input_response);
 	}
+
+	function test_maybe_unserialize_array() {
+		$this->assertSame( array( 1, 2 ), tainacan_maybe_unserialize_array( array( 1, 2 ) ) );
+		$this->assertSame( array(), tainacan_maybe_unserialize_array( null ) );
+		$this->assertSame( array(), tainacan_maybe_unserialize_array( '' ) );
+		$this->assertSame( array(), tainacan_maybe_unserialize_array( 0 ) );
+		$this->assertSame( array(), tainacan_maybe_unserialize_array( 'not-serialized' ) );
+
+		$order = array( array( 'id' => 12, 'enabled' => true ) );
+		$this->assertEquals( $order, tainacan_maybe_unserialize_array( serialize( $order ) ) );
+
+		Tainacan_POI_Canary::reset();
+		$this->assertSame( array(), tainacan_maybe_unserialize_array( serialize( new Tainacan_POI_Canary() ) ) );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
 	
 }

@@ -295,4 +295,37 @@ class Collections extends TAINACAN_UnitTestCase {
 		$this->assertEquals($x->get_id(), $col->get_parent());
 
 	}
+
+	function test_order_fields_never_store_or_instantiate_serialized_objects() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'order-poi',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		Tainacan_POI_Canary::reset();
+		$poison = serialize( new Tainacan_POI_Canary() );
+
+		$collection->set_filters_order( $poison );
+		$collection->set_metadata_order( $poison );
+		$collection->set_metadata_section_order( $poison );
+
+		$this->assertSame( array(), $collection->get_filters_order() );
+		$this->assertSame( array(), $collection->get_metadata_order() );
+		$this->assertSame( array(), $collection->get_metadata_section_order() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+
+		$collection->validate();
+		\tainacan_collections()->insert( $collection );
+
+		Tainacan_POI_Canary::reset();
+		update_post_meta( $collection->get_id(), 'filters_order', $poison );
+
+		$fresh = \tainacan_collections()->fetch( $collection->get_id() );
+		$this->assertSame( array(), $fresh->get_filters_order() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
 }
