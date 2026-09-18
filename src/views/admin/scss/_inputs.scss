@@ -129,4 +129,17 @@
             max-height: 8lh;
         }
     }
+
+    .tainacan-modal-content {
+
+        textarea.textarea, 
+        .textarea {
+            max-height: 50vh;
+            
+            &:focus,
+            &:active {
+               max-height: 50vh !important;
+            }
+        }
+    }
 }
