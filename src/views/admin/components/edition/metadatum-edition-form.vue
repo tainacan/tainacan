@@ -139,7 +139,17 @@
                                         :message="$i18n.getHelperMessage('metadata', 'description')"
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
+                            <component
+                                    :is="'tainacan-wysiwyg'"
+                                    v-if="isWysiwygEditorAllowed"
+                                    id="tainacan-metadatum-description"
+                                    v-model="form.description"
+                                    name="description"
+                                    :invalid="formErrors['description'] != undefined"
+                                    @focus="clearErrors('description')" />
                             <b-input
+                                    v-else
+                                    id="tainacan-metadatum-description"
                                     v-model="form.description"
                                     type="textarea"
                                     name="description"
@@ -525,6 +535,7 @@
     import { nextTick } from 'vue';
     import {mapActions} from 'vuex';
     import { formHooks } from "../../js/mixins";
+    import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
 
     import FormText from '../metadata-types/text/FormText.vue';
     import FormTextarea from '../metadata-types/textarea/FormTextarea.vue';
@@ -576,6 +587,7 @@
                 hideMetadataTypeOptions: false,
                 showAdvancedOptions: false,
                 showCardinalityOptions: false,
+                isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
                 showHTMLFormattingOptions: false
             }
         },
@@ -869,5 +881,4 @@
     }
 
 </style>
-
 

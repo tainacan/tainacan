@@ -62,7 +62,16 @@
                                 :title="$i18n.getHelperTitle('taxonomies', 'description')" 
                                 :message="$i18n.getHelperMessage('taxonomies', 'description')"
                                 extra-classes="tainacan-repository-tooltip" />
+                        <component
+                                :is="'tainacan-wysiwyg'"
+                                v-if="isWysiwygEditorAllowed"
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                name="description"
+                                :invalid="editFormErrors['description'] != undefined"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 type="textarea"
@@ -315,6 +324,7 @@
     import { mapActions } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
+    import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
 
     export default {
         name: 'TaxonomyEditionForm',
@@ -385,6 +395,7 @@
                 editFormErrors: {},
                 formErrorMessage: '',
                 entityName: 'taxonomy',
+                isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
                 updatedAt: undefined,
                 shouldReloadTermsList: false,
                 themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
@@ -772,4 +783,3 @@
         }
     }
 </style>
-

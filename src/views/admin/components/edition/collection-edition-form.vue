@@ -46,20 +46,43 @@
 
                     <!-- Description -------------------------------- --> 
                     <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_description')"
-                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                            :addons="false"
+                            label-for="tainacan-text-description"
+                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                             :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'description')" 
+                        <template #label>
+                            <span id="tainacan-text-description-label">
+                                {{ $i18n.get('label_description') }}
+                            </span>
+                        </template>
+                        <help-button
+                                :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
+                        <component
+                                :is="'tainacan-wysiwyg'"
+                                v-if="isWysiwygEditorAllowed"
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                :invalid="editFormErrors['description'] != undefined"
+                                aria-labelledby="tainacan-text-description-label"
+                                :aria-describedby="editFormErrors['description'] != undefined ? 'tainacan-text-description-error' : undefined"
+                                :placeholder="$i18n.get('instruction_collection_description')"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 type="textarea"
                                 rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
+                        <template
+                                v-if="editFormErrors['description'] != undefined"
+                                #message>
+                            <span id="tainacan-text-description-error">
+                                {{ editFormErrors['description'] }}
+                            </span>
+                        </template>
                     </b-field>
 
                     <!-- Collection Taxonomies options ------------------------ -->
@@ -1120,6 +1143,7 @@ import { mapGetters, mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import { permalinkGetter, formHooks } from '../../js/mixins';
+import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
 
 export default {
     name: 'CollectionEditionForm',
@@ -1199,6 +1223,7 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
+            isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             //collections: [],              DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
             //isFetchingCollections: true,  DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
@@ -2307,4 +2332,3 @@ export default {
     }
 
 </style>
-

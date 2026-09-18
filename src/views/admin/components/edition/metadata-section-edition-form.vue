@@ -133,7 +133,17 @@
                                     :title="$i18n.getHelperTitle('metadata-sections', 'description')"
                                     :message="$i18n.getHelperMessage('metadata-sections', 'description')" />
                         </label>
+                        <component
+                                :is="'tainacan-wysiwyg'"
+                                v-if="isWysiwygEditorAllowed"
+                                id="tainacan-metadata-section-description"
+                                v-model="form.description"
+                                name="description"
+                                :invalid="formErrors['description'] != undefined"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
+                                id="tainacan-metadata-section-description"
                                 v-model="form.description"
                                 type="textarea"
                                 name="description"
@@ -294,6 +304,7 @@
     import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from "../../js/mixins";
+    import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
 
     export default {
         name: 'MetadataSectionEditionForm',
@@ -323,6 +334,7 @@
                 selectedConditionalMetadatumId: undefined,
                 selectedConditionalValue: [],
                 hideConditionalSectionSettings: false,
+                isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
                 shouldUpdateConditionalValue: true
             }
         },
@@ -627,5 +639,4 @@
     }
 
 </style>
-
 
