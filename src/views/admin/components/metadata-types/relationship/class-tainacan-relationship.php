@@ -19,6 +19,7 @@ class Relationship extends Metadata_Type {
 		$this->set_name( __('Relationship', 'tainacan') );
 		$this->set_description( __('A relationship with another item', 'tainacan') );
 		$this->set_sortable( false );
+		$this->set_manage_multiple_input( true );
 		$this->set_preview_template('
 			<div>
 				<div class="taginput control is-expanded has-selected">

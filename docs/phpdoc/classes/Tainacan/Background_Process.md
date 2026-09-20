@@ -16,6 +16,41 @@ to handle DB updates in the background.
 ```mermaid
 classDiagram
     direction TB
+    class Background_Process_Base {
+        #action : string
+        #start_time : int
+        #cron_hook_identifier : mixed
+        #cron_interval_identifier : mixed
+        #cron_hook_check_identifier : string
+        #process_lock_in_time : string
+        #queue_lock_time : string
+        #cron_interval : string
+        +__construct()
+        +dispatch()
+        +push_to_queue(data)
+        +save()
+        +update(key, data)
+        +delete(key)
+        #generate_key(length)
+        +maybe_handle()
+        #is_queue_empty()
+        #is_process_running()
+        #lock_process()
+        #unlock_process()
+        #get_batch()
+        #handle()
+        #memory_exceeded()
+        #get_memory_limit()
+        #time_exceeded()
+        #complete()
+        +schedule_cron_healthcheck(schedules)
+        +handle_cron_healthcheck()
+        +handle_cron_healthcheck_check()
+        #schedule_event()
+        #clear_scheduled_event()
+        +cancel_process()
+        +debug(message)
+    }
     class Async_Request {
         #prefix : string
         #action : string
@@ -55,41 +90,6 @@ classDiagram
         #write_error_log(key, log)
         -recursive_stingify_log_array(log, break)
         -has_errors(key)
-    }
-    class Background_Process_Base {
-        #action : string
-        #start_time : int
-        #cron_hook_identifier : mixed
-        #cron_interval_identifier : mixed
-        #cron_hook_check_identifier : string
-        #process_lock_in_time : string
-        #queue_lock_time : string
-        #cron_interval : string
-        +__construct()
-        +dispatch()
-        +push_to_queue(data)
-        +save()
-        +update(key, data)
-        +delete(key)
-        #generate_key(length)
-        +maybe_handle()
-        #is_queue_empty()
-        #is_process_running()
-        #lock_process()
-        #unlock_process()
-        #get_batch()
-        #handle()
-        #memory_exceeded()
-        #get_memory_limit()
-        #time_exceeded()
-        #complete()
-        +schedule_cron_healthcheck(schedules)
-        +handle_cron_healthcheck()
-        +handle_cron_healthcheck_check()
-        #schedule_event()
-        #clear_scheduled_event()
-        +cancel_process()
-        +debug(message)
     }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process

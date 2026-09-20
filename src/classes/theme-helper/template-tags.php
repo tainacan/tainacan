@@ -101,7 +101,7 @@ function tainacan_get_the_document($item_id = 0, $img_size = 'large') {
 		return '';
 	}
 
-	return apply_filters('tainacan-get-the-document', $item->get_document_as_html($item_id, $img_size), $item);
+	return apply_filters('tainacan-get-the-document', $item->get_document_as_html($img_size), $item);
 }
 
 /**
@@ -164,15 +164,38 @@ function tainacan_get_the_document_type($item_id = 0) {
 /**
  * To be used inside The Loop
  *
+ * Return the item document MIME type. For attachment documents this is the file MIME type
+ * (e.g. 'image/jpeg', 'application/pdf'). For URL or text documents this is the document type itself.
+ *
+ * @param int|string $item_id (Optional) The item ID. Default is the global $post
+ *
+ * @return string The document MIME type or document type, or empty string if item is not found
+ */
+function tainacan_get_the_document_mimetype($item_id = 0) {
+	$item = tainacan_get_item($item_id);
+
+	if ( ! $item instanceof \Tainacan\Entities\Item ) {
+		return '';
+	}
+
+	$mimetype = $item->get_document_mimetype();
+
+	return apply_filters( 'tainacan_get_the_document_mimetype', $mimetype ? $mimetype : '', $item );
+}
+
+/**
+ * To be used inside The Loop
+ *
  * Return the item document download link as HTML.
  *
  * Only returns a link for attachment-type documents. Returns empty string for text or URL documents.
+ * The HTML includes a `.tainacan-item-file-download` wrapper around the link so themes can style the control.
  *
  * @param int|string $item_id (Optional) The item ID. Default is the global $post
  *
  * @return string The HTML download link, or empty string if item is not found, has no document, or document is not downloadable
  */
-function tainacan_the_item_document_download_link($item_id = 0) {
+function tainacan_get_the_item_document_download_link($item_id = 0) {
 	$item = tainacan_get_item($item_id);
 
 	if ( ! $item instanceof \Tainacan\Entities\Item ) {
@@ -180,31 +203,187 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 	}
 
 	$link = $item->get_document_download_url();
-	
-	if ( ! $link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url' ) {
-		return '';
+	$html = '';
+
+	if ( $link && $item->get_document_type() != 'text' && $item->get_document_type() != 'url' ) {
+		$label = __( 'Download', 'tainacan' );
+		$html = sprintf(
+			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" target="_blank" aria-label="%2$s" title="%3$s"><span class="tainacan-item-file-download__label">%4$s</span></a></span>',
+			esc_url( $link ),
+			esc_attr( __( 'Download the item document', 'tainacan' ) ),
+			esc_attr( $label ),
+			esc_html( $label )
+		);
 	}
 
-	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '" target="_blank">' . __('Download', 'tainacan') . '</a>';
+	/**
+	 * Filters the item document download link HTML.
+	 *
+	 * @param string                  $html The HTML download link, or empty string.
+	 * @param \Tainacan\Entities\Item $item The item object.
+	 * @param string|false            $link The document download URL.
+	 */
+	return apply_filters( 'tainacan_get_the_item_document_download_link', $html, $item, $link );
+}
+
+/**
+ * To be used inside The Loop
+ *
+ * Return the item document download link as HTML.
+ *
+ * Only returns a link for attachment-type documents. Returns empty string for text or URL documents.
+ *
+ * Unlike typical WordPress `the_*` helpers, this function returns the HTML instead of echoing it.
+ * The original implementation returned a string and themes concatenate that value, so echoing
+ * here would break existing templates. Prefer tainacan_get_the_item_document_download_link() in new code.
+ *
+ * @param int|string $item_id (Optional) The item ID. Default is the global $post
+ *
+ * @return string The HTML download link, or empty string if item is not found, has no document, or document is not downloadable
+ */
+function tainacan_the_item_document_download_link($item_id = 0) {
+	return tainacan_get_the_item_document_download_link($item_id);
 }
 
 
 /**
  * Return the item attachment download link as HTML.
+ * The HTML includes a `.tainacan-item-file-download` wrapper around the link so themes can style the control.
+ *
+ * @param int $attachment_id The attachment ID
+ *
+ * @return string The HTML download link, or empty string if attachment is not found or has no URL
+ */
+function tainacan_get_the_item_attachment_download_link($attachment_id) {
+
+	if ( ! $attachment_id ) {
+		return '';
+	}
+
+	$link = wp_get_attachment_url($attachment_id);
+	$html = '';
+
+	if ( $link ) {
+		$label = __( 'Download', 'tainacan' );
+		$html = sprintf(
+			'<span class="tainacan-item-file-download"><a download="%1$s" href="%1$s" aria-label="%2$s" title="%3$s"><span class="tainacan-item-file-download__label">%4$s</span></a></span>',
+			esc_url( $link ),
+			esc_attr( __( 'Download the item attachment', 'tainacan' ) ),
+			esc_attr( $label ),
+			esc_html( $label )
+		);
+	}
+
+	/**
+	 * Filters the item attachment download link HTML.
+	 *
+	 * @param string     $html          The HTML download link, or empty string.
+	 * @param int        $attachment_id The attachment ID.
+	 * @param string|false $link        The attachment URL.
+	 */
+	return apply_filters( 'tainacan_get_the_item_attachment_download_link', $html, $attachment_id, $link );
+}
+
+/**
+ * Return the item attachment download link as HTML.
+ *
+ * Unlike typical WordPress `the_*` helpers, this function returns the HTML instead of echoing it.
+ * The original implementation returned a string and themes concatenate that value, so echoing
+ * here would break existing templates. Prefer tainacan_get_the_item_attachment_download_link() in new code.
  *
  * @param int $attachment_id The attachment ID
  *
  * @return string The HTML download link, or empty string if attachment is not found or has no URL
  */
 function tainacan_the_item_attachment_download_link($attachment_id) {
+	return tainacan_get_the_item_attachment_download_link($attachment_id);
+}
 
-	if ( ! $attachment_id || ! wp_get_attachment_url($attachment_id) ) {
+/**
+ * Return the item gallery Expand control as HTML.
+ *
+ * Opens PhotoSwipe at the current slide. Markup matches the Download control: a
+ * `.tainacan-media-item-expand` wrapper around a plain link so themes that style
+ * `a` (and `.tainacan-item-file-download`) can restyle both the same way.
+ *
+ * @return string The HTML expand control.
+ */
+function tainacan_get_the_media_item_expand_control() {
+	/* translators: Opens this media in the large gallery viewer. */
+	$label = __( 'Expand', 'tainacan' );
+	$html = sprintf(
+		'<span class="tainacan-media-item-expand"><a href="#" title="%1$s"><span class="tainacan-media-item-expand__label">%2$s</span></a></span>',
+		esc_attr( $label ),
+		esc_html( $label )
+	);
+
+	/**
+	 * Filters the item gallery Expand control HTML.
+	 *
+	 * @param string $html The HTML expand control.
+	 */
+	return apply_filters( 'tainacan_get_the_media_item_expand_control', $html );
+}
+
+/**
+ * Return a slide actions wrapper around Expand, Download, and similar controls.
+ *
+ * @param array $args {
+ *     Optional. Array of arguments.
+ *     @type string $expand_html    Expand control HTML, or empty. Default ''.
+ *     @type string $download_html  Download control HTML, or empty. Default ''.
+ *     @type int    $item_id        The item ID this slide belongs to. Default 0.
+ *     @type int    $attachment_id WP attachment ID when the slide is an attachment (item document or extra file). Default 0.
+ *     @type string $media_source   'document' or 'attachment'. Default ''.
+ *     @type string $media_type     MIME type or media type string. Default ''.
+ * }
+ * @return string The actions wrapper HTML, or empty string if there is nothing to show.
+ */
+function tainacan_get_the_media_item_actions( $args = array() ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'expand_html'    => '',
+			'download_html'  => '',
+			'item_id'        => 0,
+			'attachment_id' => 0,
+			'media_source'   => '',
+			'media_type'     => '',
+		)
+	);
+
+	$inner = '';
+	if ( ! empty( $args['expand_html'] ) ) {
+		$inner .= $args['expand_html'];
+	}
+	if ( ! empty( $args['download_html'] ) ) {
+		$inner .= $args['download_html'];
+	}
+
+	/**
+	 * Filters the HTML inside the slide actions row.
+	 *
+	 * Runs even when Expand and Download are empty, so extra controls can still
+	 * create the row. The wrapper `.tainacan-media-item-actions` is added after
+	 * this filter if the result is not empty.
+	 *
+	 * @param string $html The inner actions HTML, or empty.
+	 * @param array  $args {
+	 *     @type string $expand_html    Expand control HTML, or empty.
+	 *     @type string $download_html  Download control HTML, or empty.
+	 *     @type int    $item_id        The item ID this slide belongs to.
+	 *     @type int    $attachment_id WP attachment ID, or 0.
+	 *     @type string $media_source   'document' or 'attachment'.
+	 *     @type string $media_type     MIME type or media type string.
+	 * }
+	 */
+	$inner = apply_filters( 'tainacan_get_the_media_item_actions', $inner, $args );
+
+	if ( $inner === '' ) {
 		return '';
 	}
 
-	$link = wp_get_attachment_url($attachment_id);
-
-	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
+	return '<div class="tainacan-media-item-actions">' . $inner . '</div>';
 }
 
 /**
@@ -370,6 +549,27 @@ function tainacan_the_collection_description() {
 }
 
 /**
+ * Sanitize a thumbnails layout slug for the media gallery.
+ *
+ * Core layouts are 'carousel', 'grid' and 'list'. Other class-safe slugs are
+ * kept so themes and plugins can add a layout, style
+ * `.tainacan-media-thumbs--layout-{slug}`, and handle it in
+ * tainacan_get_the_media_component(). Empty or invalid values fall back to
+ * 'carousel'.
+ *
+ * @param mixed $layout Layout name.
+ * @return string
+ */
+function tainacan_sanitize_media_thumbs_layout( $layout ) {
+	if ( ! is_string( $layout ) || $layout === '' ) {
+		return 'carousel';
+	}
+
+	$layout = sanitize_html_class( $layout );
+	return $layout !== '' ? $layout : 'carousel';
+}
+
+/**
  * Tainacan Gallery component, used to render document, attachments and other files
  *
  * @param string       $media_id           ID to be added to the gallery div
@@ -423,6 +623,7 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  *     @type string      swiper_arrow_prev_custom_svg 	Custom SVG icon to render previous navigation arrow
  *     @type bool 		 disable_main_carousel			Disable the main carousel, removing swiper classes and wrappers
  *     @type bool 		 disable_thumbs_carousel		Disable the thumbs carousel, removing swiper classes and wrappers
+ *     @type string		 thumbs_layout					Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through. Non-carousel layouts also disable the thumbs Swiper.
  *     @type bool 		 disable_lightbox				Do not open photoswipe layer on click
  *     @type bool        show_share_button        		Shows share button on lightbox
  *	   @type bool	 	 lightbox_has_light_background  Show a light background instead of dark in the lightbox 
@@ -466,6 +667,7 @@ function tainacan_get_the_media_component(
 		'swiper_arrow_prev_custom_svg' => '',
 		'disable_main_carousel' => false,
 		'disable_thumbs_carousel' => false,
+		'thumbs_layout' => 'carousel',
 		'disable_lightbox' => false,
 		'show_share_button' => false,
 		'lightbox_has_light_background' => false
@@ -477,6 +679,12 @@ function tainacan_get_the_media_component(
 	$args['media_thumbs_id'] = $media_id . '-thumbs';
 	$args['media_id'] = $media_id;
 
+	$args['thumbs_layout'] = tainacan_sanitize_media_thumbs_layout( $args['thumbs_layout'] );
+	if ( $args['thumbs_layout'] !== 'carousel' ) {
+		$args['disable_thumbs_carousel'] = true;
+	}
+	$args['class_thumbs_div'] = trim( $args['class_thumbs_div'] . ' tainacan-media-thumbs--layout-' . $args['thumbs_layout'] );
+
 	$media_component_js_config = [
 		'media_main_id' => $args['media_main_id'],
 		'media_thumbs_id' => $args['media_thumbs_id'],
@@ -487,6 +695,7 @@ function tainacan_get_the_media_component(
 		'swiper_thumbs_options' => $args['swiper_thumbs_options'],
 		'disable_main_carousel' => $args['disable_main_carousel'],
 		'disable_thumbs_carousel' => $args['disable_thumbs_carousel'],
+		'thumbs_layout' => $args['thumbs_layout'],
 		'disable_lightbox' => $args['disable_lightbox'],
 		'lightbox_has_light_background' => $args['lightbox_has_light_background'],
 		'hide_media_name' => isset($args['hide_media_name']) ? (bool) $args['hide_media_name'] : false,
@@ -512,6 +721,7 @@ function tainacan_get_the_media_component(
 			'fill' => true,
 		)
 	);
+	$media_slide_allowed_html = wp_kses_allowed_html('tainacan_media_slide');
 	add_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
 
 	ob_start();
@@ -543,7 +753,7 @@ function tainacan_get_the_media_component(
 							<?php foreach($media_items_main as $media_item) { ?>
 								<li class="tainacan-media-item <?php echo !$args['disable_main_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_main_li']) ?>">
 									<?php 
-										echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content'));
+										echo wp_kses($media_item, $media_slide_allowed_html);
 									?>
 								</li>
 							<?php }; ?>
@@ -551,7 +761,7 @@ function tainacan_get_the_media_component(
 					<?php elseif ( count($media_items_main) === 1 ) : ?>
 						<div class="tainacan-media-items <?php echo !$args['disable_main_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_main_ul']) ?>">
 							<div class="tainacan-media-item <?php echo !$args['disable_main_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_main_li']) ?>">
-								<?php echo wp_kses($media_items_main[0], wp_kses_allowed_html('tainacan_content')); ?>
+								<?php echo wp_kses($media_items_main[0], $media_slide_allowed_html); ?>
 							</div>
 						</div>
 					<?php endif; ?>
@@ -608,14 +818,14 @@ function tainacan_get_the_media_component(
 						<ul class="tainacan-media-items <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 							<?php foreach($media_items_thumbs as $media_item) { ?>
 								<li class="tainacan-media-item <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_thumbs_li']) ?>">
-									<?php echo wp_kses($media_item, wp_kses_allowed_html('tainacan_content')); ?>
+									<?php echo wp_kses($media_item, $media_slide_allowed_html); ?>
 								</li>
 							<?php }; ?>
 						</ul>
 					<?php elseif ( count($media_items_thumbs) === 1 ) : ?>
 						<div class="tainacan-media-items <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-wrapper ' : '' ?> <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 							<div class="tainacan-media-item <?php echo !$args['disable_thumbs_carousel'] ? 'swiper-slide ' : '' ?> <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo wp_kses($media_items_thumbs[0], wp_kses_allowed_html('tainacan_content')); ?>
+								<?php echo wp_kses($media_items_thumbs[0], $media_slide_allowed_html); ?>
 							</div>
 						</div>
 					<?php endif; ?>
@@ -692,7 +902,8 @@ function tainacan_get_the_media_component(
  *     @type string      media_title             The media title, if available
  *     @type string      media_description       The media description, if available
  *     @type string      media_caption           The media caption, if available
- *     @type string      media_type              The media type or mime_type, used to render an icon if media_content is empty
+ *     @type string      media_type              The media type or mime_type, used to render an icon if media_content is empty. Also output as data-media-type on the slide content wrapper.
+ *     @type string      media_source            The media source, either 'document' or 'attachment'. Also output as data-media-source on the slide content wrapper.
  * }
  * @return string
  */
@@ -711,15 +922,22 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'media_title' => '',
 		'media_description' => '',
 		'media_caption' => '',
-		'media_type' => ''
+		'media_type' => '',
+		'media_source' => ''
 	), $args);
+
+	$slide_content_classes = trim( 'tainacan-media-item-content swiper-slide-content ' . $args['class_slide_content'] );
+	$slide_metadata_classes = trim( 'tainacan-media-item-metadata swiper-slide-metadata ' . ( ! empty( $args['media_title'] ) ? 'has-name ' : '' ) . ( ! empty( $args['media_caption'] ) ? 'has-caption ' : '' ) . ( ! empty( $args['media_description'] ) ? 'has-description ' : '' ) . $args['class_slide_metadata'] );
 
 	ob_start();
 
 ?>
 	<?php echo wp_kses_post($args['before_slide_content']) ?>
 
-	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
+	<div class="<?php echo esc_attr($slide_content_classes) ?>"<?php
+		echo ! empty( $args['media_type'] ) ? ' data-media-type="' . esc_attr( $args['media_type'] ) . '"' : '';
+		echo ! empty( $args['media_source'] ) ? ' data-media-source="' . esc_attr( $args['media_source'] ) . '"' : '';
+	?>>
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
 			<?php echo wp_kses($args['media_content'], wp_kses_allowed_html('tainacan_content')) ?>
@@ -730,23 +948,27 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		<?php echo wp_kses_post($args['before_slide_metadata']); ?>
 
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
-			<div class="swiper-slide-metadata <?php echo !empty($args['media_title']) ? 'has-name ' : ''; echo !empty($args['media_caption']) ? 'has-caption ' : ''; echo !empty($args['media_description']) ? 'has-description ' : ''; ?> <?php echo wp_kses_post($args['class_slide_metadata']); ?>">
+			<div class="<?php echo esc_attr( $slide_metadata_classes ); ?>">
 				<?php if ( !empty($args['media_caption']) ) :?>
-					<span class="swiper-slide-metadata__caption">
+					<span class="tainacan-media-item-metadata__caption swiper-slide-metadata__caption">
 						<?php echo wp_kses_post($args['media_caption']); ?>
 					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
-					<span class="swiper-slide-metadata__name">
+					<span class="tainacan-media-item-metadata__name swiper-slide-metadata__name">
 						<?php echo wp_kses_post($args['media_title']); ?>
 					</span>
 				<?php endif; ?>
 				<?php if ( !empty($args['media_description']) ) :?>
-					<span class="swiper-slide-metadata__description">
+					<span class="tainacan-media-item-metadata__description swiper-slide-metadata__description">
 						<?php echo wp_kses_post($args['media_description']); ?>
 					</span>
 				<?php endif; ?>
 			</div>
+		<?php endif; ?>
+
+		<?php if ( ! empty( $args['after_slide_metadata'] ) ) : ?>
+			<?php echo wp_kses( $args['after_slide_metadata'], wp_kses_allowed_html( 'tainacan_media_slide' ) ); ?>
 		<?php endif; ?>
 
 		<?php if ( !empty($args['media_content_full']) ) : ?>
@@ -754,8 +976,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 				<?php echo wp_kses($args['media_content_full'], wp_kses_allowed_html('tainacan_content')) ?>
 			</div>
 		<?php endif; ?>
-
-		<?php echo wp_kses_post($args['after_slide_metadata']) ?>
 
 	</div>
 
@@ -1387,18 +1607,22 @@ function tainacan_has_related_items($item_id = false) {
 	* 	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name
 	* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
 	* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
-	* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
-	* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
+		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+		* 	   @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
+		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 	* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 	* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
 	* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
 	* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 	*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
+	*	   @type array	 $coverMimeTypesMain			  MIME types that should show a cover image in the Main slider instead of an embed. Defaults to empty (current embed behaviour).
 	*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 	*	   @type bool    $showArrowsAsSVG			      Decides if the swiper carousel arrows will be an SVG icon or font icon
+	*	   @type string  $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 	*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
 	*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+	*	   @type string  $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 	* }		
 	* @return void
  */

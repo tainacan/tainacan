@@ -10,6 +10,32 @@
 ```mermaid
 classDiagram
     direction TB
+    class Flickr_Importer {
+        #endPoint : mixed
+        #method : mixed
+        #apiKey : mixed
+        #perPage : mixed
+        #format : mixed
+        #apiKeyValue : mixed
+        #steps : mixed
+        -items_repo : mixed
+        +__construct(attributes)
+        +get_source_metadata()
+        +process_item(index, collection_definition)
+        +identify_url(showDetails)
+        +get_source_number_of_items()
+        -get_list_items()
+        -process_item_user_request(items_json, index, collection_definition)
+        -process_item_album_request(items_json, index, collection_definition)
+        -process_item_single_request(items_json, index, collection_definition)
+        -get_item_data(id)
+        +after_inserted_item(inserted_item, collection_index)
+        +save_mapping(collection_id, mapping)
+        +get_mapping(collection_id)
+        +add_collection(collection)
+        -get_image_mime_type(image_path)
+        +options_form()
+    }
     class Importer {
         -id : identifier
         #tmp_file : string
@@ -87,32 +113,6 @@ classDiagram
         +after_inserted_item(insertedItem, collection_index)
         +run()
         +create_new_metadata(metadata_description, collection_id, parent_id)
-    }
-    class Flickr_Importer {
-        #endPoint : mixed
-        #method : mixed
-        #apiKey : mixed
-        #perPage : mixed
-        #format : mixed
-        #apiKeyValue : mixed
-        #steps : mixed
-        -items_repo : mixed
-        +__construct(attributes)
-        +get_source_metadata()
-        +process_item(index, collection_definition)
-        +identify_url(showDetails)
-        +get_source_number_of_items()
-        -get_list_items()
-        -process_item_user_request(items_json, index, collection_definition)
-        -process_item_album_request(items_json, index, collection_definition)
-        -process_item_single_request(items_json, index, collection_definition)
-        -get_item_data(id)
-        +after_inserted_item(inserted_item, collection_index)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
-        -get_image_mime_type(image_path)
-        +options_form()
     }
     Importer <|-- Flickr_Importer
 ```

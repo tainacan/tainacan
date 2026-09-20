@@ -576,6 +576,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                             loadStrategy={ loadStrategy }
                             existingCollectionId={ collectionId }
                             existingSearchURL={ loadStrategy == 'search' ? searchURL : false } 
+                            existingSelectedItems={ selectedItems } 
                             onSelectCollection={ (selectedCollectionId) => {
                                 if (collectionId != selectedCollectionId) {
                                     items = [];
@@ -599,7 +600,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 setContent();
                             }}
                             onApplySelectedItems={ (aSelectionOfItems) => {
-                                selectedItems = selectedItems.concat(aSelectionOfItems); 
+                                selectedItems = aSelectionOfItems; 
                                 loadStrategy = 'selection';
                                 setAttributes({
                                     selectedItems: selectedItems,

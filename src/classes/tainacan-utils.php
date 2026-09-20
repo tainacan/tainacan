@@ -228,6 +228,15 @@ add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 			);
 			// Add SVG support (reusing shared SVG rules)
 			return array_merge($post_allowed_html, tainacan_get_svg_allowed_html());
+		case 'tainacan_media_slide':
+			$allowed = wp_kses_allowed_html('tainacan_content');
+			if ( ! isset( $allowed['div'] ) || ! is_array( $allowed['div'] ) ) {
+				$allowed['div'] = array();
+			}
+			$allowed['div']['data-media-type'] = true;
+			$allowed['div']['data-media-source'] = true;
+			$allowed['div']['data-tainacan-media-component-config'] = true;
+			return $allowed;
 		case 'tainacan_menu_link':
 			$post_allowed_html = wp_kses_allowed_html('post');
 			return array_merge(

@@ -1,5 +1,6 @@
 <template>
     <b-field
+            v-if="!isHiddenPendingReveal"
             :ref="isMobileScreen ? ('filter-field-id-' + filter.id) : null"
             class="filter-item-forms"
             :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}"
@@ -57,7 +58,7 @@
             </div>
         </b-collapse>
         <div 
-                v-if="!hideCollapses && beginWithFilterCollapsed && !displayFilter"
+                v-if="!hideCollapses && isCollapsed && !displayFilter"
                 class="collapse show disabled-filter">
             <div class="collapse-trigger">
                 <button
@@ -156,7 +157,8 @@
             isLoadingItems: true,
             filtersAsModal: Boolean,
             isMobileScreen: false,
-            hideCollapses: false
+            hideCollapses: false,
+            isRevealed: false
         },
         data() {
             return {
@@ -167,8 +169,21 @@
             }
         },
         computed: {
-            beginWithFilterCollapsed() {
-                return this.filter && this.filter.begin_with_filter_collapsed && this.filter.begin_with_filter_collapsed === 'yes';
+            initialDisplay() {
+                if (this.filter && ['default', 'collapsed', 'hidden'].includes(this.filter.initial_display))
+                    return this.filter.initial_display;
+                if (this.filter && this.filter.begin_with_filter_collapsed === 'yes')
+                    return 'collapsed';
+                return 'default';
+            },
+            isCollapsed() {
+                return this.initialDisplay === 'collapsed';
+            },
+            isHidden() {
+                return this.initialDisplay === 'hidden';
+            },
+            isHiddenPendingReveal() {
+                return this.isHidden && !this.displayFilter;
             },
             loadFilterAriaLabel() {
                 return this.$i18n.getWithVariables('instruction_click_to_load_filter_%s', [this.filter.name]);
@@ -177,14 +192,19 @@
         watch: {
             expandAll() {
                 this.singleCollapseOpen = this.expandAll;
-                if ( this.expandAll )
+                // Expanding all should not force reveal filters the user hasn't explicitly added.
+                if ( this.expandAll && !(this.isHidden && !this.isRevealed) )
                     this.displayFilter = true;
             },
-            beginWithFilterCollapsed: {
-                handler() {
-                    this.displayFilter = !this.beginWithFilterCollapsed;
+            initialDisplay: {
+                handler(value) {
+                    this.displayFilter = value === 'default' || (value === 'hidden' && this.isRevealed);
                 },
                 immediate: true
+            },
+            isRevealed(isRevealed) {
+                if (isRevealed)
+                    this.appendRealFilter();
             }
         },
         methods: {

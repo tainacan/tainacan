@@ -1,35 +1,5 @@
 classDiagram
     direction TB
-    class Oaipmh_Importer {
-        #steps : mixed
-        #NAME_FOR_SETS : mixed
-        #tainacan_api_address : mixed
-        #has_sets : mixed
-        #items_per_page : mixed
-        -col_repo : mixed
-        -items_repo : mixed
-        -metadata_repo : mixed
-        -item_metadata_repo : mixed
-        -tax_repo : mixed
-        -term_repo : mixed
-        +__construct(attributes)
-        +process_item(index, collection_id)
-        +create_collections()
-        +insert(processed_item, collection_index)
-        #get_identifier(metadata)
-        +get_total_items_from_source(setSpec)
-        #create_collection(setSpec, setName)
-        #create_collection_metadata(collection_object)
-        #fetch_collections()
-        #decode_request(result, url)
-        #requester(link)
-        +createTerms(taxonomy_father, name, slug)
-        +create_set_metadata(collection_id, taxonomy_id)
-        +getRepoName()
-        +hasCompleteSize(attributes)
-        +get_progress_value()
-        +options_form()
-    }
     class Importer {
         -id : identifier
         #tmp_file : string
@@ -107,5 +77,35 @@ classDiagram
         +after_inserted_item(insertedItem, collection_index)
         +run()
         +create_new_metadata(metadata_description, collection_id, parent_id)
+    }
+    class Oaipmh_Importer {
+        #steps : mixed
+        #NAME_FOR_SETS : mixed
+        #tainacan_api_address : mixed
+        #has_sets : mixed
+        #items_per_page : mixed
+        -col_repo : mixed
+        -items_repo : mixed
+        -metadata_repo : mixed
+        -item_metadata_repo : mixed
+        -tax_repo : mixed
+        -term_repo : mixed
+        +__construct(attributes)
+        +process_item(index, collection_id)
+        +create_collections()
+        +insert(processed_item, collection_index)
+        #get_identifier(metadata)
+        +get_total_items_from_source(setSpec)
+        #create_collection(setSpec, setName)
+        #create_collection_metadata(collection_object)
+        #fetch_collections()
+        #decode_request(result, url)
+        #requester(link)
+        +createTerms(taxonomy_father, name, slug)
+        +create_set_metadata(collection_id, taxonomy_id)
+        +getRepoName()
+        +hasCompleteSize(attributes)
+        +get_progress_value()
+        +options_form()
     }
     Importer <|-- Oaipmh_Importer

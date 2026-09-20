@@ -18,6 +18,7 @@ class Compound extends Metadata_Type {
 		$this->set_name( __('Compound', 'tainacan') );
 		$this->set_description( __('A compound metadatum can have groups of values of different types.', 'tainacan') );
 		$this->set_sortable( false );
+		$this->set_manage_multiple_input( true );
 		$this->set_primitive_type('compound');
 		$this->set_component('tainacan-compound');
 		$this->set_form_component('tainacan-form-compound');

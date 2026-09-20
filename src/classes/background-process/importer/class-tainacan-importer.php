@@ -25,6 +25,12 @@ abstract class Importer {
 	 */
 	protected $tmp_file;
 
+	/**
+	 * WordPress attachment ID of the uploaded source file.
+	 *
+	 * @var int
+	 */
+	protected $tmp_file_id;
 
 	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
@@ -137,7 +143,8 @@ abstract class Importer {
 		'transients',
 		'options',
 		'collections',
-		'tmp_file'
+		'tmp_file',
+		'tmp_file_id'
 	];
 
 	public function __construct($attributes = array()) {
@@ -256,6 +263,14 @@ abstract class Importer {
 		$this->tmp_file = $filepath;
 	}
 
+	public function get_tmp_file_id(){
+		return $this->tmp_file_id;
+	}
+
+	public function set_tmp_file_id($id){
+		$this->tmp_file_id = $id;
+	}
+
 	public function get_collections() {
 		return $this->collections;
 	}
@@ -328,12 +343,34 @@ abstract class Importer {
 		$new_file = $this->upload_file( $file );
 		if ( is_numeric( $new_file ) ) {
 			$this->tmp_file = get_attached_file( $new_file );
+			$this->tmp_file_id = (int) $new_file;
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * Delete the uploaded source file and its WordPress attachment.
+	 *
+	 * @return bool
+	 */
+	public function delete_source_file() {
+
+		if ( empty( $this->tmp_file_id ) ) {
+			return false;
+		}
+
+		$deleted = wp_delete_attachment( $this->tmp_file_id, true );
+
+		if ( $deleted ) {
+			$this->tmp_file = null;
+			$this->tmp_file_id = null;
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * log the actions from importer

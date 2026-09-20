@@ -376,6 +376,9 @@
                             border-radius: var(--tainacan-item-border-radius, 0px);
                         }
                     }
+                    .table-thumb>div {
+                        display: inline-grid;
+                    }
                     td.actions-cell {
                         padding: 0px;
                         position: sticky !important;

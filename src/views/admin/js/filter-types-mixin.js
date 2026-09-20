@@ -161,21 +161,25 @@ export const dynamicFilterTypeMixin = {
 
             } else {
                 let callback = new Promise((resolve) => {
+                    let values = [];
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
-                            this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                            this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
+                            values = this.facetsFromItemSearch[facet];
+                            this.prepareOptionsForPlainText(values, search, valuesToIgnore, isInCheckboxModal);
+                            this.$emit('update-parent-collapse', values.length > 0 );
                         }
                     }   
-                    resolve();
+                    resolve({ data: { values }, fromAggregations: true });
                 });
                 return new Object ({
                     request: callback
                 });
             }
         },
-        getValuesTaxonomy({ metadatumId, isRepositoryLevel, number, search, offset, valuesToIgnore }) {
-            const isSearchMode = (search !== undefined && search !== null) || offset !== undefined;
+        getValuesTaxonomy({ metadatumId, isRepositoryLevel, number, search, offset, valuesToIgnore, parent, getSelected = '1' }) {
+            // Taginput/search infinite scroll: offset without parent stays in search mode.
+            // Checkbox sidebar progressive load passes parent (usually 0) to keep root terms + getSelected.
+            const isSearchMode = ((search !== undefined && search !== null) || offset !== undefined) && parent === undefined;
 
             if (isSearchMode) {
                 const source = axios.CancelToken.source();
@@ -218,20 +222,24 @@ export const dynamicFilterTypeMixin = {
                 };
             }
 
-            if (!this.isUsingElasticSearch) {
+            // Sidebar list (and progressive "View more"): dedicated facets request when not using ES aggregations,
+            // or when parent is explicitly set to force an API call (e.g. ElasticPress load more).
+            if (!this.isUsingElasticSearch || parent !== undefined) {
                 const source = axios.CancelToken.source();
                 let currentQuery = JSON.parse(JSON.stringify(this.query));
                 if (currentQuery.fetch_only != undefined)
                     delete currentQuery.fetch_only;
                 const query_items = { 'current_query': currentQuery };
+                const parentId = parent !== undefined ? parent : 0;
+                const offsetValue = offset !== undefined ? offset : 0;
                 let url = '';
                 if (isRepositoryLevel)
-                    url = `/facets/${metadatumId}?getSelected=1&order=asc&parent=0&number=${number}&` + qs.stringify(query_items);
+                    url = `/facets/${metadatumId}?getSelected=${getSelected}&order=asc&parent=${parentId}&number=${number}&offset=${offsetValue}&` + qs.stringify(query_items);
                 else {
                     if (this.filter.collection_id == 'default' && this.currentCollectionId)
-                        url = `/collection/${this.currentCollectionId}/facets/${metadatumId}?getSelected=1&order=asc&parent=0&number=${number}&` + qs.stringify(query_items);
+                        url = `/collection/${this.currentCollectionId}/facets/${metadatumId}?getSelected=${getSelected}&order=asc&parent=${parentId}&number=${number}&offset=${offsetValue}&` + qs.stringify(query_items);
                     else
-                        url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?getSelected=1&order=asc&parent=0&number=${number}&` + qs.stringify(query_items);
+                        url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?getSelected=${getSelected}&order=asc&parent=${parentId}&number=${number}&offset=${offsetValue}&` + qs.stringify(query_items);
                 }
                 this.isLoadingOptions = true;
                 return {
@@ -252,20 +260,23 @@ export const dynamicFilterTypeMixin = {
                 };
             }
             const callback = new Promise((resolve) => {
+                let values = [];
                 for (const facet in this.facetsFromItemSearch) {
                     if (facet == this.filter.id) {
                         const facetData = this.facetsFromItemSearch[facet];
                         if (Array.isArray(facetData)) {
+                            values = facetData;
                             this.prepareOptionsForTaxonomy(facetData);
                             this.$emit('update-parent-collapse', facetData.length > 0);
                         } else {
                             const arr = Object.values(facetData);
+                            values = arr;
                             this.prepareOptionsForTaxonomy(arr);
                             this.$emit('update-parent-collapse', arr.length > 0);
                         }
                     }
                 }
-                resolve();
+                resolve({ data: { values }, fromAggregations: true });
             });
             return { request: callback };
         },
@@ -337,13 +348,15 @@ export const dynamicFilterTypeMixin = {
                 });
             } else {
                 let callback = new Promise((resolve) => {
+                    let values = [];
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
-                            this.prepareOptionsForRelationship(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                            this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
+                            values = this.facetsFromItemSearch[facet];
+                            this.prepareOptionsForRelationship(values, search, valuesToIgnore, isInCheckboxModal);
+                            this.$emit('update-parent-collapse', values.length > 0 );
                         }    
                     }
-                    resolve();
+                    resolve({ data: { values }, fromAggregations: true });
                 });
                 return new Object ({
                     request: callback
@@ -480,4 +493,140 @@ export const dynamicFilterTypeMixin = {
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');
     },
+};
+/**
+ * Progressive "View more" / "View all" behavior for checkbox filter sidebars.
+ * "View more" until X pages, then replace with View all modal. X=0 keeps modal-only.
+ */
+export const progressiveCheckboxMixin = {
+    data() {
+        return {
+            nextFacetOffset: 0,
+            viewMoreClicks: 0,
+            hasMoreOptions: false,
+            isLoadingMore: false,
+            viewMoreLiveMessage: ''
+        }
+    },
+    computed: {
+        maxViewMorePages() {
+            const options = this.filterTypeOptions && !Array.isArray(this.filterTypeOptions)
+                ? this.filterTypeOptions
+                : (this.filter && this.filter.filter_type_options ? this.filter.filter_type_options : {});
+            const parsed = parseInt(options.max_view_more_pages, 10);
+            return isNaN(parsed) || parsed < 0 ? 0 : parsed;
+        },
+        facetPageSize() {
+            const parsed = parseInt(this.filter && this.filter.max_options, 10);
+            return isNaN(parsed) || parsed < 1 ? 4 : parsed;
+        },
+        forceViewAllModalOnly() {
+            return typeof this.shouldForceViewAllModalOnly === 'function' && this.shouldForceViewAllModalOnly();
+        },
+        showViewMoreButton() {
+            if (this.forceViewAllModalOnly || this.maxViewMorePages <= 0 || !this.hasMoreOptions)
+                return false;
+            return this.viewMoreClicks < this.maxViewMorePages;
+        },
+        showViewAllButton() {
+            if (this.forceViewAllModalOnly)
+                return this.hasMoreOptions;
+            if (!this.hasMoreOptions)
+                return false;
+            if (this.maxViewMorePages <= 0)
+                return true;
+            return this.viewMoreClicks >= this.maxViewMorePages;
+        }
+    },
+    methods: {
+        resetProgressiveState() {
+            this.nextFacetOffset = 0;
+            this.viewMoreClicks = 0;
+            this.hasMoreOptions = false;
+            this.isLoadingMore = false;
+            this.shouldAddOptions = false;
+        },
+        updateProgressiveStateFromResponse(res, { isInitial = false, fromAggregations = false } = {}) {
+            const pageSize = this.facetPageSize;
+            const values = res && res.data
+                ? (res.data.values ? res.data.values : (Array.isArray(res.data) ? res.data : []))
+                : [];
+
+            if (fromAggregations) {
+                this.nextFacetOffset = pageSize;
+                this.hasMoreOptions = values.length >= pageSize;
+            } else if (!this.isUsingElasticSearch && res && res.headers && res.headers['x-wp-total'] !== undefined) {
+                const total = Number(res.headers['x-wp-total']);
+                this.nextFacetOffset = isInitial
+                    ? pageSize
+                    : Number(this.nextFacetOffset || 0) + pageSize;
+                this.hasMoreOptions = total > this.nextFacetOffset;
+            } else if (this.isUsingElasticSearch && res && res.data && res.data.last_term) {
+                const lastTerm = res.data.last_term.es_term;
+                this.nextFacetOffset = lastTerm || '';
+                this.hasMoreOptions = !!lastTerm;
+            } else {
+                this.nextFacetOffset = isInitial
+                    ? pageSize
+                    : Number(this.nextFacetOffset || 0) + pageSize;
+                this.hasMoreOptions = values.length >= pageSize;
+            }
+
+            if (isInitial)
+                this.viewMoreClicks = 0;
+        },
+        focusFilterOptionByValue(value) {
+            if (!this.$el || value === undefined || value === null)
+                return false;
+
+            const candidates = this.$el.querySelectorAll('[data-filter-option-value]');
+            const valueString = String(value);
+            for (let i = 0; i < candidates.length; i++) {
+                if (candidates[i].getAttribute('data-filter-option-value') === valueString) {
+                    candidates[i].focus();
+                    return true;
+                }
+            }
+            return false;
+        },
+        getFirstVisibleOptionFromIndex(startIndex) {
+            if (!Array.isArray(this.options) || startIndex >= this.options.length)
+                return null;
+
+            for (let i = startIndex; i < this.options.length; i++) {
+                if (!this.options[i].isChild)
+                    return this.options[i];
+            }
+            return null;
+        },
+        focusProgressiveLoadMoreControl() {
+            if (this.$refs.viewMoreButton && typeof this.$refs.viewMoreButton.focus === 'function') {
+                this.$refs.viewMoreButton.focus();
+                return true;
+            }
+            if (this.$refs.viewAllButton && typeof this.$refs.viewAllButton.focus === 'function') {
+                this.$refs.viewAllButton.focus();
+                return true;
+            }
+            return false;
+        },
+        handleFocusAfterLoadMore(previousOptionsCount) {
+            const addedCount = this.options.length - previousOptionsCount;
+
+            if (addedCount > 0) {
+                const firstNewOption = this.getFirstVisibleOptionFromIndex(previousOptionsCount);
+                if (this.$i18n)
+                    this.viewMoreLiveMessage = this.$i18n.getWithVariables('info_%s_filter_options_loaded', [addedCount]);
+
+                this.$nextTick(() => {
+                    if (firstNewOption && this.focusFilterOptionByValue(firstNewOption.value))
+                        return;
+                    this.focusProgressiveLoadMoreControl();
+                });
+                return;
+            }
+
+            this.$nextTick(() => this.focusProgressiveLoadMoreControl());
+        }
+    }
 };

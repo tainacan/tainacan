@@ -55,6 +55,7 @@ classDiagram
     class Items {
         +entities_type : mixed
         -fetching_from_collections : mixed
+        -relationsip_metaquery : array{meta_id?: string, search_meta_id?: string, search_meta_value?: string}
         #init()
         #_get_map()
         +get_cpt_labels()
@@ -100,6 +101,16 @@ public string $entities_type
 
 ```php
 private $fetching_from_collections
+```
+
+***
+
+### relationsip_metaquery
+
+Temporary state for the optional relationship metaquery posts_where filter.
+
+```php
+private array{meta_id?: string, search_meta_id?: string, search_meta_value?: string} $relationsip_metaquery
 ```
 
 ***

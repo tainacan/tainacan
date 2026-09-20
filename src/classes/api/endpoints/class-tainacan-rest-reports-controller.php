@@ -606,7 +606,17 @@ class REST_Reports_Controller extends REST_Controller {
 				intval($count_posts->publish ?? 0) + intval($count_posts->private ?? 0) + intval($count_posts->pending ?? 0);
 
 		global $wpdb;
-		$string_meta_ids = "'".implode("','", $meta_ids)."'";
+
+		$meta_ids = array_values( array_filter( array_map( 'absint', (array) $meta_ids ) ) );
+		if ( empty( $meta_ids ) ) {
+			return [];
+		}
+
+		$collection_post_type = sanitize_key( $collection_post_type );
+		$meta_placeholders    = implode( ', ', array_fill( 0, count( $meta_ids ), '%d' ) );
+		$params               = array_merge( $meta_ids, [ $collection_post_type ], $meta_ids, [ $collection_post_type ], $meta_ids );
+
+		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQL.NotPrepared
 		$sql_statement = $wpdb->prepare(
 			"SELECT p.post_title AS 'name', pp.post_title AS 'parent_name', p.id AS id, IFNULL(((m.total/$total_items) * 100), 0) as fill_percentage
 			FROM
@@ -616,11 +626,11 @@ class REST_Reports_Controller extends REST_Controller {
 				(
 					SELECT meta_key, count(DISTINCT post_id) AS total
 					FROM $wpdb->postmeta 
-					WHERE $wpdb->postmeta.meta_key IN ($string_meta_ids)
+					WHERE $wpdb->postmeta.meta_key IN ($meta_placeholders)
 						AND $wpdb->postmeta.post_id IN ( 
 							SELECT id
 							FROM $wpdb->posts
-							WHERE $wpdb->posts.post_type = '$collection_post_type'
+							WHERE $wpdb->posts.post_type = %s
 						)
 					GROUP BY $wpdb->postmeta.meta_key
 					UNION
@@ -632,17 +642,17 @@ class REST_Reports_Controller extends REST_Controller {
 							FROM $wpdb->postmeta
 							WHERE meta_key='_option_taxonomy_id'
 						) mt ON tt.taxonomy = mt.tax_id
-					WHERE mt.meta_key IN ($string_meta_ids)
+					WHERE mt.meta_key IN ($meta_placeholders)
 						AND tr.object_id IN (
 							SELECT id
 							FROM $wpdb->posts
-							WHERE $wpdb->posts.post_type = '$collection_post_type'
+							WHERE $wpdb->posts.post_type = %s
 						)
 					GROUP BY mt.meta_key
 				) m
 				ON (p.id = m.meta_key)
-				WHERE p.id IN($string_meta_ids)
-			", []
+				WHERE p.id IN($meta_placeholders)",
+			...$params
 		);
 		$res = $wpdb->get_results($sql_statement);
 		//return ['t' => $res, 's' => $sql_statement];
@@ -651,15 +661,30 @@ class REST_Reports_Controller extends REST_Controller {
 
 	private function query_count_used_taxononomies() {
 		global $wpdb;
-		$sql_statement = $wpdb->prepare(
+		$res = intval( $wpdb->get_var( $wpdb->prepare(
 			"SELECT COUNT(DISTINCT($wpdb->postmeta.meta_value))
 			 FROM $wpdb->postmeta
-			 WHERE meta_key = '_option_taxonomy_id'
-			", []
-		);
-
-		$res = intval($wpdb->get_var( $sql_statement ));
+			 WHERE meta_key = %s",
+			'_option_taxonomy_id'
+		) ) );
 		return $res;
+	}
+
+	/**
+	 * Build a parameterized collection_id WHERE fragment for logs table queries.
+	 *
+	 * @param mixed $collection_id Collection ID, the literal 'default', or false for no filter.
+	 * @return array{0: string, 1: array} Tuple of [ $where_sql, $params ].
+	 */
+	private function build_logs_collection_where( $collection_id ) {
+		if ( $collection_id === false ) {
+			return [ '1=1', [] ];
+		}
+
+		return [
+			'collection_id = %s',
+			[ sanitize_text_field( (string) $collection_id ) ],
+		];
 	}
 
 	public function get_activities($request) {
@@ -732,26 +757,29 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_from = "";
 			if($collection_id !== false) {
 				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field( (string) $collection_id ));
 			}
 			$sql_statement = $wpdb->prepare(
 				"SELECT count(*) as total, DATE(p.post_date) as date
 				FROM $wpdb->posts p $collection_from
-				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
+				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN %s AND %s
 				GROUP BY DATE(p.post_date)
-				ORDER BY DATE(p.post_date)", []
+				ORDER BY DATE(p.post_date)",
+				$start,
+				$end
 			);
 			return $wpdb->get_results($sql_statement);
 		}
 
 		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
-		$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
+		[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
 		$sql_statement = $wpdb->prepare(
 			"SELECT count(*) as total, DATE(p.date) as date
 			FROM $tainacan_log_table p
-			WHERE p.date BETWEEN '$start' AND '$end' AND ($collection_where)
+			WHERE p.date BETWEEN %s AND %s AND ($collection_where)
 			GROUP BY DATE(p.date)
-			ORDER BY DATE(p.date)", []
+			ORDER BY DATE(p.date)",
+			...array_merge( [ $start, $end ], $collection_params )
 		);
 		return $wpdb->get_results($sql_statement);
 	}
@@ -773,24 +801,27 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_from = "";
 			if($collection_id !== false) {
 				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field( (string) $collection_id ));
 			}
 			$sql_statement = $wpdb->prepare(
 				"SELECT p.post_author  as user_id, count(*) as total, DATE(p.post_date) as date
 				FROM $wpdb->posts p $collection_from
-				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
+				WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN %s AND %s
 				GROUP BY p.post_author, DATE(p.post_date)
-				ORDER BY DATE(p.post_date)", []
+				ORDER BY DATE(p.post_date)",
+				$start,
+				$end
 			);
 		} else {
 			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
-			$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
+			[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
 			$sql_statement = $wpdb->prepare(
 				"SELECT p.user_id, count(*) as total, DATE(p.date) as date
 				FROM $tainacan_log_table p
-				WHERE p.date BETWEEN '$start' AND '$end' AND ($collection_where)
+				WHERE p.date BETWEEN %s AND %s AND ($collection_where)
 				GROUP BY p.user_id, DATE(p.date)
-				ORDER BY DATE(p.date)", []
+				ORDER BY DATE(p.date)",
+				...array_merge( [ $start, $end ], $collection_params )
 			);
 		}
 
@@ -833,26 +864,26 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_from = "";
 			if($collection_id !== false) {
 				$collection_from = "INNER JOIN {$wpdb->postmeta} pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key = %s AND pm_col.meta_value = %s)";
-				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field($collection_id));
+				$collection_from = $wpdb->prepare($collection_from, 'collection_id', sanitize_text_field( (string) $collection_id ));
 			}
-			$sql_statement = $wpdb->prepare(
+			$sql_statement =
 				"SELECT	count(*) as total, p.post_author as user, pm.meta_value as action
 				FROM $wpdb->posts p 
 				INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'action'
 				$collection_from
 				WHERE p.post_type='tainacan-log'
 				GROUP BY p.post_author, pm.meta_value 
-				ORDER BY total DESC", []
-			);
+				ORDER BY total DESC";
 		} else {
 			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
-			$collection_where =  $collection_id == false ? '1=1' : "collection_id=$collection_id";
+			[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
 			$sql_statement = $wpdb->prepare(
 				"SELECT	count(*) as total, p.user_id as user, p.action as action
 				FROM $tainacan_log_table p
 				WHERE $collection_where
 				GROUP BY p.user_id, p.action
-				ORDER BY total DESC", []
+				ORDER BY total DESC",
+				...$collection_params
 			);
 		}
 		

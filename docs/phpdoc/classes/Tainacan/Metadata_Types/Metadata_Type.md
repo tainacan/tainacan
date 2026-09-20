@@ -26,6 +26,7 @@ classDiagram
         -description : mixed
         -preview_template : string
         -sortable : mixed
+        -manage_multiple_input : bool
         +__construct()
         +validate(item_metadata)
         +get_related_mapped_prop()
@@ -59,6 +60,8 @@ classDiagram
         +set_repository(repository)
         +get_sortable()
         +set_sortable(sortable)
+        +get_manage_multiple_input()
+        +set_manage_multiple_input(manage_multiple_input)
         +get_slug()
         +_toArray()
     }
@@ -204,6 +207,20 @@ Indicates whether this metadata type will generate metadata that should be avail
 ```php
 private $sortable
 ```
+
+***
+
+### manage_multiple_input
+
+Whether the item form Vue component manages multivalue UI itself.
+
+```php
+private bool $manage_multiple_input
+```
+
+When false (default), TainacanFormItem renders N child inputs with add/remove controls
+and passes a scalar value per instance. When true, the child receives the full values
+array and owns multiplicity.
 
 ***
 
@@ -601,6 +618,28 @@ public set_sortable(mixed $sortable): mixed
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$sortable` | **mixed** |             |
+
+***
+
+### get_manage_multiple_input
+
+```php
+public get_manage_multiple_input(): mixed
+```
+
+***
+
+### set_manage_multiple_input
+
+```php
+public set_manage_multiple_input(mixed $manage_multiple_input): mixed
+```
+
+**Parameters:**
+
+| Parameter                | Type      | Description |
+|--------------------------|-----------|-------------|
+| `$manage_multiple_input` | **mixed** |             |
 
 ***
 

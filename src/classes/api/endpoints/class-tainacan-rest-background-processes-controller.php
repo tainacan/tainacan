@@ -295,14 +295,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
             ], 400);
         }
 
-        $update_data = $allowed_statuses[$body['status']];
-        if ( $update_data['status'] === '' ) {
-            $update_data = [ 'done' => 0 ];
-            $update_format = [ '%d' ];
-        } else {
-            $update_format = [ '%d', '%s' ];
-        }
-
         $where = [ 'ID' => $id ];
         $where_format = [ '%d' ];
 
@@ -310,8 +302,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
             $where['user_id'] = get_current_user_id();
             $where_format[] = '%d';
         }
-
-        $wpdb->update( $this->table, $update_data, $where, $update_format, $where_format );
 
         $id_q = $wpdb->prepare("AND ID = %d", $id);
         $user_q = '';
@@ -327,6 +317,24 @@ class REST_Background_Processes_Controller extends REST_Controller {
                 'error_message' => __('Process not found', 'tainacan'),
             ], 404);
         }
+
+        if ( $body['status'] === 'closed' && $result->action === 'import' ) {
+            $background_importer = new \Tainacan\Background_Importer();
+            $background_importer->close( $result->ID, 'cancelled' );
+        } else {
+            $update_data = $allowed_statuses[$body['status']];
+            if ( $update_data['status'] === '' ) {
+                $update_data = [ 'done' => 0 ];
+                $update_format = [ '%d' ];
+            } else {
+                $update_format = [ '%d', '%s' ];
+            }
+
+            $wpdb->update( $this->table, $update_data, $where, $update_format, $where_format );
+        }
+
+        $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
+        $result = $wpdb->get_row($query);
 
         $result = $this->prepare_item_for_response($result, $request);
 
@@ -375,22 +383,38 @@ class REST_Background_Processes_Controller extends REST_Controller {
             ], 400);
         }
 
-        $guid = sanitize_file_name( $request['guid'] );
+        $guid = $request['guid'];
+
+        // Reject traversal/absolute-path attempts outright, regardless of what realpath() later resolves.
+        if ( strpos($guid, '..') !== false || preg_match('#^([a-zA-Z]:)?[\\\\/]#', $guid) ) {
+            $error_def = [
+                "code" => "unauthorized_file_path",
+                "message" => "Unauthorized file path",
+                "data" => [ "status" => 403 ],
+            ];
+            return new \WP_REST_Response($error_def, 403, array('content-type' => 'application/json; charset=utf-8'));
+        }
+
         $upload_url = wp_upload_dir();
         $base_dir = realpath($upload_url['basedir'] . '/tainacan');
 
         if ( $base_dir === false ) {
             return new \WP_REST_Response([
-                'error_message' => __('Upload directory not found', 'tainacan')
+                'error_message' => __('Base directory not found', 'tainacan' )
             ], 404);
         }
 
-        $real_file_path = realpath($base_dir . '/' . $guid);
+        $path = $base_dir . '/' . $guid;
+        $real_file_path = realpath($path);
 
-        if ( $real_file_path === false || strpos($real_file_path, $base_dir) !== 0 ) {
-            return new \WP_REST_Response([
-                'error_message' => __('Unauthorized file path', 'tainacan'),
-            ], 403);
+        // The resolved target must live inside the resolved base directory, not just share a string prefix with it.
+        if ( $real_file_path === false || strpos($real_file_path, $base_dir . DIRECTORY_SEPARATOR) !== 0 ) {
+            $error_def = [
+                "code" => "unauthorized_file_path",
+                "message" => "Unauthorized file path",
+                "data" => [ "status" => 403 ],
+            ];
+            return new \WP_REST_Response($error_def, 403, array('content-type' => 'application/json; charset=utf-8'));
         }
 
         if ( file_exists( $real_file_path ) ) {

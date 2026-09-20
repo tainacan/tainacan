@@ -1,15 +1,20 @@
 <template>
     <div 
-            v-if="!isFetchingData && chartData.totals && chartData.totals.by_user && !isBuildingChart"
+            v-if="hasChartSeries"
             :style="{ maxHeight: activitiesPerUserChartMaxHeight + 'px' }"
             class="report-card activities-per-user-box">
-        <template v-if="chartData.totals && chartData.totals.by_user">
+        <div
+                class="report-chart"
+                :class="{ 'is-reloading-cache': isReloadingChart }"
+                :aria-busy="isReloadingChart ? 'true' : 'false'">
             <apexchart
                     ref="activities-per-user-chart"
+                    type="bar"
                     :height="activitiesPerUserChartHeight"
                     :series="chartSeries"
-                    :options="chartOptions" />
-        </template>
+                    :options="chartOptions"
+                    @mounted="collapseSecondarySeries" />
+        </div>
         <slot />
     </div>
     <div 
@@ -26,6 +31,7 @@ export default {
     mixins: [ reportsChartMixin ],
     data() {
         return {
+            orderedActivitiesPerUsers: [],
             validActions: [
                 "update-metadata-value",
                 "update",
@@ -64,14 +70,22 @@ export default {
         }
     },
     methods: {
+        collapseSecondarySeries() {
+            nextTick(() => {
+                if (this.$refs && this.$refs['activities-per-user-chart'] && this.$refs['activities-per-user-chart'].chart) {
+                    this.validActions.forEach((action) => {
+                        if (action !== 'update-metadata-value')
+                            this.$refs['activities-per-user-chart'].chart.toggleSeries(this.$i18n.get('action_' + action));
+                    });
+                    this.$refs['activities-per-user-chart'].chart.toggleSeries(this.$i18n.get('action_others'));
+                }
+            });
+        },
         buildActivitiesPerUserChart() {
-
-            this.isBuildingChart = true;
-
             if (this.chartData.totals && this.chartData.totals.by_user) {
 
                 // Building Activity Per User Bar chart
-                const orderedActivitiesPerUsers = JSON.parse(JSON.stringify(this.chartData.totals.by_user)).sort((a, b) => b.total - a.total );
+                this.orderedActivitiesPerUsers = JSON.parse(JSON.stringify(this.chartData.totals.by_user)).sort((a, b) => b.total - a.total );
                 let activityPerUserValues = [];
                 let activityPerUserLabels = [];
                 // Use a minimum height so few users (e.g. 2) still get readable bar thickness
@@ -91,7 +105,7 @@ export default {
                     data: []
                 });
 
-                orderedActivitiesPerUsers.forEach(activityPerUser => {
+                this.orderedActivitiesPerUsers.forEach(activityPerUser => {
                     activityPerUserLabels.push(activityPerUser.user_id == 0 ? this.$i18n.get('label_anonymous_user') : activityPerUser.user.name);
                     activityPerUserValues.forEach((activity) => {
                         if (activity.id == 'others') {
@@ -108,71 +122,74 @@ export default {
                 });
                 
                 this.chartSeries = activityPerUserValues;
-   
-                this.chartOptions = {
-                    ...this.horizontalBarChartOptions,
-                    ...{
-                        chart: {
-                            type: 'bar',
-                            height: chartHeight,
-                            stacked: true,
-                            toolbar: {
-                                show: true,
-                                export: {
-                                    scale: 3
+
+                if (!this.chartOptions.chart) {
+                    this.chartOptions = {
+                        ...this.horizontalBarChartOptions,
+                        ...{
+                            chart: {
+                                type: 'bar',
+                                height: chartHeight,
+                                stacked: true,
+                                toolbar: {
+                                    show: true,
+                                    export: {
+                                        scale: 3
+                                    },
                                 },
+                                zoom: {
+                                    type: 'y',
+                                    enabled: true,
+                                    autoScaleYaxis: true,
+                                }
                             },
-                            zoom: {
-                                type: 'y',
-                                enabled: true,
-                                autoScaleYaxis: true,
-                            }
-                        },
-                        title: {
-                            text: this.$i18n.get('label_activity_per_user')
-                        },
-                        labels: activityPerUserLabels,
-                        plotOptions: {
-                            bar: {
-                                horizontal: true,
-                                barHeight: '78%'
-                            }
-                        },
-                        yaxis: {
                             title: {
-                                text: ''
+                                text: this.$i18n.get('label_activity_per_user')
                             },
-                            labels: {
-                                maxWidth: 100
+                            labels: activityPerUserLabels,
+                            plotOptions: {
+                                bar: {
+                                    horizontal: true,
+                                    barHeight: '78%'
+                                }
                             },
-                            tooltip: { enabled: true }
-                        },
-                        tooltip: {
-                            custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-                                return  '<div class="tainacan-custom-tooltip"><div class="tainacan-custom-tooltip__header">' +
-                                        (orderedActivitiesPerUsers[dataPointIndex].user_id != 0 ? ('<img src="' + orderedActivitiesPerUsers[dataPointIndex].user.avatar_urls['24'] + '">&nbsp;') : '') + 
-                                        "<span><strong>" + w.globals.labels[dataPointIndex] + '</strong></span></div><div class="tainacan-custom-tooltip__body">' +
-                                        w.globals.seriesNames[seriesIndex] + ":&nbsp; <strong>" +
-                                        series[seriesIndex][dataPointIndex] +
-                                "</strong></div></div>"
+                            yaxis: {
+                                title: {
+                                    text: ''
+                                },
+                                labels: {
+                                    maxWidth: 100
+                                },
+                                tooltip: { enabled: true }
+                            },
+                            tooltip: {
+                                custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+                                    return  '<div class="tainacan-custom-tooltip"><div class="tainacan-custom-tooltip__header">' +
+                                            (this.orderedActivitiesPerUsers[dataPointIndex].user_id != 0 ? ('<img src="' + this.orderedActivitiesPerUsers[dataPointIndex].user.avatar_urls['24'] + '">&nbsp;') : '') + 
+                                            "<span><strong>" + w.globals.labels[dataPointIndex] + '</strong></span></div><div class="tainacan-custom-tooltip__body">' +
+                                            w.globals.seriesNames[seriesIndex] + ":&nbsp; <strong>" +
+                                            series[seriesIndex][dataPointIndex] +
+                                    "</strong></div></div>"
+                                }
                             }
                         }
                     }
+                } else {
+                    this.chartOptions.labels = activityPerUserLabels;
+                    if (this.chartOptions.chart)
+                        this.chartOptions.chart.height = chartHeight;
+                    this.$nextTick(() => {
+                        if (this.$refs['activities-per-user-chart'] && this.$refs['activities-per-user-chart'].updateOptions) {
+                            this.$refs['activities-per-user-chart'].updateOptions({
+                                labels: activityPerUserLabels,
+                                chart: { height: chartHeight }
+                            }, false, true);
+                        }
+                    });
                 }
+            } else {
+                this.chartSeries = [];
             }
-            setTimeout(() => { 
-                this.isBuildingChart = false;
-                
-                nextTick(() => {
-                    if (this.$refs && this.$refs['activities-per-user-chart'] && this.$refs['activities-per-user-chart'].chart) {
-                        this.validActions.forEach((action) => {
-                            if (action !== 'update-metadata-value')
-                                this.$refs['activities-per-user-chart'].chart.toggleSeries(this.$i18n.get('action_' + action));
-                        });
-                        this.$refs['activities-per-user-chart'].chart.toggleSeries(this.$i18n.get('action_others'));
-                    }
-                });
-            }, 300);
         }
     }
 }

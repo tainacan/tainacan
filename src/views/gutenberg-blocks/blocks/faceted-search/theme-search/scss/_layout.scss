@@ -79,6 +79,7 @@
 	}
 }
 .filters-menu:not(.filters-menu-modal) {
+	align-self: stretch;
 	z-index: 40;
 	float: inline-start;
 	max-width: var(--tainacan-filter-menu-width-theme);
@@ -197,11 +198,11 @@
 					vertical-align: text-top;
 					margin-bottom: 1rem;
 				}
+				.add-filter-container hr {
+					display: none;
+				}
 
 				@media screen and (min-width: 769px) {
-					& > div:not(:last-child) {
-						margin-inline-end: 2.25em;
-					}
 					.filter-item-forms {
 						width: var(--tainacan-filters-inline-width, 272px);
 					}

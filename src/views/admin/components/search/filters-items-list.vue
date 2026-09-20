@@ -58,7 +58,7 @@
                         v-for="(taxonomyFilter, key, index) of taxonomyFilters"
                         :key="index">
                     <div 
-                            v-if="key == 'repository-filters'"
+                            v-if="key == 'repository-filters' && shouldShowFilterGroup(taxonomyFilter)"
                             class="repository-level-filters">
                         <div 
                                 v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
@@ -95,7 +95,8 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
@@ -104,7 +105,7 @@
                         v-for="(taxonomyFilter, key, index) of taxonomyFilters"
                         :key="index">
                     <div 
-                            v-if="key != 'repository-filters'"
+                            v-if="key != 'repository-filters' && shouldShowFilterGroup(taxonomyFilter)"
                             :id="'filters-from-collection-id-' + key"
                             class="collection-level-filters">
                         <div 
@@ -142,7 +143,8 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
@@ -155,7 +157,7 @@
                         v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
                         :key="index">
                     <div 
-                            v-if="key == 'repository-filters'"
+                            v-if="key == 'repository-filters' && shouldShowFilterGroup(repositoryCollectionFilter)"
                             class="repository-level-filters">
                         <div 
                                 v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
@@ -192,16 +194,17 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1">
+                        <hr v-if="Object.keys(repositoryCollectionFilters).length > 1">
                     </div>
                 </template>
                 <template 
                         v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
                         :key="index">
                     <div 
-                            v-if="key != 'repository-filters'"
+                            v-if="key != 'repository-filters' && shouldShowFilterGroup(repositoryCollectionFilter)"
                             :id="'filters-from-collection-id-' + key"
                             class="collection-level-filters">
                         <div 
@@ -239,9 +242,10 @@
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"
-                                    :hide-collapses="hideFilterCollapses" />
+                                    :hide-collapses="hideFilterCollapses"
+                                    :is-revealed="revealedFilterIds.includes(filter.id)" />
                         </template>
-                        <hr v-if="repositoryCollectionFilters.length > 1">
+                        <hr v-if="Object.keys(repositoryCollectionFilters).length > 1">
                     </div>
                 </template>
             </template>
@@ -258,8 +262,13 @@
                         :is-repository-level="isRepositoryLevel"
                         :filters-as-modal="filtersAsModal"
                         :is-mobile-screen="isMobileScreen"
-                        :hide-collapses="hideFilterCollapses" />
+                        :hide-collapses="hideFilterCollapses"
+                        :is-revealed="revealedFilterIds.includes(filter.id)" />
             </template>
+
+            <filters-items-list-add-filter
+                    :hidden-filter-groups="hiddenFilterGroups"
+                    @add-filter="revealFilter" />
         </div>
         <section
                 v-if="!isLoadingFilters && (
@@ -303,11 +312,13 @@
     import { mapGetters, mapActions } from 'vuex';
     import TainacanFilterItem from '../filter-types/tainacan-filter-item.vue';
     import FiltersTagsList from './filters-tags-list.vue';
+    import FiltersItemsListAddFilter from './filters-items-list-add-filter.vue';
 
     export default {
         components: {
             TainacanFilterItem,
-            FiltersTagsList
+            FiltersTagsList,
+            FiltersItemsListAddFilter
         },
         props: {
             collectionId: [String, Number],
@@ -326,6 +337,7 @@
             return {
                 isLoadingFilters: false,
                 collapseAll: false,
+                revealedFilterIds: [],
                 taxonomyFiltersCollectionNames: {},
                 repositoryCollectionNames: {},
                 collectionNameSearchCancel: undefined,
@@ -349,6 +361,22 @@
             taxonomyId () {
                 const taxonomyArray = this.taxonomy.split("_");
                 return taxonomyArray[taxonomyArray.length - 1];
+            },
+            hiddenFilterGroups() {
+                if (this.taxonomy && this.taxonomyFilters)
+                    return this.buildHiddenFilterGroups(this.taxonomyFilters, this.taxonomyFiltersCollectionNames);
+
+                if (this.isRepositoryLevel && !this.taxonomy && this.repositoryCollectionFilters)
+                    return this.buildHiddenFilterGroups(this.repositoryCollectionFilters, this.repositoryCollectionNames);
+
+                const hiddenFilters = this.getHiddenFilters(this.filters);
+                if (hiddenFilters.length <= 0)
+                    return [];
+
+                return [{
+                    label: null,
+                    filters: hiddenFilters
+                }];
             }
         },
         watch: {
@@ -489,6 +517,67 @@
             },
             updateIsLoadingItems(isLoadingItems) {
                 this.$emit('update-is-loading-items-state', isLoadingItems); 
+            },
+            getFilterInitialDisplay(filter) {
+                if (filter && ['default', 'collapsed', 'hidden'].includes(filter.initial_display))
+                    return filter.initial_display;
+                if (filter && filter.begin_with_filter_collapsed === 'yes')
+                    return 'collapsed';
+                return 'default';
+            },
+            isFilterVisible(filter) {
+                if (!filter)
+                    return false;
+
+                if (this.getFilterInitialDisplay(filter) !== 'hidden')
+                    return true;
+
+                return this.revealedFilterIds.includes(filter.id);
+            },
+            getHiddenFilters(filtersArray) {
+                if (!Array.isArray(filtersArray))
+                    return [];
+
+                return filtersArray.filter((aFilter) =>
+                    aFilter &&
+                    this.getFilterInitialDisplay(aFilter) === 'hidden' &&
+                    !this.revealedFilterIds.includes(aFilter.id)
+                );
+            },
+            shouldShowFilterGroup(filtersArray) {
+                if (!Array.isArray(filtersArray) || filtersArray.length <= 0)
+                    return false;
+
+                return filtersArray.some((aFilter) => this.isFilterVisible(aFilter));
+            },
+            buildHiddenFilterGroups(filtersObject, collectionNames) {
+                const groups = [];
+                const groupKeys = Object.keys(filtersObject || {});
+                const orderedGroupKeys = [
+                    ...groupKeys.filter((groupKey) => groupKey === 'repository-filters'),
+                    ...groupKeys.filter((groupKey) => groupKey !== 'repository-filters')
+                ];
+
+                for (const groupKey of orderedGroupKeys) {
+                    const hiddenFilters = this.getHiddenFilters(filtersObject[groupKey]);
+
+                    if (hiddenFilters.length <= 0)
+                        continue;
+
+                    const collectionName = collectionNames && collectionNames[groupKey];
+                    groups.push({
+                        label: collectionName
+                            ? this.$i18n.get('label_filters_from') + ' ' + collectionName
+                            : null,
+                        filters: hiddenFilters
+                    });
+                }
+
+                return groups;
+            },
+            revealFilter(filter) {
+                if (filter && filter.id != undefined && !this.revealedFilterIds.includes(filter.id))
+                    this.revealedFilterIds.push(filter.id);
             }
         }
     }
@@ -509,6 +598,9 @@
     }
     .filters-components-list {
         margin-bottom: 64px;
+    }
+    .filters-components-list div:has(hr) + :deep(.add-filter-container) > hr {
+        display: none;
     }
     @supports (contain: inline-size) {
         .filters-components-list {

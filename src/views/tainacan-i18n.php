@@ -402,6 +402,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_create_repository_metadata'               => __( 'Create repository metadata', 'tainacan' ),
 	'label_select_metadatum_type'                    => __( 'Select a metadatum type', 'tainacan' ),
 	'label_add_more_metadata'                        => __( 'Add more metadata', 'tainacan' ),
+	'label_add_filters'                              => __( 'Add filters', 'tainacan' ),
 	/* translators: Header of the column where the metadata columns from file are in the Mapping Metadata Importer screen */
 	'label_from_source_collection'                   => __( 'From source file', 'tainacan' ),
 	/* translators: Header of the column where the existing collection metadata are in the Mapping Metadata Importer screen */
@@ -414,6 +415,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_total_items'                              => __( 'Total items', 'tainacan' ),
 	'label_total_terms'                              => __( 'Total terms', 'tainacan' ),
 	'label_view_all'                                 => __( 'View all', 'tainacan' ),
+	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_until'                                    => __( 'until', 'tainacan' ),
 	'label_visibility'                               => __( 'Visibility', 'tainacan' ),
 	'label_discard'                                  => __( 'Discard', 'tainacan' ),
@@ -721,6 +723,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_move_down'							 	 => __( 'Move down', 'tainacan' ),
 	'label_view_modes_public_list'				 	 => __( 'Items view modes in the public list', 'tainacan' ),
 	'label_default'							 		 => __( 'Default', 'tainacan' ),
+	'label_collapsed'						 		 => __( 'Collapsed', 'tainacan' ),
+	'label_hidden'							 		 => __( 'Hidden', 'tainacan' ),
 	'label_tainacan_mobile_panel'			 		 => __( 'Tainacan Mobile Panel', 'tainacan' ),
 	'label_close_panel'						 		 => __( 'Close panel', 'tainacan' ),
 	'label_shortcuts'						 		 => __( 'Shortcuts', 'tainacan' ),
@@ -1085,6 +1089,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus unchecking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan' ),
 	'info_no_options_available_filtering'            => __( 'No options for this filtering.', 'tainacan' ),
+	/* translators: %s is the number of filter options loaded */
+	'info_%s_filter_options_loaded'                  => __( '%s more filter options loaded.', 'tainacan' ),
 	'info_no_options_found'                          => __( 'No options found.', 'tainacan' ),
 	'info_all_files_uploaded'                        => __( 'All files uploaded.', 'tainacan' ),
 	/* translators: %s is the number of items being edited */
@@ -1109,7 +1115,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_other_item_listing_options'				 => __( 'Other items listing options: ', 'tainacan'),
 	'info_send_email'				 				 => __( 'The exporter may take a while. Check this option to receive an e-mail when the process is done. You can also check the process status visiting the', 'tainacan'),
 	'info_tainacan_api'				 				 => __( 'Tainacan API on JSON format.', 'tainacan'),
-	'info_items_hidden_due_sorting'					 => __( 'When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have less elements than the total existing for current search criteria.', 'tainacan'),
+	'info_items_hidden_due_sorting'					 => __( 'When ordering by metadata value, items that have no value for the chosen metadata will not be listed. This list may have fewer elements than the total existing for current search criteria.', 'tainacan'),
 	/* translators: %s is the metadata name */
 	'info_sorting_by_metadata_value_%s'				 => __( 'Showing only items that have value for metadata %s.', 'tainacan'),
 	/* translators: %s is the metadata name */

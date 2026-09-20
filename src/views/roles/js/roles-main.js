@@ -62,10 +62,8 @@ export default (element) => {
             VueRoles.use(A11yAutocompletePlugin);
             VueRoles.use(A11yTabsPlugin);
             // Changing title of pages
-            router.beforeEach((to, from, next) => {
+            router.beforeEach((to) => {
                 document.title = to.meta.title;
-                if (next() != undefined)
-                    next();
             });
             
             VueRoles.use(router);

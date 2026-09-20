@@ -15,27 +15,6 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
-    class Metadata_Sections {
-        +entities_type : mixed
-        #init()
-        #_get_map()
-        +get_cpt_labels()
-        +register_post_type()
-        +get_default_section(collection)
-        +fetch(args, output)
-        +fetch_ids(args)
-        +fetch_by_collection(collection, args)
-        +insert(metadata_section)
-        +update(object, new_values)
-        +add_metadata(metadata_section_id, metadata_list)
-        +delete_metadata(metadata_section_id, metadata_list)
-        +get_metadata_object_list(metadata_section_id, args)
-        +get_default_section_metadata_object_list(collection, args)
-        +delete(entity, permanent)
-        +order_result(result, collection, include_disabled)
-        +can_read(entity, user)
-        +can_edit(entity, user)
-    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -72,6 +51,27 @@ classDiagram
         +get_descendants_ids(id, depth)
         +get_capabilities()
         #sanitize_value(content)
+    }
+    class Metadata_Sections {
+        +entities_type : mixed
+        #init()
+        #_get_map()
+        +get_cpt_labels()
+        +register_post_type()
+        +get_default_section(collection)
+        +fetch(args, output)
+        +fetch_ids(args)
+        +fetch_by_collection(collection, args)
+        +insert(metadata_section)
+        +update(object, new_values)
+        +add_metadata(metadata_section_id, metadata_list)
+        +delete_metadata(metadata_section_id, metadata_list)
+        +get_metadata_object_list(metadata_section_id, args)
+        +get_default_section_metadata_object_list(collection, args)
+        +delete(entity, permanent)
+        +order_result(result, collection, include_disabled)
+        +can_read(entity, user)
+        +can_edit(entity, user)
     }
     Repository ..> Metadata_Sections
     Repository ..> Repository

@@ -1,4 +1,8 @@
 @startuml class-diagram
+  class "OAIPMH_Token_Manager\n<b>resumptionToken storage backed by WordPress transients.</b>" as OAIPMH_Token_Manager {
+    +create(data)
+    +get(token)
+  }
   class "OAIPMH_Data_Provider\n<b>OAI-PMH data provider.</b>" as OAIPMH_Data_Provider {
     -identifier_prefix : string
     +__construct()
@@ -39,10 +43,6 @@
     -build_oai_dc(dc_data)
     +add_resumption_token(list, token, total, cursor, expiration)
     +output()
-  }
-  class "OAIPMH_Token_Manager\n<b>resumptionToken storage backed by WordPress transients.</b>" as OAIPMH_Token_Manager {
-    +create(data)
-    +get(token)
   }
   OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
 @enduml

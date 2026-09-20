@@ -1022,15 +1022,10 @@
 
                     // Finally, loads items even before facets so they won't stuck them 
                     if (to.fullPath != from.fullPath) {
-                        if (this.pendingInitialLoad) {
-                            const hasFetchOnly = this.$store.getters['search/getPostQuery']['fetch_only'] != undefined;
-                            if (hasFetchOnly) {
-                                this.pendingInitialLoad = false;
-                                this.$eventBusSearch.loadItems();
-                            }
-                        } else {
+                        if (this.pendingInitialLoad)
+                            this.tryLoadInitialItems();
+                        else
                             this.$eventBusSearch.loadItems();
-                        }
                     }
 
                     // Checks current metaqueries and taxqueries to alert filters that should reload
@@ -1151,7 +1146,10 @@
                     this.$eventBusSearch.setInitialAdminViewMode('table');
             }
 
-            this.$eventBusSearch.cleanSelectedItems();
+            // Gutenberg iframe selection hydrates selecteditems from initiallySelectedItems
+            // on location.search. Clearing here would drop that before the list can show it.
+            if (!this.$adminOptions.itemsSingleSelectionMode && !this.$adminOptions.itemsMultipleSelectionMode)
+                this.$eventBusSearch.cleanSelectedItems();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.hideFiltersOnMobile();
@@ -1244,6 +1242,20 @@
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+            },
+            /**
+             * First items fetch must wait for fetch_only (set by prepareMetadata / addFetchOnly).
+             * Idempotent: only one successful initial load per page instance.
+             */
+            tryLoadInitialItems() {
+                if (!this.pendingInitialLoad)
+                    return;
+
+                if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined)
+                    return;
+
+                this.pendingInitialLoad = false;
+                this.$eventBusSearch.loadItems();
             },
             /**
              * Formats a per-word search query for display, e.g. `texto poesia` → `"texto" or "poesia"`.
@@ -1341,9 +1353,9 @@
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? (typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',')) : ['thumbnail'];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ? ((prefsFetchOnlyObject.indexOf('thumbnail') >= 0)) : true);
+                                    let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ? ((prefsFetchOnlyObject.indexOf('thumbnail') >= 0)) : true);
 
-                                    if (this.isRepositoryLevel || this.collection.hide_items_thumbnail_on_lists != 'yes') {
+                                    if (this.isRepositoryLevel || !this.collection || this.collection.hide_items_thumbnail_on_lists != 'yes') {
                                         metadata.push({
                                             name: this.$i18n.get('label_thumbnail'),
                                             metadatum: 'row_thumbnail',
@@ -1501,7 +1513,7 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
 
-                                    const basicAttributes = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
+                                    const basicAttributes = (!this.isRepositoryLevel && this.collection && this.collection.hide_items_thumbnail_on_lists == 'yes') ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {
@@ -1541,8 +1553,11 @@
 
                                 }
 
-                                // Initial item load is triggered only from the $route watcher after
-                                // addFetchOnly() runs (it calls updateURLQueries / router.replace).
+                                // Prefer route-watcher load after addFetchOnly updates the URL; if
+                                // replace does not change the route (or never lands fetch_only in the
+                                // URL), still load once from the store while fetch_only is present.
+                                this.tryLoadInitialItems();
+
                                 this.isLoadingMetadata = false;
                                 this.displayedMetadata = metadata;
                             })
@@ -1738,6 +1753,7 @@
             :deep(.modal-content) {
                 padding-inline-start: 0 !important;
                 padding-inline-end: 28px !important;
+                overflow: visible;
             }
         }
     }
@@ -1876,7 +1892,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
-                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 2px);
+                line-height: calc(var(--tainacan-button-min-height, 2.571em) - 4px);
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;

@@ -277,6 +277,11 @@ class REST_Filters_Controller extends REST_Controller {
 				$attributes[$att] = $value;
 			}
 
+			// Prefer the new attribute when both are present in the same request.
+			if ( array_key_exists( 'initial_display', $attributes ) ) {
+				unset( $attributes['begin_with_filter_collapsed'] );
+			}
+
 			$filter = $this->filter_repository->fetch($filter_id);
 
 			if($filter) {

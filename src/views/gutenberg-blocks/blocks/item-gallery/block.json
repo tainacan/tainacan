@@ -55,6 +55,10 @@
             "type": "boolean",
             "default": true
         },
+        "hideImageThumbnails": {
+            "type": "boolean",
+            "default": false
+        },
         "hideFileCaptionThumbnails": {
             "type": "boolean",
             "default": true
@@ -103,6 +107,13 @@
             "type": "boolean",
             "default": false
         },
+        "coverMimeTypesMain": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            }
+        },
         "lightboxHasLightBackground": {
             "type": "boolean",
             "default": false
@@ -111,6 +122,10 @@
             "type": "boolean",
             "default": false
         },
+        "mainImagesSize": {
+            "type": "string",
+            "default": "large"
+        },
         "thumbnailsSize": {
             "type": "string",
             "default": "tainacan-medium"
@@ -118,6 +133,11 @@
         "thumbsHaveFixedHeight": {
             "type": "boolean",
             "default": false
+        },
+        "thumbsLayout": {
+            "type": "string",
+            "default": "carousel",
+            "enum": [ "carousel", "grid", "list" ]
         }
     },
     "supports": {

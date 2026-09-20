@@ -20,6 +20,7 @@
   - [Importer Flow](/dev/importer-flow.md 'Importer Flow on Tainacan - Tainacan Wiki')
     - [Repository Methods](/dev/repository-methods.md 'Tainacan Repository Methods - Tainacan Wiki')
 - Plugin Extension
+  - [Plugin Development Guidelines](/dev/plugin-development-guidelines.md 'Guidelines for Developing Plugins for Tainacan - Tainacan Wiki')
   - [Using Admin Form Hooks](/dev/admin-form-hooks.md 'Using Admin Form Hooks - Tainacan Wiki')
   - [Creating options in the Settings Page](/dev/creating-options-in-the-settings-page.md 'Creating options in the Settings Page - Tainacan Wiki')
   - [Creating Tainacan Admin Pages](/dev/creating-tainacan-admin-pages.md 'Creating Tainacan Admin Pages - Tainacan Wiki')
@@ -29,6 +30,7 @@
   - [The Vue Items List Component](/dev/the-vue-items-list-component.md 'The Vue Items List Component rendered by Tainacan - Tainacan Wiki')
   - [Tweaking the Admin UI](/dev/admin-ui-options.md 'How to use Tainacan Admin UI options to tweak its interface - Tainacan Wiki')
   - [Using React Selection Components](/dev/react-selection-modules 'Use Tainacan React components to offer an advanced items selection flow in a plugins - Tainacan Wiki')
+  - [Reloading the Item Editing Form](/dev/reloading-the-item-editing-form.md 'How to reload the Tainacan item editing form from a plugin - Tainacan Wiki')
 - Theme development and extension
   - [Creating Compatible Themes](/dev/creating-compatible-themes.md 'How to create themes fully compatible with Tainacan - Tainacan Wiki')
   - [Custom Templates](/dev/custom-templates.md 'How to use custom templates for theme compatibility with Tainacan - Tainacan Wiki')

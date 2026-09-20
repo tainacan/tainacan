@@ -20,6 +20,8 @@ If something is not working properly on Tainacan, use this template.
 #### Feature request
 If you have any feature ideas you would like to suggest to our developers, use this template.
 
+If the idea is specific to your institution, depends on a third-party service, or would add maintenance burden to core, it may be a better fit as a separate plugin. See the [Plugin Development Guidelines](/dev/plugin-development-guidelines.md).
+
 A great issue is one that includes a concise description of errors you are stumbling upon along with crucial information such as which version of Tainacan you are using, which web browser, or which WordPress version. It's also important to search our repository for duplicates—and if you find one, opt to participate in the original discussion adding new information instead of creating your own. That will help contributors and users to keep track of a specific subject more easily.
 
 ### Regenerating developer documentation

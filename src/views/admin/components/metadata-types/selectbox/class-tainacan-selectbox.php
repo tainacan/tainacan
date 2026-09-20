@@ -34,6 +34,22 @@ class Selectbox extends Metadata_Type {
     }
 
     /**
+     * Checkbox-style inputs manage multiple values in a single control.
+     *
+     * @return bool
+     */
+    public function get_manage_multiple_input() {
+        return in_array(
+            $this->get_option( 'input_type' ),
+            [
+                'tainacan-selectbox-checkbox',
+                'tainacan-selectbox-checkbox-button',
+            ],
+            true
+        );
+    }
+
+    /**
      * @inheritdoc
      */
     public function get_form_labels(){

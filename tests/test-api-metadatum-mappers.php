@@ -289,6 +289,79 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 		$this->assertEquals('dc:creator', $item['metadata']['dc:creator']['slug']);
 		
 	}
+
+	function test_normalize_mapping_value() {
+		$handler = \Tainacan\Mappers_Handler::get_instance();
+		$dc = new \Tainacan\Mappers\Dublin_Core();
+
+		$this->assertFalse( $handler->normalize_mapping_value( '' ) );
+		$this->assertFalse( $handler->normalize_mapping_value( [] ) );
+		$this->assertFalse( $handler->normalize_mapping_value( null ) );
+
+		$built_in = $handler->normalize_mapping_value( 'dc:title', $dc );
+		$this->assertEquals( 'dc:title', $built_in['slug'] );
+		$this->assertEquals( $dc->metadata['dc:title']['label'], $built_in['label'] );
+		$this->assertEquals( $dc->get_url( 'dc:title' ), $built_in['uri'] );
+
+		$extra = $handler->normalize_mapping_value( [
+			'slug'  => 'bibliographic-citation',
+			'uri'   => 'http://purl.org/dc/terms/bibliographicCitation',
+			'label' => 'Bibliographic Citation',
+		], $dc );
+		$this->assertEquals( 'bibliographic-citation', $extra['slug'] );
+		$this->assertEquals( 'http://purl.org/dc/terms/bibliographicCitation', $extra['uri'] );
+		$this->assertEquals( 'Bibliographic Citation', $extra['label'] );
+	}
+
+	function test_api_get_items_from_mapped_collection_with_extra_field() {
+		$this->create_meta_requirements();
+
+		$dc = new \Tainacan\Mappers\Dublin_Core();
+
+		$extra_metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'            => 'Citation',
+				'description'     => 'extra mapper field',
+				'collection'      => $this->collection,
+				'metadata_type'   => 'Tainacan\Metadata_Types\Text',
+				'exposer_mapping' => [
+					'dublin-core' => [
+						'slug'  => 'bibliographic-citation',
+						'uri'   => 'http://purl.org/dc/terms/bibliographicCitation',
+						'label' => 'Bibliographic Citation',
+					],
+				],
+			),
+			true,
+			true
+		);
+
+		$this->tainacan_item_metadata_factory->create_item_metadata(
+			$this->item,
+			$this->metadatum,
+			'Value for meta 1'
+		);
+		$this->tainacan_item_metadata_factory->create_item_metadata(
+			$this->item,
+			$extra_metadatum,
+			'Citation value'
+		);
+
+		$item_request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection->get_id() . '/items');
+		$item_request->set_body(json_encode([
+			\Tainacan\Mappers_Handler::MAPPER_PARAM => $dc->slug
+		]));
+		$response = $this->server->dispatch($item_request);
+		$this->assertEquals(200, $response->get_status());
+
+		$item = $response->get_data()['items'][0];
+		$this->assertTrue( array_key_exists('dc:language', $item['metadata']) );
+		$this->assertTrue( array_key_exists('bibliographic-citation', $item['metadata']) );
+		$this->assertEquals('Citation value', $item['metadata']['bibliographic-citation']['value']);
+		$this->assertEquals('Bibliographic Citation', $item['metadata']['bibliographic-citation']['name']);
+		$this->assertEquals('http://purl.org/dc/terms/bibliographicCitation', $item['metadata']['bibliographic-citation']['semantic_uri']);
+	}
 	
 }
 

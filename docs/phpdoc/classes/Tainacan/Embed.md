@@ -15,10 +15,13 @@ video, audio, and PDF files with responsive design support.
 classDiagram
     direction TB
     class Embed {
+        -override_active : bool
         -aspect_ratios : array
         #init()
         +filter_video_embed(video, attr, url, rawattr)
+        -is_video_preload_none_enabled()
         +filter_audio_embed(audio, attr, url, rawattr)
+        +embed(url)
         +pdf_embed_handler(matches, attr, url, rawattr)
         +oembed_get_thumbnail(url)
         +oembed_get_thumbnail_filter(return, data, url)
@@ -29,6 +32,25 @@ classDiagram
 ```
 
 ## Properties
+
+### override_active
+
+Whether Tainacan's custom video/audio markup should be applied to the
+current autoembed() call.
+
+```php
+private static bool $override_active
+```
+
+The wp_embed_handler_video/audio filters are registered once at plugin
+load, but they must only take effect when Tainacan itself is embedding
+media (Tainacan admin item pages, item single pages, the media page and
+the URL metadata type). This flag is toggled by Embed::embed() so the
+override never leaks into unrelated WordPress content.
+
+* This property is **static**.
+
+***
 
 ### aspect_ratios
 
@@ -80,6 +102,20 @@ Modified video embed HTML.
 
 ***
 
+### is_video_preload_none_enabled
+
+Checks whether Tainacan videos should prevent browser preloading.
+
+```php
+private is_video_preload_none_enabled(): bool
+```
+
+**Return Value:**
+
+Whether the preload="none" attribute should be rendered.
+
+***
+
 ### filter_audio_embed
 
 Filters audio embed output to use HTML5 audio tags.
@@ -100,6 +136,33 @@ public filter_audio_embed(string $audio, array $attr, string $url, array $rawatt
 **Return Value:**
 
 Modified audio embed HTML.
+
+***
+
+### embed
+
+Runs WordPress autoembed on a URL while applying Tainacan's custom
+video/audio markup.
+
+```php
+public embed(string $url): string
+```
+
+WordPress processes media URLs in content through the registered embed
+handlers. Tainacan's own markup must only be produced for media that
+Tainacan itself embeds (item documents, attachments, URL metadata and
+the media page), never for unrelated WordPress content. This wrapper
+scopes the override to exactly those calls.
+
+**Parameters:**
+
+| Parameter | Type       | Description       |
+|-----------|------------|-------------------|
+| `$url`    | **string** | The URL to embed. |
+
+**Return Value:**
+
+The embed HTML, or the original URL when autoembed fails.
 
 ***
 

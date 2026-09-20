@@ -12,6 +12,12 @@ Generate a OAI_PMH/oai_dc formated response
 ```mermaid
 classDiagram
     direction TB
+    class OAI_PMH {
+        +mappers : mixed
+        +slug : mixed
+        +name : mixed
+        +rest_request_after_callbacks(response, handler, request)
+    }
     class Exposer {
         #mappers : mixed
         +accept_no_mapper : mixed
@@ -24,12 +30,6 @@ classDiagram
         +get_description()
         +_toArray()
         +get_mappers()
-    }
-    class OAI_PMH {
-        +mappers : mixed
-        +slug : mixed
-        +name : mixed
-        +rest_request_after_callbacks(response, handler, request)
     }
     Exposer <|-- OAI_PMH
 ```

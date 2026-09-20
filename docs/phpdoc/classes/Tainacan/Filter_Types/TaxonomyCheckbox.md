@@ -14,6 +14,8 @@ classDiagram
     direction TB
     class TaxonomyCheckbox {
         +__construct()
+        +get_form_labels()
+        +validate_options(filter)
     }
 ```
 
@@ -24,6 +26,36 @@ classDiagram
 ```php
 public __construct(): mixed
 ```
+
+***
+
+### get_form_labels
+
+allow i18n from messages
+
+```php
+public get_form_labels(): mixed
+```
+
+***
+
+### validate_options
+
+Validates the options Array
+
+```php
+public validate_options(\Tainacan\Entities\Filter $filter): array|bool
+```
+
+**Parameters:**
+
+| Parameter | Type                          | Description |
+|-----------|-------------------------------|-------------|
+| `$filter` | **\Tainacan\Entities\Filter** |             |
+
+**Return Value:**
+
+true if is valid or array if has error
 
 ***
 
