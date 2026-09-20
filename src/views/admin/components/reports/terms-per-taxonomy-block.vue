@@ -1,14 +1,23 @@
 <template>
-    <div class="report-card is-full">
-        <apexchart
-                v-if="chartData != undefined && !isFetchingData && taxonomiesListArray && taxonomiesListArray.length && !isBuildingChart"
-                height="380px"
-                :series="chartSeries"
-                :options="chartOptions" />
+    <div
+            v-if="hasChartSeries || (!isFetchingData && taxonomiesListArray && taxonomiesListArray.length)"
+            class="report-card is-full">
+        <div
+                class="report-chart"
+                :class="{ 'is-reloading-cache': isReloadingChart }"
+                :aria-busy="isReloadingChart ? 'true' : 'false'">
+            <apexchart
+                    v-if="hasChartSeries"
+                    ref="taxonomiesChart"
+                    type="bar"
+                    height="380px"
+                    :series="chartSeries"
+                    :options="chartOptions" />
+        </div>
         <slot />
     </div>
     <div 
-            v-if="chartData != undefined && !isFetchingData && !isBuildingChart && (!taxonomiesListArray || !taxonomiesListArray.length)"
+            v-else-if="!isFetchingData && (!taxonomiesListArray || !taxonomiesListArray.length)"
             style="min-height: 380px"
             class="report-card is-full">
         <div class="empty-report-card-placeholder">
@@ -27,7 +36,7 @@
         </div>
     </div>
     <div 
-            v-if="chartData != undefined && isBuildingChart || isFetchingData"
+            v-else
             style="min-height: 380px"
             class="skeleton report-card is-full" />
 </template>
@@ -45,7 +54,7 @@ export default {
         }),
         taxonomiesListArray() {
             return this.chartData && this.chartData != undefined ? Object.values(this.chartData) : [];
-        },
+        }
     },
     watch: {
         taxonomiesListArray: {
@@ -58,10 +67,12 @@ export default {
     },
     methods: {
          buildTaxonomiesList() {
-            // Building Taxonomy term usage chart
-            this.isBuildingChart = true;
+            if (!this.taxonomiesListArray.length) {
+                this.chartSeries = [];
+                return;
+            }
 
-            const orderedTaxonomies = this.taxonomiesListArray.sort((a, b) => b.total_terms - a.total_terms);
+            const orderedTaxonomies = [...this.taxonomiesListArray].sort((a, b) => b.total_terms - a.total_terms);
             let termsUsed = [];
             let termsNotUsed = [];
             let taxonomiesLabels = [];
@@ -82,56 +93,64 @@ export default {
                     data: termsNotUsed
                 }
             ];
-            
-            this.chartOptions = {
-                ...this.stackedBarChartOptions, 
-                ...{
-                    title: {
-                        text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
-                    },
-                    xaxis: {
-                        type: 'category',
-                        tickPlacement: 'on',
-                        categories: taxonomiesLabels,
-                        labels: {
-                            show: true,
-                            trim: true,
-                            hideOverlappingLabels: false
-                        },
-                        tooltip: { enabled: true }
-                    },
-                    yaxis: {
+
+            if (!this.chartOptions.chart) {
+                this.chartOptions = {
+                    ...this.stackedBarChartOptions, 
+                    ...{
                         title: {
-                            text: this.$i18n.get('label_number_of_terms')
-                        }
-                    },
-                    colors: ['#187181', '#dbdbdb'],
-                    fill: {
-                        colors: ['#187181', '#dbdbdb']
-                    },
-                    dataLabels: {
-                        style: {
-                            colors: ['#ffffff', '#373839']
-                        }
-                    },
-                    states: {
-                        normal: {
-                            filter: {
-                                type: 'none',
-                                value: 0,
+                            text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
+                        },
+                        xaxis: {
+                            type: 'category',
+                            tickPlacement: 'on',
+                            categories: taxonomiesLabels,
+                            labels: {
+                                show: true,
+                                trim: true,
+                                hideOverlappingLabels: false
+                            },
+                            tooltip: { enabled: true }
+                        },
+                        yaxis: {
+                            title: {
+                                text: this.$i18n.get('label_number_of_terms')
                             }
                         },
-                        hover: {
-                            filter: {
-                                type: 'darken',
-                                value: 0.9,
+                        colors: ['#187181', '#dbdbdb'],
+                        fill: {
+                            colors: ['#187181', '#dbdbdb']
+                        },
+                        dataLabels: {
+                            style: {
+                                colors: ['#ffffff', '#373839']
                             }
                         },
+                        states: {
+                            normal: {
+                                filter: {
+                                    type: 'none',
+                                    value: 0,
+                                }
+                            },
+                            hover: {
+                                filter: {
+                                    type: 'darken',
+                                    value: 0.9,
+                                }
+                            },
+                        }
                     }
                 }
+            } else {
+                this.$nextTick(() => {
+                    if (this.$refs.taxonomiesChart && this.$refs.taxonomiesChart.updateOptions) {
+                        this.$refs.taxonomiesChart.updateOptions({
+                            xaxis: { categories: taxonomiesLabels }
+                        }, false, true);
+                    }
+                });
             }
-
-            setTimeout(() => this.isBuildingChart = false, 500);
         }
     }
 }

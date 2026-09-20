@@ -1391,27 +1391,33 @@ class Theme_Helper {
 					$meta_mappings = $metadatum->get_exposer_mapping();
 
 					if ( array_key_exists('dublin-core', $meta_mappings) && $item_metadatum->has_value() ) {
+						$normalized_mapping = \Tainacan\Mappers_Handler::get_instance()->normalize_mapping_value( $meta_mappings['dublin-core'], $metadatum_mapper );
+						if ( ! $normalized_mapping ) {
+							continue;
+						}
+						$dc_meta_name = str_replace( 'dc:', 'dc.', $normalized_mapping['slug'] );
+
 						$values = $item_metadatum->get_value();
 						$multiple_values = is_array($values) ? $values : [$values];
 
-						$multiple_values = array_map(function($single_value) use ($meta_mappings) {
+						$multiple_values = array_map(function($single_value) use ($dc_meta_name) {
 
 							// If the single value is still an array, we are in a multiple compound metadata
 							if ( is_array($single_value) ) {
 								foreach ($single_value as $child_value) {
 									if ( $child_value instanceof \Tainacan\Entities\Item_Metadata_Entity ) {
 										$child_value = $child_value->get_value_as_string();
-										echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($child_value) . '" />';
+										echo '<meta name="' . esc_attr($dc_meta_name) . '" content="' . esc_attr($child_value) . '" />';
 									} 
 								}
 							// But we might be in a single compound metadata
 							} else if ( $single_value instanceof \Tainacan\Entities\Item_Metadata_Entity ) {
 								$child_value = $single_value->get_value_as_string();
-								echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($child_value) . '" />';
+								echo '<meta name="' . esc_attr($dc_meta_name) . '" content="' . esc_attr($child_value) . '" />';
 							 
 							// Or a single, non-compound metadata
-						    } else {
-								echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($single_value) . '" />';
+						    } else if ( is_scalar( $single_value ) ) {
+								echo '<meta name="' . esc_attr($dc_meta_name) . '" content="' . esc_attr( (string) $single_value ) . '" />';
 							}
 							
 						}, $multiple_values);
@@ -1995,6 +2001,7 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
 		* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
 		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+		* 	   @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
 		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 		* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
@@ -2002,10 +2009,13 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
+		*	   @type array	 $coverMimeTypesMain			  MIME types that should show a cover image in the Main slider instead of an embed. Defaults to empty (current embed behaviour).
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	   @type string  $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 		*	   @type string  $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
 		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		*	   @type string  $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 		* }		
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
@@ -2024,6 +2034,7 @@ class Theme_Helper {
 			'hideFileCaptionMain' => 			false,
 			'hideFileDescriptionMain' =>		true,
 			'hideFileNameThumbnails' => 		true, 
+			'hideImageThumbnails' => 			false,
 			'hideFileCaptionThumbnails' => 		true,
 			'hideFileDescriptionThumbnails' =>  true,
 			'hideFileNameLightbox' =>	 		false, 
@@ -2031,10 +2042,13 @@ class Theme_Helper {
 			'hideFileDescriptionLightbox' =>	false,
 			'openLightboxOnClick' => 			true,
 			'showDownloadButtonMain' =>			true,
+			'coverMimeTypesMain' =>				array(),
 			'lightboxHasLightBackground' => 	false,
 			'showArrowsAsSVG' =>				true,
+			'mainImagesSize' =>					'large',
 			'thumbnailsSize' =>					'tainacan-medium',
-			'thumbsHaveFixedHeight'	=>			false	
+			'thumbsHaveFixedHeight'	=>			false,
+			'thumbsLayout' =>					'carousel'
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -2045,6 +2059,14 @@ class Theme_Helper {
 
 		$item_id = $item->get_id();
 
+		/**
+		 * Filters the arguments passed to get_tainacan_item_gallery().
+		 *
+		 * @param array                    $args The arguments passed to the function.
+		 * @param \Tainacan\Entities\Item $item The current item.
+		 */
+		$args = apply_filters( 'tainacan-get-item-gallery-filter-args', $args, $item );
+
 		// Gets options from block attributes
 		$block_id = $args['blockId'];
 		$layout_elements = $args['layoutElements'];
@@ -2053,6 +2075,7 @@ class Theme_Helper {
 		$hide_file_caption_main = $args['hideFileCaptionMain'];
 		$hide_file_description_main = $args['hideFileDescriptionMain'];
 		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
+		$hide_image_thumbnails = $args['hideImageThumbnails'];
 		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
 		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
 		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
@@ -2062,8 +2085,13 @@ class Theme_Helper {
 		$show_download_button_main = $args['showDownloadButtonMain'];
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+		$main_images_size = $args['mainImagesSize'];
 		$thumbnails_size = $args['thumbnailsSize'];
 		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
+		$thumbs_layout = tainacan_sanitize_media_thumbs_layout( $args['thumbsLayout'] );
+
+		$media = Media::get_instance();
+		$cover_mime_types_main = $media->normalize_mime_types( $args['coverMimeTypesMain'] );
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -2093,9 +2121,11 @@ class Theme_Helper {
 				$class_slide_metadata .= ' hide-caption';
 
 			// Checks if there is at least one image alongside the media sources
-			// to decide if loading the lighbox is worthy on the main slider
+			// to decide if loading the lighbox is worthy on the main slider.
+			// Cover MIME types also count, so a PDF-only gallery can still open PhotoSwipe.
 			if ($open_lightbox_on_click) {
 				$media_includes_images = false;
+				$media_includes_covers = false;
 
 				if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
 					$document_type = tainacan_get_the_document_type($item_id);
@@ -2103,7 +2133,12 @@ class Theme_Helper {
 					if ($document_type === 'attachment')  {
 						// Uses this moment to also see if we have an image
 						$attachment = get_post(tainacan_get_the_document_raw($item_id));
-						$media_includes_images = wp_attachment_is('image', $attachment->ID);
+						if ( $attachment instanceof \WP_Post ) {
+							$media_includes_images = wp_attachment_is('image', $attachment->ID);
+							if ( in_array( $attachment->post_mime_type, $cover_mime_types_main, true ) ) {
+								$media_includes_covers = true;
+							}
+						}
 					} else if ($document_type === 'url') {
 						$document_options = $item->get_document_options();
 						$media_includes_images = isset($document_options['is_image']) && $document_options['is_image'];
@@ -2116,15 +2151,24 @@ class Theme_Helper {
 
 						if ($is_attachment_an_image)
 							$media_includes_images = true; // Do not asign directly as we want to check if at least one is true
+
+						if ( in_array( $attachment->post_mime_type, $cover_mime_types_main, true ) ) {
+							$media_includes_covers = true;
+						}
 					}
 				}
 
-				if (!$media_includes_images)
+				if ( ! $media_includes_images && ! $media_includes_covers )
 					$open_lightbox_on_click = false;
 			}
 
 			if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
 				$document_type = tainacan_get_the_document_type($item_id);
+				$document_mimetype = tainacan_get_the_document_mimetype($item_id);
+				$document_uses_cover = ( $document_type === 'attachment' && in_array( $document_mimetype, $cover_mime_types_main, true ) );
+				$document_media_content = tainacan_get_the_document($item_id, $main_images_size);
+				$document_description = '';
+				$class_slide_content = '';
 				
 				// Document description is a bit more tricky
 				if ($document_type === 'attachment')  {
@@ -2132,12 +2176,23 @@ class Theme_Helper {
 					$document_description = ($attachment instanceof \WP_Post) ? $attachment->post_content : '';
 				}
 
+				if ( $document_uses_cover ) {
+					$document_media_content = $media->get_attachment_cover_html( tainacan_get_the_document_raw($item_id), $main_images_size, true );
+					$class_slide_content = 'has-cover';
+				}
+
+				$document_download_link = tainacan_get_the_item_document_download_link($item_id);
 				$media_items_main[] =
 					tainacan_get_the_media_component_slide(array(
-						'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_document_download_link($item_id) != '' ) ?
-														sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_document_download_link($item_id))
-												: ''),
-						'media_content' => tainacan_get_the_document($item_id),
+						'after_slide_metadata' => tainacan_get_the_media_item_actions( array(
+							'expand_html' => $open_lightbox_on_click ? tainacan_get_the_media_item_expand_control() : '',
+							'download_html' => ( $show_download_button_main && $document_download_link != '' ) ? $document_download_link : '',
+							'item_id' => $item_id,
+							'attachment_id' => ( $document_type === 'attachment' ) ? tainacan_get_the_document_raw( $item_id ) : 0,
+							'media_source' => 'document',
+							'media_type' => $document_mimetype,
+						) ),
+						'media_content' => $document_media_content,
 						'media_content_full' => $open_lightbox_on_click ?
 												(
 													$document_type === 'attachment' ?
@@ -2147,7 +2202,9 @@ class Theme_Helper {
 						'media_title' => $document_type === 'attachment' ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $document_type === 'attachment' ? $document_description : '',
 						'media_caption' => $document_type === 'attachment' ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => $document_mimetype,
+						'media_source' => 'document',
+						'class_slide_content' => $class_slide_content,
 						'class_slide_metadata' => $class_slide_metadata
 					));
 			}
@@ -2155,13 +2212,27 @@ class Theme_Helper {
 			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
 					$is_attachment_an_image = wp_attachment_is('image', $attachment->ID);
+					$attachment_uses_cover = in_array( $attachment->post_mime_type, $cover_mime_types_main, true );
+					$attachment_media_content = tainacan_get_attachment_as_html($attachment->ID, $item_id, $main_images_size);
+					$class_slide_content = '';
 
+					if ( $attachment_uses_cover ) {
+						$attachment_media_content = $media->get_attachment_cover_html( $attachment->ID, $main_images_size, true );
+						$class_slide_content = 'has-cover';
+					}
+
+					$attachment_download_link = tainacan_get_the_item_attachment_download_link($attachment->ID);
 					$media_items_main[] =
 						tainacan_get_the_media_component_slide(array(
-							'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_attachment_download_link($attachment->ID) != '' ) ?
-															sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_attachment_download_link($attachment->ID))
-													: ''),
-							'media_content' => tainacan_get_attachment_as_html($attachment->ID, $item_id),
+							'after_slide_metadata' => tainacan_get_the_media_item_actions( array(
+								'expand_html' => $open_lightbox_on_click ? tainacan_get_the_media_item_expand_control() : '',
+								'download_html' => ( $show_download_button_main && $attachment_download_link != '' ) ? $attachment_download_link : '',
+								'item_id' => $item_id,
+								'attachment_id' => $attachment->ID,
+								'media_source' => 'attachment',
+								'media_type' => $attachment->post_mime_type,
+							) ),
+							'media_content' => $attachment_media_content,
 							'media_content_full' => $open_lightbox_on_click ?
 													( 
 														$is_attachment_an_image ?
@@ -2172,6 +2243,8 @@ class Theme_Helper {
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
 							'media_type' => $attachment->post_mime_type,
+							'media_source' => 'attachment',
+							'class_slide_content' => $class_slide_content,
 							'class_slide_metadata' => $class_slide_metadata
 						));
 				}
@@ -2186,7 +2259,7 @@ class Theme_Helper {
 		if ( $layout_elements['thumbnails'] ) {
 
 			$class_slide_metadata = '';
-			if ($hide_file_name_thumbnails)
+			if ($hide_file_name_thumbnails && $thumbs_layout !== 'list')
 				$class_slide_metadata .= ' hide-name';
 			if ($hide_file_description_thumbnails)
 				$class_slide_metadata .= ' hide-description';
@@ -2203,22 +2276,23 @@ class Theme_Helper {
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
 						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => tainacan_get_the_document_mimetype($item_id),
+						'media_source' => 'document',
 						'class_slide_metadata' => $class_slide_metadata
 					));			
 			}
 
 			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
-					$attachment_thumbnail = get_the_post_thumbnail($attachment->ID, $thumbnails_size);
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
-							'media_content' => $attachment_thumbnail ? $attachment_thumbnail : wp_get_attachment_image( $attachment->ID, $thumbnails_size, false ),
+							'media_content' => $media->get_attachment_cover_html( $attachment->ID, $thumbnails_size ),
 							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
 							'media_type' => $attachment->post_mime_type,
+							'media_source' => 'attachment',
 							'class_slide_metadata' => $class_slide_metadata
 						));
 				}
@@ -2323,13 +2397,14 @@ class Theme_Helper {
 			array(
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
-				'class_thumbs_div' => '',
+				'class_thumbs_div' => ( $thumbs_layout === 'list' && $hide_image_thumbnails ) ? 'tainacan-media-thumbs--hide-image' : '',
 				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
 				'swiper_main_options' => $swiper_main_options,
 				'swiper_thumbs_options' => $swiper_thumbs_options,
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
 				'disable_main_carousel' => !is_array($media_items_main) || count($media_items_main) <= 1,
-				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1,
+				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1 || $thumbs_layout !== 'carousel',
+				'thumbs_layout' => $thumbs_layout,
 				'disable_lightbox' => !$open_lightbox_on_click,
 				'hide_media_name' => $hide_file_name_lightbox,
 				'hide_media_caption' => $hide_file_caption_lightbox,
@@ -2341,10 +2416,10 @@ class Theme_Helper {
 		// Apply wp_kses to ensure safety while preserving necessary HTML elements and attributes
 		// The content is already escaped in tainacan_get_the_media_component(), but we apply
 		// wp_kses here to satisfy plugin check requirements and ensure filter output is safe
-		// The 'tainacan_content' context now includes data-module and SVG support
+		// The 'tainacan_media_slide' context extends tainacan_content with data-media-type.
 		// Temporarily add safe_style_css filter to allow CSS properties needed for .media-full-content
 		add_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10, 1);
-		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_content'));
+		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_media_slide'));
 		remove_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10);
 		
 		return apply_filters(
@@ -2372,14 +2447,18 @@ class Theme_Helper {
 		* 	  @type bool 	 $hideItemLinkMain 			  	  Hides the Main slider item link
 		* 	  @type bool 	 $hideItemDescriptionMain		  Hides the Main slider item description
 		* 	  @type bool 	 $hideItemTitleThumbnails 		  Hides the Thumbnails carousel item title
+		* 	  @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
 		* 	  @type bool 	 $hideItemTitleLightbox 		  Hides the Lightbox item title
 		* 	  @type bool 	 $hideItemLinkLightbox 		  	  Hides the Lightbox item link
 		* 	  @type bool 	 $hideItemDescriptionLightbox	  Hides the Lightbox file description
 		* 	  @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
+		*	  @type array	 $coverMimeTypesMain			  MIME types that should show a cover image in the Main slider instead of an embed. Defaults to empty (current embed behaviour).
 		*	  @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	  @type bool     $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	  @type string   $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 		*	  @type string   $thumbnailsSize				  Media size for the thumbnail images. Defaults to 'tainacan-medium'
 		*	  @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		*	  @type string   $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 		* }		
 		* @return string  The HTML div to be used for rendering the items galery component
 	 */
@@ -2403,16 +2482,27 @@ class Theme_Helper {
 			'hideItemLinkMain' => 				false,
 			'hideItemDescriptionMain' =>		true,
 			'hideItemTitleThumbnails' => 		true, 
+			'hideImageThumbnails' => 			false,
 			'hideItemTitleLightbox' =>	 		false, 
 			'hideItemLinkLightbox' => 			false,
 			'hideItemDescriptionLightbox' =>	false,
 			'openLightboxOnClick' => 			true,
+			'coverMimeTypesMain' =>				array(),
 			'lightboxHasLightBackground' => 	false,
 			'showArrowsAsSVG' =>				true,
+			'mainImagesSize' =>					'large',
 			'thumbnailsSize' =>					'tainacan-medium',
-			'thumbsHaveFixedHeight'	=>			false	
+			'thumbsHaveFixedHeight'	=>			false,
+			'thumbsLayout' =>					'carousel'
 		);
 		$args = wp_parse_args($args, $defaults);
+
+		/**
+		 * Filters the arguments passed to get_tainacan_items_gallery().
+		 *
+		 * @param array $args The arguments passed to the function.
+		 */
+		$args = apply_filters( 'tainacan-get-items-gallery-filter-args', $args );
 
 		// Gets options from block attributes
 		$block_id = $args['blockId'];
@@ -2427,14 +2517,17 @@ class Theme_Helper {
 		$hide_item_link_main = $args['hideItemLinkMain'];
 		$hide_item_description_main = $args['hideItemDescriptionMain'];
 		$hide_item_title_thumbnails = $args['hideItemTitleThumbnails'];
+		$hide_image_thumbnails = $args['hideImageThumbnails'];
 		$hide_item_title_lightbox = $args['hideItemTitleLightbox'];
 		$hide_item_link_lightbox = $args['hideItemLinkLightbox'];
 		$hide_item_description_lightbox = $args['hideItemDescriptionLightbox'];
 		$open_lightbox_on_click = $args['openLightboxOnClick'];
 		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+		$main_images_size = $args['mainImagesSize'];
 		$thumbnails_size = $args['thumbnailsSize'];
 		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
+		$thumbs_layout = tainacan_sanitize_media_thumbs_layout( $args['thumbsLayout'] );
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -2464,6 +2557,9 @@ class Theme_Helper {
 			$items_ids = array_map(function($item) { return $item['id']; }, $selected_items);
 		}
 
+		$media = Media::get_instance();
+		$cover_mime_types_main = $media->normalize_mime_types( $args['coverMimeTypesMain'] );
+
 		// Prepares the main slider
 		if ( $layout_elements['main'] ) {
 
@@ -2476,9 +2572,11 @@ class Theme_Helper {
 				$class_slide_metadata .= ' hide-caption';
 
 			// Checks if there is at least one image alongside the media sources
-			// to decide if loading the lighbox is worthy on the main slider
+			// to decide if loading the lighbox is worthy on the main slider.
+			// Cover MIME types also count, so a PDF-only gallery can still open PhotoSwipe.
 			if ($open_lightbox_on_click) {
 				$media_includes_images = false;
+				$media_includes_covers = false;
 
 				foreach( $items_ids as $item_id ) {
 
@@ -2488,28 +2586,50 @@ class Theme_Helper {
 						if ($document_type === 'attachment')  {
 							// Uses this moment to also see if we have an image
 							$attachment = get_post(tainacan_get_the_document_raw($item_id));
-							$media_includes_images = wp_attachment_is('image', $attachment->ID);
+							if ( $attachment instanceof \WP_Post ) {
+								$media_includes_images = wp_attachment_is('image', $attachment->ID);
+								if ( in_array( $attachment->post_mime_type, $cover_mime_types_main, true ) ) {
+									$media_includes_covers = true;
+								}
+							}
 						} else if ($document_type === 'url') {
 							$item = tainacan_get_item($item_id);
-							$document_options = $item->get_document_options();
+							$document_options = $item ? $item->get_document_options() : [];
 							$media_includes_images = isset($document_options['is_image']) && $document_options['is_image'];
 						}
-						if ( $media_includes_images )
+						if ( $media_includes_images || $media_includes_covers )
 							break;
 					}
 				}
 				
-				if ( !$media_includes_images )
+				if ( ! $media_includes_images && ! $media_includes_covers )
 					$open_lightbox_on_click = false;
 			}
 
 			// Adds Item's documents as main slider content
 			foreach( $items_ids as $item_id ) {
 				$item = tainacan_get_item($item_id);
+				$document_type = tainacan_get_the_document_type($item_id);
+				$document_mimetype = tainacan_get_the_document_mimetype($item_id);
+				$document_uses_cover = ( $document_type === 'attachment' && in_array( $document_mimetype, $cover_mime_types_main, true ) );
+				$document_media_content = tainacan_get_the_document($item_id, $main_images_size);
+				$class_slide_content = '';
+
+				if ( $document_uses_cover ) {
+					$document_media_content = $media->get_item_document_cover_html( $item_id, $main_images_size, true );
+					$class_slide_content = 'has-cover';
+				}
 
 				$media_items_main[] = 
 					tainacan_get_the_media_component_slide(array(
-						'media_content' => tainacan_get_the_document($item_id),
+						'after_slide_metadata' => tainacan_get_the_media_item_actions( array(
+							'expand_html' => $open_lightbox_on_click ? tainacan_get_the_media_item_expand_control() : '',
+							'item_id' => $item_id,
+							'attachment_id' => ( $document_type === 'attachment' ) ? tainacan_get_the_document_raw( $item_id ) : 0,
+							'media_source' => 'document',
+							'media_type' => $document_mimetype,
+						) ),
+						'media_content' => $document_media_content,
 						'media_content_full' => $open_lightbox_on_click ?
 												(
 													$document_type === 'attachment' ?
@@ -2519,7 +2639,9 @@ class Theme_Helper {
 						'media_title' => $item ? $item->get_title() : '',
 						'media_description' =>  $item ? $item->get_description() : '',
 						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => $document_mimetype,
+						'media_source' => 'document',
+						'class_slide_content' => $class_slide_content,
 						'class_slide_metadata' => $class_slide_metadata
 					));
 			
@@ -2535,7 +2657,7 @@ class Theme_Helper {
 		if ( $layout_elements['thumbnails'] ) {
 
 			$class_slide_metadata = ' hide-caption hide-description';
-			if ($hide_item_title_thumbnails)
+			if ($hide_item_title_thumbnails && $thumbs_layout !== 'list')
 				$class_slide_metadata .= ' hide-name';
 
 			// Adds the items thumbnails as carousel
@@ -2550,7 +2672,8 @@ class Theme_Helper {
 						'media_title' => $item ? $item->get_title() : '',
 						'media_description' => $item ? $item->get_description() : '',
 						'media_caption' => '<a href="' . esc_url(get_permalink($item_id)) . '" target="_blank" rel="noopener noreferrer">' . __( 'Visit the page', 'tainacan' ) . '</a>',
-						'media_type' => tainacan_get_the_document_type($item_id),
+						'media_type' => tainacan_get_the_document_mimetype($item_id),
+						'media_source' => 'document',
 						'class_slide_metadata' => $class_slide_metadata
 					));			
 			}
@@ -2654,13 +2777,14 @@ class Theme_Helper {
 			array(
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
-				'class_thumbs_div' => '',
+				'class_thumbs_div' => ( $thumbs_layout === 'list' && $hide_image_thumbnails ) ? 'tainacan-media-thumbs--hide-image' : '',
 				'class_thumbs_li' => $thumbs_have_fixed_height ? 'has-fixed-height' : '',
 				'swiper_main_options' => $swiper_main_options,
 				'swiper_thumbs_options' => $swiper_thumbs_options,
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
 				'disable_main_carousel' => !is_array($media_items_main) || count($media_items_main) <= 1,
-				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1,
+				'disable_thumbs_carousel' => !is_array($media_items_thumbnails) || count($media_items_thumbnails) <= 1 || $thumbs_layout !== 'carousel',
+				'thumbs_layout' => $thumbs_layout,
 				'disable_lightbox' => !$open_lightbox_on_click,
 				'hide_media_name' => $hide_item_title_lightbox,
 				'hide_media_caption' => $hide_item_link_lightbox,
@@ -2672,10 +2796,10 @@ class Theme_Helper {
 		// Apply wp_kses to ensure safety while preserving necessary HTML elements and attributes
 		// The content is already escaped in tainacan_get_the_media_component(), but we apply
 		// wp_kses here to satisfy plugin check requirements and ensure filter output is safe
-		// The 'tainacan_content' context now includes data-module and SVG support
+		// The 'tainacan_media_slide' context extends tainacan_content with data-media-type.
 		// Temporarily add safe_style_css filter to allow CSS properties needed for .media-full-content
 		add_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10, 1);
-		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_content'));
+		$gallery_html = wp_kses($gallery_html, wp_kses_allowed_html('tainacan_media_slide'));
 		remove_filter('safe_style_css', 'tainacan_get_default_allowed_styles', 10);
 		
 		return apply_filters(
@@ -3217,6 +3341,7 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
 		* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
 		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+		* 	   @type bool 	 $hideImageThumbnails 			  Hides the thumbnail image in list layout. Defaults to false.
 		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 		* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
@@ -3224,10 +3349,13 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
+		*	   @type array	 $coverMimeTypesMain			  MIME types that should show a cover image in the Main slider instead of an embed. Defaults to empty (current embed behaviour).
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		*	   @type string  $mainImagesSize				  Media size for the Main slider images. Defaults to 'large'
 		*	   @type string  $thumbnailsSize	 		      Media size for the thumbnail images. Defaults to 'tainacan-medium'
 		*	   @type bool  	 $thumbsHaveFixedHeight			  If thumbs should have a fixed height and auto widht. Defaults to false.
+		*	   @type string  $thumbsLayout					  Thumbnails layout slug. Core values: 'carousel' (default), 'grid' or 'list'. Other slugs are passed through.
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery_template($args = []) {
@@ -3245,6 +3373,7 @@ class Theme_Helper {
 			'hideFileCaptionMain' => 			false,
 			'hideFileDescriptionMain' =>		true,
 			'hideFileNameThumbnails' => 		true, 
+			'hideImageThumbnails' => 			false,
 			'hideFileCaptionThumbnails' => 		true,
 			'hideFileDescriptionThumbnails' =>  true,
 			'hideFileNameLightbox' =>	 		false, 
@@ -3252,10 +3381,13 @@ class Theme_Helper {
 			'hideFileDescriptionLightbox' =>	false,
 			'openLightboxOnClick' => 			true,
 			'showDownloadButtonMain' =>			true,
+			'coverMimeTypesMain' =>				array(),
 			'lightboxHasLightBackground' => 	false,
 			'showArrowsAsSVG' =>				true,
+			'mainImagesSize' =>					'large',
 			'thumbnailsSize' =>					'tainacan-medium',
-			'thumbsHaveFixedHeight' =>			false
+			'thumbsHaveFixedHeight' =>			false,
+			'thumbsLayout' =>					'carousel'
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -3267,6 +3399,7 @@ class Theme_Helper {
 		$hide_file_caption_main = $args['hideFileCaptionMain'];
 		$hide_file_description_main = $args['hideFileDescriptionMain'];
 		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
+		$hide_image_thumbnails = $args['hideImageThumbnails'];
 		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
 		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
 		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
@@ -3278,6 +3411,7 @@ class Theme_Helper {
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
 		$thumbnails_size = $args['thumbnailsSize'];
 		$thumbs_have_fixed_height = $args['thumbsHaveFixedHeight'];
+		$thumbs_layout = tainacan_sanitize_media_thumbs_layout( $args['thumbsLayout'] );
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -3334,24 +3468,29 @@ class Theme_Helper {
 		if ($layout_elements['main'])
 			$placeholder_content .= '<div class="tainacan-gallery-main-placeholder wp-block-post-featured-image wp-block-post-featured-image"><div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div></div>';
 		
-		if ($layout_elements['thumbnails'])
-			$placeholder_content .= '<ul class="tainacan-gallery-thumbnails-placeholder">
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+		if ($layout_elements['thumbnails']) {
+			$placeholder_thumbs_class = 'tainacan-gallery-thumbnails-placeholder tainacan-media-thumbs--layout-' . esc_attr( $thumbs_layout );
+			if ( $thumbs_layout === 'list' && $hide_image_thumbnails ) {
+				$placeholder_thumbs_class .= ' tainacan-media-thumbs--hide-image';
+			}
+			$placeholder_content .= '<ul class="' . esc_attr( $placeholder_thumbs_class ) . '">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
-				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+				<li class="tainacan-media-item wp-block-post-featured-image">
 					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
 				</li>
 			</ul>';
+		}
 
 		return '<div ' . $wrapper_attributes . '>' . $placeholder_content . '</div>';
 	}

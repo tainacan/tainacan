@@ -10,12 +10,6 @@
 ```mermaid
 classDiagram
     direction TB
-    class Inbcm_Museological {
-        +slug : mixed
-        +name : mixed
-        +allow_extra_metadata : mixed
-        +__construct()
-    }
     class Mapper {
         +slug : mixed
         +name : mixed
@@ -29,6 +23,12 @@ classDiagram
         +show_ui : mixed
         +_toArray()
         +get_url(meta_slug)
+        +__construct()
+    }
+    class Inbcm_Museological {
+        +slug : mixed
+        +name : mixed
+        +allow_extra_metadata : mixed
         +__construct()
     }
     Mapper <|-- Inbcm_Museological

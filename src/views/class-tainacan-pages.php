@@ -280,6 +280,7 @@ abstract class Pages {
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
 			'tainacan_index_pdf_content' => \Tainacan\Media::is_index_pdf_content_enabled(),
+			'tainacan_enable_image_blurhash' => \Tainacan\Media::is_image_blurhash_enabled(),
 			'document_content_index_max_characters' => \Tainacan\Media::get_document_content_index_max_characters(),
 			'has_permalinks_structure' => get_option('permalink_structure') !== '',
 			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),

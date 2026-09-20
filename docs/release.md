@@ -239,7 +239,7 @@ Using git flow:
 cd $GIT_PATH
 
 git flow release finish $NEW_VERSION
-git push --all
+git push
 git push --tags
 ```
 

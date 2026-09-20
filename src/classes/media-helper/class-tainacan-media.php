@@ -71,6 +71,35 @@ class Media {
 	}
 
 	/**
+	 * Whether BlurHash placeholders are generated and decoded.
+	 *
+	 * Define TAINACAN_DISABLE_BLURHASH as true in wp-config.php to turn them off.
+	 * That constant is a hard off: themes and plugins cannot re-enable BlurHash with
+	 * the tainacan-enable-image-blurhash filter. The filter only applies when the
+	 * constant is not set to true.
+	 *
+	 * @since 1.4
+	 *
+	 * @return bool
+	 */
+	public static function is_image_blurhash_enabled() {
+		if ( defined( 'TAINACAN_DISABLE_BLURHASH' ) && true === TAINACAN_DISABLE_BLURHASH ) {
+			return false;
+		}
+
+		/**
+		 * Filters whether BlurHash placeholders are generated and decoded.
+		 *
+		 * Ignored when TAINACAN_DISABLE_BLURHASH is true.
+		 *
+		 * @since 1.4
+		 *
+		 * @param bool $enabled Whether BlurHash is enabled. Default true.
+		 */
+		return (bool) apply_filters( 'tainacan-enable-image-blurhash', true );
+	}
+
+	/**
 	 * Configured maximum document content index length in characters.
 	 *
 	 * @return int
@@ -269,8 +298,6 @@ class Media {
 		body:not([class]) > audio {
 			width: 100%;
 			height: auto;
-			border-radius: 20px;
-			background: black;
 			min-height: 38px;
 			max-height: 100%;
 		}
@@ -470,6 +497,32 @@ class Media {
 	}
 
 	/**
+	 * Normalizes a list of MIME types.
+	 *
+	 * @param mixed $mime_types Array of MIME types.
+	 * @return array
+	 */
+	public function normalize_mime_types( $mime_types ) {
+		if ( ! is_array( $mime_types ) ) {
+			return array();
+		}
+
+		$normalized = array();
+		foreach ( $mime_types as $mime_type ) {
+			if ( ! is_string( $mime_type ) ) {
+				continue;
+			}
+
+			$mime_type = sanitize_mime_type( strtolower( trim( $mime_type ) ) );
+			if ( $mime_type !== '' ) {
+				$normalized[] = $mime_type;
+			}
+		}
+
+		return array_values( array_unique( $normalized ) );
+	}
+
+	/**
 	 * Extract an image from the first page of a pdf file
 	 *
 	 * @param  string $filepath The pdf filepath in the server
@@ -509,6 +562,78 @@ class Media {
 		} catch (\Error $ex) {
 			return null;
 		}
+	}
+
+	/**
+	 * Returns HTML for an attachment cover image.
+	 *
+	 * Cascade: attachment featured image → WordPress generated image → empty string.
+	 *
+	 * @param int    $attachment_id Attachment ID.
+	 * @param string $size          Image size. Default 'large'.
+	 * @param bool   $wrap_in_link  Whether to wrap the image in a link to the attachment file.
+	 * @return string
+	 */
+	public function get_attachment_cover_html( $attachment_id, $size = 'large', $wrap_in_link = false ) {
+		$attachment_id = absint( $attachment_id );
+		if ( ! $attachment_id ) {
+			return '';
+		}
+
+		$cover = get_the_post_thumbnail( $attachment_id, $size );
+		if ( empty( $cover ) ) {
+			$cover = wp_get_attachment_image( $attachment_id, $size, false );
+		}
+
+		if ( empty( $cover ) ) {
+			return '';
+		}
+
+		if ( ! $wrap_in_link ) {
+			return $cover;
+		}
+
+		$url = wp_get_attachment_url( $attachment_id );
+		if ( ! $url ) {
+			return $cover;
+		}
+
+		return sprintf( '<a class="tainacan-media-cover" href="%s" target="blank">%s</a>', esc_url( $url ), $cover );
+	}
+
+	/**
+	 * Returns HTML for an item document cover image.
+	 *
+	 * Cascade: item featured image → attachment cover → empty string.
+	 *
+	 * @param int    $item_id      Item ID.
+	 * @param string $size         Image size. Default 'large'.
+	 * @param bool   $wrap_in_link Whether to wrap the image in a link to the document file.
+	 * @return string
+	 */
+	public function get_item_document_cover_html( $item_id, $size = 'large', $wrap_in_link = false ) {
+		$item_id = absint( $item_id );
+		if ( ! $item_id ) {
+			return '';
+		}
+
+		$cover = get_the_post_thumbnail( $item_id, $size );
+		if ( empty( $cover ) ) {
+			$document_id = tainacan_get_the_document_raw( $item_id );
+			return is_numeric( $document_id ) ? $this->get_attachment_cover_html( (int) $document_id, $size, $wrap_in_link ) : '';
+		}
+
+		if ( ! $wrap_in_link ) {
+			return $cover;
+		}
+
+		$document_id = tainacan_get_the_document_raw( $item_id );
+		$url = is_numeric( $document_id ) ? wp_get_attachment_url( (int) $document_id ) : '';
+		if ( ! $url ) {
+			return $cover;
+		}
+
+		return sprintf( '<a class="tainacan-media-cover" href="%s" target="blank">%s</a>', esc_url( $url ), $cover );
 	}
 
 	private $THROW_EXCPTION_ON_FATAL_ERROR = false;
@@ -746,11 +871,11 @@ class Media {
 		} else {
 			$this->add_css();
 			wp_print_styles('tainacan-media-page');
-			global $wp_embed;
 
 			$url = wp_get_attachment_url($att_id);
 
-			$embed = $wp_embed->autoembed($url);
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$embed = $tainacan_embed->embed( $url );
 
 			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
@@ -771,6 +896,10 @@ class Media {
 	}
 
 	public function get_image_blurhash($file_path, $width, $height) {
+		if ( ! self::is_image_blurhash_enabled() ) {
+			return $this->get_default_image_blurhash();
+		}
+
 		try {
 			if (
 				!function_exists('imagecreatefromstring') ||

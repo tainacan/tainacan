@@ -1,14 +1,14 @@
 classDiagram
     direction TB
-    class Importer_Handler { }
+    class Youtube_Importer { }
     class Test_Importer { }
     class Flickr_Importer { }
+    class Background_Importer { }
+    class Importer_Handler { }
     class Importer { }
-    class CSV { }
     class Term_Importer { }
     class Oaipmh_Importer { }
-    class Youtube_Importer { }
-    class Background_Importer { }
+    class CSV { }
     Importer ..> Importer_Handler
     Importer <|-- CSV
     Importer <|-- Flickr_Importer

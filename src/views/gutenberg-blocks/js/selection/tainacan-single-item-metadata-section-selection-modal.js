@@ -1,5 +1,6 @@
 import tainacanApi from '../axios.js';
 import axios from 'axios';
+import { subscribeSelectionState, appendInitiallySelectedItemsParam } from './tainacan-selection.js';
 
 const { __ } = wp.i18n;
 
@@ -13,7 +14,10 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
         const existingMetadataSectionId = props.existingMetadataSectionId;
         const existingCollectionId = props.existingCollectionId;
         const searchURL = existingCollectionId && !props.isTemplateMode
-            ? tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish'
+            ? appendInitiallySelectedItemsParam(
+                tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + existingCollectionId + '/items/?status=publish',
+                props.existingItemId
+            )
             : '';
 
         // Initialize state from block attributes so the correct step renders on first paint.
@@ -43,6 +47,9 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
             itemsPerPage: 12,
             templateMode: props.isTemplateMode || false
         };
+        this.selectionState = props.existingItemId && Number(props.existingItemId) > 0
+            ? { selectedItems: [String(props.existingItemId)], query: {}, href: '', collectionId: existingCollectionId ? String(existingCollectionId) : '' }
+            : null;
         
         // Bind events
         this.resetCollections = this.resetCollections.bind(this);
@@ -57,9 +64,16 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
         this.fetchModalMetadataSections = this.fetchModalMetadataSections.bind(this);
         
         this.applySelectedMetadataSection = this.applySelectedMetadataSection.bind(this);
+        this.onSelectionState = this.onSelectionState.bind(this);
+    }
+
+    onSelectionState(state) {
+        this.selectionState = state;
     }
 
     componentDidMount() {
+        this.unsubscribeSelectionState = subscribeSelectionState(this.onSelectionState);
+
         const { existingCollectionId, existingItemId, isTemplateMode } = this.props;
 
         if (existingCollectionId && !isTemplateMode) {
@@ -76,6 +90,11 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
         }
+    }
+
+    componentWillUnmount() {
+        if (this.unsubscribeSelectionState)
+            this.unsubscribeSelectionState();
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
@@ -147,6 +166,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
     }
 
     selectCollection(selectedCollectionId) {
+        this.selectionState = null;
         this.setState({
             collectionId: selectedCollectionId,
             searchURL: tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
@@ -235,18 +255,13 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
 
 
     selectItem() {
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            let params = new URLSearchParams(iframe.contentWindow.location.search);
-            let selectedItems = params.getAll('selecteditems');
-            params.delete('selecteditems')
-            if (selectedItems[0]) {
-                this.setState({
-                    itemId: selectedItems[0]
-                });
-                this.props.onSelectItem(selectedItems[0]);
-                this.fetchModalMetadataSections(this.state.collectionId);
-            }
+        const selectedItemId = this.selectionState && this.selectionState.selectedItems && this.selectionState.selectedItems[0];
+        if (selectedItemId) {
+            this.setState({
+                itemId: selectedItemId
+            });
+            this.props.onSelectItem(selectedItemId);
+            this.fetchModalMetadataSections(this.state.collectionId);
         }
     }
 
@@ -261,6 +276,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
 
     resetCollections() {
 
+        this.selectionState = null;
         this.setState({
             collectionId: null,
             collectionPage: 1,
@@ -271,6 +287,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
 
     resetItem() {
 
+        this.selectionState = null;
         this.setState({
             itemId: null,
         });

@@ -9,6 +9,8 @@ These are the currently available ones:
 - `tainacan_single_item_metadatum_selection_modal`: A modal for performing a single metadatum value selection.
 - `tainacan_single_item_metadata_section_selection_modal`: A modal for performing a single metadata section value selection.
 
+If you already embed the admin items list in your own iframe, you do not need these React modules. Subscribe to the selection [BroadcastChannel](#using-your-own-iframe) instead of reading the iframe URL.
+
 ## Why Use Them?
 
 Building selection flows is a relatively easy task if you're familiar with our [REST API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json). However, offering the user a powerful UI do select items or metadata can be challenging if you have a big range of metadata and items to filter. Our modal components reuse the Admin Faceted Search UI, which means you'll have filters, facets, pagination and sorting options ready for you. This is big win because it will take out the burden of caring about pagination and other performance challenges.
@@ -115,6 +117,7 @@ const ItemSelectionToolbar = ({ onCreateGroup, isLoading }) => {
                     loadStrategy={loadStrategy}
                     existingCollectionId={collectionId}
                     existingSearchURL={loadStrategy === 'search' ? searchURL : false}
+                    existingSelectedItems={selectedItems}
                     onSelectCollection={(selectedCollectionId) => {
                         if (collectionId !== selectedCollectionId) {
                             setSelectedItems([]);
@@ -131,7 +134,7 @@ const ItemSelectionToolbar = ({ onCreateGroup, isLoading }) => {
                         });
                     }}
                     onApplySelectedItems={(aSelectionOfItems) => {
-                        setSelectedItems(selectedItems.concat(aSelectionOfItems));
+                        setSelectedItems(aSelectionOfItems);
                         setLoadStrategy('selection');
                         setIsModalOpen(false);
                         onCreateGroup({ 
@@ -158,6 +161,7 @@ export default ItemSelectionToolbar;
 | `loadStrategy` | `string` | Either `'selection'` or `'search'` to determine the modal behavior |
 | `existingCollectionId` | `string\|number` | ID of the collection to load items from |
 | `existingSearchURL` | `string\|false` | Existing search URL if using search strategy |
+| `existingSelectedItems` | `array` | Item IDs to check when reopening the modal in `'selection'` mode. Passed to the iframe as `initiallySelectedItems` on `location.search`. |
 | `onSelectCollection` | `function` | Callback when a collection is selected |
 | `onApplySearchURL` | `function` | Callback when search query is applied |
 | `onApplySelectedItems` | `function` | Callback when items are manually selected |
@@ -175,18 +179,21 @@ export default ItemSelectionToolbar;
 
 #### Items Phase
 
-The Items phase brings the Tainacan Admin UI embedded in an Iframe with [some special URL](#available-selection-mode-parameters) params set. This hides the entire Admin UI, making things cleaner and loading only the necessary content to filter the desired items. One important consequence of this is that users will only see items that they are authorized to, as well as metadata and filters.
+The Items phase brings the Tainacan Admin UI embedded in an iframe with [some special URL](#available-selection-mode-parameters) params set. This hides the entire Admin UI, making things cleaner and loading only the necessary content to filter the desired items. One important consequence of this is that users will only see items that they are authorized to, as well as metadata and filters.
+
+Do not read the iframe's `Location` or `contentWindow` from your plugin. WordPress 7.1 isolates the block editor in Chromium, so that access can throw a `SecurityError` even on the same origin. The modal already receives selection and search state from the iframe and exposes it through the callbacks below. If you embed the admin items UI in your own iframe instead of using these modules, see [Using your own iframe](#using-your-own-iframe).
 
 ##### Manual Selection Strategy
 - Shows an `<iframe>` with the collection's items in selection mode
 - Users can manually select/deselect items, even across pages
 - Filters and search are available within the iframe
-- Selected items are returned via `onApplySelectedItems`
+- Previously selected IDs from `existingSelectedItems` are checked when the iframe loads
+- Selected items are returned via `onApplySelectedItems`. That list is the current iframe selection (replace, do not concatenate with a previous list).
 
 ##### Search Query Strategy
 - Shows an `<iframe>` with the collection's items in search mode
 - Users can configure filters, search terms, and sorting
-- The final search URL is returned via `onApplySearchURL`
+- The current admin page URL (including the hash query) is returned via `onApplySearchURL`
 - This URL can be used to dynamically load items later
 
 > [!NOTE]
@@ -202,6 +209,7 @@ You can pre-select a collection and skip the collection selection phase:
 <TainacanMultipleItemSelectionModal
     loadStrategy="selection"
     existingCollectionId="123" // Pre-selected collection
+    existingSelectedItems={selectedItems} // IDs already chosen; checked again in the iframe
     onApplySelectedItems={handleItems}
     onCancelSelection={handleCancel}
 />
@@ -209,22 +217,25 @@ You can pre-select a collection and skip the collection selection phase:
 
 #### Handling Search URLs
 
-When using the search strategy, the returned URL contains all the search parameters:
+When using the search strategy, `onApplySearchURL` receives the iframe's full admin URL. Search filters live in the **hash**, not in `location.search`:
+
+```
+https://example.org/wp-admin/admin.php?itemsSearchSelectionMode=true&page=tainacan_admin#/collections/123/items/?search=keyword&orderby=title&order=asc
+```
+
+Store that string as-is if you only need to reopen the same search. To turn it into a REST list request, take the path after `#/collections`, as the Gutenberg items blocks do:
 
 ```jsx
 const handleSearchURL = (searchURL) => {
-    // searchURL will contain filters, search terms, sorting, etc.
-    // Example: /collections/123/items/?search=keyword&orderby=title&order=asc
-    
-    // Store this URL to recreate the same search later
     setStoredSearchURL(searchURL);
-    
-    // Or parse it to extract specific parameters
-    const url = new URL(searchURL);
-    const searchTerm = url.searchParams.get('search');
-    const orderBy = url.searchParams.get('orderby');
+
+    const hashPath = searchURL.split('#')[1] || '';
+    const endpoint = '/collection' + hashPath.split('/collections')[1];
+    // Example: /collection/123/items/?search=keyword&orderby=title&order=asc
 };
 ```
+
+`new URL(searchURL).searchParams` only sees `itemsSearchSelectionMode` and `page`. It will not contain `search`, `orderby`, or selected item IDs.
 
 ### Styling and Customization
 
@@ -303,6 +314,78 @@ These are the URL parameters you can check to customize different selection mode
 - `itemsSingleSelectionMode`
 - `itemsMultipleSelectionMode`
 - `itemsSearchSelectionMode`
+
+To restore a previous manual selection in the iframe, add `initiallySelectedItems` on the same query string (comma-separated IDs). Do not put it in the hash. See [Using your own iframe](#using-your-own-iframe).
+
+## Using your own iframe
+
+You can reuse the Tainacan admin items list without the React selection modals: load it in your own `<iframe>` with one of the [selection mode parameters](#available-selection-mode-parameters). The admin then publishes a selection snapshot whenever the user changes the checked items or the search.
+
+Do not listen to iframe URL changes or read `iframe.contentWindow.location`. Subscribe to the same [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) the Gutenberg modals use. The channel is origin-scoped, so your script and the iframe must share the same origin (typical when both run from `wp-admin`).
+
+The iframe `src` must include one of:
+
+- `itemsSingleSelectionMode=true` — one item
+- `itemsMultipleSelectionMode=true` — a list of item IDs
+- `itemsSearchSelectionMode=true` — a search URL (filters live in the hash)
+
+```
+https://example.org/wp-admin/admin.php?itemsMultipleSelectionMode=true&page=tainacan_admin&initiallySelectedItems=12,34#/collections/123/items/?status=publish
+```
+
+`initiallySelectedItems` belongs on `location.search` (next to the selection-mode flags), not in the hash. The admin reads it once on boot to check those items. Do not put it in the hash: Vue Router would treat it as a search query. Single-item iframes use the same param with one ID. Search-mode iframes restore filters from the hash via `existingSearchURL` / `href` and do not use this param.
+
+Each message looks like:
+
+```js
+{
+    source: 'tainacan-selection',
+    selectedItems: ['12', '34'], // item IDs, for manual selection
+    query: {},                   // current search query object
+    href: 'https://example.org/wp-admin/admin.php?itemsMultipleSelectionMode=true&page=tainacan_admin#/collections/123/items/?status=publish&orderby=date',
+    collectionId: '123'
+}
+```
+
+Cache the last snapshot and read it when the user confirms. Use `selectedItems` for a manual list of IDs. Use `href` when the iframe is in search mode: it is the full admin URL, including the hash where filters live. To turn that string into a REST list request, parse the hash as in [Handling Search URLs](#handling-search-urls).
+
+```js
+const TAINACAN_SELECTION_CHANNEL = 'tainacan-selection';
+const TAINACAN_SELECTION_SOURCE = 'tainacan-selection';
+
+let lastSelection = null;
+const channel = new BroadcastChannel(TAINACAN_SELECTION_CHANNEL);
+
+channel.onmessage = (event) => {
+    const data = event.data;
+    if (!data || data.source !== TAINACAN_SELECTION_SOURCE)
+        return;
+
+    lastSelection = {
+        selectedItems: Array.isArray(data.selectedItems) ? data.selectedItems.map(String) : [],
+        query: data.query && typeof data.query === 'object' ? data.query : {},
+        href: data.href ? String(data.href) : '',
+        collectionId: data.collectionId != null ? String(data.collectionId) : ''
+    };
+};
+
+function applySelection() {
+    if (!lastSelection)
+        return;
+
+    // Manual selection: lastSelection.selectedItems
+    // Search selection: lastSelection.href (parse the hash as in "Handling Search URLs")
+}
+
+function teardown() {
+    channel.close();
+}
+```
+
+Close the channel when your UI is destroyed so a leftover listener does not keep receiving snapshots from a closed iframe.
+
+> [!WARNING]
+> `BroadcastChannel` delivers every snapshot on that origin. If more than one selection iframe could be open, ignore messages whose `collectionId` (or `href`) does not match the iframe you are showing.
 
 ## Conclusion
 

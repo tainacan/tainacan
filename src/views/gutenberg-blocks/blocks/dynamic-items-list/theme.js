@@ -3,7 +3,7 @@ import { createApp, h, defineAsyncComponent } from 'vue';
 import DynamicItemsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import { I18NPlugin } from '../../../admin/js/admin-utilities';
-import VueBlurHash from 'another-vue3-blurhash';
+import TainacanProgressiveImage from '../../../admin/components/other/tainacan-progressive-image.vue';
 import VTooltip from 'floating-vue';
 
 import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
@@ -115,7 +115,7 @@ export default (element) => {
                 });
                 VueDynamicItemsList.use(I18NPlugin);
                 VueDynamicItemsList.use(ThumbnailHelperPlugin);
-                VueDynamicItemsList.use(VueBlurHash);
+                VueDynamicItemsList.component('tainacan-progressive-image', TainacanProgressiveImage);
 
                 VueDynamicItemsList.mount('#' + block.id);
             });

@@ -12,180 +12,115 @@ function your_callback_function( $arg1, $arg2 ) {
 Refer to the list below for available Tainacan actions and their usage.
 
 
-## `tainacan-pre-insert` <!-- {docsify-ignore} -->
+## `tainacan-dashboard-before-cards` <!-- {docsify-ignore} -->
 
 
-Argument | Type | Description
--------- | ---- | -----------
-`$term` | `\Tainacan\Entities\Entity` | 
-
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L124)
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 49](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L49-L49)
 
 ---------------------------------
 <br>
 
-## `tainacan-pre-insert-term` <!-- {docsify-ignore} -->
+## `tainacan-dashboard-after-cards` <!-- {docsify-ignore} -->
 
 
-Argument | Type | Description
--------- | ---- | -----------
-`$term` | `\Tainacan\Entities\Entity` | 
-
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L125)
+Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 62](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L62-L62)
 
 ---------------------------------
 <br>
 
-## `tainacan-insert` <!-- {docsify-ignore} -->
+## `tainacan-enqueue-admin-scripts` <!-- {docsify-ignore} -->
 
 
-Argument | Type | Description
--------- | ---- | -----------
-`$new_entity` |  | 
-
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L172)
+Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 301](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L301-L301)
 
 ---------------------------------
 <br>
 
-## `tainacan-insert-term` <!-- {docsify-ignore} -->
+## `tainacan-register-vuejs-plugin` <!-- {docsify-ignore} -->
+
+*Class Plugins_Hooks*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$new_entity` |  | 
+`$this` |  | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L173)
+Source: [class-tainacan-plugin-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-plugin-hooks.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-plugin-hooks.php#L7-L24)
 
 ---------------------------------
 <br>
 
-## `tainacan-pre-delete` <!-- {docsify-ignore} -->
+## `tainacan-register-admin-hooks` <!-- {docsify-ignore} -->
 
 
-Argument | Type | Description
--------- | ---- | -----------
-`$deleted` |  | 
-`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
-
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L292)
+Source: [class-tainacan-admin-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php), [line 17](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php#L17-L17)
 
 ---------------------------------
 <br>
 
-## `tainacan-pre-delete-term` <!-- {docsify-ignore} -->
+## `tainacan-register-vuejs-component` <!-- {docsify-ignore} -->
+
+*Class Components_Hooks*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$deleted` |  | 
-`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
+`$this` |  | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L293)
+Source: [class-tainacan-component-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-component-hooks.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-component-hooks.php#L7-L27)
 
 ---------------------------------
 <br>
 
-## `tainacan-deleted` <!-- {docsify-ignore} -->
+## `tainacan-register-metadata-type` <!-- {docsify-ignore} -->
+
+*Class MetadataTypeHelper*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$deleted` |  | 
-`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
+`$this` |  | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L298)
+Source: [class-tainacan-metadata-type-helper.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/metadata-type-helper/class-tainacan-metadata-type-helper.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/metadata-type-helper/class-tainacan-metadata-type-helper.php#L7-L40)
 
 ---------------------------------
 <br>
 
-## `tainacan-deleted-term` <!-- {docsify-ignore} -->
+## `tainacan-register-filter-type` <!-- {docsify-ignore} -->
+
+*Class FilterTypeHelper*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$deleted` |  | 
-`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
+`$this` |  | 
 
-Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L299)
+Source: [class-tainacan-filter-type-helper.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/filter-type-helper/class-tainacan-filter-type-helper.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/filter-type-helper/class-tainacan-filter-type-helper.php#L7-L41)
 
 ---------------------------------
 <br>
 
-## `tainacan-pre-insert` <!-- {docsify-ignore} -->
-
-*Persist a Log entity into the custom wp_tainacan_logs table.*
-
-Uses $wpdb->insert() with explicit format specifiers so all values
-go through wpdb's internal prepare(), preventing SQL injection.
-Serializable fields (old_value, new_value) are passed through
-maybe_serialize() before storage.
+## `tainacan-enqueue-roles-scripts` <!-- {docsify-ignore} -->
 
 
-Argument | Type | Description
--------- | ---- | -----------
-`$obj` | `\Tainacan\Entities\Log` | 
-
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L472)
+Source: [class-tainacan-roles.php](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php), [line 57](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php#L57-L57)
 
 ---------------------------------
 <br>
 
-## `tainacan-pre-insert-{$post_type}` <!-- {docsify-ignore} -->
+## `tainacan-bulk-edit-set-status` <!-- {docsify-ignore} -->
 
-*Persist a Log entity into the custom wp_tainacan_logs table.*
-
-Uses $wpdb->insert() with explicit format specifiers so all values
-go through wpdb's internal prepare(), preventing SQL injection.
-Serializable fields (old_value, new_value) are passed through
-maybe_serialize() before storage.
+*Sets the status to all items in the current group*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$obj` | `\Tainacan\Entities\Log` | 
+`$value` |  | 
+`$this->get_id()` |  | 
+`$select_q` |  | 
+`$query` |  | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L474)
-
----------------------------------
-<br>
-
-## `tainacan-insert` <!-- {docsify-ignore} -->
-
-*Persist a Log entity into the custom wp_tainacan_logs table.*
-
-Uses $wpdb->insert() with explicit format specifiers so all values
-go through wpdb's internal prepare(), preventing SQL injection.
-Serializable fields (old_value, new_value) are passed through
-maybe_serialize() before storage.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$obj` | `\Tainacan\Entities\Log` | 
-`[]` |  | 
-`false` |  | 
-
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L519)
-
----------------------------------
-<br>
-
-## `tainacan-insert-{$post_type}` <!-- {docsify-ignore} -->
-
-*Persist a Log entity into the custom wp_tainacan_logs table.*
-
-Uses $wpdb->insert() with explicit format specifiers so all values
-go through wpdb's internal prepare(), preventing SQL injection.
-Serializable fields (old_value, new_value) are passed through
-maybe_serialize() before storage.
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$obj` | `\Tainacan\Entities\Log` | 
-
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L520)
+Source: [class-tainacan-bulk-edit.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-bulk-edit.php), [line 223](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-bulk-edit.php#L223-L249)
 
 ---------------------------------
 <br>
@@ -448,6 +383,198 @@ Source: [class-tainacan-item-metadata.php](https://github.com/tainacan/tainacan/
 ---------------------------------
 <br>
 
+## `tainacan-pre-insert` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L472)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-insert-{$post_type}` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L474)
+
+---------------------------------
+<br>
+
+## `tainacan-insert` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+`[]` |  | 
+`false` |  | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L519)
+
+---------------------------------
+<br>
+
+## `tainacan-insert-{$post_type}` <!-- {docsify-ignore} -->
+
+*Persist a Log entity into the custom wp_tainacan_logs table.*
+
+Uses $wpdb->insert() with explicit format specifiers so all values
+go through wpdb's internal prepare(), preventing SQL injection.
+Serializable fields (old_value, new_value) are passed through
+maybe_serialize() before storage.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$obj` | `\Tainacan\Entities\Log` | 
+
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 453](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L453-L520)
+
+---------------------------------
+<br>
+
+## `register_filter_types` <!-- {docsify-ignore} -->
+
+*fetch all registered filter type classes*
+
+Possible outputs are:
+CLASS (default) - returns the Class name of of filter types registered
+NAME - return an Array of the names of filter types registered
+
+
+Source: [class-tainacan-filters.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php), [line 305](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php#L305-L319)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-insert` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$term` | `\Tainacan\Entities\Entity` | 
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L124)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-insert-term` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$term` | `\Tainacan\Entities\Entity` | 
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L125)
+
+---------------------------------
+<br>
+
+## `tainacan-insert` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$new_entity` |  | 
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L172)
+
+---------------------------------
+<br>
+
+## `tainacan-insert-term` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$new_entity` |  | 
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 112](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L112-L173)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-delete` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$deleted` |  | 
+`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L292)
+
+---------------------------------
+<br>
+
+## `tainacan-pre-delete-term` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$deleted` |  | 
+`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L293)
+
+---------------------------------
+<br>
+
+## `tainacan-deleted` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$deleted` |  | 
+`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L298)
+
+---------------------------------
+<br>
+
+## `tainacan-deleted-term` <!-- {docsify-ignore} -->
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$deleted` |  | 
+`$permanent` | `bool` | this parameter is not used by Terms repository. Delete is always permanent
+
+Source: [class-tainacan-terms.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php), [line 281](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-terms.php#L281-L299)
+
+---------------------------------
+<br>
+
 ## `register_metadata_types` <!-- {docsify-ignore} -->
 
 *fetch all registered metadatum type classes*
@@ -522,48 +649,6 @@ Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/
 ---------------------------------
 <br>
 
-## `register_filter_types` <!-- {docsify-ignore} -->
-
-*fetch all registered filter type classes*
-
-Possible outputs are:
-CLASS (default) - returns the Class name of of filter types registered
-NAME - return an Array of the names of filter types registered
-
-
-Source: [class-tainacan-filters.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php), [line 305](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-filters.php#L305-L319)
-
----------------------------------
-<br>
-
-## `tainacan-register-exporters` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this` |  | 
-
-Source: [class-tainacan-exporter-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php), [line 52](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php#L52-L52)
-
----------------------------------
-<br>
-
-## `tainacan-register-generic_process` <!-- {docsify-ignore} -->
-
-
-Source: [class-tainacan-generic-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php), [line 34](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php#L34-L34)
-
----------------------------------
-<br>
-
-## `tainacan-register-importers` <!-- {docsify-ignore} -->
-
-
-Source: [class-tainacan-importer-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/importer/class-tainacan-importer-handler.php), [line 83](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/importer/class-tainacan-importer-handler.php#L83-L83)
-
----------------------------------
-<br>
-
 ## `tainacan-pre-insert-attachment` <!-- {docsify-ignore} -->
 
 *Insert an attachment from an URL address.*
@@ -575,7 +660,7 @@ Argument | Type | Description
 `$filename` | `string` | The filename that will be created
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 395](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L395-L405)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 422](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L422-L432)
 
 ---------------------------------
 <br>
@@ -591,7 +676,7 @@ Argument | Type | Description
 `$attach_data` |  | 
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 395](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L395-L449)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 422](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L422-L476)
 
 ---------------------------------
 <br>
@@ -633,30 +718,44 @@ Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/
 ---------------------------------
 <br>
 
-## `tainacan-register-mappers` <!-- {docsify-ignore} -->
+## `tainacan-register-exposers` <!-- {docsify-ignore} -->
+
+*Load exposers classes*
 
 
 Argument | Type | Description
 -------- | ---- | -----------
 `$this` |  | 
 
-Source: [class-tainacan-mappers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php), [line 46](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php#L46-L46)
+Source: [class-tainacan-exposers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposers-handler.php), [line 8](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposers-handler.php#L8-L47)
 
 ---------------------------------
 <br>
 
-## `tainacan-api-collection-created` <!-- {docsify-ignore} -->
+## `tainacan-register-generic_process` <!-- {docsify-ignore} -->
 
-*Receive a JSON with the structure of a Collection and return, in case of success insert
-a Collection object in JSON*
+
+Source: [class-tainacan-generic-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php), [line 34](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php#L34-L34)
+
+---------------------------------
+<br>
+
+## `tainacan-register-exporters` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$response` |  | 
-`$request` | `\WP_REST_Request` | 
+`$this` |  | 
 
-Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 472](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L472-L502)
+Source: [class-tainacan-exporter-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php), [line 54](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php#L54-L54)
+
+---------------------------------
+<br>
+
+## `tainacan-register-importers` <!-- {docsify-ignore} -->
+
+
+Source: [class-tainacan-importer-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/importer/class-tainacan-importer-handler.php), [line 83](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/importer/class-tainacan-importer-handler.php#L83-L83)
 
 ---------------------------------
 <br>
@@ -676,6 +775,22 @@ Argument | Type | Description
 `$from_cache` | `bool` | Whether the body was produced by a short-circuit filter.
 
 Source: [class-tainacan-rest-oaipmh-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php), [line 509](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-oaipmh-controller.php#L509-L518)
+
+---------------------------------
+<br>
+
+## `tainacan-api-collection-created` <!-- {docsify-ignore} -->
+
+*Receive a JSON with the structure of a Collection and return, in case of success insert
+a Collection object in JSON*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$response` |  | 
+`$request` | `\WP_REST_Request` | 
+
+Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 472](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L472-L502)
 
 ---------------------------------
 <br>
@@ -730,129 +845,14 @@ Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/t
 ---------------------------------
 <br>
 
-## `tainacan-bulk-edit-set-status` <!-- {docsify-ignore} -->
-
-*Sets the status to all items in the current group*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$value` |  | 
-`$this->get_id()` |  | 
-`$select_q` |  | 
-`$query` |  | 
-
-Source: [class-tainacan-bulk-edit.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-bulk-edit.php), [line 223](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-bulk-edit.php#L223-L249)
-
----------------------------------
-<br>
-
-## `tainacan-register-exposers` <!-- {docsify-ignore} -->
-
-*Load exposers classes*
+## `tainacan-register-mappers` <!-- {docsify-ignore} -->
 
 
 Argument | Type | Description
 -------- | ---- | -----------
 `$this` |  | 
 
-Source: [class-tainacan-exposers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposers-handler.php), [line 8](https://github.com/tainacan/tainacan/blob/master/src/classes/exposers/class-tainacan-exposers-handler.php#L8-L47)
-
----------------------------------
-<br>
-
-## `tainacan-dashboard-before-cards` <!-- {docsify-ignore} -->
-
-
-Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 49](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L49-L49)
-
----------------------------------
-<br>
-
-## `tainacan-dashboard-after-cards` <!-- {docsify-ignore} -->
-
-
-Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php), [line 62](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/page.php#L62-L62)
-
----------------------------------
-<br>
-
-## `tainacan-enqueue-admin-scripts` <!-- {docsify-ignore} -->
-
-
-Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 301](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L301-L301)
-
----------------------------------
-<br>
-
-## `tainacan-register-admin-hooks` <!-- {docsify-ignore} -->
-
-
-Source: [class-tainacan-admin-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php), [line 17](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-admin-hooks.php#L17-L17)
-
----------------------------------
-<br>
-
-## `tainacan-register-vuejs-component` <!-- {docsify-ignore} -->
-
-*Class Components_Hooks*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this` |  | 
-
-Source: [class-tainacan-component-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-component-hooks.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-component-hooks.php#L7-L27)
-
----------------------------------
-<br>
-
-## `tainacan-register-vuejs-plugin` <!-- {docsify-ignore} -->
-
-*Class Plugins_Hooks*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this` |  | 
-
-Source: [class-tainacan-plugin-hooks.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-plugin-hooks.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/classes/hooks/class-tainacan-plugin-hooks.php#L7-L24)
-
----------------------------------
-<br>
-
-## `tainacan-register-filter-type` <!-- {docsify-ignore} -->
-
-*Class FilterTypeHelper*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this` |  | 
-
-Source: [class-tainacan-filter-type-helper.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/filter-type-helper/class-tainacan-filter-type-helper.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/filter-types/filter-type-helper/class-tainacan-filter-type-helper.php#L7-L41)
-
----------------------------------
-<br>
-
-## `tainacan-register-metadata-type` <!-- {docsify-ignore} -->
-
-*Class MetadataTypeHelper*
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`$this` |  | 
-
-Source: [class-tainacan-metadata-type-helper.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/metadata-type-helper/class-tainacan-metadata-type-helper.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/views/admin/components/metadata-types/metadata-type-helper/class-tainacan-metadata-type-helper.php#L7-L40)
-
----------------------------------
-<br>
-
-## `tainacan-enqueue-roles-scripts` <!-- {docsify-ignore} -->
-
-
-Source: [class-tainacan-roles.php](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php), [line 57](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php#L57-L57)
+Source: [class-tainacan-mappers-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php), [line 46](https://github.com/tainacan/tainacan/blob/master/src/classes/mappers/class-tainacan-mappers-handler.php#L46-L46)
 
 ---------------------------------
 <br>

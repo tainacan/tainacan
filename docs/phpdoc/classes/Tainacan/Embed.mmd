@@ -1,10 +1,13 @@
 classDiagram
     direction TB
     class Embed {
+        -override_active : bool
         -aspect_ratios : array
         #init()
         +filter_video_embed(video, attr, url, rawattr)
+        -is_video_preload_none_enabled()
         +filter_audio_embed(audio, attr, url, rawattr)
+        +embed(url)
         +pdf_embed_handler(matches, attr, url, rawattr)
         +oembed_get_thumbnail(url)
         +oembed_get_thumbnail_filter(return, data, url)
