@@ -122,7 +122,10 @@ class Theme_Helper {
 		return $prefix == Entities\Collection::$db_identifier_prefix;
 	}
 
-	public function is_post_an_item(\WP_Post $post) {
+	public function is_post_an_item(?\WP_Post $post) {
+		if(!$post instanceof \WP_Post) {
+			return false;
+		}
 		$post_type = $post->post_type;
 		return $this->is_post_type_a_collection($post_type);
 	}
