@@ -685,6 +685,28 @@ public set_tmp_file(mixed $filepath): mixed
 
 ***
 
+### get_tmp_file_id
+
+```php
+public get_tmp_file_id(): mixed
+```
+
+***
+
+### set_tmp_file_id
+
+```php
+public set_tmp_file_id(mixed $id): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$id`     | **mixed** |             |
+
+***
+
 ### get_collections
 
 ```php
@@ -805,6 +827,16 @@ public add_file(mixed $file): bool
 | Parameter | Type      | Description                    |
 |-----------|-----------|--------------------------------|
 | `$file`   | **mixed** | File to be managed by importer |
+
+***
+
+### delete_source_file
+
+Delete the uploaded source file and its WordPress attachment.
+
+```php
+public delete_source_file(): bool
+```
 
 ***
 
