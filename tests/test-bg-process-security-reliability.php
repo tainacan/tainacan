@@ -554,7 +554,8 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 	// ─── Log File Ownership Tests ──────────────────────────────────
 
 	/**
-	 * Test that a user cannot download another user's process log file.
+	 * Test that a user without the manage_tainacan capability cannot download
+	 * a process log file, even one they don't own.
 	 *
 	 * @group bg-process-security
 	 */
@@ -600,7 +601,7 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 		$request->set_param( 'guid', $log_filename );
 		$response = $this->server->dispatch( $request );
 
-		$this->assertEquals( 403, $response->get_status(), 'Subscriber should not download another user log file' );
+		$this->assertEquals( 403, $response->get_status(), 'Subscriber lacks manage_tainacan and should not download the log file' );
 
 		// Cleanup.
 		unlink( $logs_dir . '/' . $log_filename );
@@ -608,12 +609,12 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 	}
 
 	/**
-	 * Test that a process owner passes the permission check for their own log file.
+	 * Test that a manage_tainacan user passes the permission check for a log file.
 	 *
 	 * Note: The actual file download endpoint uses readfile()+exit which
 	 * cannot be tested inside PHPUnit. Instead we verify that:
-	 * 1. A non-owner is denied (tested in test_user_cannot_download_others_log)
-	 * 2. The admin/owner passes the permission callback and the file can be located
+	 * 1. A user without manage_tainacan is denied (tested in test_user_cannot_download_others_log)
+	 * 2. The admin passes the permission callback and the file can be located
 	 *
 	 * @group bg-process-security
 	 */

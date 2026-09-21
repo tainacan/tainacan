@@ -68,9 +68,15 @@ class TAINACAN_REST_Background_Processes_File extends TAINACAN_UnitApiTestCase {
 		@rmdir( $dir );
 	}
 
-	private function request_file_as_subscriber( $guid ) {
-		$subscriber = $this->factory()->user->create( array( 'role' => 'subscriber' ) );
-		wp_set_current_user( $subscriber );
+	/**
+	 * The /bg-processes/file route requires manage_tainacan, so these
+	 * traversal regression tests need an authorized user to actually reach
+	 * get_file()'s path-handling logic rather than being stopped earlier by
+	 * the permission_callback.
+	 */
+	private function request_file_as_authorized_user( $guid ) {
+		$admin = $this->factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin );
 
 		$request = new \WP_REST_Request( 'GET', $this->namespace . '/bg-processes/file' );
 		$request->set_param( 'guid', $guid );
@@ -79,21 +85,21 @@ class TAINACAN_REST_Background_Processes_File extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_rejects_dot_dot_traversal() {
-		$response = $this->request_file_as_subscriber( '../../../../etc/passwd' );
+		$response = $this->request_file_as_authorized_user( '../../../../etc/passwd' );
 
 		$this->assertEquals( 403, $response->get_status() );
 		$this->assertEquals( 'unauthorized_file_path', $response->get_data()['code'] );
 	}
 
 	public function test_rejects_absolute_unix_path() {
-		$response = $this->request_file_as_subscriber( '/etc/passwd' );
+		$response = $this->request_file_as_authorized_user( '/etc/passwd' );
 
 		$this->assertEquals( 403, $response->get_status() );
 		$this->assertEquals( 'unauthorized_file_path', $response->get_data()['code'] );
 	}
 
 	public function test_rejects_windows_style_absolute_path() {
-		$response = $this->request_file_as_subscriber( 'C:\\Windows\\win.ini' );
+		$response = $this->request_file_as_authorized_user( 'C:\\Windows\\win.ini' );
 
 		$this->assertEquals( 403, $response->get_status() );
 		$this->assertEquals( 'unauthorized_file_path', $response->get_data()['code'] );
@@ -109,15 +115,15 @@ class TAINACAN_REST_Background_Processes_File extends TAINACAN_UnitApiTestCase {
 	public function test_missing_base_directory_does_not_leak_arbitrary_files() {
 		$this->assertDirectoryDoesNotExist( $this->tainacan_uploads_dir );
 
-		$response = $this->request_file_as_subscriber( 'etc/passwd' );
+		$response = $this->request_file_as_authorized_user( 'etc/passwd' );
 
 		$this->assertEquals( 404, $response->get_status() );
 		$this->assertStringContainsString( 'Base directory not found', $response->get_data()['error_message'] );
 	}
 
 	public function test_missing_guid_returns_400() {
-		$subscriber = $this->factory()->user->create( array( 'role' => 'subscriber' ) );
-		wp_set_current_user( $subscriber );
+		$admin = $this->factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin );
 
 		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/bg-processes/file' );
 		$response = $this->server->dispatch( $request );
@@ -137,5 +143,19 @@ class TAINACAN_REST_Background_Processes_File extends TAINACAN_UnitApiTestCase {
 		// WP core's rest_authorization_required_code() maps that to 401, reserving 403 for
 		// an authenticated user that lacks the capability.
 		$this->assertEquals( 401, $response->get_status() );
+	}
+
+	public function test_user_without_manage_tainacan_is_forbidden() {
+		$subscriber = $this->factory()->user->create( array( 'role' => 'subscriber' ) );
+		wp_set_current_user( $subscriber );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/bg-processes/file' );
+		$request->set_param( 'guid', 'some-log.log' );
+
+		$response = $this->server->dispatch( $request );
+
+		// A logged-in user without manage_tainacan is rejected by the
+		// permission_callback before get_file() runs.
+		$this->assertEquals( 403, $response->get_status() );
 	}
 }
