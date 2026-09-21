@@ -134,8 +134,8 @@
                                     :message="$i18n.getHelperMessage('metadata-sections', 'description')" />
                         </label>
                         <component
-                                :is="'tainacan-wysiwyg'"
-                                v-if="isWysiwygEditorAllowed"
+                                :is="'tainacan-rich-text-editor'"
+                                v-if="isRichTextEditorAllowed"
                                 id="tainacan-metadata-section-description"
                                 v-model="form.description"
                                 name="description"
@@ -304,7 +304,7 @@
     import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from "../../js/mixins";
-    import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
+    import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
 
     export default {
         name: 'MetadataSectionEditionForm',
@@ -334,7 +334,7 @@
                 selectedConditionalMetadatumId: undefined,
                 selectedConditionalValue: [],
                 hideConditionalSectionSettings: false,
-                isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
+                isRichTextEditorAllowed: isRichTextEditorAllowed(),
                 shouldUpdateConditionalValue: true
             }
         },

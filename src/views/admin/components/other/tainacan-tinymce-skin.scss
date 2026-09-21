@@ -1,6 +1,6 @@
 @import 'tinymce/skins/ui/oxide/skin.css';
 
-.tainacan-wysiwyg {
+.tainacan-rich-text-editor {
     width: 100%;
 
     .tox .tox-toolbar__group {
@@ -59,23 +59,23 @@
     }
 }
 
-.tainacan-wysiwyg.is-invalid .tox-tinymce {
+.tainacan-rich-text-editor.is-invalid .tox-tinymce {
     border-color: var(--bulma-danger);
 }
 
-.tainacan-wysiwyg.is-invalid .tox .tox-edit-area::before {
+.tainacan-rich-text-editor.is-invalid .tox .tox-edit-area::before {
     border-color: var(--bulma-danger);
 }
 
-.tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-wysiwyg-dialog) {
+.tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-rich-text-editor-dialog) {
     z-index: 10000000;
 }
 
-.tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-wysiwyg-menu) {
+.tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-rich-text-editor-menu) {
     z-index: 10000000;
 }
 
-.tainacan-wysiwyg-dialog {
+.tainacan-rich-text-editor-dialog {
     font-family: var(--tainacan-font-family, inherit);
 
     .tox-dialog-wrap__backdrop {

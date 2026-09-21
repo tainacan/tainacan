@@ -1,7 +1,7 @@
 <template>
     <component
-            :is="'tainacan-wysiwyg'"
-            v-if="shouldUseWysiwygEditor"
+            :is="'tainacan-rich-text-editor'"
+            v-if="shouldUseRichTextEditor"
             :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             :disabled="disabled"
             :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import { isWysiwygEditorAllowed } from '../../../js/wysiwyg-feature-flag';
+    import { isRichTextEditorAllowed } from '../../../js/rich-text-editor-feature-flag';
 
     export default {
         props: {
@@ -44,12 +44,12 @@
             }
         },
         computed: {
-            shouldUseWysiwygEditor() {
-                return isWysiwygEditorAllowed() &&
+            shouldUseRichTextEditor() {
+                return isRichTextEditorAllowed() &&
                     this.itemMetadatum &&
                     this.itemMetadatum.metadatum &&
                     this.itemMetadatum.metadatum.metadata_type_options &&
-                    this.itemMetadatum.metadatum.metadata_type_options.use_wysiwyg_editor === 'yes';
+                    this.itemMetadatum.metadatum.metadata_type_options.use_rich_text_editor === 'yes';
             },
             getMaxlength() {
                 if ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== null && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== undefined && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== '' )

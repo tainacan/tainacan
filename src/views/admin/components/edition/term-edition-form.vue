@@ -130,8 +130,8 @@
                                         extra-classes="tainacan-repository-tooltip" />
                             </label>
                             <component
-                                    :is="'tainacan-wysiwyg'"
-                                    v-if="isWysiwygEditorAllowed"
+                                    :is="'tainacan-rich-text-editor'"
+                                    v-if="isRichTextEditorAllowed"
                                     id="tainacan-term-description"
                                     v-model="form.description"
                                     name="description"
@@ -361,7 +361,7 @@
     import { formHooks } from "../../js/mixins";
     import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
-    import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
+    import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
 
     export default {
         name: 'TermEditionForm',
@@ -409,7 +409,7 @@
                 coverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
-                isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
+                isRichTextEditorAllowed: isRichTextEditorAllowed(),
                 newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page'
             }
         },

@@ -227,8 +227,8 @@ export default (element) => {
             /* Others */
             app.component('help-button', HelpButton);
             app.component('tainacan-title', TainacanTitle);
-            if (typeof window !== 'undefined' && window.tainacan_plugin && window.tainacan_plugin.tainacan_allow_wysiwyg_editor === '1') {
-                app.component('tainacan-wysiwyg', defineAsyncComponent(() => import('../components/other/tainacan-wysiwyg.vue')));
+            if (typeof window !== 'undefined' && window.tainacan_plugin && window.tainacan_plugin.tainacan_allow_rich_text_editor === '1') {
+                app.component('tainacan-rich-text-editor', defineAsyncComponent(() => import('../components/other/tainacan-rich-text-editor.vue')));
             }
             app.component('tainacan-external-link', TainacanExternalLink)
             

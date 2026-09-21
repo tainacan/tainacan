@@ -184,7 +184,7 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
-			'id' => 'allow_wysiwyg_editor',
+			'id' => 'allow_rich_text_editor',
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Rich text editor', 'tainacan' ),
 			'label' => __( 'Allow the rich text editor in text inputs', 'tainacan' ),

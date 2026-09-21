@@ -63,8 +63,8 @@
                                 :message="$i18n.getHelperMessage('taxonomies', 'description')"
                                 extra-classes="tainacan-repository-tooltip" />
                         <component
-                                :is="'tainacan-wysiwyg'"
-                                v-if="isWysiwygEditorAllowed"
+                                :is="'tainacan-rich-text-editor'"
+                                v-if="isRichTextEditorAllowed"
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 name="description"
@@ -324,7 +324,7 @@
     import { mapActions } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
-    import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
+    import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
 
     export default {
         name: 'TaxonomyEditionForm',
@@ -395,7 +395,7 @@
                 editFormErrors: {},
                 formErrorMessage: '',
                 entityName: 'taxonomy',
-                isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
+                isRichTextEditorAllowed: isRichTextEditorAllowed(),
                 updatedAt: undefined,
                 shouldReloadTermsList: false,
                 themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url

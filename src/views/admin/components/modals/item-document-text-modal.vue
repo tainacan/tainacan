@@ -6,8 +6,8 @@
             </h2>
         </div>
         <component
-                :is="'tainacan-wysiwyg'"
-                v-if="isWysiwygEditorAllowed"
+                :is="'tainacan-rich-text-editor'"
+                v-if="isRichTextEditorAllowed"
                 id="tainacan-item-document-text"
                 v-model="localTextContent"
                 aria-labelledby="item-document-text-modal-title" />
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
+import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
 
 export default {
     props: {
@@ -56,14 +56,14 @@ export default {
     data(){
         return {
             localTextContent: '',
-            isWysiwygEditorAllowed: isWysiwygEditorAllowed()
+            isRichTextEditorAllowed: isRichTextEditorAllowed()
         }
     },
     mounted() {
         this.localTextContent = this.textContent;
 
         if (
-            !this.isWysiwygEditorAllowed &&
+            !this.isRichTextEditorAllowed &&
             this.$refs && 
             this.$refs['item-document-text-input'] &&
             this.$refs['item-document-text-input']['$el'] &&

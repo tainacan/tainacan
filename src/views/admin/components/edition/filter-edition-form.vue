@@ -116,8 +116,8 @@
                             :message="$i18n.getHelperMessage('filters', 'description')" />    
                 </label>
                 <component
-                        :is="'tainacan-wysiwyg'"
-                        v-if="isWysiwygEditorAllowed"
+                        :is="'tainacan-rich-text-editor'"
+                        v-if="isRichTextEditorAllowed"
                         id="tainacan-filter-description"
                         v-model="form.description"
                         name="description"
@@ -342,7 +342,7 @@
 import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
 import { formHooks } from "../../js/mixins";
-import { isWysiwygEditorAllowed } from '../../js/wysiwyg-feature-flag';
+import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
 
 import FormFilterDate from '../filter-types/date/FormDate.vue';
 import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
@@ -388,7 +388,7 @@ export default {
             showEditMaxOptions: false,
             entityName: 'filter',
             isLoading: false,
-            isWysiwygEditorAllowed: isWysiwygEditorAllowed(),
+            isRichTextEditorAllowed: isRichTextEditorAllowed(),
             maxOptionsLimit: tainacan_plugin.api_max_items_per_page && !isNaN(tainacan_plugin.api_max_items_per_page) ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },

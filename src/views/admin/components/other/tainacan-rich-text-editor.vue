@@ -1,6 +1,6 @@
 <template>
     <div
-            class="tainacan-wysiwyg"
+            class="tainacan-rich-text-editor"
             :class="{ 'is-invalid': invalid }">
         <input
                 v-if="name"
@@ -21,12 +21,12 @@
         <p
                 class="help"
                 aria-hidden="true">
-            {{ $i18n.get('instruction_wysiwyg_toolbar_shortcut') }}
+            {{ $i18n.get('instruction_rich_text_editor_toolbar_shortcut') }}
         </p>
         <p
                 :id="keyboardHintId"
                 class="sr-only">
-            {{ $i18n.get('instruction_wysiwyg_toolbar_shortcut_screen_reader') }}
+            {{ $i18n.get('instruction_rich_text_editor_toolbar_shortcut_screen_reader') }}
         </p>
     </div>
 </template>
@@ -45,53 +45,53 @@ import contentCss from 'tinymce/skins/content/default/content.css';
 import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
 
 let nextKeyboardHintId = 0;
-const pendingWysiwygDialogMatchers = new Set();
-const pendingWysiwygMenuMarkers = new Set();
-let wysiwygAuxObserver;
+const pendingRichTextEditorDialogMatchers = new Set();
+const pendingRichTextEditorMenuMarkers = new Set();
+let richTextEditorAuxObserver;
 
-function processPendingWysiwygAux() {
-    if (pendingWysiwygDialogMatchers.size) {
+function processPendingRichTextEditorAux() {
+    if (pendingRichTextEditorDialogMatchers.size) {
         const dialogs = document.querySelectorAll('.tox-dialog-wrap');
         const dialog = dialogs[dialogs.length - 1];
 
         if (dialog) {
-            for (const matcher of pendingWysiwygDialogMatchers) {
+            for (const matcher of pendingRichTextEditorDialogMatchers) {
                 if (matcher(dialog)) {
-                    dialog.classList.add('tainacan-wysiwyg-dialog');
-                    pendingWysiwygDialogMatchers.delete(matcher);
+                    dialog.classList.add('tainacan-rich-text-editor-dialog');
+                    pendingRichTextEditorDialogMatchers.delete(matcher);
                 }
             }
         }
     }
 
-    if (pendingWysiwygMenuMarkers.size) {
+    if (pendingRichTextEditorMenuMarkers.size) {
         const menus = document.querySelectorAll('.tox-menu');
         const menu = menus[menus.length - 1];
 
         if (menu && menu.getClientRects().length) {
-            menu.classList.add('tainacan-wysiwyg-menu');
-            pendingWysiwygMenuMarkers.clear();
+            menu.classList.add('tainacan-rich-text-editor-menu');
+            pendingRichTextEditorMenuMarkers.clear();
         }
     }
 
-    stopWysiwygAuxObserverWhenIdle();
+    stopRichTextEditorAuxObserverWhenIdle();
 }
 
-function ensureWysiwygAuxObserver() {
-    if (wysiwygAuxObserver)
+function ensureRichTextEditorAuxObserver() {
+    if (richTextEditorAuxObserver)
         return;
 
-    wysiwygAuxObserver = new MutationObserver(processPendingWysiwygAux);
-    wysiwygAuxObserver.observe(document.body, { childList: true, subtree: true });
-    processPendingWysiwygAux();
+    richTextEditorAuxObserver = new MutationObserver(processPendingRichTextEditorAux);
+    richTextEditorAuxObserver.observe(document.body, { childList: true, subtree: true });
+    processPendingRichTextEditorAux();
 }
 
-function stopWysiwygAuxObserverWhenIdle() {
-    if (!wysiwygAuxObserver || pendingWysiwygDialogMatchers.size || pendingWysiwygMenuMarkers.size)
+function stopRichTextEditorAuxObserverWhenIdle() {
+    if (!richTextEditorAuxObserver || pendingRichTextEditorDialogMatchers.size || pendingRichTextEditorMenuMarkers.size)
         return;
 
-    wysiwygAuxObserver.disconnect();
-    wysiwygAuxObserver = undefined;
+    richTextEditorAuxObserver.disconnect();
+    richTextEditorAuxObserver = undefined;
 }
 
 const EDITOR_INIT = {
@@ -111,27 +111,27 @@ const EDITOR_INIT = {
     resize: false,
     toolbar_mode: 'wrap',
     setup(editor) {
-        let wysiwygDialogMatcher;
-        let wysiwygMenuMarker;
+        let richTextEditorDialogMatcher;
+        let richTextEditorMenuMarker;
 
-        const waitForWysiwygDialog = (matcher) => {
-            if (wysiwygDialogMatcher)
-                pendingWysiwygDialogMatchers.delete(wysiwygDialogMatcher);
+        const waitForRichTextEditorDialog = (matcher) => {
+            if (richTextEditorDialogMatcher)
+                pendingRichTextEditorDialogMatchers.delete(richTextEditorDialogMatcher);
 
-            wysiwygDialogMatcher = matcher;
-            pendingWysiwygDialogMatchers.add(matcher);
-            ensureWysiwygAuxObserver();
+            richTextEditorDialogMatcher = matcher;
+            pendingRichTextEditorDialogMatchers.add(matcher);
+            ensureRichTextEditorAuxObserver();
         };
         const onToolbarClick = (event) => {
             const button = event.target.closest('button');
 
             if (button?.dataset.mceName === 'align') {
-                if (wysiwygMenuMarker)
-                    pendingWysiwygMenuMarkers.delete(wysiwygMenuMarker);
+                if (richTextEditorMenuMarker)
+                    pendingRichTextEditorMenuMarkers.delete(richTextEditorMenuMarker);
 
-                wysiwygMenuMarker = {};
-                pendingWysiwygMenuMarkers.add(wysiwygMenuMarker);
-                ensureWysiwygAuxObserver();
+                richTextEditorMenuMarker = {};
+                pendingRichTextEditorMenuMarkers.add(richTextEditorMenuMarker);
+                ensureRichTextEditorAuxObserver();
             }
         };
         editor.on('init', () => {
@@ -139,26 +139,26 @@ const EDITOR_INIT = {
         });
         editor.on('BeforeExecCommand', (event) => {
             if (event.command === 'mceLink') {
-                waitForWysiwygDialog((dialog) => dialog.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]'));
+                waitForRichTextEditorDialog((dialog) => dialog.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]'));
             }
 
             if (event.command === 'mceCodeEditor') {
-                waitForWysiwygDialog((dialog) => dialog.querySelector('textarea[data-mce-name="code"]'));
+                waitForRichTextEditorDialog((dialog) => dialog.querySelector('textarea[data-mce-name="code"]'));
             }
         });
         editor.on('remove', () => {
-            if (wysiwygDialogMatcher)
-                pendingWysiwygDialogMatchers.delete(wysiwygDialogMatcher);
-            if (wysiwygMenuMarker)
-                pendingWysiwygMenuMarkers.delete(wysiwygMenuMarker);
-            stopWysiwygAuxObserverWhenIdle();
+            if (richTextEditorDialogMatcher)
+                pendingRichTextEditorDialogMatchers.delete(richTextEditorDialogMatcher);
+            if (richTextEditorMenuMarker)
+                pendingRichTextEditorMenuMarkers.delete(richTextEditorMenuMarker);
+            stopRichTextEditorAuxObserverWhenIdle();
             editor.getContainer().removeEventListener('click', onToolbarClick);
         });
     }
 };
 
 export default {
-    name: 'TainacanWysiwyg',
+    name: 'TainacanRichTextEditor',
     components: {
         Editor
     },
@@ -203,7 +203,7 @@ export default {
     emits: [ 'update:modelValue', 'focus', 'blur' ],
     data() {
         return {
-            keyboardHintId: `tainacan-wysiwyg-keyboard-hint-${++nextKeyboardHintId}`
+            keyboardHintId: `tainacan-rich-text-editor-keyboard-hint-${++nextKeyboardHintId}`
         };
     },
     computed: {
