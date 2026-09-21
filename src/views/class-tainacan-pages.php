@@ -280,8 +280,9 @@ abstract class Pages {
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
 			'tainacan_allow_wysiwyg_editor' => (
-				defined('TAINACAN_ALLOW_WYSIWYG_EDITOR') &&
-				true === TAINACAN_ALLOW_WYSIWYG_EDITOR
+				defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' )
+					? true === TAINACAN_ALLOW_RICH_TEXT_EDITOR
+					: (bool) get_option( 'tainacan_option_allow_wysiwyg_editor', false )
 			),
 			'tainacan_index_pdf_content' => \Tainacan\Media::is_index_pdf_content_enabled(),
 			'document_content_index_max_characters' => \Tainacan\Media::get_document_content_index_max_characters(),
