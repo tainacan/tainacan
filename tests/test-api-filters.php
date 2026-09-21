@@ -836,6 +836,99 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	public function test_create_filter_rejects_serialized_filter_type_options() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'poi-filter-collection',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'poi-filter-meta',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
+				'status'        => 'publish',
+			),
+			true
+		);
+
+		Tainacan_POI_Canary::reset();
+		$poison = serialize( new Tainacan_POI_Canary() );
+
+		$request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/collection/' . $collection->get_id() . '/filters'
+		);
+		$request->set_header( 'Content-Type', 'text/plain' );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'metadatum_id' => $metadatum->get_id(),
+					'filter_type'  => 'Tainacan\Filter_Types\Numeric_Interval',
+					'filter'       => array(
+						'name'                => 'poisoned',
+						'status'              => 'publish',
+						'filter_type_options' => $poison,
+					),
+				)
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
+
+	public function test_public_filters_list_does_not_instantiate_poisoned_options() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'poi-filter-read',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'poi-filter-read-meta',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
+				'status'        => 'publish',
+			),
+			true
+		);
+
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'         => 'poi-filter',
+				'collection'   => $collection,
+				'metadatum_id' => $metadatum->get_id(),
+				'filter_type'  => 'Tainacan\Filter_Types\Numeric_Interval',
+				'status'       => 'publish',
+			),
+			true
+		);
+
+		Tainacan_POI_Canary::reset();
+		update_post_meta( $filter->get_id(), 'filter_type_options', serialize( new Tainacan_POI_Canary() ) );
+
+		wp_set_current_user( 0 );
+
+		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/filters' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
+
 }
 
 ?>

@@ -176,6 +176,12 @@ class REST_Filters_Controller extends REST_Controller {
 	public function create_item( $request ) {
 
 		if(!empty($request->get_body())){
+			$body = json_decode($request->get_body(), true);
+			$options_error = $this->validate_filter_type_options_field( $body );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			$filter_obj = $this->prepare_item_for_database($request);
 
 			if ($filter_obj->validate()){
@@ -271,6 +277,11 @@ class REST_Filters_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
+			$options_error = $this->validate_filter_type_options_field( $body );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			$attributes = [];
 
 			foreach ($body as $att => $value){
@@ -465,6 +476,27 @@ class REST_Filters_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Reject a non-array filter_type_options value on the filter object or nested filter payload.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param mixed $body Decoded request body.
+	 * @return true|\WP_REST_Response
+	 */
+	private function validate_filter_type_options_field( $body ) {
+		$error = $this->validate_array_fields( $body, array( 'filter_type_options' ) );
+		if ( $error instanceof \WP_REST_Response ) {
+			return $error;
+		}
+
+		if ( is_array( $body ) && isset( $body['filter'] ) ) {
+			return $this->validate_array_fields( $body['filter'], array( 'filter_type_options' ) );
+		}
+
+		return true;
 	}
 
 	/**
