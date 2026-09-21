@@ -102,6 +102,16 @@
         .form-submit {
             padding: 40px 0em 0em 0em !important;
         }
+
+        textarea.textarea, 
+        .textarea {
+            max-height: 50vh;
+            
+            &:focus,
+            &:active {
+               max-height: 50vh !important;
+            }
+        }
         
         @media only screen and (max-width: 768px) {
             padding: 40px calc(2 * var(--tainacan-one-column));
