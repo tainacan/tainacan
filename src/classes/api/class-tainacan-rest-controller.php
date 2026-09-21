@@ -769,4 +769,33 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		return $statuses;
 	}
 
+	/**
+	 * Reject named fields that are present in a decoded JSON body but are not arrays.
+	 *
+	 * JSON bodies read via get_body() bypass REST schema type checks when
+	 * Content-Type is not application/json (for example text/plain).
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param mixed $body   Decoded request body or nested object.
+	 * @param array $fields Field names that must be arrays when present.
+	 * @return true|\WP_REST_Response
+	 */
+	protected function validate_array_fields( $body, $fields ) {
+		if ( ! is_array( $body ) ) {
+			return true;
+		}
+
+		foreach ( $fields as $field ) {
+			if ( array_key_exists( $field, $body ) && ! is_array( $body[ $field ] ) ) {
+				return new \WP_REST_Response([
+					'error_message' => __( 'This value must be an array.', 'tainacan' ),
+					'param'         => $field,
+				], 400);
+			}
+		}
+
+		return true;
+	}
+
 }

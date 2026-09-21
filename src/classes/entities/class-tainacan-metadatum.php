@@ -228,7 +228,7 @@ class Metadatum extends Entity {
 		}
 
 		$object_type = new $class_name();
-		$object_type->set_options( $this->get_mapped_property('metadata_type_options') );
+		$object_type->set_options( tainacan_maybe_unserialize_array( $this->get_mapped_property('metadata_type_options') ) );
 		return $object_type;
 	}
 
@@ -442,7 +442,7 @@ class Metadatum extends Entity {
 	 * @return void
 	 */
 	function set_metadata_type_options( $value ){
-		$this->set_mapped_property('metadata_type_options', $value);
+		$this->set_mapped_property('metadata_type_options', tainacan_maybe_unserialize_array( $value ));
 	}
 	
 	/**
