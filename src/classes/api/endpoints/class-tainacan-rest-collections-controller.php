@@ -679,21 +679,10 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return true|\WP_REST_Response
 	 */
 	private function validate_collection_order_fields( $body ) {
-		if ( ! is_array( $body ) ) {
-			return true;
-		}
-
-		$fields = array( 'filters_order', 'metadata_order', 'metadata_section_order' );
-		foreach ( $fields as $field ) {
-			if ( array_key_exists( $field, $body ) && ! is_array( $body[ $field ] ) ) {
-				return new \WP_REST_Response([
-					'error_message' => __( 'This value must be an array.', 'tainacan' ),
-					'param'         => $field,
-				], 400);
-			}
-		}
-
-		return true;
+		return $this->validate_array_fields(
+			$body,
+			array( 'filters_order', 'metadata_order', 'metadata_section_order' )
+		);
 	}
 
 	public function validate_filters_metadata_order($value, $request, $param) {

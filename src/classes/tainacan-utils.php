@@ -10,9 +10,10 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Decode a stored list/order value into an array without instantiating PHP objects.
  *
- * Collection order fields are stored via update_post_meta(), which PHP-serializes
- * arrays. Readers historically called unserialize() with no allowed_classes, which
- * is a PHP object injection sink if a serialized object string is stored.
+	 * Collection order fields and filter/metadata type options are stored via
+	 * update_post_meta(), which PHP-serializes arrays. Readers historically
+	 * called unserialize() with no allowed_classes, which is a PHP object
+	 * injection sink if a serialized object string is stored.
  *
  * This helper:
  * - returns arrays as-is
