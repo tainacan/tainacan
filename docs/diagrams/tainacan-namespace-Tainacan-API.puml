@@ -17,6 +17,7 @@
     {abstract} #get_schema()
     +get_list_schema()
     +tainacan_sanitize_post_statuses(statuses, request, parameter)
+    #validate_array_fields(body, fields)
   }
   package endpoints as endpoints {
     class "REST_Background_Processes_Controller\n<b>REST API controller for managing Tainacan background processes.</b>" as endpoints_REST_Background_Processes_Controller {
@@ -297,6 +298,7 @@
       +delete_item_permissions_check(request)
       +update_item(request)
       +update_item_permissions_check(request)
+      -validate_collection_order_fields(body)
       +validate_filters_metadata_order(value, request, param)
       +validate_metadata_section_order(value, request, param)
       +update_metadata_order(request)
@@ -487,6 +489,7 @@
       +get_items_permissions_check(request)
       +get_item(request)
       +get_item_permissions_check(request)
+      -validate_filter_type_options_field(body)
       +get_endpoint_args_for_item_schema(method, is_collection_level)
       +get_wp_query_params()
       +get_schema()
