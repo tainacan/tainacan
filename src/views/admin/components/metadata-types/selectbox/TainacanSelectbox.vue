@@ -52,9 +52,9 @@
                 class="tainacan-selectbox-options-list">
             <b-checkbox
                     v-for="(option, optionIndex) in getOptions"
-                    :input-id="getOptionInputId(optionIndex)"
                     :key="optionIndex"
                     v-model="localMultipleValue"
+                    :input-id="getOptionInputId(optionIndex)"
                     :native-value="option"
                     :disabled="disabled || isCheckboxDisabled(option)"
                     @update:model-value="onMultipleSelected($event)">

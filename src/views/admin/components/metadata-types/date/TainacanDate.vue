@@ -1,7 +1,7 @@
 <template>
     <div
-            class="control is-clearfix"
-            :id="inputId">
+            :id="inputId"
+            class="control is-clearfix">
         <input
                 v-imask="{ mask: dateMask, skipInvalid: false }"
                 :value="dateValue"

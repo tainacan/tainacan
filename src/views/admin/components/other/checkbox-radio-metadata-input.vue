@@ -265,60 +265,60 @@
                                             :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                             :addons="false"
                                             class="tainacan-li-checkbox-modal">
-                                    <label 
-                                            :class="{
-                                                'b-checkbox checkbox': isCheckbox,
-                                                'b-radio radio': !isCheckbox, 
-                                                'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
-                                            }" 
-                                            @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
-                                        <input 
-                                                :id="getOptionInputId(key + '-' + index)"
-                                                :name="optionGroupName"
-                                                :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
-                                                :checked="isOptionSelected(option.value)"
-                                                :value="getOptionValue(option.value)"
-                                                :type="isCheckbox ? 'checkbox' : 'radio'"
-                                                @input="updateLocalSelection($event.target.value)"> 
-                                        <span class="check" /> 
-                                        <span class="control-label">
+                                        <label 
+                                                :class="{
+                                                    'b-checkbox checkbox': isCheckbox,
+                                                    'b-radio radio': !isCheckbox, 
+                                                    'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                                }" 
+                                                @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
+                                            <input 
+                                                    :id="getOptionInputId(key + '-' + index)"
+                                                    :name="optionGroupName"
+                                                    :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                                    :checked="isOptionSelected(option.value)"
+                                                    :value="getOptionValue(option.value)"
+                                                    :type="isCheckbox ? 'checkbox' : 'radio'"
+                                                    @input="updateLocalSelection($event.target.value)"> 
+                                            <span class="check" /> 
+                                            <span class="control-label">
+                                                <span 
+                                                        v-tooltip="{
+                                                            content: option.description,
+                                                            autoHide: true,
+                                                            html: true,
+                                                            placement: 'auto-start',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                                        }"
+                                                        class="checkbox-label-text">{{ option.label }}</span>
+                                            </span>
+                                        </label>
+                                        <a
+                                                v-if="option.total_children > 0"
+                                                :tabindex="0"
+                                                role="button"
+                                                @click="getOptionChildren(option, key, index)"
+                                                @keydown.enter.prevent="getOptionChildren(option, key, index)"
+                                                @keydown.space.prevent="getOptionChildren(option, key, index)">
                                             <span 
+                                                    v-if="finderColumns.length <= 1 "
+                                                    class="is-hidden-mobile">
+                                                {{ option.total_children + ' ' + $i18n.get('label_children_terms') }}
+                                            </span>
+                                            <span 
+                                                    v-else 
                                                     v-tooltip="{
-                                                        content: option.description,
-                                                        autoHide: true,
-                                                        html: true,
-                                                        placement: 'auto-start',
+                                                        content: option.total_children + ' ' + $i18n.get('label_children_terms'),
+                                                        autoHide: false,
                                                         popperClass: ['tainacan-tooltip', 'tooltip']
-                                                    }"
-                                                    class="checkbox-label-text">{{ option.label }}</span>
-                                        </span>
-                                    </label>
-                                    <a
-                                            v-if="option.total_children > 0"
-                                            :tabindex="0"
-                                            role="button"
-                                            @click="getOptionChildren(option, key, index)"
-                                            @keydown.enter.prevent="getOptionChildren(option, key, index)"
-                                            @keydown.space.prevent="getOptionChildren(option, key, index)">
-                                        <span 
-                                                v-if="finderColumns.length <= 1 "
-                                                class="is-hidden-mobile">
-                                            {{ option.total_children + ' ' + $i18n.get('label_children_terms') }}
-                                        </span>
-                                        <span 
-                                                v-else 
-                                                v-tooltip="{
-                                                    content: option.total_children + ' ' + $i18n.get('label_children_terms'),
-                                                    autoHide: false,
-                                                    popperClass: ['tainacan-tooltip', 'tooltip']
-                                                }">
-                                            {{ option.total_children }}
-                                            <span class="sr-only">{{ $i18n.get('label_children_terms') }}</span>
-                                        </span>
-                                        <span class="icon is-pulled-right">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored" />
-                                        </span>
-                                    </a>
+                                                    }">
+                                                {{ option.total_children }}
+                                                <span class="sr-only">{{ $i18n.get('label_children_terms') }}</span>
+                                            </span>
+                                            <span class="icon is-pulled-right">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored" />
+                                            </span>
+                                        </a>
                                     </b-field>
                                 </li>
                                 <li v-if="finderColumn.children.length">

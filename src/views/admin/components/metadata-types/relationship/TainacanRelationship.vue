@@ -90,13 +90,13 @@
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
                                     v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
-                                    class="relationship-value-button--edit"
                                     v-tooltip="{
                                         content: $i18n.get('label_edit'),
                                         autoHide: true,
                                         placement: 'bottom',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
+                                    class="relationship-value-button--edit"
                                     tabindex="0"
                                     role="button"
                                     @click="editSelected(itemValue.value)"
@@ -109,13 +109,13 @@
                                 </span>
                             </a>
                             <a 
-                                    class="relationship-value-button--remove"
                                     v-tooltip="{
                                         content: $i18n.get('label_remove'),
                                         autoHide: true,
                                         placement: 'bottom',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
+                                    class="relationship-value-button--remove"
                                     tabindex="0"
                                     role="button"
                                     @click="removeFromSelected(itemValue.value)"

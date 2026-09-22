@@ -1,7 +1,7 @@
 <template>
     <div
-            class="child-metadata-inputs"
-            :id="inputId">
+            :id="inputId"
+            class="child-metadata-inputs">
         <a
                 v-if="!hideCollapses && childItemMetadataGroups.length > 0"
                 class="collapse-all"
