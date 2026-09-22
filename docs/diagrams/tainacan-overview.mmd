@@ -151,6 +151,7 @@ classDiagram
     api_REST_Controller <|-- api_endpoints_REST_Sequence_Edit_Controller
     api_REST_Controller <|-- api_endpoints_REST_Taxonomies_Controller
     api_REST_Controller <|-- api_endpoints_REST_Terms_Controller
+    api_endpoints_REST_Background_Processes_Controller ..> background_process_importer_Background_Importer
     api_endpoints_REST_Bulkedit_Controller ..> background_process_generic_process_Generic_Process_Handler
     api_endpoints_REST_Bulkedit_Controller ..> entities_Collection
     api_endpoints_REST_Bulkedit_Controller ..> repositories_Collections
@@ -160,6 +161,7 @@ classDiagram
     api_endpoints_REST_Collections_Controller ..> repositories_Collections
     api_endpoints_REST_Collections_Controller ..> repositories_Items
     api_endpoints_REST_Exporters_Controller ..> background_process_exporter_Exporter_Handler
+    api_endpoints_REST_Exporters_Controller ..> mappers_Mappers_Handler
     api_endpoints_REST_Exporters_Controller ..> repositories_Collections
     api_endpoints_REST_Exposers_Controller ..> exposers_Exposers_Handler
     api_endpoints_REST_Exposers_Controller ..> mappers_Mappers_Handler
@@ -447,6 +449,7 @@ classDiagram
     media_helper_Media ..> repositories_Items
     oaipmh_OAIPMH_Data_Provider ..> entities_Collection
     oaipmh_OAIPMH_Data_Provider ..> entities_Item
+    oaipmh_OAIPMH_Data_Provider ..> mappers_Mappers_Handler
     oaipmh_OAIPMH_Data_Provider ..> repositories_Collections
     oaipmh_OAIPMH_Data_Provider ..> repositories_Items
     oaipmh_OAIPMH_Xml_Generator ..> oaipmh_OAIPMH_Xml_Generator

@@ -13,6 +13,7 @@ classDiagram
     class Importer {
         -id : identifier
         #tmp_file : string
+        #tmp_file_id : int
         #collections : array
         -options : array
         #default_options : array
@@ -43,6 +44,8 @@ classDiagram
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        +get_tmp_file_id()
+        +set_tmp_file_id(id)
         +get_collections()
         +set_collections(value)
         +get_options()
@@ -55,6 +58,7 @@ classDiagram
         +get_log()
         +get_error_log()
         +add_file(file)
+        +delete_source_file()
         +add_log(message)
         +add_error_log(message)
         +add_collection(collection)
@@ -111,6 +115,16 @@ The path to the temporary file created when user uploads a file
 
 ```php
 protected string $tmp_file
+```
+
+***
+
+### tmp_file_id
+
+WordPress attachment ID of the uploaded source file.
+
+```php
+protected int $tmp_file_id
 ```
 
 ***
@@ -458,6 +472,28 @@ public set_tmp_file(mixed $filepath): mixed
 
 ***
 
+### get_tmp_file_id
+
+```php
+public get_tmp_file_id(): mixed
+```
+
+***
+
+### set_tmp_file_id
+
+```php
+public set_tmp_file_id(mixed $id): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$id`     | **mixed** |             |
+
+***
+
 ### get_collections
 
 ```php
@@ -600,6 +636,16 @@ public add_file(mixed $file): bool
 | Parameter | Type      | Description                    |
 |-----------|-----------|--------------------------------|
 | `$file`   | **mixed** | File to be managed by importer |
+
+***
+
+### delete_source_file
+
+Delete the uploaded source file and its WordPress attachment.
+
+```php
+public delete_source_file(): bool
+```
 
 ***
 

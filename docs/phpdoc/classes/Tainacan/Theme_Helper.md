@@ -146,14 +146,14 @@ public is_post_type_a_collection(mixed $post_type): mixed
 ### is_post_an_item
 
 ```php
-public is_post_an_item(\WP_Post $post): mixed
+public is_post_an_item(?\WP_Post $post): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type         | Description |
-|-----------|--------------|-------------|
-| `$post`   | **\WP_Post** |             |
+| Parameter | Type          | Description |
+|-----------|---------------|-------------|
+| `$post`   | **?\WP_Post** |             |
 
 ***
 

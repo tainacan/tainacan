@@ -8,6 +8,47 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 
 /**
+ * Decode a stored list/order value into an array without instantiating PHP objects.
+ *
+	 * Collection order fields and filter/metadata type options are stored via
+	 * update_post_meta(), which PHP-serializes arrays. Readers historically
+	 * called unserialize() with no allowed_classes, which is a PHP object
+	 * injection sink if a serialized object string is stored.
+ *
+ * This helper:
+ * - returns arrays as-is
+ * - recovers PHP-serialized arrays
+ * - never instantiates objects (allowed_classes => false)
+ *
+ * @since 1.3.1
+ *
+ * @param mixed $value Raw value from an entity getter or post meta.
+ * @return array
+ */
+function tainacan_maybe_unserialize_array( $value ) {
+	if ( is_array( $value ) ) {
+		return $value;
+	}
+
+	if ( ! is_string( $value ) || '' === $value ) {
+		return array();
+	}
+
+	if ( ! is_serialized( $value ) ) {
+		return array();
+	}
+
+	try {
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- legacy PHP-serialized arrays; objects are rejected.
+		$unserialized = @unserialize( trim( $value ), array( 'allowed_classes' => false ) );
+	} catch ( \Throwable $e ) {
+		return array();
+	}
+
+	return is_array( $unserialized ) ? $unserialized : array();
+}
+
+/**
  * Retrieves raw data sent to an API endpoint reading the php://input stream
  * @return Object PHP Raw Postdata
  */

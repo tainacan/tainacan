@@ -1882,12 +1882,6 @@
     .tainacan-modal,
     .theme-items-list {
 
-        // Vue Blurhash transtition effect
-        @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
-        canvas.child {
-            max-width: 100%;
-        }
-
         // Include nested imports using mixins
         @include _tainacan-form.tainacan-form;
         @include _buttons.tainacan-buttons;

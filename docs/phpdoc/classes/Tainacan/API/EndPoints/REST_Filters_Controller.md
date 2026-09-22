@@ -35,6 +35,7 @@ classDiagram
         +get_items_permissions_check(request)
         +get_item(request)
         +get_item_permissions_check(request)
+        -validate_filter_type_options_field(body)
         +get_endpoint_args_for_item_schema(method, is_collection_level)
         +get_wp_query_params()
         +get_schema()
@@ -279,6 +280,22 @@ public get_item_permissions_check(\WP_REST_Request $request): bool|\WP_Error
 | Parameter  | Type                 | Description |
 |------------|----------------------|-------------|
 | `$request` | **\WP_REST_Request** |             |
+
+***
+
+### validate_filter_type_options_field
+
+Reject a non-array filter_type_options value on the filter object or nested filter payload.
+
+```php
+private validate_filter_type_options_field(mixed $body): true|\WP_REST_Response
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description           |
+|-----------|-----------|-----------------------|
+| `$body`   | **mixed** | Decoded request body. |
 
 ***
 
@@ -533,5 +550,25 @@ status is invalid.
 **Return Value:**
 
 Array of valid status slugs or WP_Error if any status is not allowed.
+
+***
+
+### validate_array_fields
+
+Reject named fields that are present in a decoded JSON body but are not arrays.
+
+```php
+protected validate_array_fields(mixed $body, array $fields): true|\WP_REST_Response
+```
+
+JSON bodies read via get_body() bypass REST schema type checks when
+Content-Type is not application/json (for example text/plain).
+
+**Parameters:**
+
+| Parameter | Type      | Description                                   |
+|-----------|-----------|-----------------------------------------------|
+| `$body`   | **mixed** | Decoded request body or nested object.        |
+| `$fields` | **array** | Field names that must be arrays when present. |
 
 ***

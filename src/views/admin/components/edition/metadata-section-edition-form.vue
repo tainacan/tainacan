@@ -256,6 +256,7 @@
                                         v-if="shouldUpdateConditionalValue"
                                         :forced-component-type="getForcedConditionalComponentType(selectedConditionalMetadatum)"
                                         :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
+                                        :input-id="'tainacan-item-metadatum_id-' + selectedConditionalMetadatum.id"
                                         :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
                                         :allow-new="false"
                                         :maxtags="1"

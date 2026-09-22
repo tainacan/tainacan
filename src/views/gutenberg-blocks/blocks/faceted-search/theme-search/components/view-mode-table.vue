@@ -188,7 +188,8 @@
                                         <img 
                                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
                                                 class="table-thumb" 
-                                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)">
+                                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
+                                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item.document_mimetype)">
                                         <div class="skeleton" />
                                     </span> 
                                 </a>

@@ -424,7 +424,6 @@ class Metadata_Sections extends Repository {
 		$order = $collection->get_metadata_section_order();
 
 		if ( $order ) {
-			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 
 			if ( is_array( $result ) ) {
 				$result_ordinate = [];

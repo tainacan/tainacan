@@ -33,6 +33,40 @@ class Background_Importer extends Background_Process {
 	private function set_finish_status( $status ){
 		$this->finish_status = $status;
 	}
+
+	public function close( $key, $status = 'finished' ) {
+
+		$batch = $this->get_batch_by_key( $key );
+		$data = $batch->data;
+
+		if (
+			! empty( $data['tmp_file_id'] ) &&
+			! empty( $data['class_name'] ) &&
+			class_exists( $data['class_name'] )
+		) {
+			$class_name = $data['class_name'];
+			$importer = new $class_name( $data );
+
+			if (
+				method_exists( $importer, 'delete_source_file' ) &&
+				! $importer->delete_source_file()
+			) {
+				$this->write_error_log(
+					$key,
+					[[
+						'datetime' => date( 'Y-m-d H:i:s' ),
+						'message'  => 'Failed to delete importer source file.'
+					]]
+				);
+
+				if ( $status === 'finished' ) {
+					$status = 'finished-errors';
+				}
+			}
+		}
+
+		return parent::close( $key, $status );
+	}
 	
 	function task($batch) {
 
@@ -67,7 +101,6 @@ class Background_Importer extends Background_Process {
 			return $batch;
 		}
 		return false;
-		
 		
 	}
 

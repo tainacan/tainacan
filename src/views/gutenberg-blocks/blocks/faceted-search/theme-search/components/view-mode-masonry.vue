@@ -65,7 +65,7 @@
                         </div>
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
@@ -74,7 +74,6 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
 
                         <!-- JS-side hook for extra content -->

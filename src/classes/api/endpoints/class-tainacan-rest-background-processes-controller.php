@@ -322,9 +322,24 @@ class REST_Background_Processes_Controller extends REST_Controller {
             }
         }
 
-        $query = "UPDATE $this->table SET $status_q WHERE 1=1 $id_q $user_q";
+        $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
-        $result = $wpdb->query($query);
+        $result = $wpdb->get_row($query);
+
+        if ( ! $result ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Background process not found', 'tainacan' ),
+                'session_id' => $id
+            ], 404);
+        }
+
+        if ( $body['status'] === 'closed' && $result->action === 'import' ) {
+            $background_importer = new \Tainacan\Background_Importer();
+            $background_importer->close( $result->ID, 'cancelled' );
+        } else {
+            $query = "UPDATE $this->table SET $status_q WHERE 1=1 $id_q $user_q";
+            $wpdb->query($query);
+        }
 
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
@@ -389,10 +404,31 @@ class REST_Background_Processes_Controller extends REST_Controller {
         }
 
         $guid = $request['guid'];
+
+        // Reject traversal/absolute-path attempts outright, regardless of what realpath() later resolves.
+        if ( strpos($guid, '..') !== false || preg_match('#^([a-zA-Z]:)?[\\\\/]#', $guid) ) {
+            $error_def = [
+                "code" => "unauthorized_file_path",
+                "message" => "Unauthorized file path",
+                "data" => [ "status" => 403 ],
+            ];
+            return new \WP_REST_Response($error_def, 403, array('content-type' => 'application/json; charset=utf-8'));
+        }
+
         $upload_url = wp_upload_dir();
-        $path = realpath($upload_url['basedir'] . '/tainacan') . '/' . $guid;
+        $base_dir = realpath($upload_url['basedir'] . '/tainacan');
+
+        if ( $base_dir === false ) {
+            return new \WP_REST_Response([
+                'error_message' => __('Base directory not found', 'tainacan' )
+            ], 404);
+        }
+
+        $path = $base_dir . '/' . $guid;
         $real_file_path = realpath($path);
-        if (strpos($real_file_path, $path) !== 0) {
+
+        // The resolved target must live inside the resolved base directory, not just share a string prefix with it.
+        if ( $real_file_path === false || strpos($real_file_path, $base_dir . DIRECTORY_SEPARATOR) !== 0 ) {
             $error_def = [
                 "code" => "unauthorized_file_path",
                 "message" => "Unauthorized file path",

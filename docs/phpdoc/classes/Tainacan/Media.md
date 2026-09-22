@@ -21,6 +21,7 @@ classDiagram
         +content_index_last : string
         -THROW_EXCPTION_ON_FATAL_ERROR : mixed
         +$is_index_pdf_content_enabled()
+        +$is_image_blurhash_enabled()
         +$get_document_content_index_max_characters()
         +$prepare_document_content_index_for_storage(content)
         +$sanitize_document_content_index_text(content)
@@ -129,6 +130,22 @@ Whether automatic PDF text extraction is enabled.
 ```php
 public static is_index_pdf_content_enabled(): bool
 ```
+
+* This method is **static**.
+***
+
+### is_image_blurhash_enabled
+
+Whether BlurHash placeholders are generated and decoded.
+
+```php
+public static is_image_blurhash_enabled(): bool
+```
+
+Define TAINACAN_DISABLE_BLURHASH as true in wp-config.php to turn them off.
+That constant is a hard off: themes and plugins cannot re-enable BlurHash with
+the tainacan-enable-image-blurhash filter. The filter only applies when the
+constant is not set to true.
 
 * This method is **static**.
 ***

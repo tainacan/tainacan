@@ -36,6 +36,7 @@ classDiagram
         +delete_item_permissions_check(request)
         +update_item(request)
         +update_item_permissions_check(request)
+        -validate_collection_order_fields(body)
         +validate_filters_metadata_order(value, request, param)
         +validate_metadata_section_order(value, request, param)
         +update_metadata_order(request)
@@ -350,6 +351,25 @@ public update_item_permissions_check(\WP_REST_Request $request): bool|\WP_Error
 **Throws:**
 
 - [`Exception`](../../../Exception)
+
+***
+
+### validate_collection_order_fields
+
+Reject collection order fields that are not arrays.
+
+```php
+private validate_collection_order_fields(mixed $body): true|\WP_REST_Response
+```
+
+JSON bodies read via get_body() bypass REST schema type checks when
+Content-Type is not application/json (for example text/plain).
+
+**Parameters:**
+
+| Parameter | Type      | Description           |
+|-----------|-----------|-----------------------|
+| `$body`   | **mixed** | Decoded request body. |
 
 ***
 
@@ -749,5 +769,25 @@ status is invalid.
 **Return Value:**
 
 Array of valid status slugs or WP_Error if any status is not allowed.
+
+***
+
+### validate_array_fields
+
+Reject named fields that are present in a decoded JSON body but are not arrays.
+
+```php
+protected validate_array_fields(mixed $body, array $fields): true|\WP_REST_Response
+```
+
+JSON bodies read via get_body() bypass REST schema type checks when
+Content-Type is not application/json (for example text/plain).
+
+**Parameters:**
+
+| Parameter | Type      | Description                                   |
+|-----------|-----------|-----------------------------------------------|
+| `$body`   | **mixed** | Decoded request body or nested object.        |
+| `$fields` | **array** | Field names that must be arrays when present. |
 
 ***

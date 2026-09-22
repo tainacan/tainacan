@@ -55,7 +55,7 @@ class Filters extends Repository {
 			'filter_type_options' => [
 				'map'         => 'meta',
 				'title'       => __( 'Filter type options', 'tainacan' ),
-				'type'        => ['array', 'object', 'string'],
+				'type'        => ['array', 'object'],
 				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The filter type options', 'tainacan' ),
 				'validation'  => ''
@@ -571,7 +571,6 @@ class Filters extends Repository {
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_filters_order();
 		if ( $order ) {
-			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 
 			if ( is_array( $result ) ) {
 				$result_ordinate = [];

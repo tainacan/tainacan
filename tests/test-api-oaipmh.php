@@ -421,6 +421,76 @@ class TAINACAN_REST_Oaipmh_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringContainsString( '<dc:creator>', $body );
 	}
 
+	public function test_extra_dublin_core_mapping_does_not_break_list_records() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI Extra DC Mapping Collection',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$creator = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'            => 'Creator field',
+				'collection'      => $collection,
+				'metadata_type'   => 'Tainacan\Metadata_Types\Text',
+				'exposer_mapping' => array(
+					'dublin-core' => 'dc:creator',
+				),
+			),
+			true,
+			true
+		);
+
+		$citation = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'            => 'Citation field',
+				'collection'      => $collection,
+				'metadata_type'   => 'Tainacan\Metadata_Types\Text',
+				'exposer_mapping' => array(
+					'dublin-core' => array(
+						'slug'  => 'bibliographic-citation',
+						'uri'   => 'http://purl.org/dc/terms/bibliographicCitation',
+						'label' => 'Bibliographic Citation',
+					),
+				),
+			),
+			true,
+			true
+		);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'Mapped OAI Extra Item',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+
+		$this->tainacan_item_metadata_factory->create_item_metadata( $item, $creator, 'Jane Curator' );
+		$this->tainacan_item_metadata_factory->create_item_metadata( $item, $citation, 'Doe, Jane. 2026.' );
+
+		$body = $this->get_oai_body(
+			$this->dispatch_oai(
+				array(
+					'verb'           => 'ListRecords',
+					'metadataPrefix' => 'oai_dc',
+					'set'            => (string) $collection->get_id(),
+				)
+			)
+		);
+
+		$this->assertStringContainsString( 'Jane Curator', $body );
+		$this->assertStringContainsString( '<dc:creator>', $body );
+		$this->assertStringNotContainsString( 'bibliographic-citation', $body );
+	}
+
 	public function test_list_records_hides_private_mapped_metadata_even_for_logged_in_user() {
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

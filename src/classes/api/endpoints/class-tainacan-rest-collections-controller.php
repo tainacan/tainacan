@@ -487,6 +487,11 @@ class REST_Collections_Controller extends REST_Controller {
 			], 400);
 		}
 
+		$order_error = $this->validate_collection_order_fields( $body );
+		if ( $order_error instanceof \WP_REST_Response ) {
+			return $order_error;
+		}
+
 		$this->collection = new Collection();
 
 		try {
@@ -600,6 +605,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 			$attributes = [];
 
 			foreach ($body as $att => $value){
@@ -655,6 +665,24 @@ class REST_Collections_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Reject collection order fields that are not arrays.
+	 *
+	 * JSON bodies read via get_body() bypass REST schema type checks when
+	 * Content-Type is not application/json (for example text/plain).
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param mixed $body Decoded request body.
+	 * @return true|\WP_REST_Response
+	 */
+	private function validate_collection_order_fields( $body ) {
+		return $this->validate_array_fields(
+			$body,
+			array( 'filters_order', 'metadata_order', 'metadata_section_order' )
+		);
 	}
 
 	public function validate_filters_metadata_order($value, $request, $param) {
@@ -713,6 +741,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( !empty($body) && isset($body['metadata_order']) ) {
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 
 			$collection = $this->collections_repository->fetch($collection_id);
 
@@ -772,6 +805,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( !empty($body) && isset($body['metadata_section_order']) ) {
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 
 			$collection = $this->collections_repository->fetch($collection_id);
 
@@ -856,6 +894,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( !empty($body) && isset($body['filters_order']) ) {
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 
 			$collection = $this->collections_repository->fetch($collection_id);
 

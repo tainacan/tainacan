@@ -951,4 +951,74 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(400, $response->get_status(), sprintf('cannot create metadatum, response: %s', print_r($metadatum_multiplo_data, true)) );
 	}
 
+	public function test_create_metadatum_rejects_serialized_metadata_type_options() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'poi-meta-collection',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		Tainacan_POI_Canary::reset();
+		$poison = serialize( new Tainacan_POI_Canary() );
+
+		$request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
+		);
+		$request->set_header( 'Content-Type', 'text/plain' );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'name'                  => 'poisoned',
+					'status'                => 'publish',
+					'metadata_type'         => 'Tainacan\Metadata_Types\Text',
+					'metadata_type_options' => $poison,
+				)
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
+
+	public function test_metadatum_type_object_does_not_instantiate_poisoned_options() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'poi-meta-read',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'poi-meta',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+			),
+			true
+		);
+
+		Tainacan_POI_Canary::reset();
+		update_post_meta( $metadatum->get_id(), 'metadata_type_options', serialize( new Tainacan_POI_Canary() ) );
+
+		$fresh = \tainacan_metadata()->fetch( $metadatum->get_id() );
+		$fresh->get_metadata_type_object();
+
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+
+		wp_set_current_user( 0 );
+		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/metadata' );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
+
 }

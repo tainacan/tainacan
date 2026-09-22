@@ -157,8 +157,9 @@ export default {
                     if (this.chartOptions.chart)
                         this.chartOptions.chart.height = metadataCount;
                     this.$nextTick(() => {
-                        if (this.$refs.metadataDistributionChart && this.$refs.metadataDistributionChart.updateOptions) {
-                            this.$refs.metadataDistributionChart.updateOptions({
+                        const chartComponent = this.$refs.metadataDistributionChart;
+                        if (chartComponent && chartComponent.chart && chartComponent.updateOptions) {
+                            chartComponent.updateOptions({
                                 labels: metadataDistributionLabels,
                                 chart: { height: metadataCount }
                             }, false, true);

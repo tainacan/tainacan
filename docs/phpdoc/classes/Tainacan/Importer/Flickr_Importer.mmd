@@ -29,6 +29,7 @@ classDiagram
     class Importer {
         -id : identifier
         #tmp_file : string
+        #tmp_file_id : int
         #collections : array
         -options : array
         #default_options : array
@@ -59,6 +60,8 @@ classDiagram
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        +get_tmp_file_id()
+        +set_tmp_file_id(id)
         +get_collections()
         +set_collections(value)
         +get_options()
@@ -71,6 +74,7 @@ classDiagram
         +get_log()
         +get_error_log()
         +add_file(file)
+        +delete_source_file()
         +add_log(message)
         +add_error_log(message)
         +add_collection(collection)

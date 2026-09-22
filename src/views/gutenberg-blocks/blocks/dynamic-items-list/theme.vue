@@ -211,15 +211,14 @@
                         :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                         :href="item.url"
                         :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                    <blur-hash-image
+                    <tainacan-progressive-image
                             v-if="showImage"
                             :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
                             :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
                             :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')"
-                            :transition-duration="500" />
+                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')" />
                     <span v-if="item.title">{{ item.title }}</span>
                 </a>
             </li>
@@ -258,14 +257,13 @@
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')"
-                                :transition-duration="500" />
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : '')" />
                         <span v-if="item.title">{{ item.title }}</span>
                     </a>
                 </li>
@@ -608,9 +606,6 @@ export default {
     // Tooltips
     @use '../../../admin/scss/_tooltips.scss';
     @import url('floating-vue/dist/style.css');
-
-    // Vue Blurhash transtition effect
-    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
 
     .metadata-value {
         .tainacan-compound-group {

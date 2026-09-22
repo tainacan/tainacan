@@ -1,7 +1,7 @@
 import { createApp, h } from 'vue';
 import CarouselCollectionsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
-import VueBlurHash from 'another-vue3-blurhash';
+import TainacanProgressiveImage from '../../../admin/components/other/tainacan-progressive-image.vue';
 import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 export default (element) => {
@@ -46,8 +46,8 @@ export default (element) => {
                     }
                 });
 
-                VueCollectionsList.use(VueBlurHash);
                 VueCollectionsList.use(ThumbnailHelperPlugin);
+                VueCollectionsList.component('tainacan-progressive-image', TainacanProgressiveImage);
 
                 VueCollectionsList.mount('#' + block.id);
             });

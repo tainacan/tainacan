@@ -1,17 +1,17 @@
 <template>
     <div
-            :id="itemMetadatumIdentifier"
+            :id="inputId"
             class="tainacan-leaflet-map-container">
         <l-map 
-                :id="'map--' + itemMetadatumIdentifier"
-                :ref="'map--' + itemMetadatumIdentifier"
+                :id="'map--' + inputId"
+                :ref="'map--' + inputId"
                 style="height: 320px; width:100%; min-width: 320px;"
                 :zoom="initialZoom"
                 :max-zoom="maxZoom"
                 :center="[initialLatitude, initialLongitude]"
                 :zoom-animation="true"
                 :options="{
-                    name: 'map--' + itemMetadatumIdentifier,
+                    name: 'map--' + inputId,
                     trackResize: false, // We handle this manually in the component
                     worldCopyJump: true
                 }"
@@ -116,6 +116,7 @@
         },
         props: {
             itemMetadatum: Object,
+            inputId: String,
             value: [String, Array],
             disabled: false,
             maxtags: '',
@@ -149,9 +150,6 @@
             },
             attribution() {
                 return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.attribution ? this.itemMetadatum.metadatum.metadata_type_options.attribution : '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-            },
-            itemMetadatumIdentifier() {
-                return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
             },
             selectedLatLng() {
                 if ( this.selected && Array.isArray(this.selected) ) {
@@ -190,7 +188,7 @@
         watch: {
             selectedLatLng: {
                 handler() {
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                    const mapComponentRef = 'map--' + this.inputId;
                     nextTick(() => {
                         if (
                             this.$refs[mapComponentRef] &&
@@ -214,7 +212,7 @@
         },
         mounted() {
             nextTick(() => {
-                const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                const mapComponentRef = 'map--' + this.inputId;
                 this.handleWindowResize(mapComponentRef);
 
                 if ( !this.selected || this.selected.length === 0 ) {
@@ -332,7 +330,7 @@
                     
                     const existingSelectedIndex = this.selected.indexOf(this.latitude + ',' + this.longitude);
                     this.editingMarkerIndex = existingSelectedIndex;
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                    const mapComponentRef = 'map--' + this.inputId;
                     if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].leafletObject )
                         this.$refs[mapComponentRef].leafletObject.panInsideBounds([ this.selectedLatLng[existingSelectedIndex] ],  { animate: true, maxZoom: this.maxZoom });
                 }

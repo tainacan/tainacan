@@ -447,6 +447,7 @@
       +content_index_last : string
       -THROW_EXCPTION_ON_FATAL_ERROR : 
       {static} +is_index_pdf_content_enabled()
+      {static} +is_image_blurhash_enabled()
       {static} +get_document_content_index_max_characters()
       {static} +prepare_document_content_index_for_storage(content)
       {static} +sanitize_document_content_index_text(content)
@@ -914,7 +915,8 @@
         -process_footer(current_collection_item, collection_definition)
         +output_footer()
         -get_items(index, collection_definition)
-        -map_item_metadata(item)
+        #get_mapped_metadata_slugs()
+        #map_item_metadata(item)
         +add_new_file(key)
         +append_to_file(key, data)
         +set_accepted_mapping_methods(method, default_mapping, list)
@@ -971,7 +973,6 @@
         -process_header(current_collection_item, collection_definition)
         -process_footer(current_collection_item, collection_definition)
         -get_items(index, collection_definition)
-        -map_item_metadata(item)
         +process_item(item, metadata)
         +addRowToSheet(rowData, sheetIndex)
         +get_file_path()
@@ -1071,6 +1072,7 @@
         -finish_status : int
         +__construct()
         -set_finish_status(status)
+        +close(key, status)
         +task(batch)
       }
       class "Importer_Handler" as background-process_importer_Importer_Handler {
@@ -1092,6 +1094,7 @@
       class "Importer" as background-process_importer_Importer {
         -id : identifier
         #tmp_file : string
+        #tmp_file_id : int
         #collections : array
         -options : array
         #default_options : array
@@ -1122,6 +1125,8 @@
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        +get_tmp_file_id()
+        +set_tmp_file_id(id)
         +get_collections()
         +set_collections(value)
         +get_options()
@@ -1134,6 +1139,7 @@
         +get_log()
         +get_error_log()
         +add_file(file)
+        +delete_source_file()
         +add_log(message)
         +add_error_log(message)
         +add_collection(collection)
@@ -1265,6 +1271,7 @@
       {abstract} #get_schema()
       +get_list_schema()
       +tainacan_sanitize_post_statuses(statuses, request, parameter)
+      #validate_array_fields(body, fields)
     }
     package endpoints as api.endpoints {
       class "REST_Background_Processes_Controller\n<b>REST API controller for managing Tainacan background processes.</b>" as api_endpoints_REST_Background_Processes_Controller {
@@ -1545,6 +1552,7 @@
         +delete_item_permissions_check(request)
         +update_item(request)
         +update_item_permissions_check(request)
+        -validate_collection_order_fields(body)
         +validate_filters_metadata_order(value, request, param)
         +validate_metadata_section_order(value, request, param)
         +update_metadata_order(request)
@@ -1735,6 +1743,7 @@
         +get_items_permissions_check(request)
         +get_item(request)
         +get_item_permissions_check(request)
+        -validate_filter_type_options_field(body)
         +get_endpoint_args_for_item_schema(method, is_collection_level)
         +get_wp_query_params()
         +get_schema()
@@ -2391,6 +2400,7 @@
       +unregister_mapper(class_name)
       +get_mappers(output)
       +get_mapper(slug)
+      +normalize_mapping_value(mapping, mapper)
       +mappers_i18n(i18n_strings)
       {static} +get_mapper_from_request(request)
       #map_metadatum(item_arr, mapper)
@@ -2453,6 +2463,7 @@
   api_REST_Controller <|-- api_endpoints_REST_Sequence_Edit_Controller
   api_REST_Controller <|-- api_endpoints_REST_Taxonomies_Controller
   api_REST_Controller <|-- api_endpoints_REST_Terms_Controller
+  api_endpoints_REST_Background_Processes_Controller ..> background-process_importer_Background_Importer
   api_endpoints_REST_Bulkedit_Controller ..> background-process_generic-process_Generic_Process_Handler
   api_endpoints_REST_Bulkedit_Controller ..> entities_Collection
   api_endpoints_REST_Bulkedit_Controller ..> repositories_Collections
@@ -2462,6 +2473,7 @@
   api_endpoints_REST_Collections_Controller ..> repositories_Collections
   api_endpoints_REST_Collections_Controller ..> repositories_Items
   api_endpoints_REST_Exporters_Controller ..> background-process_exporter_Exporter_Handler
+  api_endpoints_REST_Exporters_Controller ..> mappers_Mappers_Handler
   api_endpoints_REST_Exporters_Controller ..> repositories_Collections
   api_endpoints_REST_Exposers_Controller ..> exposers_Exposers_Handler
   api_endpoints_REST_Exposers_Controller ..> mappers_Mappers_Handler
@@ -2749,6 +2761,7 @@
   media-helper_Media ..> repositories_Items
   oaipmh_OAIPMH_Data_Provider ..> entities_Collection
   oaipmh_OAIPMH_Data_Provider ..> entities_Item
+  oaipmh_OAIPMH_Data_Provider ..> mappers_Mappers_Handler
   oaipmh_OAIPMH_Data_Provider ..> repositories_Collections
   oaipmh_OAIPMH_Data_Provider ..> repositories_Items
   oaipmh_OAIPMH_Xml_Generator ..> oaipmh_OAIPMH_Xml_Generator

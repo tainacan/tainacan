@@ -436,19 +436,19 @@ class Collection extends Entity {
 	/**
 	 * Get collection metadata ordination
 	 *
-	 * @return Object | string
+	 * @return array
 	 */
 	function get_metadata_order() {
-		return $this->get_mapped_property( 'metadata_order' );
+		return tainacan_maybe_unserialize_array( $this->get_mapped_property( 'metadata_order' ) );
 	}
 
 	/**
 	 * Get collection metadata section ordination
 	 *
-	 * @return Array | Object | string
+	 * @return array
 	 */
 	function get_metadata_section_order() {
-		return $this->get_mapped_property( 'metadata_section_order' );
+		return tainacan_maybe_unserialize_array( $this->get_mapped_property( 'metadata_section_order' ) );
 	}
 
 	/**
@@ -490,10 +490,10 @@ class Collection extends Entity {
 	/**
 	 * Get collection filters ordination
 	 *
-	 * @return string
+	 * @return array
 	 */
 	function get_filters_order() {
-		return $this->get_mapped_property( 'filters_order' );
+		return tainacan_maybe_unserialize_array( $this->get_mapped_property( 'filters_order' ) );
 	}
 
 	/**
@@ -907,25 +907,29 @@ class Collection extends Entity {
 	/**
 	 * Set collection metadata ordination
 	 *
-	 * @param [string] $value
+	 * @param mixed $value
 	 *
 	 * @return void
 	 */
 	function set_metadata_order( $value ) {
-		$this->set_mapped_property( 'metadata_order', $value );
+		$this->set_mapped_property( 'metadata_order', tainacan_maybe_unserialize_array( $value ) );
 	}
 
 	/**
 	 * Set collection metadata section ordination
 	 *
-	 * @param [string] $value
+	 * @param mixed $value
 	 *
 	 * @return void
 	 */
 	function set_metadata_section_order( $value ) {
+		$value = tainacan_maybe_unserialize_array( $value );
 		if( !empty( $value ) ) {
 			$metadata_order = array( );
 			foreach($value as $section) {
+				if ( ! is_array( $section ) || ! isset( $section['metadata_order'] ) || ! is_array( $section['metadata_order'] ) ) {
+					continue;
+				}
 				$metadata_order =  array_merge($metadata_order, $section['metadata_order']);
 			}
 			$this->set_metadata_order($metadata_order);
@@ -936,12 +940,12 @@ class Collection extends Entity {
 	/**
 	 * Set collection filters ordination
 	 *
-	 * @param [string] $value
+	 * @param mixed $value
 	 *
 	 * @return void
 	 */
 	function set_filters_order( $value ) {
-		$this->set_mapped_property( 'filters_order', $value );
+		$this->set_mapped_property( 'filters_order', tainacan_maybe_unserialize_array( $value ) );
 	}
 
 	/**

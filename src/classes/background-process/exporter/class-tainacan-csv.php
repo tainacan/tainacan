@@ -112,8 +112,8 @@ class CSV extends Exporter {
 		
 		$line = [];
 		if ($mapper) {
-			foreach ($mapper->metadata as $meta_slug => $meta) {
-				$line[] = $meta['field'] ?? $meta_slug;
+			foreach ( $this->get_mapped_metadata_slugs() as $meta_slug ) {
+				$line[] = $mapper->metadata[ $meta_slug ]['field'] ?? $meta_slug;
 			}
 		} else {
 			$line = ['special_item_id'];

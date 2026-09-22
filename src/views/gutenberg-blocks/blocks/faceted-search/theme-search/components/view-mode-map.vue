@@ -67,7 +67,7 @@
                                         }"
                                         v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                             
                                 <div class="tainacan-map-card-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-map-card-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
@@ -76,7 +76,6 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </div>
                                 <span 
@@ -340,7 +339,7 @@
                                             <div 
                                                     v-if="item.thumbnail != undefined"
                                                     class="tainacan-record-thumbnail">
-                                                <blur-hash-image
+                                                <tainacan-progressive-image
                                                         v-if="item.thumbnail != undefined"
                                                         class="tainacan-record-item-thumbnail"
                                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -349,7 +348,6 @@
                                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                                        :transition-duration="500"
                                                         @click.left="onClickItem($event, item)"
                                                     />
                                                 <div 

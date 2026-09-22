@@ -7,11 +7,11 @@
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                :role="!hideCollapses ? 'button' : ''"
-                :tabindex="!hideCollapses ? 0 : -1"
-                :aria-label="!hideCollapses ? $i18n.get('label_collapse') : $i18n.get('label_expand')"
-                :aria-expanded="!isCollapsed"
-                :aria-controls="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                :role="hideCollapses ? undefined : 'button'"
+                :tabindex="hideCollapses ? undefined : 0"
+                :aria-label="hideCollapses ? undefined : $i18n.get('label_collapse')"
+                :aria-expanded="hideCollapses ? undefined : !isCollapsed"
+                :aria-controls="hideCollapses ? undefined : metadatumInputId"
                 @click="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''"
                 @keydown.enter.prevent="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''"
                 @keydown.space.prevent="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''">
@@ -26,10 +26,10 @@
                         }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
             </span>
-            <label 
+            <label
                     class="label"
                     :class="{ 'has-text-danger': errorMessage }"
-                    :for="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')">
+                    :for="metadatumInputId">
                 <span
                         v-if="enumerateMetadatum"
                         style="opacity: 0.65;"
@@ -76,6 +76,7 @@
                         :is="metadatumComponent"
                         v-model:value="values[0]" 
                         :item-metadatum="itemMetadatum"
+                        :input-id="metadatumInputId"
                         :disabled="invalidEmptyMultivalueIndex.length > 0"
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
@@ -88,50 +89,52 @@
                         @update:value="performValueChange"
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
-                <template v-if="isMultiple && values.length > 1">
-                    <div 
+                <div
+                        v-if="isMultiple && values.length > 1"
+                        class="multiple-inputs">
+                    <template
                             v-for="(value, index) of values"
-                            :key="index + '-' + values.length"
-                            class="multiple-inputs">
-                        <component 
-                                :is="metadatumComponent"
-                                v-if="index > 0"
-                                v-model:value="values[index]" 
-                                :item-metadatum="itemMetadatum"
-                                :disabled="invalidEmptyMultivalueIndex.length > 0 && !invalidEmptyMultivalueIndex.includes(index)"
-                                :metadata-name-filter-string="metadataNameFilterString"
-                                :hide-collapses="hideCollapses"
-                                :hide-metadata-types="hideMetadataTypes"
-                                :hide-help-buttons="hideHelpButtons"
-                                :help-info-bellow-label="helpInfoBellowLabel"
-                                :is-mobile-screen="isMobileScreen"
-                                :is-focused="isFocused"
-                                :is-metadata-navigation="isMetadataNavigation"
-                                @update:value="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
-                                @blur="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
-                                @mobile-special-focus="onMobileSpecialFocus" />
-                        <p
-                                v-if="index > 0 && invalidEmptyMultivalueIndex.includes(index)"
-                                style="font-size: 0.75em;"
-                                class="has-text-warning is-italic">
-                            {{ $i18n.get('info_error_empty_value') }}
-                        </p>
-                        <a 
-                                v-if="index > 0" 
-                                class="add-link"
-                                role="button"
-                                tabindex="0"
-                                :disabled="invalidEmptyMultivalueIndex.length > 0 && !invalidEmptyMultivalueIndex.includes(index)"
-                                @click="removeValue(index)"
-                                @keydown.enter.prevent="removeValue(index)"
-                                @keydown.space.prevent="removeValue(index)">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
-                            </span>
-                            &nbsp;{{ $i18n.get('label_remove_value') }}
-                        </a>
-                    </div>
-                </template>
+                            :key="index + '-' + values.length">
+                        <div v-if="index > 0">
+                            <component 
+                                    :is="metadatumComponent"
+                                    v-model:value="values[index]" 
+                                    :item-metadatum="itemMetadatum"
+                                    :input-id="getItemMetadataInputId(index)"
+                                    :disabled="invalidEmptyMultivalueIndex.length > 0 && !invalidEmptyMultivalueIndex.includes(index)"
+                                    :metadata-name-filter-string="metadataNameFilterString"
+                                    :hide-collapses="hideCollapses"
+                                    :hide-metadata-types="hideMetadataTypes"
+                                    :hide-help-buttons="hideHelpButtons"
+                                    :help-info-bellow-label="helpInfoBellowLabel"
+                                    :is-mobile-screen="isMobileScreen"
+                                    :is-focused="isFocused"
+                                    :is-metadata-navigation="isMetadataNavigation"
+                                    @update:value="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
+                                    @blur="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
+                                    @mobile-special-focus="onMobileSpecialFocus" />
+                            <p
+                                    v-if="invalidEmptyMultivalueIndex.includes(index)"
+                                    style="font-size: 0.75em;"
+                                    class="has-text-warning is-italic">
+                                {{ $i18n.get('info_error_empty_value') }}
+                            </p>
+                            <a 
+                                    class="add-link"
+                                    role="button"
+                                    tabindex="0"
+                                    :disabled="invalidEmptyMultivalueIndex.length > 0 && !invalidEmptyMultivalueIndex.includes(index)"
+                                    @click="removeValue(index)"
+                                    @keydown.enter.prevent="removeValue(index)"
+                                    @keydown.space.prevent="removeValue(index)">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
+                                </span>
+                                &nbsp;{{ $i18n.get('label_remove_value') }}
+                            </a>
+                        </div>
+                    </template>
+                </div>
                 <template
                         v-if="
                             isMultiple &&
@@ -176,6 +179,7 @@
                         :is="metadatumComponent"
                         v-model:value="values"
                         :item-metadatum="itemMetadatum"
+                        :input-id="metadatumInputId"
                         :disabled="false"
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
@@ -281,6 +285,9 @@
                 return this.itemMetadatum.parent_meta_id
                     ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id
                     : this.itemMetadatum.metadatum.id;
+            },
+            metadatumInputId() {
+                return this.getItemMetadataInputId(0);
             }
         },
         created() {
@@ -316,6 +323,21 @@
             }
         },
         methods: {
+            getItemMetadataInputId(index) {
+                if (!this.itemMetadatum || !this.itemMetadatum.metadatum)
+                    return '';
+
+                let id = 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id;
+
+                if (this.itemMetadatum.parent_meta_id)
+                    id += '_parent_meta_id-' + this.itemMetadatum.parent_meta_id;
+
+                // Index 0 keeps the historical id for existing customizations and error links.
+                if (index > 0)
+                    id += '_index-' + index;
+
+                return id;
+            },
             // 'this.values' is always an array for this component, even if it is single valued.
             setInitialValues() {
                 if (this.itemMetadatum) {
@@ -445,9 +467,9 @@
 
     .multiple-inputs {
         display: flex;
-        margin: 0.75em 0;
         flex-direction: column;
-        justify-content: space-between;
+        gap: 0.75em;
+        margin: 0.75em 0;
     }
 
     :deep(.is-special-hidden-for-mobile),

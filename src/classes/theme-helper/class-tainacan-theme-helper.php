@@ -122,7 +122,10 @@ class Theme_Helper {
 		return $prefix == Entities\Collection::$db_identifier_prefix;
 	}
 
-	public function is_post_an_item(\WP_Post $post) {
+	public function is_post_an_item(?\WP_Post $post) {
+		if(!$post instanceof \WP_Post) {
+			return false;
+		}
 		$post_type = $post->post_type;
 		return $this->is_post_type_a_collection($post_type);
 	}
@@ -1391,27 +1394,33 @@ class Theme_Helper {
 					$meta_mappings = $metadatum->get_exposer_mapping();
 
 					if ( array_key_exists('dublin-core', $meta_mappings) && $item_metadatum->has_value() ) {
+						$normalized_mapping = \Tainacan\Mappers_Handler::get_instance()->normalize_mapping_value( $meta_mappings['dublin-core'], $metadatum_mapper );
+						if ( ! $normalized_mapping ) {
+							continue;
+						}
+						$dc_meta_name = str_replace( 'dc:', 'dc.', $normalized_mapping['slug'] );
+
 						$values = $item_metadatum->get_value();
 						$multiple_values = is_array($values) ? $values : [$values];
 
-						$multiple_values = array_map(function($single_value) use ($meta_mappings) {
+						$multiple_values = array_map(function($single_value) use ($dc_meta_name) {
 
 							// If the single value is still an array, we are in a multiple compound metadata
 							if ( is_array($single_value) ) {
 								foreach ($single_value as $child_value) {
 									if ( $child_value instanceof \Tainacan\Entities\Item_Metadata_Entity ) {
 										$child_value = $child_value->get_value_as_string();
-										echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($child_value) . '" />';
+										echo '<meta name="' . esc_attr($dc_meta_name) . '" content="' . esc_attr($child_value) . '" />';
 									} 
 								}
 							// But we might be in a single compound metadata
 							} else if ( $single_value instanceof \Tainacan\Entities\Item_Metadata_Entity ) {
 								$child_value = $single_value->get_value_as_string();
-								echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($child_value) . '" />';
+								echo '<meta name="' . esc_attr($dc_meta_name) . '" content="' . esc_attr($child_value) . '" />';
 							 
 							// Or a single, non-compound metadata
-						    } else {
-								echo '<meta name="' . esc_attr(str_replace('dc:' , 'dc.', $meta_mappings['dublin-core'])) . '" content="' . esc_attr($single_value) . '" />';
+						    } else if ( is_scalar( $single_value ) ) {
+								echo '<meta name="' . esc_attr($dc_meta_name) . '" content="' . esc_attr( (string) $single_value ) . '" />';
 							}
 							
 						}, $multiple_values);

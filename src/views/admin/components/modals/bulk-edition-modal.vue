@@ -108,6 +108,7 @@
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
                                             :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
+                                            :input-id="getBulkEditionInputId(bulkEditionProcedures[criterion].metadatum, criterion, 'old')"
                                             :allow-new="false"
                                             :maxtags="1"
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
@@ -126,6 +127,7 @@
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
                                             :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
+                                            :input-id="getBulkEditionInputId(bulkEditionProcedures[criterion].metadatum, criterion, 'new')"
                                             :allow-new="false"
                                             :maxtags="1"
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
@@ -255,6 +257,7 @@
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
                                             :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
+                                            :input-id="getBulkEditionInputId(bulkEditionProcedures[criterion].metadatum, criterion)"
                                             :allow-new="false"
                                             :maxtags="1"
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone }"
@@ -497,6 +500,17 @@
                 'removeValueInBulk',
                 'copyValuesInBulk'
             ]),
+            getBulkEditionInputId(metadatum, criterion, suffix) {
+                if (!metadatum || metadatum.id === undefined || metadatum.id === null)
+                    return '';
+
+                let id = 'tainacan-item-metadatum_id-' + metadatum.id + '-criterion-' + criterion;
+
+                if (suffix)
+                    id += '-' + suffix;
+
+                return id;
+            },
             getForcedComponentType(metadatum) {
                 if ( !metadatum || !metadatum.metadata_type_object || !metadatum.metadata_type_object.component )
                     return '';

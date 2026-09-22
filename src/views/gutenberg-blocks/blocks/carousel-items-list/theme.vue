@@ -83,14 +83,13 @@
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url">
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : '')"
-                                :transition-duration="500" />
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : '')" />
                         <span 
                                 v-if="!hideTitle"
                                 :style="variableItemsWidth ? ('max-width: ' + $thumbHelper.getWidth(item['thumbnail'], imageSize) + 'px') : ''">

@@ -584,7 +584,7 @@ CLASS (default) - returns the Class name of of metadatum types registered
 NAME - return an Array of the names of metadatum types registered
 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 794](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L794-L808)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 793](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L793-L807)
 
 ---------------------------------
 <br>
@@ -602,7 +602,7 @@ Argument | Type | Description
 `$this->current_taxonomy` |  | 
 `$collection` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1665](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1665-L1687)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1664](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1664-L1686)
 
 ---------------------------------
 <br>
@@ -620,7 +620,7 @@ Argument | Type | Description
 `$new_tax` |  | 
 `$collection` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1665](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1665-L1691)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1664](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1664-L1690)
 
 ---------------------------------
 <br>
@@ -644,7 +644,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L10-L1742)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L10-L1741)
 
 ---------------------------------
 <br>
@@ -660,7 +660,7 @@ Argument | Type | Description
 `$filename` | `string` | The filename that will be created
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 395](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L395-L405)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 422](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L422-L432)
 
 ---------------------------------
 <br>
@@ -676,7 +676,7 @@ Argument | Type | Description
 `$attach_data` |  | 
 `$post_id` | `int` | (optional) the post this attachement should be attached to. empty for none
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 395](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L395-L449)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 422](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L422-L476)
 
 ---------------------------------
 <br>
@@ -747,7 +747,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$this` |  | 
 
-Source: [class-tainacan-exporter-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php), [line 52](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php#L52-L52)
+Source: [class-tainacan-exporter-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php), [line 54](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/exporter/class-tainacan-exporter-handler.php#L54-L54)
 
 ---------------------------------
 <br>
@@ -790,7 +790,7 @@ Argument | Type | Description
 `$response` |  | 
 `$request` | `\WP_REST_Request` | 
 
-Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 472](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L472-L502)
+Source: [class-tainacan-rest-collections-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php), [line 472](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-collections-controller.php#L472-L507)
 
 ---------------------------------
 <br>
@@ -803,7 +803,7 @@ Argument | Type | Description
 `$updated_item` |  | 
 `$attributes` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1002](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1002-L1033)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1001](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1001-L1032)
 
 ---------------------------------
 <br>
@@ -816,7 +816,7 @@ Argument | Type | Description
 `$item` |  | 
 `$new_item` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1142](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1142-L1234)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1141](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1141-L1233)
 
 ---------------------------------
 <br>
@@ -840,7 +840,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L11-L1560)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L11-L1559)
 
 ---------------------------------
 <br>

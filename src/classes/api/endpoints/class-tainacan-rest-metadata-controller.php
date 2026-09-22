@@ -234,6 +234,12 @@ class REST_Metadata_Controller extends REST_Controller {
 		if(!empty($request->get_body()) && isset($request['collection_id'])){
 			$collection_id = $request['collection_id'];
 
+			$body = json_decode($request->get_body(), true);
+			$options_error = $this->validate_array_fields( $body, array( 'metadata_type_options' ) );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			try {
 				$prepared = $this->prepare_item_for_database( $request->get_body(), $collection_id );
 			} catch (\Exception $exception){
@@ -254,6 +260,12 @@ class REST_Metadata_Controller extends REST_Controller {
 				], 400);
 			}
 		} elseif (!empty($request->get_body())) {
+			$body = json_decode($request->get_body(), true);
+			$options_error = $this->validate_array_fields( $body, array( 'metadata_type_options' ) );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			try {
 				$prepared = $this->prepare_item_for_database( $request->get_body() );
 			} catch ( \Exception $exception ) {
@@ -507,6 +519,11 @@ class REST_Metadata_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
+			$options_error = $this->validate_array_fields( $body, array( 'metadata_type_options' ) );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			$attributes = [];
 
 			$metadatum_id = $request['metadatum_id'];

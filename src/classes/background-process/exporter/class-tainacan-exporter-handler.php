@@ -40,14 +40,16 @@ class Exporter_Handler {
 			'manual_collection' => false
 		]);
 
-        $this->register_exporter([
-			'name' => 'XLSX',
-			'description' => __('Allows you to export one collection to a XLSX file', 'tainacan'),
-			'slug' => 'xlsx',
-			'class_name' => '\Tainacan\Exporter\XLSX_Exporter',
-			'manual_mapping' => false,
-			'manual_collection' => true
-		]);
+		if ( version_compare( PHP_VERSION, '8.1', '>=' ) ) {
+			$this->register_exporter([
+				'name' => 'XLSX',
+				'description' => __('Allows you to export one collection to a XLSX file', 'tainacan'),
+				'slug' => 'xlsx',
+				'class_name' => '\Tainacan\Exporter\XLSX_Exporter',
+				'manual_mapping' => false,
+				'manual_collection' => true
+			]);
+		}
 
 		do_action('tainacan-register-exporters', $this);
 

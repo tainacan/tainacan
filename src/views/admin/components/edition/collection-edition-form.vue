@@ -1264,24 +1264,18 @@ export default {
             return opts.sort((a, b) => a - b);
         },
         registeredAndNotDisabledViewModes() {
-            let registered = tainacan_plugin.registered_view_modes;
-            for (let key in registered) {
-                if ( tainacan_plugin.enabled_view_modes.indexOf(key) == -1 )
-                    delete registered[key];
-            }
-            return registered;
+            const registered = tainacan_plugin.registered_view_modes || {};
+            const enabled = tainacan_plugin.enabled_view_modes || [];
+
+            return Object.fromEntries(Object.entries(registered).filter(([key, viewMode]) => (
+                enabled.includes(key)
+                && (this.form.hide_items_thumbnail_on_lists != 'yes' || !viewMode.requires_thumbnail)
+            )));
         },
     },
     watch: {
         'form.hide_items_thumbnail_on_lists' (newValue) {
             if (newValue == 'yes') {
-                const validViewModes = {};
-                Object.keys(tainacan_plugin.registered_view_modes).forEach((viewModeKey) => {
-                    if (!tainacan_plugin.registered_view_modes[viewModeKey]['requires_thumbnail']) 
-                        validViewModes[viewModeKey] = tainacan_plugin.registered_view_modes[viewModeKey];
-                });
-                this.registeredAndNotDisabledViewModes = validViewModes;
-                
                 this.form.enabled_view_modes = this.form.enabled_view_modes.filter((aViewMode) => this.registeredAndNotDisabledViewModes[aViewMode] != undefined );
 
                 this.updateDefaultViewModeBasedOnEnabled();           
@@ -1289,9 +1283,6 @@ export default {
                 // Setting initial view mode
                 if (this.$userPrefs.get('admin_view_mode_' + this.collectionId) == 'masonry' || this.$userPrefs.get('admin_view_mode_' + this.collectionId) == 'grid')
                     this.$userPrefs.set('admin_view_mode_' + this.collectionId, 'table');
-
-            } else {
-                this.registeredAndNotDisabledViewModes = tainacan_plugin.registered_view_modes;
             }
         },
         localDefaultOrderBy(newValue) {

@@ -33,6 +33,7 @@ classDiagram
         +get_base_properties_schema()
         +get_list_schema()
         +tainacan_sanitize_post_statuses(statuses, request, parameter)
+        #validate_array_fields(body, fields)
     }
 ```
 
@@ -276,5 +277,25 @@ status is invalid.
 **Return Value:**
 
 Array of valid status slugs or WP_Error if any status is not allowed.
+
+***
+
+### validate_array_fields
+
+Reject named fields that are present in a decoded JSON body but are not arrays.
+
+```php
+protected validate_array_fields(mixed $body, array $fields): true|\WP_REST_Response
+```
+
+JSON bodies read via get_body() bypass REST schema type checks when
+Content-Type is not application/json (for example text/plain).
+
+**Parameters:**
+
+| Parameter | Type      | Description                                   |
+|-----------|-----------|-----------------------------------------------|
+| `$body`   | **mixed** | Decoded request body or nested object.        |
+| `$fields` | **array** | Field names that must be arrays when present. |
 
 ***

@@ -84,7 +84,8 @@ classDiagram
         -process_footer(current_collection_item, collection_definition)
         +output_footer()
         -get_items(index, collection_definition)
-        -map_item_metadata(item)
+        #get_mapped_metadata_slugs()
+        #map_item_metadata(item)
         +add_new_file(key)
         +append_to_file(key, data)
         +set_accepted_mapping_methods(method, default_mapping, list)
@@ -112,7 +113,6 @@ classDiagram
         -process_header(current_collection_item, collection_definition)
         -process_footer(current_collection_item, collection_definition)
         -get_items(index, collection_definition)
-        -map_item_metadata(item)
         +process_item(item, metadata)
         +addRowToSheet(rowData, sheetIndex)
         +get_file_path()
@@ -247,26 +247,6 @@ private get_items(mixed $index, mixed $collection_definition): mixed
 |--------------------------|-----------|-------------|
 | `$index`                 | **mixed** |             |
 | `$collection_definition` | **mixed** |             |
-
-***
-
-### map_item_metadata
-
-Gets an Item as input and return an array of ItemMetadataObjects
-If a mapper is selected, the array keys will be the slugs of the metadata
-declared by the mapper, in the same order.
-
-```php
-private map_item_metadata(\Tainacan\Entities\Item $item): mixed
-```
-
-Note that if one of the metadata is not mapped, this array item will be null
-
-**Parameters:**
-
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$item`   | **\Tainacan\Entities\Item** |             |
 
 ***
 
@@ -1012,6 +992,37 @@ public output_header(): mixed
 ```php
 public output_footer(): mixed
 ```
+
+***
+
+### get_mapped_metadata_slugs
+
+Ordered mapper field slugs for the current collection: built-in mapper
+metadata first, then extra fields added through the mapper UI.
+
+```php
+protected get_mapped_metadata_slugs(): string[]
+```
+
+***
+
+### map_item_metadata
+
+Gets an Item as input and return an array of ItemMetadataObjects
+If a mapper is selected, the array keys will be the slugs of the metadata
+declared by the mapper, in the same order.
+
+```php
+protected map_item_metadata(\Tainacan\Entities\Item $item): mixed
+```
+
+Note that if one of the metadata is not mapped, this array item will be null
+
+**Parameters:**
+
+| Parameter | Type                        | Description |
+|-----------|-----------------------------|-------------|
+| `$item`   | **\Tainacan\Entities\Item** |             |
 
 ***
 

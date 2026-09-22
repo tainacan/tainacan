@@ -208,6 +208,80 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNotEquals($collection->get_name(), $data['name']);
 		$this->assertEquals('Test API', $data['name']);
     }
+
+	public function test_create_collection_rejects_serialized_filters_order() {
+		$author = $this->factory()->user->create( array( 'role' => 'tainacan-author' ) );
+		wp_set_current_user( $author );
+
+		Tainacan_POI_Canary::reset();
+		$poison = serialize( new Tainacan_POI_Canary() );
+
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/collections' );
+		$request->set_header( 'Content-Type', 'text/plain' );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'name'          => 'poi-collection',
+					'status'        => 'publish',
+					'filters_order' => $poison,
+				)
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
+
+	public function test_public_items_list_does_not_instantiate_poisoned_filters_order() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'poi-items',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		Tainacan_POI_Canary::reset();
+		update_post_meta( $collection->get_id(), 'filters_order', serialize( new Tainacan_POI_Canary() ) );
+
+		wp_set_current_user( 0 );
+
+		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/items' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertFalse( Tainacan_POI_Canary::$woke );
+	}
+
+	public function test_create_collection_accepts_array_filters_order() {
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/collections' );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'name'          => 'valid-order',
+					'status'        => 'publish',
+					'filters_order' => array(
+						array(
+							'id'      => 1,
+							'enabled' => true,
+						),
+					),
+				)
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 201, $response->get_status(), sprintf( 'response: %s', print_r( $response, true ) ) );
+
+		$order = $response->get_data()['filters_order'];
+		$this->assertIsArray( $order );
+		$this->assertCount( 1, $order );
+		$this->assertEquals( 1, $order[0]['id'] );
+		$this->assertTrue( (bool) $order[0]['enabled'] );
+	}
+
 	public function test_collection_description_denial_and_failed_save_preserve_existing_value() {
 		$existing_description = '<p>Existing description</p>';
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -268,7 +342,6 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 200, $after_failure->get_status() );
 		$this->assertSame( $existing_description, $after_failure->get_data()['description'] );
 	}
-
 }
 
 ?>

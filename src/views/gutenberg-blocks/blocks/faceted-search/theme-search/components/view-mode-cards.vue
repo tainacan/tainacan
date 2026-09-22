@@ -82,14 +82,13 @@
                             <div 
                                     v-if="!shouldHideItemsThumbnail && item['thumbnail']"
                                     class="card-thumbnail">
-                                <blur-hash-image
+                                <tainacan-progressive-image
                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
                                         :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                        :transition-duration="500"
                                     />
                             </div>
                             
