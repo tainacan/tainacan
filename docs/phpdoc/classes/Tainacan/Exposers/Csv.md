@@ -12,25 +12,6 @@ Generate a Csv formated response
 ```mermaid
 classDiagram
     direction TB
-    class Exposer {
-        #mappers : mixed
-        +accept_no_mapper : mixed
-        +slug : mixed
-        -name : mixed
-        -description : mixed
-        #set_name(name)
-        #set_description(description)
-        +get_name()
-        +get_description()
-        +_toArray()
-        +get_mappers()
-    }
-    class Csv {
-        +slug : mixed
-        +__construct()
-        +rest_request_after_callbacks(response, handler, request)
-    }
-    Exposer <|-- Csv
 ```
 
 ## Properties
