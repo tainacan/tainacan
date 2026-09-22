@@ -65,7 +65,7 @@ class Item_Metadata extends Repository {
 			return $item_metadata;
 		} else {
 			if ( $unique ) {
-				$item_metadata_value = $this->sanitize_value( $item_metadata->get_value() );
+				$item_metadata_value = $this->sanitize_item_metadata_value( $item_metadata, $item_metadata->get_value() );
 				if ( !is_numeric($item_metadata->get_value()) && empty( $item_metadata->get_value() ) ) {
 					if ( $item_metadata->get_metadatum()->get_parent() > 0 ) {
 						delete_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
@@ -105,7 +105,7 @@ class Item_Metadata extends Repository {
 						if ( !is_numeric($value) && empty($value) ) {
 							continue;
 						}
-						$item_metadata_value = $this->sanitize_value( $value );
+						$item_metadata_value = $this->sanitize_item_metadata_value( $item_metadata, $value );
 						add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata_value ) );
 					}
 				}
@@ -143,7 +143,7 @@ class Item_Metadata extends Repository {
 			$set_method = 'set_' . $metadata_type->get_related_mapped_prop();
 
 			$value = $item_metadata->get_value();
-			$item->$set_method( $this->sanitize_value( is_array( $value ) ? $value[0] : $value ) );
+			$item->$set_method( $this->sanitize_item_metadata_value( $item_metadata, is_array( $value ) ? $value[0] : $value ) );
 
 			if ( $item->validate_core_metadata() ) {
 				$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
@@ -152,6 +152,16 @@ class Item_Metadata extends Repository {
 				throw new \Exception( 'Item metadata should be validated beforehand' );
 			}
 		}
+	}
+
+	protected function sanitize_item_metadata_value( Entities\Item_Metadata_Entity $item_metadata, $value ) {
+		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+
+		if ( 'yes' === $metadata_type->get_option( 'use_rich_text_editor' ) ) {
+			return $this->sanitize_rich_text_value( $value );
+		}
+
+		return $this->sanitize_value( $value );
 	}
 
 	/**
