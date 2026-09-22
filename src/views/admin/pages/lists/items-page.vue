@@ -909,11 +909,10 @@
                 return ['table', 'cards', 'records', 'grid', 'masonry', 'list', 'map', 'mosaic'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
             },
             orderByName() {
-                const metadatumName =  this.$orderByHelper.getOrderByMetadatumName({
+                return this.$orderByHelper.getOrderByMetadatumName({
                     orderby: this.$route.query.orderby,
                     metakey: this.$route.query.metakey
                 }, this.sortingMetadata);
-                return this.$route.query.metakey ? metadatumName : this.$i18n.get(metadatumName);
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && /\s/.test(this.futureSearchQuery.trim());
