@@ -106,9 +106,9 @@ const EDITOR_INIT = {
     rel_list: false,
     link_context_toolbar: false,
     branding: false,
-    statusbar: false,
+    statusbar: true,
     height: 200,
-    resize: false,
+    resize: true,
     toolbar_mode: 'wrap',
     setup(editor) {
         let richTextEditorDialogMatcher;
