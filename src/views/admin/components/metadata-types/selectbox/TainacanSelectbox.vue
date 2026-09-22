@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :id="inputId">
         <input 
                 type="text"
                 aria-hidden="true"
@@ -11,7 +11,6 @@
         <!-- Selectbox (default) -->
         <b-select
                 v-if="getComponent === 'tainacan-selectbox'"
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 expanded
                 :disabled="disabled"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('label_selectbox_init')"
@@ -35,12 +34,12 @@
                 v-else-if="getComponent === 'tainacan-selectbox-radio'"
                 class="tainacan-selectbox-options-list">
             <b-radio
-                    v-for="(option, index) in getOptions"
-                    :id="index === 0 ? ('tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')) : undefined"
-                    :key="index"
+                    v-for="(option, optionIndex) in getOptions"
+                    :id="getOptionInputId(optionIndex)"
+                    :key="optionIndex"
                     v-model="localSingleValue"
                     :native-value="option"
-                    :name="'tainacan-selectbox-radio-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('-' + itemMetadatum.parent_meta_id) : '')"
+                    :name="inputId"
                     :disabled="disabled"
                     @update:model-value="onSelected($event)">
                 {{ getUnescapedLabel(option) }}
@@ -52,9 +51,9 @@
                 v-else-if="getComponent === 'tainacan-selectbox-checkbox'"
                 class="tainacan-selectbox-options-list">
             <b-checkbox
-                    v-for="(option, index) in getOptions"
-                    :id="index === 0 ? ('tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')) : undefined"
-                    :key="index"
+                    v-for="(option, optionIndex) in getOptions"
+                    :input-id="getOptionInputId(optionIndex)"
+                    :key="optionIndex"
                     v-model="localMultipleValue"
                     :native-value="option"
                     :disabled="disabled || isCheckboxDisabled(option)"
@@ -68,13 +67,13 @@
                 v-else-if="getComponent === 'tainacan-selectbox-radio-button'"
                 class="tainacan-selectbox-options-list is-buttons">
             <b-radio-button
-                    v-for="(option, index) in getOptions"
-                    :id="index === 0 ? ('tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')) : undefined"
-                    :key="index"
+                    v-for="(option, optionIndex) in getOptions"
+                    :id="getOptionInputId(optionIndex)"
+                    :key="optionIndex"
                     v-model="localSingleValue"
                     type="is-primary"
                     :native-value="option"
-                    :name="'tainacan-selectbox-radio-button-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('-' + itemMetadatum.parent_meta_id) : '')"
+                    :name="inputId"
                     :disabled="disabled"
                     @update:model-value="onSelected($event)">
                 <span>{{ getUnescapedLabel(option) }}</span>
@@ -86,9 +85,9 @@
                 v-else-if="getComponent === 'tainacan-selectbox-checkbox-button'"
                 class="tainacan-selectbox-options-list is-buttons">
             <b-checkbox-button
-                    v-for="(option, index) in getOptions"
-                    :id="index === 0 ? ('tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')) : undefined"
-                    :key="index"
+                    v-for="(option, optionIndex) in getOptions"
+                    :id="getOptionInputId(optionIndex)"
+                    :key="optionIndex"
                     v-model="localMultipleValue"
                     type="is-primary"
                     :native-value="option"
@@ -105,6 +104,7 @@
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],
+            inputId: String,
             disabled: false,
             forcedComponentType: '',
         },
@@ -175,6 +175,12 @@
             },
             getUnescapedLabel(label) {
                 return typeof _.unescape === 'function' ? _.unescape(label) : label;
+            },
+            getOptionInputId(optionIndex) {
+                if (!this.inputId)
+                    return undefined;
+
+                return this.inputId + '-option-' + optionIndex;
             },
             isCheckboxDisabled(option) {
                 if ( this.maxMultipleValues === undefined )

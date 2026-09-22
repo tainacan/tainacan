@@ -1,12 +1,13 @@
 <template>
-    <div :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
+    <div
+            :id="relationshipInputId"
+            :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-tabs
                 v-model="activeTab"
                 size="is-small"
                 animated>
             <b-tab-item :label="( itemMetadatum.value && itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_select_item') : $i18n.get('label_insert_items')">
                 <b-taginput
-                        :id="relationshipInputId"
                         v-a11y-autocomplete
                         expanded
                         :disabled="disabled"
@@ -90,7 +91,7 @@
                             <a 
                                     v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
                                     class="relationship-value-button--edit"
-                                    :v-tooltip="{
+                                    v-tooltip="{
                                         content: $i18n.get('label_edit'),
                                         autoHide: true,
                                         placement: 'bottom',
@@ -109,7 +110,7 @@
                             </a>
                             <a 
                                     class="relationship-value-button--remove"
-                                    :v-tooltip="{
+                                    v-tooltip="{
                                         content: $i18n.get('label_remove'),
                                         autoHide: true,
                                         placement: 'bottom',
@@ -187,6 +188,7 @@
     export default {
         props: {
             itemMetadatum: Object,
+            inputId: String,
             maxtags: undefined,
             disabled: false,
             allowNew: true,
@@ -235,10 +237,7 @@
                     return this.adminURL + 'itemEditionMode=true' + (this.$adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getNewItemPath(this.collectionId) + '?newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
             },
             relationshipInputId() {
-                if (this.itemMetadatum && this.itemMetadatum.metadatum)
-                    return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
-                else
-                    return '';
+                return this.inputId;
             },
             isDisplayingRelatedItemMetadata() {
                 return this.itemMetadatum &&
