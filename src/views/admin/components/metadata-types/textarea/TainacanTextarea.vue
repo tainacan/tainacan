@@ -25,8 +25,6 @@
 </template>
 
 <script>
-    import { isRichTextEditorAllowed } from '../../../js/rich-text-editor-feature-flag';
-
     export default {
         props: {
             itemMetadatum: Object,
@@ -46,7 +44,7 @@
         },
         computed: {
             shouldUseRichTextEditor() {
-                return isRichTextEditorAllowed() &&
+                return tainacan_plugin.tainacan_allow_rich_text_editor === '1' &&
                     this.itemMetadatum &&
                     this.itemMetadatum.metadatum &&
                     this.itemMetadatum.metadatum.metadata_type_options &&

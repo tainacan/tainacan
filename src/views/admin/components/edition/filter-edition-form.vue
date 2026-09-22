@@ -342,8 +342,6 @@
 import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
 import { formHooks } from "../../js/mixins";
-import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
-
 import FormFilterDate from '../filter-types/date/FormDate.vue';
 import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNumericInterval.vue';
@@ -388,7 +386,7 @@ export default {
             showEditMaxOptions: false,
             entityName: 'filter',
             isLoading: false,
-            isRichTextEditorAllowed: isRichTextEditorAllowed(),
+            isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
             maxOptionsLimit: tainacan_plugin.api_max_items_per_page && !isNaN(tainacan_plugin.api_max_items_per_page) ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },
@@ -598,4 +596,3 @@ export default {
     }
 
 </style>
-

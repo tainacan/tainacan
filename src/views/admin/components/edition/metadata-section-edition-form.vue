@@ -305,8 +305,6 @@
     import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from "../../js/mixins";
-    import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
-
     export default {
         name: 'MetadataSectionEditionForm',
         components:{
@@ -335,7 +333,7 @@
                 selectedConditionalMetadatumId: undefined,
                 selectedConditionalValue: [],
                 hideConditionalSectionSettings: false,
-                isRichTextEditorAllowed: isRichTextEditorAllowed(),
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 shouldUpdateConditionalValue: true
             }
         },
@@ -640,4 +638,3 @@
     }
 
 </style>
-

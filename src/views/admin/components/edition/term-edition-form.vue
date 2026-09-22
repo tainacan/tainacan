@@ -361,8 +361,6 @@
     import { formHooks } from "../../js/mixins";
     import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
-    import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
-
     export default {
         name: 'TermEditionForm',
         mixins: [ formHooks ],
@@ -409,7 +407,7 @@
                 coverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
-                isRichTextEditorAllowed: isRichTextEditorAllowed(),
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page'
             }
         },
@@ -928,4 +926,3 @@
     }
 
 </style>
-

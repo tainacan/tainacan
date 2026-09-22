@@ -324,8 +324,6 @@
     import { mapActions } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
-    import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
-
     export default {
         name: 'TaxonomyEditionForm',
         components: {
@@ -395,7 +393,7 @@
                 editFormErrors: {},
                 formErrorMessage: '',
                 entityName: 'taxonomy',
-                isRichTextEditorAllowed: isRichTextEditorAllowed(),
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 updatedAt: undefined,
                 shouldReloadTermsList: false,
                 themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url

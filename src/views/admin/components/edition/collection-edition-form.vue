@@ -1143,8 +1143,6 @@ import { mapGetters, mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import { permalinkGetter, formHooks } from '../../js/mixins';
-import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
-
 export default {
     name: 'CollectionEditionForm',
     components: {
@@ -1223,7 +1221,7 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
-            isRichTextEditorAllowed: isRichTextEditorAllowed(),
+            isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             //collections: [],              DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
             //isFetchingCollections: true,  DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY

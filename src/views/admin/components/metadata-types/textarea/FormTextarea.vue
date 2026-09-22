@@ -36,8 +36,6 @@
 </template>
 
 <script>
-    import { isRichTextEditorAllowed } from '../../../js/rich-text-editor-feature-flag';
-
     export default {
         props: {
             value: [ String, Object, Array ]
@@ -50,7 +48,7 @@
             return {
                 maxlength: [Number, null],
                 useRichTextEditor: 'no',
-                isRichTextEditorAllowed: isRichTextEditorAllowed()
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1'
             }
         },
         created() {

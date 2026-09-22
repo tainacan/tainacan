@@ -535,8 +535,6 @@
     import { nextTick } from 'vue';
     import {mapActions} from 'vuex';
     import { formHooks } from "../../js/mixins";
-    import { isRichTextEditorAllowed } from '../../js/rich-text-editor-feature-flag';
-
     import FormText from '../metadata-types/text/FormText.vue';
     import FormTextarea from '../metadata-types/textarea/FormTextarea.vue';
     import FormRelationship from '../metadata-types/relationship/FormRelationship.vue';
@@ -587,7 +585,7 @@
                 hideMetadataTypeOptions: false,
                 showAdvancedOptions: false,
                 showCardinalityOptions: false,
-                isRichTextEditorAllowed: isRichTextEditorAllowed(),
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 showHTMLFormattingOptions: false
             }
         },
@@ -881,4 +879,3 @@
     }
 
 </style>
-
