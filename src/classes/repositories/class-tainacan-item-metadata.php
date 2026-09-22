@@ -155,13 +155,18 @@ class Item_Metadata extends Repository {
 	}
 
 	protected function sanitize_item_metadata_value( Entities\Item_Metadata_Entity $item_metadata, $value ) {
-		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
-
-		if ( 'yes' === $metadata_type->get_option( 'use_rich_text_editor' ) ) {
+		if ( $this->is_rich_text_capable_metadata( $item_metadata ) ) {
 			return $this->sanitize_rich_text_value( $value );
 		}
 
 		return $this->sanitize_value( $value );
+	}
+
+	protected function is_rich_text_capable_metadata( Entities\Item_Metadata_Entity $item_metadata ) {
+		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+
+		return $metadata_type instanceof \Tainacan\Metadata_Types\Textarea ||
+			$metadata_type instanceof \Tainacan\Metadata_Types\Core_Description;
 	}
 
 	/**

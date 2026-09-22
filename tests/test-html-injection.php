@@ -191,7 +191,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 		$this->assertSame( 'Description ' . $link, $collection->get_description() );
 	}
 
-	public function test_preserves_links_only_for_opted_in_rich_text_metadata() {
+	public function test_preserves_links_for_rich_text_capable_metadata_only() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$link = '<a href="https://tainacan.org">Tainacan</a>';
@@ -220,8 +220,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 			[
 				'name' => 'Plain text',
 				'collection' => $collection,
-				'metadata_type' => 'Tainacan\\Metadata_Types\\Textarea',
-				'metadata_type_options' => [ 'use_rich_text_editor' => 'no' ]
+				'metadata_type' => 'Tainacan\\Metadata_Types\\Text'
 			],
 			true
 		);
@@ -238,6 +237,13 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 
 		$this->assertSame( $link, $rich_text_value->get_value() );
 		$this->assertSame( 'Tainacan', $plain_text_value->get_value() );
+
+		$core_description_value = new \Tainacan\Entities\Item_Metadata_Entity( $item, $collection->get_core_description_metadatum() );
+		$core_description_value->set_value( $link );
+		$core_description_value->validate();
+		$core_description_value = $Tainacan_Item_Metadata->insert( $core_description_value );
+
+		$this->assertSame( $link, $core_description_value->get_value() );
 	}
 
 }
