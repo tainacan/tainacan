@@ -321,7 +321,7 @@
                                     v-if="metadatum != undefined"
                                     aria-controls="items-list-results"
                                     role="button"
-                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && (orderBy == metadatum.slug || (metadatum.metadata_type_object && orderBy == metadatum.metadata_type_object.related_mapped_prop))) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     :value="metadatum"
                                     :data-metadatum-slug="metadatum.slug ? metadatum.slug : ''">
                                 {{ metadatum.name }}
@@ -946,11 +946,10 @@
                 return this.isLoadingItems || this.isLoadingMetadata;
             },
             orderByName() {
-                const metadatumName =  this.$orderByHelper.getOrderByMetadatumName({
+                return this.$orderByHelper.getOrderByMetadatumName({
                     orderby: this.$route.query.orderby,
                     metakey: this.$route.query.metakey
                 }, this.sortingMetadata);
-                return this.$route.query.metakey ? metadatumName : (metadatumName ? this.$i18n.get(metadatumName) : '');
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && /\s/.test(this.futureSearchQuery.trim());

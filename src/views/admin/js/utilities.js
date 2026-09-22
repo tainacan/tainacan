@@ -130,6 +130,12 @@ ThumbnailHelperPlugin.install = function (app, options = {}) {
 };
 
 
+// Same lookup used by the i18n plugin, kept outside the plugin so helpers can translate keys.
+const i18nGet = function (key) {
+    let string = tainacan_plugin.i18n[key];
+    return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+};
+
 // ORDERBY PLUGIN - Converts a metadatum information into appropriate orderby query for WP Query
 export const OrderByHelperPlugin = {};
 
@@ -189,34 +195,60 @@ export const OrderByHelperFunctions = () => {
             if (orderBy.metakey) {
                 let existingMetadataIndex = metadata.findIndex((aMetadatum) => aMetadatum.id == orderBy.metakey);
                 return existingMetadataIndex >= 0 ? metadata[existingMetadataIndex].name : '';
-            } else {
-                // We do this due to previous metadata that were saved as metadata object instead of orderby objects.
-                if (orderBy.slug) {
-                    switch(orderBy.slug) {
-                        case 'modification_date': return 'label_modification_date'
-                        case 'modified': return 'label_modification_date'
-                        case 'creation_date': return  'label_creation_date'
-                        case 'date': return  'label_creation_date'
-                        case 'author_name': return 'label_created_by'
-                        case 'created_by': return 'label_created_by'
-                        case 'title': return 'label_title'
-                        case 'description': return 'label_description'
-                        default: return orderBy.slug;
-                    }
-                } else {
-                    switch(orderBy.orderby) {
-                        case 'modification_date': return 'label_modification_date'
-                        case 'modified': return 'label_modification_date'
-                        case 'creation_date': return  'label_creation_date'
-                        case 'date': return  'label_creation_date'
-                        case 'author_name': return 'label_created_by'
-                        case 'created_by': return 'label_created_by'
-                        case 'title': return 'label_title'
-                        case 'description': return 'label_description'
-                        default: return orderBy.orderby;
-                    }
-                }
             }
+
+            // A single core title/description uses its customized name. Any other case
+            // falls through to the built-in label below.
+            const orderByValue = orderBy.slug || orderBy.orderby;
+            if (orderByValue === 'title' || orderByValue === 'description') {
+                const coreMetadatumName = this.getCoreMappedMetadatumName(orderByValue, metadata);
+                if (coreMetadatumName)
+                    return coreMetadatumName;
+            }
+
+            // Built-in sort options, including values previously stored as a metadatum slug.
+            let labelKey;
+            switch (orderByValue) {
+                case 'modification_date':
+                case 'modified':
+                    labelKey = 'label_modification_date';
+                    break;
+                case 'creation_date':
+                case 'date':
+                    labelKey = 'label_creation_date';
+                    break;
+                case 'author_name':
+                case 'created_by':
+                    labelKey = 'label_created_by';
+                    break;
+                case 'title':
+                    labelKey = 'label_title';
+                    break;
+                case 'description':
+                    labelKey = 'label_description';
+                    break;
+                default:
+                    labelKey = orderByValue;
+            }
+
+            return labelKey ? i18nGet(labelKey) : '';
+        },
+        /**
+         * Name of the single core metadatum sorted by this mapped post field.
+         * Returns an empty string when there is not exactly one match.
+         */
+        getCoreMappedMetadatumName(orderByValue, metadata) {
+            if (!metadata)
+                return '';
+
+            const coreMetadata = metadata.filter((aMetadatum) =>
+                aMetadatum &&
+                aMetadatum.metadata_type_object &&
+                aMetadatum.metadata_type_object.related_mapped_prop == orderByValue &&
+                aMetadatum.name
+            );
+
+            return coreMetadata.length === 1 ? coreMetadata[0].name : '';
         }
     }
 }
