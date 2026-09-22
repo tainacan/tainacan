@@ -47,7 +47,7 @@
                     <!-- Description -------------------------------- --> 
                     <b-field
                             :addons="false"
-                            label-for="tainacan-text-description"
+                            :label-for="isRichTextEditorAllowed ? undefined : 'tainacan-text-description'"
                             :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                             :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                         <template #label>
