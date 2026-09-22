@@ -1,7 +1,8 @@
 <template>
-    <div class="control is-clearfix">
+    <div
+            class="control is-clearfix"
+            :id="inputId">
         <input
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 v-imask="{ mask: dateMask, skipInvalid: false }"
                 :value="dateValue"
                 :disabled="disabled"
@@ -46,6 +47,7 @@
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],
+            inputId: String,
             disabled: false,
         },
         emits: [

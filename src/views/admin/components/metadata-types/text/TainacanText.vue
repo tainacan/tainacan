@@ -1,10 +1,9 @@
 <template>
-    <div>
+    <div :id="inputId">
         <div 
                 v-if="!getDisplayAutocomplete"
                 class="control is-clearfix">
             <input  
-                    :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                     v-imask="getMask"
                     class="input"
                     :disabled="disabled"
@@ -24,7 +23,6 @@
         </div>
         <b-autocomplete
                 v-else
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 v-a11y-autocomplete
                 :disabled="disabled"
                 :model-value="localValue"
@@ -72,6 +70,7 @@
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],
+            inputId: String,
             disabled: false
         },
         emits: [
@@ -126,7 +125,7 @@
         },
         methods: {
             onInput(value) {
-                const inputRef = this.$refs['tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '')];
+                const inputRef = this.$refs[this.inputId];
                 if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
                     return;
 

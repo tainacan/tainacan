@@ -1,5 +1,7 @@
 <template>
-    <div class="child-metadata-inputs">
+    <div
+            class="child-metadata-inputs"
+            :id="inputId">
         <a
                 v-if="!hideCollapses && childItemMetadataGroups.length > 0"
                 class="collapse-all"
@@ -150,6 +152,7 @@
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],
+            inputId: String,
             disabled: false,
             hideCollapses: false,
             hideMetadataTypes: Boolean,
