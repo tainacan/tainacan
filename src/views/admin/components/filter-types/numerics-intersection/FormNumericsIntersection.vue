@@ -100,38 +100,26 @@
                         :message="$i18n.getHelperMessage('tainacan-filter-numerics-intersection', 'secondary_filter_metadatum_id')" />
             </label>
             <b-autocomplete
-                    v-if="!secondNumericMetadatumId"
                     v-model="metadataSearch"
                     v-a11y-autocomplete="{ appendToBody: true }"
                     name="numerics_intersect[secondary_filter_metadatum_id]"
                     :placeholder="$i18n.get('instruction_select_second_numeric_to_compare')"
                     :data="metadata"
                     field="name"
+                    clearable
+                    icon-right="menu-down"
                     :loading="loading"
                     :append-to-body="true"
                     open-on-focus
                     expanded
                     @select="onSelectSecondNumericMetadatum"
-                    @update:model-value="fetchMetadata"
-                    @focus="clear()">
+                    @focus="onFocusMetadataSearch"
+                    @active="onMetadataSuggestionsActive"
+                    @typing="fetchMetadata">
                 <template #empty>
                     {{ $i18n.get('info_no_options_found') }}
                 </template>
             </b-autocomplete>
-            <div
-                    v-else
-                    class="control selected-metadatum">
-                <span>{{ secondNumericMetadatumName }}</span>
-                <button
-                        type="button"
-                        class="button is-white"
-                        :aria-label="$i18n.get('remove_value')"
-                        @click.prevent="clearSelectedMetadatum">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon tainacan-icon-close" />
-                    </span>
-                </button>
-            </div>
         </b-field>
         <fieldset 
                 v-if="secondNumericMetadatumId"
@@ -271,7 +259,7 @@
 </template>
 
 <script>
-    import { tainacanApi } from '../../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
 
     export default {
         props: {
@@ -290,7 +278,7 @@
                 metadataSearch: '',
                 metadataSource: [],
                 metadataSourceLoaded: false,
-                metadataRequestId: 0,
+                metadataSearchCancel: null,
                 loading: true,
                 metadataType: '',
                 metadataMessage: '',
@@ -305,6 +293,10 @@
             }
         },
         watch: {
+            metadataSearch(name) {
+                if (!name)
+                    this.onSelectSecondNumericMetadatum(null);
+            },
             errors() {
                 if ( this.errors && this.errors.secondary_filter_metadatum_id !== '' )
                     this.setErrorsAttributes( 'is-danger', this.errors.secondary_filter_metadatum_id );
@@ -316,6 +308,7 @@
             this.step = this.modelValue && this.modelValue.step ? this.modelValue.step : 1;
             this.secondNumericMetadatumId = this.modelValue && this.modelValue.secondary_filter_metadatum_id ? this.modelValue.secondary_filter_metadatum_id : '';
             this.secondNumericMetadatumName = this.modelValue && this.modelValue.secondary_filter_metadatum_name ? this.modelValue.secondary_filter_metadatum_name : '';
+            this.metadataSearch = this.secondNumericMetadatumName;
             this.firstComparator = this.modelValue && this.modelValue.first_comparator ? this.modelValue.first_comparator : '>=';
             this.secondComparator = this.modelValue && this.modelValue.second_comparator ? this.modelValue.second_comparator : '<=';
             this.acceptNumericInterval = this.modelValue && this.modelValue.accept_numeric_interval ? this.modelValue.accept_numeric_interval : 'no';
@@ -323,7 +316,7 @@
             if (this.secondNumericMetadatumId && !this.secondNumericMetadatumName)
                 this.fetchSelectedMetadatumName();
             else if (!this.secondNumericMetadatumId)
-                this.fetchMetadata('');
+                this.browseMetadata();
             else
                 this.loading = false;
 
@@ -354,7 +347,31 @@
                 }
             };
         },
+        beforeUnmount() {
+            this.cancelMetadataSearch();
+        },
         methods: {
+            cancelMetadataSearch() {
+                if (this.metadataSearchCancel) {
+                    this.metadataSearchCancel.cancel('Metadata search canceled.');
+                    this.metadataSearchCancel = null;
+                }
+            },
+            onFocusMetadataSearch() {
+                this.clear();
+                this.browseMetadata();
+            },
+            onMetadataSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.secondNumericMetadatumId && this.secondNumericMetadatumName && this.metadataSearch !== this.secondNumericMetadatumName)
+                    this.metadataSearch = this.secondNumericMetadatumName;
+            },
+            browseMetadata() {
+                this.loading = true;
+                this.requestMetadata('');
+            },
             isCollectionMetadata() {
                 return this.filter && this.filter.collection_id && this.filter.collection_id !== 'default';
             },
@@ -383,6 +400,7 @@
                 return tainacanApi.get(endpoint)
                     .then(res => {
                         this.secondNumericMetadatumName = res.data && res.data.name ? res.data.name : '';
+                        this.metadataSearch = this.secondNumericMetadatumName;
                         this.loading = false;
                     })
                     .catch(error => {
@@ -393,15 +411,21 @@
             fetchMetadata: _.debounce(function(search) {
                 const query = search || '';
 
-                if (!this.isCollectionMetadata()) {
-                    if (this.metadataSourceLoaded) {
-                        this.metadata = this.filterMetadata(this.metadataSource, query);
-                        this.loading = false;
-                        return;
-                    }
+                if (this.secondNumericMetadatumName && query === this.secondNumericMetadatumName)
+                    return;
+
+                this.requestMetadata(query);
+            }, 500),
+            requestMetadata(query) {
+                if (!this.isCollectionMetadata() && this.metadataSourceLoaded) {
+                    this.metadata = this.filterMetadata(this.metadataSource, query);
+                    this.loading = false;
+                    return;
                 }
 
-                const requestId = ++this.metadataRequestId;
+                this.cancelMetadataSearch();
+                const source = CancelToken.source();
+                this.metadataSearchCancel = source;
                 this.loading = true;
 
                 let endpoint = this.isCollectionMetadata()
@@ -412,11 +436,8 @@
                 if (query && this.isCollectionMetadata())
                     endpoint += '&search=' + encodeURIComponent(query);
 
-                return tainacanApi.get(endpoint)
+                return tainacanApi.get(endpoint, { cancelToken: source.token })
                     .then(res => {
-                        if (requestId !== this.metadataRequestId)
-                            return;
-
                         const metadata = res.data ? res.data : [];
                         if (!this.isCollectionMetadata()) {
                             this.metadataSource = metadata;
@@ -428,29 +449,28 @@
                         this.loading = false;
                     })
                     .catch(error => {
-                        if (requestId !== this.metadataRequestId)
+                        if (isCancel(error))
                             return;
 
                         this.loading = false;
                         this.$console.log(error);
                     });
-            }, 500),
+            },
             onSelectSecondNumericMetadatum(metadatum) {
-                if (!metadatum || !metadatum.id)
+                if (!metadatum || !metadatum.id) {
+                    if (this.metadataSearch || (!this.secondNumericMetadatumId && !this.secondNumericMetadatumName))
+                        return;
+
+                    this.secondNumericMetadatumId = '';
+                    this.secondNumericMetadatumName = '';
+                    this.emitValues();
                     return;
+                }
 
                 this.secondNumericMetadatumId = metadatum.id;
                 this.secondNumericMetadatumName = metadatum.name || '';
-                this.metadataSearch = '';
+                this.metadataSearch = this.secondNumericMetadatumName;
                 this.emitValues();
-            },
-            clearSelectedMetadatum() {
-                this.metadataRequestId++;
-                this.secondNumericMetadatumId = '';
-                this.secondNumericMetadatumName = '';
-                this.metadataSearch = '';
-                this.emitValues();
-                this.fetchMetadata('');
             },
             emitValues() {
                 this.$emit('update:model-value', {
@@ -507,20 +527,6 @@
 
     .logic-divider {
         display: none;
-    }
-}
-
-.selected-metadatum {
-    border: 1px solid var(--tainacan-gray2);
-    padding: calc(0.57em - 1px) 8px;
-    font-size: 0.875em;
-    min-height: 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    button {
-        border-radius: 100em !important;
     }
 }
 </style>

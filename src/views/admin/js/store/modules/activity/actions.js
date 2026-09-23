@@ -159,10 +159,11 @@ export const fetchActivity = ({ commit }, activityId) => {
  * Dispatches `activity/fetchUsers`.
  * @returns {*} Action result.
  */
-export const fetchUsers = ({ commit }, { search, page, exclude }) => {
+export const fetchUsers = ({ commit }, { search, page, exclude, perPage }) => {
     let endpoint = '/users';
     let params = {
-        search: search
+        search: search,
+        per_page: perPage || 12
     };
 
     if (page)

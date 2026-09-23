@@ -11,57 +11,29 @@
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')" />
             </label>
-            <div
-                    v-if="isResolvingCollection"
-                    class="control is-loading selected-collection" />
-            <div
-                    v-else-if="!selectedCollection || isReplacingCollection"
-                    class="collection-picker">
-                <b-autocomplete
-                        v-model="collectionSearch"
-                        v-a11y-autocomplete="{ appendToBody: true }"
-                        name="metadata_type_relationship[collection_id]"
-                        :placeholder="$i18n.get('instruction_select_collection_fetch_items')"
-                        :data="collections"
-                        field="name"
-                        :loading="loading"
-                        :append-to-body="true"
-                        open-on-focus
-                        expanded
-                        check-infinite-scroll
-                        @select="onSelectCollection"
-                        @update:model-value="fetchCollections"
-                        @focus="clear()"
-                        @infinite-scroll="fetchMoreCollections">
-                    <template #empty>
-                        {{ $i18n.get('info_no_options_found') }}
-                    </template>
-                </b-autocomplete>
-                <button
-                        v-if="isReplacingCollection && selectedCollection"
-                        type="button"
-                        class="button is-white"
-                        :aria-label="$i18n.get('close')"
-                        @click.prevent="cancelReplacingCollection">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon tainacan-icon-close" />
-                    </span>
-                </button>
-            </div>
-            <div
-                    v-else
-                    class="control selected-collection">
-                <span>{{ selectedCollection.name }}</span>
-                <button
-                        type="button"
-                        class="button is-white"
-                        :aria-label="$i18n.get('edit')"
-                        @click.prevent="startReplacingCollection">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon tainacan-icon-edit" />
-                    </span>
-                </button>
-            </div>
+            <b-autocomplete
+                    v-model="collectionSearch"
+                    v-a11y-autocomplete="{ appendToBody: true }"
+                    name="metadata_type_relationship[collection_id]"
+                    :placeholder="$i18n.get('instruction_select_collection_fetch_items')"
+                    :data="collections"
+                    field="name"
+                    clearable
+                    icon-right="menu-down"
+                    :loading="loading"
+                    :append-to-body="true"
+                    open-on-focus
+                    expanded
+                    check-infinite-scroll
+                    @select="onSelectCollection"
+                    @focus="onFocusCollectionSearch"
+                    @active="onCollectionSuggestionsActive"
+                    @typing="fetchCollections"
+                    @infinite-scroll="fetchMoreCollections">
+                <template #empty>
+                    {{ $i18n.get('info_no_options_found') }}
+                </template>
+            </b-autocomplete>
             <p 
                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="help" 
@@ -178,7 +150,7 @@
 </template>
 
 <script>
-    import { tainacanApi } from '../../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
 
     export default {
         props: {
@@ -193,14 +165,12 @@
             return {
                 icon: '',
                 collections:[],
-                selectedCollection: null,
-                isResolvingCollection: false,
-                isReplacingCollection: false,
                 collectionSearch: '',
+                committedCollectionName: '',
                 collectionSearchQuery: '',
                 collectionsPage: 1,
                 totalCollections: 0,
-                collectionsRequestId: 0,
+                collectionSearchCancel: null,
                 metadata: [],
                 loading: true,
                 collection: '',
@@ -226,6 +196,10 @@
             }
         },
         watch:{
+            collectionSearch(name) {
+                if (!name)
+                    this.onSelectCollection(null);
+            },
             collection( value ) {
                 this.collection = value;
                 if ( value && value !== '' ) {
@@ -256,7 +230,7 @@
                 this.fetchSelectedCollection(initialCollectionId);
             } else {
                 this.loading = false;
-                this.fetchCollections('');
+                this.browseCollections();
             }
 
             this.displayRelatedItemMetadata = this.value && this.value.display_related_item_metadata && Array.isArray(this.value.display_related_item_metadata) ? this.value.display_related_item_metadata : [];
@@ -264,34 +238,63 @@
             this.modelAcceptDraftItems = this.value && this.value.accept_draft_items ? this.value.accept_draft_items : 'no';
             this.modelAcceptOnlyItemsAuthoredByCurrentUser = this.value && this.value.accept_only_items_authored_by_current_user ? this.value.accept_only_items_authored_by_current_user : 'no';
         },
+        beforeUnmount() {
+            this.cancelCollectionSearch();
+        },
         methods: {
             setErrorsAttributes( type, message ){
                 this.collectionType = type;
                 this.collectionType = message;
             },
             fetchSelectedCollection(id) {
-                this.isResolvingCollection = true;
                 this.loading = true;
 
                 return tainacanApi.get('/collections/' + id + '?fetch_only=name,id')
                     .then(res => {
-                        this.selectedCollection = res.data ? res.data : { id: id, name: String(id) };
+                        const name = res.data && res.data.name ? res.data.name : String(id);
+                        this.committedCollectionName = name;
+                        this.collectionSearch = name;
                         this.loading = false;
-                        this.isResolvingCollection = false;
                     })
                     .catch(error => {
                         this.$console.log(error);
-                        this.selectedCollection = { id: id, name: String(id) };
+                        this.committedCollectionName = String(id);
+                        this.collectionSearch = String(id);
                         this.loading = false;
-                        this.isResolvingCollection = false;
                     });
+            },
+            onFocusCollectionSearch() {
+                this.clear();
+                this.browseCollections();
+            },
+            onCollectionSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.collection && this.committedCollectionName && this.collectionSearch !== this.committedCollectionName)
+                    this.collectionSearch = this.committedCollectionName;
+            },
+            cancelCollectionSearch() {
+                if (this.collectionSearchCancel) {
+                    this.collectionSearchCancel.cancel('Collection search canceled.');
+                    this.collectionSearchCancel = null;
+                }
+            },
+            browseCollections() {
+                this.collectionSearchQuery = '';
+                this.collectionsPage = 1;
+                this.totalCollections = 0;
+                this.loading = true;
+                this.requestCollectionPage('');
             },
             fetchCollections: _.debounce(function(search) {
                 const query = search || '';
 
+                if (this.committedCollectionName && query === this.committedCollectionName)
+                    return;
+
                 if (query !== this.collectionSearchQuery) {
                     this.collectionSearchQuery = query;
-                    this.collections = [];
                     this.collectionsPage = 1;
                     this.totalCollections = 0;
                 }
@@ -299,61 +302,58 @@
                 if (this.collectionsPage > 1 && this.collections.length >= Number(this.totalCollections))
                     return;
 
-                const requestId = ++this.collectionsRequestId;
                 this.loading = true;
+                this.requestCollectionPage(query);
+            }, 500),
+            requestCollectionPage(query) {
+                this.cancelCollectionSearch();
+                const source = CancelToken.source();
+                this.collectionSearchCancel = source;
 
                 let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&status=any&order=asc&orderby=title';
                 if (query)
                     endpoint += '&search=' + encodeURIComponent(query);
 
-                return tainacanApi.get(endpoint)
+                return tainacanApi.get(endpoint, { cancelToken: source.token })
                     .then(res => {
-                        if (requestId !== this.collectionsRequestId)
-                            return;
-
                         const pageCollections = res.data ? res.data : [];
-                        for (let collection of pageCollections)
-                            this.collections.push(collection);
+                        if (this.collectionsPage === 1)
+                            this.collections = pageCollections;
+                        else {
+                            for (let collection of pageCollections)
+                                this.collections.push(collection);
+                        }
 
                         this.totalCollections = res.headers['x-wp-total'] ? Number(res.headers['x-wp-total']) : this.collections.length;
                         this.collectionsPage++;
                         this.loading = false;
                     })
                     .catch(error => {
-                        if (requestId !== this.collectionsRequestId)
+                        if (isCancel(error))
                             return;
 
                         this.$console.log(error);
                         this.loading = false;
                     });
-            }, 500),
+            },
             fetchMoreCollections: _.debounce(function() {
                 this.fetchCollections(this.collectionSearchQuery);
             }, 250),
             onSelectCollection(collection) {
-                if (!collection || !collection.id)
-                    return;
+                if (!collection || !collection.id) {
+                    if (this.collectionSearch || (!this.collection && !this.committedCollectionName))
+                        return;
 
-                this.selectedCollection = collection;
-                this.isReplacingCollection = false;
-                this.collectionSearch = '';
+                    this.committedCollectionName = '';
+                    if (this.collection)
+                        this.collection = '';
+                    return;
+                }
+
+                this.committedCollectionName = collection.name || '';
+                this.collectionSearch = this.committedCollectionName;
                 if (this.collection != collection.id)
                     this.collection = collection.id;
-            },
-            startReplacingCollection() {
-                this.collectionsRequestId++;
-                this.isReplacingCollection = true;
-                this.collectionSearch = '';
-                this.collectionSearchQuery = '';
-                this.collections = [];
-                this.collectionsPage = 1;
-                this.totalCollections = 0;
-                this.fetchCollections('');
-            },
-            cancelReplacingCollection() {
-                this.collectionsRequestId++;
-                this.isReplacingCollection = false;
-                this.collectionSearch = '';
             },
             fetchMetadataFromCollection(value) {
                 this.loadingMetadata = true;
@@ -441,36 +441,6 @@
     }
     .switch.is-small {
         margin-top: -0.5em;
-    }
-    .collection-picker {
-        display: flex;
-        align-items: center;
-        gap: 0.25em;
-
-        .autocomplete {
-            flex: 1;
-        }
-
-        button {
-            border-radius: 100em !important;
-        }
-    }
-    .selected-collection {
-        border: 1px solid var(--tainacan-gray2);
-        padding: calc(0.57em - 1px) 8px;
-        font-size: 0.875em;
-        min-height: 32px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        button {
-            border-radius: 100em !important;
-        }
-
-        &.is-loading {
-            min-height: 2.5em;
-        }
     }
     .displayed-metadata-options.has-more-than-5-metadata {
         max-height: 125px;

@@ -13,40 +13,28 @@
                         :message="$i18n.getHelperMessage('tainacan-taxonomy', 'taxonomy_id')" />
             </label>
             <b-autocomplete
-                    v-if="!selectedTaxonomy"
                     v-model="taxonomySearch"
                     v-a11y-autocomplete="{ appendToBody: true }"
                     name="field_type_options[taxonomy_id]"
                     :placeholder="$i18n.get('label_select_taxonomy')"
                     :data="taxonomies"
                     field="name"
+                    clearable
+                    icon-right="menu-down"
                     :loading="loading"
                     :append-to-body="true"
                     open-on-focus
                     expanded
                     check-infinite-scroll
                     @select="onSelectTaxonomy"
-                    @update:model-value="fetchTaxonomies"
-                    @focus="clear"
+                    @focus="onFocusTaxonomySearch"
+                    @active="onTaxonomySuggestionsActive"
+                    @typing="fetchTaxonomies"
                     @infinite-scroll="fetchMoreTaxonomies">
                 <template #empty>
                     {{ $i18n.get('info_no_options_found') }}
                 </template>
             </b-autocomplete>
-            <div
-                    v-else
-                    class="control selected-taxonomy">
-                <span>{{ selectedTaxonomy.name }}</span>
-                <button
-                        type="button"
-                        class="button is-white"
-                        :aria-label="$i18n.get('remove_value')"
-                        @click.prevent="clearSelectedTaxonomy">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon tainacan-icon-close" />
-                    </span>
-                </button>
-            </div>
             <p 
                     v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
                     class="help" 
@@ -216,7 +204,7 @@
 </template>
 
 <script>
-    import { tainacanApi } from '../../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
     import qs from 'qs';
 
     export default {
@@ -232,10 +220,11 @@
                 taxonomies: [],
                 selectedTaxonomy: null,
                 taxonomySearch: '',
+                committedTaxonomyName: '',
                 taxonomySearchQuery: '',
                 taxonomyPage: 1,
                 totalTaxonomies: 0,
-                taxonomyRequestId: 0,
+                taxonomySearchCancel: null,
                 taxonomy_id: '',
                 taxonomy: '',
                 loading: false,
@@ -255,7 +244,7 @@
                 collectionSearchString: '',
                 collectionsPage: 1,
                 totalCollections: 0,
-                collectionsRequestId: 0,
+                collectionSearchCancel: null,
                 loadingCollections: false
             }
         },
@@ -296,6 +285,10 @@
             }
         },
         watch: {
+            taxonomySearch(name) {
+                if (!name)
+                    this.onSelectTaxonomy(null);
+            },
             input_type:{
                 handler(val, oldValue) {
                     if (val != oldValue) {
@@ -336,9 +329,13 @@
             if (this.taxonomy_id)
                 this.fetchSelectedTaxonomy();
             else
-                this.fetchTaxonomies('');
+                this.browseTaxonomies();
 
             this.isReady = true;
+        },
+        beforeUnmount() {
+            this.cancelTaxonomySearch();
+            this.cancelCollectionSearch();
         },
         methods: {
             setInputType( input ) {
@@ -396,6 +393,12 @@
                         this.loadingCollections = false;
                     });
             },
+            cancelCollectionSearch() {
+                if (this.collectionSearchCancel) {
+                    this.collectionSearchCancel.cancel('Collection search canceled.');
+                    this.collectionSearchCancel = null;
+                }
+            },
             fetchCollections: _.debounce(function(search) {
                 const query = search || '';
 
@@ -409,18 +412,17 @@
                 if (this.collectionsPage > 1 && this.collections.length >= Number(this.totalCollections))
                     return;
 
-                const requestId = ++this.collectionsRequestId;
+                this.cancelCollectionSearch();
+                const source = CancelToken.source();
+                this.collectionSearchCancel = source;
                 this.loadingCollections = true;
 
                 let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&context=edit&fetch_only=name,id,thumbnail&order=asc&orderby=title';
                 if (query)
                     endpoint += '&search=' + encodeURIComponent(query);
 
-                return tainacanApi.get(endpoint)
+                return tainacanApi.get(endpoint, { cancelToken: source.token })
                     .then((res) => {
-                        if (requestId !== this.collectionsRequestId)
-                            return;
-
                         const pageCollections = res.data ? res.data : [];
                         for (let collection of pageCollections)
                             this.collections.push(collection);
@@ -430,7 +432,7 @@
                         this.loadingCollections = false;
                     })
                     .catch((error) => {
-                        if (requestId !== this.collectionsRequestId)
+                        if (isCancel(error))
                             return;
 
                         this.$console.log(error);
@@ -451,6 +453,9 @@
                 return tainacanApi.get('/taxonomies/' + this.taxonomy_id)
                     .then(res => {
                         this.selectedTaxonomy = res.data ? res.data : null;
+                        const name = this.selectedTaxonomy && this.selectedTaxonomy.name ? this.selectedTaxonomy.name : '';
+                        this.committedTaxonomyName = name;
+                        this.taxonomySearch = name;
                         this.loading = false;
                     })
                     .catch(error => {
@@ -460,12 +465,38 @@
                         this.fetchTaxonomies('');
                     });
             },
+            onFocusTaxonomySearch() {
+                this.clear();
+                this.browseTaxonomies();
+            },
+            onTaxonomySuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.taxonomy_id && this.committedTaxonomyName && this.taxonomySearch !== this.committedTaxonomyName)
+                    this.taxonomySearch = this.committedTaxonomyName;
+            },
+            cancelTaxonomySearch() {
+                if (this.taxonomySearchCancel) {
+                    this.taxonomySearchCancel.cancel('Taxonomy search canceled.');
+                    this.taxonomySearchCancel = null;
+                }
+            },
+            browseTaxonomies() {
+                this.taxonomySearchQuery = '';
+                this.taxonomyPage = 1;
+                this.totalTaxonomies = 0;
+                this.loading = true;
+                this.requestTaxonomyPage('');
+            },
             fetchTaxonomies: _.debounce(function(search) {
                 const query = search || '';
 
+                if (this.committedTaxonomyName && query === this.committedTaxonomyName)
+                    return;
+
                 if (query !== this.taxonomySearchQuery) {
                     this.taxonomySearchQuery = query;
-                    this.taxonomies = [];
                     this.taxonomyPage = 1;
                     this.totalTaxonomies = 0;
                 }
@@ -473,57 +504,60 @@
                 if (this.taxonomyPage > 1 && this.taxonomies.length >= Number(this.totalTaxonomies))
                     return;
 
-                const requestId = ++this.taxonomyRequestId;
                 this.loading = true;
+                this.requestTaxonomyPage(query);
+            }, 500),
+            requestTaxonomyPage(query) {
+                this.cancelTaxonomySearch();
+                const source = CancelToken.source();
+                this.taxonomySearchCancel = source;
 
                 let endpoint = '/taxonomies?paged=' + this.taxonomyPage + '&perpage=12&order=asc&orderby=title&status=any';
                 if (query)
                     endpoint += '&search=' + encodeURIComponent(query);
 
-                return tainacanApi.get(endpoint)
+                return tainacanApi.get(endpoint, { cancelToken: source.token })
                     .then(res => {
-                        if (requestId !== this.taxonomyRequestId)
-                            return;
-
                         const pageTaxonomies = res.data ? res.data : [];
-                        for (let taxonomy of pageTaxonomies)
-                            this.taxonomies.push(taxonomy);
+                        if (this.taxonomyPage === 1)
+                            this.taxonomies = pageTaxonomies;
+                        else {
+                            for (let taxonomy of pageTaxonomies)
+                                this.taxonomies.push(taxonomy);
+                        }
 
                         this.totalTaxonomies = res.headers['x-wp-total'] ? Number(res.headers['x-wp-total']) : this.taxonomies.length;
                         this.taxonomyPage++;
                         this.loading = false;
                     })
                     .catch(error => {
-                        if (requestId !== this.taxonomyRequestId)
+                        if (isCancel(error))
                             return;
 
                         this.$console.log(error);
                         this.loading = false;
                     });
-            }, 500),
+            },
             fetchMoreTaxonomies: _.debounce(function() {
                 this.fetchTaxonomies(this.taxonomySearchQuery);
             }, 250),
             onSelectTaxonomy(taxonomy) {
-                if (!taxonomy || !taxonomy.id)
+                if (!taxonomy || !taxonomy.id) {
+                    if (this.taxonomySearch || (!this.taxonomy_id && !this.committedTaxonomyName))
+                        return;
+
+                    this.selectedTaxonomy = null;
+                    this.committedTaxonomyName = '';
+                    this.taxonomy_id = '';
+                    this.emitValues();
                     return;
+                }
 
                 this.selectedTaxonomy = taxonomy;
                 this.taxonomy_id = taxonomy.id;
-                this.taxonomySearch = '';
+                this.committedTaxonomyName = taxonomy.name || '';
+                this.taxonomySearch = this.committedTaxonomyName;
                 this.emitValues();
-            },
-            clearSelectedTaxonomy() {
-                this.taxonomyRequestId++;
-                this.selectedTaxonomy = null;
-                this.taxonomy_id = '';
-                this.taxonomySearch = '';
-                this.taxonomySearchQuery = '';
-                this.taxonomies = [];
-                this.taxonomyPage = 1;
-                this.totalTaxonomies = 0;
-                this.emitValues();
-                this.fetchTaxonomies('');
             },
             labelNewTerms(){
                 return ( this.allow_new_terms === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
@@ -560,18 +594,5 @@
     }
     .switch.is-small {
         margin-top: -0.5em;
-    }
-    .selected-taxonomy {
-        border: 1px solid var(--tainacan-gray2);
-        padding: calc(0.57em - 1px) 8px;
-        font-size: 0.875em;
-        min-height: 32px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        button {
-            border-radius: 100em !important;
-        }
     }
 </style>
