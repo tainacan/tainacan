@@ -12,24 +12,41 @@
                         :title="$i18n.getHelperTitle('tainacan-taxonomy', 'taxonomy_id')"
                         :message="$i18n.getHelperMessage('tainacan-taxonomy', 'taxonomy_id')" />
             </label>
-            <b-select
-                    v-model="taxonomy_id"
+            <b-autocomplete
+                    v-if="!selectedTaxonomy"
+                    v-model="taxonomySearch"
+                    v-a11y-autocomplete="{ appendToBody: true }"
                     name="field_type_options[taxonomy_id]"
-                    placeholder="Select the taxonomy"
+                    :placeholder="$i18n.get('label_select_taxonomy')"
+                    :data="taxonomies"
+                    field="name"
                     :loading="loading"
+                    :append-to-body="true"
+                    open-on-focus
                     expanded
-                    @update:model-value="emitValues()"
-                    @focus="clear">
-                <option value="">
-                    {{ $i18n.get('label_selectbox_init') }}...
-                </option>
-                <option
-                        v-for="option in taxonomies"
-                        :key="option.id"
-                        :value="option.id">
-                    {{ option.name }}
-                </option>
-            </b-select>
+                    check-infinite-scroll
+                    @select="onSelectTaxonomy"
+                    @update:model-value="fetchTaxonomies"
+                    @focus="clear"
+                    @infinite-scroll="fetchMoreTaxonomies">
+                <template #empty>
+                    {{ $i18n.get('info_no_options_found') }}
+                </template>
+            </b-autocomplete>
+            <div
+                    v-else
+                    class="control selected-taxonomy">
+                <span>{{ selectedTaxonomy.name }}</span>
+                <button
+                        type="button"
+                        class="button is-white"
+                        :aria-label="$i18n.get('remove_value')"
+                        @click.prevent="clearSelectedTaxonomy">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </div>
             <p 
                     v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
                     class="help" 
@@ -75,7 +92,7 @@
 
         </b-field>
         <b-field
-                v-if="taxonomy_id && taxonomies.length && (input_type == 'tainacan-taxonomy-checkbox' || input_type == 'tainacan-taxonomy-radio')" 
+                v-if="taxonomy_id && selectedTaxonomy && (input_type == 'tainacan-taxonomy-checkbox' || input_type == 'tainacan-taxonomy-radio')" 
                 :addons="false"
                 :label="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')">
                 &nbsp;
@@ -88,7 +105,7 @@
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')" />
         </b-field>
         <b-field
-                v-if="taxonomy_id && taxonomies.length && isTermCreationAllowedOnCurrentTaxonomy" 
+                v-if="taxonomy_id && selectedTaxonomy && isTermCreationAllowedOnCurrentTaxonomy" 
                 :addons="false"
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
                 &nbsp;
@@ -103,7 +120,7 @@
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')" />
         </b-field>
         <b-field
-                v-if="taxonomy_id && taxonomies.length" 
+                v-if="taxonomy_id && selectedTaxonomy" 
                 :addons="false"
                 :label="$i18n.getHelperTitle('tainacan-taxonomy', 'do_not_dispaly_term_as_link')">
                 &nbsp;
@@ -209,6 +226,12 @@
             return {
                 isReady: false,
                 taxonomies: [],
+                selectedTaxonomy: null,
+                taxonomySearch: '',
+                taxonomySearchQuery: '',
+                taxonomyPage: 1,
+                totalTaxonomies: 0,
+                taxonomyRequestId: 0,
                 taxonomy_id: '',
                 taxonomy: '',
                 loading: false,
@@ -261,8 +284,7 @@
                 return true;
             },
             isTermCreationAllowedOnCurrentTaxonomy() {
-                const currentTaxonomy = this.taxonomies.find((taxonomy) => taxonomy.id == this.taxonomy_id);
-                return currentTaxonomy ? currentTaxonomy.allow_insert == 'yes' : false;
+                return this.selectedTaxonomy ? this.selectedTaxonomy.allow_insert == 'yes' : false;
             }
         },
         watch: {
@@ -275,7 +297,6 @@
             }
         },
         created() {
-            this.fetchTaxonomies();
             this.fetchCollections();
 
             this.single_types['tainacan-taxonomy-radio'] = this.$i18n.get('label_input_type_radio');
@@ -305,6 +326,11 @@
                 this.taxonomy = this.value.taxonomy ? this.value.taxonomy : '';
             }
 
+            if (this.taxonomy_id)
+                this.fetchSelectedTaxonomy();
+            else
+                this.fetchTaxonomies('');
+
             this.isReady = true;
         },
         methods: {
@@ -328,18 +354,85 @@
                         this.loadingCollections = false;
                     });
             },
-            fetchTaxonomies(){
+            fetchSelectedTaxonomy() {
                 this.loading = true;
 
-                return tainacanApi.get('/taxonomies?nopaging=1&order=asc&orderby=title&status=any')
+                return tainacanApi.get('/taxonomies/' + this.taxonomy_id)
                     .then(res => {
-                        this.taxonomies = res.data ? res.data : [];
+                        this.selectedTaxonomy = res.data ? res.data : null;
                         this.loading = false;
                     })
                     .catch(error => {
                         this.$console.log(error);
+                        this.selectedTaxonomy = null;
+                        this.loading = false;
+                        this.fetchTaxonomies('');
+                    });
+            },
+            fetchTaxonomies: _.debounce(function(search) {
+                const query = search || '';
+
+                if (query !== this.taxonomySearchQuery) {
+                    this.taxonomySearchQuery = query;
+                    this.taxonomies = [];
+                    this.taxonomyPage = 1;
+                    this.totalTaxonomies = 0;
+                }
+
+                if (this.taxonomyPage > 1 && this.taxonomies.length >= Number(this.totalTaxonomies))
+                    return;
+
+                const requestId = ++this.taxonomyRequestId;
+                this.loading = true;
+
+                let endpoint = '/taxonomies?paged=' + this.taxonomyPage + '&perpage=12&order=asc&orderby=title&status=any';
+                if (query)
+                    endpoint += '&search=' + encodeURIComponent(query);
+
+                return tainacanApi.get(endpoint)
+                    .then(res => {
+                        if (requestId !== this.taxonomyRequestId)
+                            return;
+
+                        const pageTaxonomies = res.data ? res.data : [];
+                        for (let taxonomy of pageTaxonomies)
+                            this.taxonomies.push(taxonomy);
+
+                        this.totalTaxonomies = res.headers['x-wp-total'] ? Number(res.headers['x-wp-total']) : this.taxonomies.length;
+                        this.taxonomyPage++;
+                        this.loading = false;
+                    })
+                    .catch(error => {
+                        if (requestId !== this.taxonomyRequestId)
+                            return;
+
+                        this.$console.log(error);
                         this.loading = false;
                     });
+            }, 500),
+            fetchMoreTaxonomies: _.debounce(function() {
+                this.fetchTaxonomies(this.taxonomySearchQuery);
+            }, 250),
+            onSelectTaxonomy(taxonomy) {
+                if (!taxonomy || !taxonomy.id)
+                    return;
+
+                this.selectedTaxonomy = taxonomy;
+                this.taxonomy_id = taxonomy.id;
+                this.taxonomySearch = '';
+                this.emitValues();
+            },
+            clearSelectedTaxonomy() {
+                this.taxonomyRequestId++;
+                this.selectedTaxonomy = null;
+                this.taxonomy_id = '';
+                this.taxonomySearch = '';
+                this.taxonomySearchQuery = '';
+                this.taxonomies = [];
+                this.taxonomyPage = 1;
+                this.totalTaxonomies = 0;
+                this.emitValues();
+                this.fetchTaxonomies('');
             },
             labelNewTerms(){
                 return ( this.allow_new_terms === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
@@ -383,5 +476,18 @@
     }
     .switch.is-small {
         margin-top: -0.5em;
+    }
+    .selected-taxonomy {
+        border: 1px solid var(--tainacan-gray2);
+        padding: calc(0.57em - 1px) 8px;
+        font-size: 0.875em;
+        min-height: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+            border-radius: 100em !important;
+        }
     }
 </style>
