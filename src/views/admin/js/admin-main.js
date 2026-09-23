@@ -3,7 +3,7 @@
 //window.underscore = _.noConflict();
 
 // Main imports
-import { createApp, h } from 'vue';
+import { createApp, h, defineAsyncComponent } from 'vue';
 import {
     Field,
     Input,
@@ -227,6 +227,9 @@ export default (element) => {
             app.component('help-button', HelpButton);
             app.component('tainacan-progressive-image', TainacanProgressiveImage);
             app.component('tainacan-title', TainacanTitle);
+            if (tainacan_plugin.tainacan_allow_rich_text_editor === '1') {
+                app.component('tainacan-rich-text-editor', defineAsyncComponent(() => import('../components/other/tainacan-rich-text-editor.vue')));
+            }
             app.component('tainacan-external-link', TainacanExternalLink)
             
             // Event bus are needed to facilate comunication between child-parent-child components

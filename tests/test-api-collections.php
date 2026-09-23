@@ -281,6 +281,67 @@ class TAINACAN_REST_Collections_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 1, $order[0]['id'] );
 		$this->assertTrue( (bool) $order[0]['enabled'] );
 	}
+
+	public function test_collection_description_denial_and_failed_save_preserve_existing_value() {
+		$existing_description = '<p>Existing description</p>';
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'R4 authorization fixture',
+				'description' => $existing_description,
+				'status'      => 'publish',
+			),
+			true
+		);
+
+		$unauthorized_user = $this->factory()->user->create( array( 'role' => 'subscriber' ) );
+		wp_set_current_user( $unauthorized_user );
+
+		$unauthorized_update = new \WP_REST_Request(
+			'PUT',
+			$this->namespace . '/collections/' . $collection->get_id()
+		);
+		$unauthorized_update->set_body(
+			json_encode(
+				array(
+					'description' => '<p>Unauthorized replacement</p>',
+				)
+			)
+		);
+
+		$denied = $this->server->dispatch( $unauthorized_update );
+		$this->assertEquals( 403, $denied->get_status() );
+
+		wp_set_current_user( $this->user_id );
+		$fetch = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/collections/' . $collection->get_id()
+		);
+		$after_denial = $this->server->dispatch( $fetch );
+		$this->assertEquals( 200, $after_denial->get_status() );
+		$this->assertSame( $existing_description, $after_denial->get_data()['description'] );
+
+		$failed_update = new \WP_REST_Request(
+			'PUT',
+			$this->namespace . '/collections/' . $collection->get_id()
+		);
+		$failed_update->set_body(
+			json_encode(
+				array(
+					'name'        => '',
+					'description' => '<p>Invalid replacement</p>',
+				)
+			)
+		);
+
+		$failed = $this->server->dispatch( $failed_update );
+		$this->assertEquals( 400, $failed->get_status() );
+		$this->assertArrayHasKey( 'error_message', $failed->get_data() );
+
+		$after_failure = $this->server->dispatch( $fetch );
+		$this->assertEquals( 200, $after_failure->get_status() );
+		$this->assertSame( $existing_description, $after_failure->get_data()['description'] );
+	}
 }
 
 ?>

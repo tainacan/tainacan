@@ -1,5 +1,17 @@
 <template>
+    <component
+            :is="'tainacan-rich-text-editor'"
+            v-if="shouldUseRichTextEditor"
+            :id="inputId"
+            :disabled="disabled"
+            :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
+            :model-value="localValue"
+            :max-length="getMaxlength"
+            @update:model-value="onInput($event)"
+            @blur="onBlur"
+            @focus="onMobileSpecialFocus" />
     <b-input
+            v-else
             :id="inputId"
             :ref="inputId"
             :disabled="disabled"
@@ -31,6 +43,13 @@
             }
         },
         computed: {
+            shouldUseRichTextEditor() {
+                return tainacan_plugin.tainacan_allow_rich_text_editor === '1' &&
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_options &&
+                    this.itemMetadatum.metadatum.metadata_type_options.use_rich_text_editor === 'yes';
+            },
             getMaxlength() {
                 if ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== null && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== undefined && this.itemMetadatum.metadatum.metadata_type_options.maxlength !== '' )
                     return Number(this.itemMetadatum.metadatum.metadata_type_options.maxlength);
@@ -44,7 +63,7 @@
         methods: {
             onInput(value) {
                 const inputRef = this.$refs[this.inputId];
-                if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
+                if ( inputRef && this.getMaxlength && typeof inputRef.checkHtml5Validity === 'function' && !inputRef.checkHtml5Validity() )
                     return;
 
                 this.localValue = value;

@@ -233,7 +233,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		}
 
 		$allowed_html = wp_kses_allowed_html('post');
-		unset($allowed_html["a"]);
+		unset($allowed_html['a']);
 	
 		return trim(wp_kses($value, $allowed_html));
 	}

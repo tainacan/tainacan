@@ -862,6 +862,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_click_to_see_%s_child_term'	 	 => __( 'Click to see %s child term', 'tainacan'),
 	'instruction_click_to_load_filter'				 => __( 'Click to load the filter', 'tainacan' ),
 	'instruction_collection_description'			 => __( 'Enter the collection description here...', 'tainacan' ),
+	'instruction_rich_text_editor_toolbar_shortcut'		 => __( 'Keyboard: press Alt+F10 to access the editor toolbar (Option+F10 on macOS).', 'tainacan' ),
+	'instruction_rich_text_editor_toolbar_shortcut_screen_reader' => __( 'Rich text editor keyboard instructions: press Alt+F10, or Option+F10 on macOS, to access the toolbar. Use arrow keys to move between toolbar controls and Tab to move between toolbar groups.', 'tainacan' ),
 	'instruction_collection_name'					 => __( 'Enter the collection name here...', 'tainacan' ),
 	'instruction_click_to_easily_see'				 => __( 'Click to easily see', 'tainacan' ),
 	'instruction_create_item_select_status'		 	 => __( 'Select a status for the item visiblity on the site. Remember, whichever you select will still be restricted by the collection status as well.', 'tainacan' ),

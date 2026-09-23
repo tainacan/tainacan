@@ -18,6 +18,9 @@ class Textarea extends Metadata_Type {
 		$this->set_form_component('tainacan-form-textarea');
 		$this->set_name( __('Textarea', 'tainacan') );
 		$this->set_description( __('A textarea with multiple lines', 'tainacan') );
+		$this->set_default_options([
+			'use_rich_text_editor' => 'no'
+		]);
 		$this->set_preview_template('
 			<div>
 				<div class="control is-clearfix">
@@ -36,6 +39,10 @@ class Textarea extends Metadata_Type {
 			'maxlength' => [
 				'title' => __( 'Maximum of characters', 'tainacan' ),
 				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
+			],
+			'use_rich_text_editor' => [
+				'title' => __( 'Use rich text editor', 'tainacan' ),
+				'description' => __( 'Replaces the textarea with the rich text editor when it is enabled for Tainacan.', 'tainacan' ),
 			]
 		];
 	}

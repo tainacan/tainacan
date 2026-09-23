@@ -192,7 +192,7 @@ abstract class Repository {
 		}
 
 		$sanitized_title = $this->sanitize_value($obj->get('name'));
-		$sanitized_desc = $this->sanitize_value($obj->get('description'));
+		$sanitized_desc = $this->sanitize_rich_text_value($obj->get('description'));
 		if ( $obj instanceof Entities\Item ) {
 			$sanitized_title = $this->sanitize_value($obj->get('title'));
 
@@ -214,7 +214,7 @@ abstract class Repository {
 			$obj->WP_Post->post_content = $sanitized_desc;
 		} else {
 			$obj->WP_Post->post_title = $this->sanitize_value($obj->WP_Post->post_title);
-			$obj->WP_Post->post_content = $this->sanitize_value($obj->WP_Post->post_content);
+			$obj->WP_Post->post_content = $this->sanitize_rich_text_value($obj->WP_Post->post_content);
 		}
 		
 		// wp_parse_args is used here to ensure an array is passed to wp_insert_post (instead of, for example an object of stdClass)
@@ -1017,10 +1017,22 @@ abstract class Repository {
 		}
 
 		$allowed_html = wp_kses_allowed_html('post');
-		unset($allowed_html["a"]);
-	
+		unset($allowed_html['a']);
+
+		return trim(wp_kses($content, $allowed_html));
+	}
+
+	protected function sanitize_rich_text_value($content) {
+		if( $content == null ) {
+			return '';
+		}
+		if (is_numeric($content) || empty($content ) ) {
+			return $content;
+		}
+
+		$allowed_html = wp_kses_allowed_html('post');
+
 		return trim(wp_kses($content, $allowed_html));
 	}
 
 }
-

@@ -183,6 +183,20 @@ class Settings extends Pages {
 			'default' => false
 		) );
 
+		$this->create_tainacan_setting( array(
+			'id' => 'allow_rich_text_editor',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Rich text editor', 'tainacan' ),
+			'label' => __( 'Allow the rich text editor in text inputs', 'tainacan' ),
+			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'input_disabled' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ),
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ) ? TAINACAN_ALLOW_RICH_TEXT_EDITOR : false,
+			'forced_value' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ) ? TAINACAN_ALLOW_RICH_TEXT_EDITOR : null
+		) );
+
 		/**
 		 * Theme default templates -----------------------------------------------------
 		 */

@@ -133,7 +133,17 @@
                                     :title="$i18n.getHelperTitle('metadata-sections', 'description')"
                                     :message="$i18n.getHelperMessage('metadata-sections', 'description')" />
                         </label>
+                        <component
+                                :is="'tainacan-rich-text-editor'"
+                                v-if="isRichTextEditorAllowed"
+                                id="tainacan-metadata-section-description"
+                                v-model="form.description"
+                                name="description"
+                                :invalid="formErrors['description'] != undefined"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
+                                id="tainacan-metadata-section-description"
                                 v-model="form.description"
                                 type="textarea"
                                 name="description"
@@ -295,7 +305,6 @@
     import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from "../../js/mixins";
-
     export default {
         name: 'MetadataSectionEditionForm',
         components:{
@@ -324,6 +333,7 @@
                 selectedConditionalMetadatumId: undefined,
                 selectedConditionalValue: [],
                 hideConditionalSectionSettings: false,
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 shouldUpdateConditionalValue: true
             }
         },
@@ -628,5 +638,3 @@
     }
 
 </style>
-
-

@@ -22,6 +22,9 @@ class Core_Description extends Metadata_Type {
 		$this->set_form_component('tainacan-form-textarea');
         $this->set_name( __('Core Description', 'tainacan') );
         $this->set_description( __('The "Core Description" is a compulsory metadata automatically created for all collections by default. This is the main description displayed in items lists and where the basic research tools will do their searches.', 'tainacan') );
+		$this->set_default_options([
+			'use_rich_text_editor' => 'no'
+		]);
 		$this->set_sortable( false );
     }
 
@@ -33,6 +36,10 @@ class Core_Description extends Metadata_Type {
 			'maxlength' => [
 				'title' => __( 'Maximum of characters', 'tainacan' ),
 				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
+			],
+			'use_rich_text_editor' => [
+				'title' => __( 'Use rich text editor', 'tainacan' ),
+				'description' => __( 'Replaces the textarea with the rich text editor when it is enabled for Tainacan.', 'tainacan' ),
 			]
 		];
 	}
