@@ -753,7 +753,7 @@ class Dashboard extends Pages {
 					</a>
 				</li>
 			<?php endif; ?>
-			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsReportsButton') ) : ?>
+			<?php if ( $this->has_admin_ui_option('showDashboardCollectionCardsReportsButton') && ( current_user_can( 'manage_tainacan' ) || current_user_can( 'manage_tainacan_collection_all' ) || current_user_can( 'manage_tainacan_collection_' . $collection_id ) ) ) : ?>
 				<li>
 					<a href="<?php echo esc_url(admin_url('admin.php?page=' . $this->vue_component_page_slug . '#/collections/' . $collection_id . '/reports')); ?>">
 						<span class="icon">

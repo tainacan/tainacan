@@ -226,8 +226,35 @@ class REST_Reports_Controller extends REST_Controller {
 		);
 	}
 
+	/**
+	 * Repository reports match the Reports screen (manage_tainacan).
+	 * Collection reports require management of that collection. manage_tainacan and
+	 * manage_tainacan_collection_all are not expanded into manage_tainacan_collection_{id},
+	 * so each one is checked on its own.
+	 *
+	 * @param \WP_REST_Request $request
+	 * @return bool
+	 */
 	public function reports_permissions_check($request) {
-		return \is_user_logged_in() && current_user_can('read');
+		$collection_id = isset( $request['collection_id'] ) ? absint( $request['collection_id'] ) : 0;
+
+		if ( $collection_id ) {
+			return $this->current_user_can_read_collection_reports( $collection_id );
+		}
+
+		return current_user_can( 'manage_tainacan' );
+	}
+
+	/**
+	 * @param int $collection_id
+	 * @return bool
+	 */
+	private function current_user_can_read_collection_reports( $collection_id ) {
+		$collection_id = absint( $collection_id );
+
+		return current_user_can( 'manage_tainacan' )
+			|| current_user_can( 'manage_tainacan_collection_all' )
+			|| current_user_can( 'manage_tainacan_collection_' . $collection_id );
 	}
 
 	public function get_collections($request) {
@@ -695,11 +722,12 @@ class REST_Reports_Controller extends REST_Controller {
 		if(isset($request['collection_id'])) { 
 			$collection_id = $request['collection_id'];
 		}
+		$collection_key = ( false === $collection_id ) ? '' : '_' . $collection_id;
 
 		if( isset($request['start']) ) {
 			$start = new \DateTime($request['start']);
 
-			$key_cache_object = 'activities_' . $start->format('Y-m-d') . '_' . $collection_id;
+			$key_cache_object = 'activities_' . $start->format('Y-m-d') . $collection_key;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
@@ -712,7 +740,7 @@ class REST_Reports_Controller extends REST_Controller {
 				'end' => $end->format('Y-m-d H:i:s')
 			];
 		} else {
-			$key_cache_object = 'activities_' . $collection_id;
+			$key_cache_object = 'activities' . $collection_key;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 			$end = (new \DateTime())->add(new \DateInterval('P1D'))->setTime(0,0,0);
@@ -839,11 +867,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$arr[$item->user_id] = [
 					'user' => !$user_data ? [] : [
 						'id' => $user_data->ID,
-						'username' => $user_data->user_login,
 						'name' => $user_data->display_name,
-						'first_name' => $user_data->first_name,
-						'last_name' => $user_data->last_name,
-						'email' => $user_data->user_email,
 						'avatar_urls' => $urls,
 					],
 					'user_id' => $item->user_id,
@@ -903,11 +927,7 @@ class REST_Reports_Controller extends REST_Controller {
 				$response[$user] = [
 					'user' => !$user_data ? [] : [
 						'id' => $user_data->ID,
-						'username' => $user_data->user_login,
 						'name' => $user_data->display_name,
-						'first_name' => $user_data->first_name,
-						'last_name' => $user_data->last_name,
-						'email' => $user_data->user_email,
 						'avatar_urls' => $urls,
 					],
 					'user_id' => $user,
@@ -921,7 +941,13 @@ class REST_Reports_Controller extends REST_Controller {
 		return array_values($response);
 	}
 
-	private $prefix_transient_cahce = 'reports_tnc_';
+	/**
+	 * Previous reports were cached under reports_tnc_ and included staff account fields.
+	 * New keys are not read from that prefix, so those transients expire unused.
+	 *
+	 * @var string
+	 */
+	private $prefix_transient_cahce = 'reports_tnc_v2_';
 
 	private function get_cache_object($key, $request) {
 		if ( !isset($request['force']) || $request['force'] == 'no' ) {
