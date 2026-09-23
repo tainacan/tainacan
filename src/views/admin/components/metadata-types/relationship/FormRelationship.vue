@@ -14,27 +14,40 @@
             <div
                     v-if="isResolvingCollection"
                     class="control is-loading selected-collection" />
-            <b-autocomplete
-                    v-else-if="!selectedCollection"
-                    v-model="collectionSearch"
-                    v-a11y-autocomplete="{ appendToBody: true }"
-                    name="metadata_type_relationship[collection_id]"
-                    :placeholder="$i18n.get('instruction_select_collection_fetch_items')"
-                    :data="collections"
-                    field="name"
-                    :loading="loading"
-                    :append-to-body="true"
-                    open-on-focus
-                    expanded
-                    check-infinite-scroll
-                    @select="onSelectCollection"
-                    @update:model-value="fetchCollections"
-                    @focus="clear()"
-                    @infinite-scroll="fetchMoreCollections">
-                <template #empty>
-                    {{ $i18n.get('info_no_options_found') }}
-                </template>
-            </b-autocomplete>
+            <div
+                    v-else-if="!selectedCollection || isReplacingCollection"
+                    class="collection-picker">
+                <b-autocomplete
+                        v-model="collectionSearch"
+                        v-a11y-autocomplete="{ appendToBody: true }"
+                        name="metadata_type_relationship[collection_id]"
+                        :placeholder="$i18n.get('instruction_select_collection_fetch_items')"
+                        :data="collections"
+                        field="name"
+                        :loading="loading"
+                        :append-to-body="true"
+                        open-on-focus
+                        expanded
+                        check-infinite-scroll
+                        @select="onSelectCollection"
+                        @update:model-value="fetchCollections"
+                        @focus="clear()"
+                        @infinite-scroll="fetchMoreCollections">
+                    <template #empty>
+                        {{ $i18n.get('info_no_options_found') }}
+                    </template>
+                </b-autocomplete>
+                <button
+                        v-if="isReplacingCollection && selectedCollection"
+                        type="button"
+                        class="button is-white"
+                        :aria-label="$i18n.get('close')"
+                        @click.prevent="cancelReplacingCollection">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </div>
             <div
                     v-else
                     class="control selected-collection">
@@ -42,10 +55,10 @@
                 <button
                         type="button"
                         class="button is-white"
-                        :aria-label="$i18n.get('remove_value')"
-                        @click.prevent="clearSelectedCollection">
+                        :aria-label="$i18n.get('edit')"
+                        @click.prevent="startReplacingCollection">
                     <span class="icon is-small">
-                        <i class="tainacan-icon tainacan-icon-close" />
+                        <i class="tainacan-icon tainacan-icon-edit" />
                     </span>
                 </button>
             </div>
@@ -182,6 +195,7 @@
                 collections:[],
                 selectedCollection: null,
                 isResolvingCollection: false,
+                isReplacingCollection: false,
                 collectionSearch: '',
                 collectionSearchQuery: '',
                 collectionsPage: 1,
@@ -321,19 +335,25 @@
                     return;
 
                 this.selectedCollection = collection;
+                this.isReplacingCollection = false;
                 this.collectionSearch = '';
-                this.collection = collection.id;
+                if (this.collection != collection.id)
+                    this.collection = collection.id;
             },
-            clearSelectedCollection() {
+            startReplacingCollection() {
                 this.collectionsRequestId++;
-                this.selectedCollection = null;
+                this.isReplacingCollection = true;
                 this.collectionSearch = '';
                 this.collectionSearchQuery = '';
                 this.collections = [];
                 this.collectionsPage = 1;
                 this.totalCollections = 0;
-                this.collection = '';
                 this.fetchCollections('');
+            },
+            cancelReplacingCollection() {
+                this.collectionsRequestId++;
+                this.isReplacingCollection = false;
+                this.collectionSearch = '';
             },
             fetchMetadataFromCollection(value) {
                 this.loadingMetadata = true;
@@ -421,6 +441,19 @@
     }
     .switch.is-small {
         margin-top: -0.5em;
+    }
+    .collection-picker {
+        display: flex;
+        align-items: center;
+        gap: 0.25em;
+
+        .autocomplete {
+            flex: 1;
+        }
+
+        button {
+            border-radius: 100em !important;
+        }
     }
     .selected-collection {
         border: 1px solid var(--tainacan-gray2);
