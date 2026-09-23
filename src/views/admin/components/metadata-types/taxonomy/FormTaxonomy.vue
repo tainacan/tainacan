@@ -157,11 +157,13 @@
                         :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')" />
             </label>
             <b-taginput
-                    v-a11y-autocomplete
-                    :model-value="getSelectedTaxonomyCollections()"
+                    v-a11y-autocomplete="{ appendToBody: true }"
+                    :model-value="selectedCollections"
                     autocomplete
                     :open-on-focus="true"
-                    :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id) && (collectionSearchString ? (collection.name.toLowerCase().indexOf(collectionSearchString.toLowerCase()) >= 0) : true) )"
+                    :append-to-body="true"
+                    check-infinite-scroll
+                    :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id))"
                     field="name"
                     attached
                     :disabled="link_filtered_by_current_collection === 'yes' || do_not_dispaly_term_as_link == 'yes'"
@@ -171,8 +173,9 @@
                     :placeholder="$i18n.get('instruction_select_one_or_more_collections')"
                     :loading="loadingCollections"
                     @update:model-value="updateSelectedCollections"
-                    @focus="clear()"
-                    @typing="filterCollections">
+                    @focus="onCollectionsFocus"
+                    @typing="fetchCollections"
+                    @infinite-scroll="fetchMoreCollections">
                 <template #default="props">
                     <div class="media">
                         <div
@@ -214,6 +217,7 @@
 
 <script>
     import { tainacanApi } from '../../../js/axios';
+    import qs from 'qs';
 
     export default {
         props: {
@@ -247,7 +251,11 @@
                 taxonomyType:'',
                 taxonomyMessage: '',
                 collections: [],
+                selectedCollections: [],
                 collectionSearchString: '',
+                collectionsPage: 1,
+                totalCollections: 0,
+                collectionsRequestId: 0,
                 loadingCollections: false
             }
         },
@@ -297,8 +305,6 @@
             }
         },
         created() {
-            this.fetchCollections();
-
             this.single_types['tainacan-taxonomy-radio'] = this.$i18n.get('label_input_type_radio');
             this.multiple_types['tainacan-taxonomy-tag-input'] = this.$i18n.get('label_input_type_tag_input');
             this.multiple_types['tainacan-taxonomy-checkbox'] = this.$i18n.get('label_input_type_checkbox');
@@ -323,6 +329,7 @@
 
                 this.visible_options_list = ( this.value.visible_options_list ) ? this.value.visible_options_list : false;
                 this.link_filtered_by_collections = ( this.value.link_filtered_by_collections ) ? this.value.link_filtered_by_collections : [];
+                this.fetchSelectedCollections();
                 this.taxonomy = this.value.taxonomy ? this.value.taxonomy : '';
             }
 
@@ -341,18 +348,102 @@
                 this.taxonomyType = type;
                 this.taxonomyMessage = message;
             },
-            fetchCollections() {
+            getMaxPerPage(fallback) {
+                const configuredMax = Number(typeof tainacan_plugin !== 'undefined' ? tainacan_plugin.api_max_items_per_page : 0);
+                if (!isNaN(configuredMax) && configuredMax > 0)
+                    return configuredMax;
+                return fallback || 96;
+            },
+            fetchSelectedCollections() {
+                const ids = Array.isArray(this.link_filtered_by_collections)
+                    ? this.link_filtered_by_collections.filter((id) => id !== '' && id != null)
+                    : [];
+
+                if (!ids.length) {
+                    this.selectedCollections = [];
+                    return;
+                }
+
+                const maxPerPage = this.getMaxPerPage(ids.length);
+                const chunks = [];
+                for (let index = 0; index < ids.length; index += maxPerPage)
+                    chunks.push(ids.slice(index, index + maxPerPage));
+
                 this.loadingCollections = true;
 
-                return tainacanApi.get('/collections?nopaging=1&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
-                    .then(res => {
-                        this.collections = res.data ? res.data : [];
+                return Promise.all(chunks.map((chunk) => {
+                    const query = qs.stringify({
+                        postin: chunk,
+                        perpage: chunk.length,
+                        paged: 1,
+                        context: 'edit',
+                        fetch_only: 'name,id,thumbnail'
+                    });
+                    return tainacanApi.get('/collections?' + query);
+                }))
+                    .then((responses) => {
+                        const byId = {};
+                        responses.forEach((res) => {
+                            (res.data || []).forEach((collection) => {
+                                byId[collection.id] = collection;
+                            });
+                        });
+                        this.selectedCollections = ids.map((id) => byId[id]).filter(Boolean);
                         this.loadingCollections = false;
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.$console.log(error);
                         this.loadingCollections = false;
                     });
+            },
+            fetchCollections: _.debounce(function(search) {
+                const query = search || '';
+
+                if (query !== this.collectionSearchString) {
+                    this.collectionSearchString = query;
+                    this.collections = [];
+                    this.collectionsPage = 1;
+                    this.totalCollections = 0;
+                }
+
+                if (this.collectionsPage > 1 && this.collections.length >= Number(this.totalCollections))
+                    return;
+
+                const requestId = ++this.collectionsRequestId;
+                this.loadingCollections = true;
+
+                let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&context=edit&fetch_only=name,id,thumbnail&order=asc&orderby=title';
+                if (query)
+                    endpoint += '&search=' + encodeURIComponent(query);
+
+                return tainacanApi.get(endpoint)
+                    .then((res) => {
+                        if (requestId !== this.collectionsRequestId)
+                            return;
+
+                        const pageCollections = res.data ? res.data : [];
+                        for (let collection of pageCollections)
+                            this.collections.push(collection);
+
+                        this.totalCollections = res.headers['x-wp-total'] ? Number(res.headers['x-wp-total']) : this.collections.length;
+                        this.collectionsPage++;
+                        this.loadingCollections = false;
+                    })
+                    .catch((error) => {
+                        if (requestId !== this.collectionsRequestId)
+                            return;
+
+                        this.$console.log(error);
+                        this.loadingCollections = false;
+                    });
+            }, 500),
+            fetchMoreCollections: _.debounce(function() {
+                this.fetchCollections(this.collectionSearchString);
+            }, 250),
+            onCollectionsFocus() {
+                this.clear();
+                if (!this.collections.length)
+                    this.fetchCollections(this.collectionSearchString || '');
             },
             fetchSelectedTaxonomy() {
                 this.loading = true;
@@ -455,17 +546,10 @@
                 })
             },
             updateSelectedCollections(selectedCollections) {
+               this.selectedCollections = selectedCollections;
                this.link_filtered_by_collections = selectedCollections.map(collection => collection.id);
                this.emitValues();
             },
-            getSelectedTaxonomyCollections() {
-                if ( this.link_filtered_by_collections && this.link_filtered_by_collections.length )
-                    return this.collections.filter((collection) => this.link_filtered_by_collections.includes(collection.id));
-                return [];
-            },
-            filterCollections(searchString) {
-                this.collectionSearchString = searchString;
-            }
         }
     }
 </script>
