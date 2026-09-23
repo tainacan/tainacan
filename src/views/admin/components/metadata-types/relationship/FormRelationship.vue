@@ -11,21 +11,44 @@
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')" />
             </label>
-            <b-select
-                    v-model="collection"
+            <div
+                    v-if="isResolvingCollection"
+                    class="control is-loading selected-collection" />
+            <b-autocomplete
+                    v-else-if="!selectedCollection"
+                    v-model="collectionSearch"
+                    v-a11y-autocomplete="{ appendToBody: true }"
                     name="metadata_type_relationship[collection_id]"
-                    :placeholder="$i18n.get('instruction_select_collection_fetch_items' )"
+                    :placeholder="$i18n.get('instruction_select_collection_fetch_items')"
+                    :data="collections"
+                    field="name"
                     :loading="loading"
+                    :append-to-body="true"
+                    open-on-focus
                     expanded
-                    @change="emitValues()"
-                    @focus="clear()">
-                <option
-                        v-for="option in collections"
-                        :key="option.id"
-                        :value="option.id">
-                    {{ option.name }}
-                </option>
-            </b-select>
+                    check-infinite-scroll
+                    @select="onSelectCollection"
+                    @update:model-value="fetchCollections"
+                    @focus="clear()"
+                    @infinite-scroll="fetchMoreCollections">
+                <template #empty>
+                    {{ $i18n.get('info_no_options_found') }}
+                </template>
+            </b-autocomplete>
+            <div
+                    v-else
+                    class="control selected-collection">
+                <span>{{ selectedCollection.name }}</span>
+                <button
+                        type="button"
+                        class="button is-white"
+                        :aria-label="$i18n.get('remove_value')"
+                        @click.prevent="clearSelectedCollection">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </div>
             <p 
                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="help" 
@@ -157,6 +180,13 @@
             return {
                 icon: '',
                 collections:[],
+                selectedCollection: null,
+                isResolvingCollection: false,
+                collectionSearch: '',
+                collectionSearchQuery: '',
+                collectionsPage: 1,
+                totalCollections: 0,
+                collectionsRequestId: 0,
                 metadata: [],
                 loading: true,
                 collection: '',
@@ -203,13 +233,17 @@
             }
         },
         created(){
-            this.fetchCollections()
-                .then(() => {
-                    if ( this.collectionId && this.collectionId !== '' )
-                        this.collection = this.collectionId;
-                    else if ( this.value )
-                        this.collection = this.value.collection_id;
-                });
+            const initialCollectionId = ( this.collectionId && this.collectionId !== '' )
+                ? this.collectionId
+                : ( this.value && this.value.collection_id ? this.value.collection_id : '' );
+
+            if (initialCollectionId) {
+                this.collection = initialCollectionId;
+                this.fetchSelectedCollection(initialCollectionId);
+            } else {
+                this.loading = false;
+                this.fetchCollections('');
+            }
 
             this.displayRelatedItemMetadata = this.value && this.value.display_related_item_metadata && Array.isArray(this.value.display_related_item_metadata) ? this.value.display_related_item_metadata : [];
             this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';
@@ -221,17 +255,85 @@
                 this.collectionType = type;
                 this.collectionType = message;
             },
-            async fetchCollections(){
-                return await tainacanApi.get('/collections?nopaging=1&status=any')
-                    .then(res => {
-                        const collections = res.data;
+            fetchSelectedCollection(id) {
+                this.isResolvingCollection = true;
+                this.loading = true;
 
+                return tainacanApi.get('/collections/' + id + '?fetch_only=name,id')
+                    .then(res => {
+                        this.selectedCollection = res.data ? res.data : { id: id, name: String(id) };
                         this.loading = false;
-                        this.collections = collections ? collections : [];
+                        this.isResolvingCollection = false;
                     })
                     .catch(error => {
                         this.$console.log(error);
+                        this.selectedCollection = { id: id, name: String(id) };
+                        this.loading = false;
+                        this.isResolvingCollection = false;
                     });
+            },
+            fetchCollections: _.debounce(function(search) {
+                const query = search || '';
+
+                if (query !== this.collectionSearchQuery) {
+                    this.collectionSearchQuery = query;
+                    this.collections = [];
+                    this.collectionsPage = 1;
+                    this.totalCollections = 0;
+                }
+
+                if (this.collectionsPage > 1 && this.collections.length >= Number(this.totalCollections))
+                    return;
+
+                const requestId = ++this.collectionsRequestId;
+                this.loading = true;
+
+                let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&status=any&order=asc&orderby=title';
+                if (query)
+                    endpoint += '&search=' + encodeURIComponent(query);
+
+                return tainacanApi.get(endpoint)
+                    .then(res => {
+                        if (requestId !== this.collectionsRequestId)
+                            return;
+
+                        const pageCollections = res.data ? res.data : [];
+                        for (let collection of pageCollections)
+                            this.collections.push(collection);
+
+                        this.totalCollections = res.headers['x-wp-total'] ? Number(res.headers['x-wp-total']) : this.collections.length;
+                        this.collectionsPage++;
+                        this.loading = false;
+                    })
+                    .catch(error => {
+                        if (requestId !== this.collectionsRequestId)
+                            return;
+
+                        this.$console.log(error);
+                        this.loading = false;
+                    });
+            }, 500),
+            fetchMoreCollections: _.debounce(function() {
+                this.fetchCollections(this.collectionSearchQuery);
+            }, 250),
+            onSelectCollection(collection) {
+                if (!collection || !collection.id)
+                    return;
+
+                this.selectedCollection = collection;
+                this.collectionSearch = '';
+                this.collection = collection.id;
+            },
+            clearSelectedCollection() {
+                this.collectionsRequestId++;
+                this.selectedCollection = null;
+                this.collectionSearch = '';
+                this.collectionSearchQuery = '';
+                this.collections = [];
+                this.collectionsPage = 1;
+                this.totalCollections = 0;
+                this.collection = '';
+                this.fetchCollections('');
             },
             fetchMetadataFromCollection(value) {
                 this.loadingMetadata = true;
@@ -319,6 +421,23 @@
     }
     .switch.is-small {
         margin-top: -0.5em;
+    }
+    .selected-collection {
+        border: 1px solid var(--tainacan-gray2);
+        padding: calc(0.57em - 1px) 8px;
+        font-size: 0.875em;
+        min-height: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+            border-radius: 100em !important;
+        }
+
+        &.is-loading {
+            min-height: 2.5em;
+        }
     }
     .displayed-metadata-options.has-more-than-5-metadata {
         max-height: 125px;
