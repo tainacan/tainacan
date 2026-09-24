@@ -578,42 +578,6 @@ export const fetchPage = ({ commit }, pageId ) => {
     });
 };
 
-// Fetch Collections for listing repository filters, parent collection selection, importer destiny...
-/**
- * Dispatches `collection/fetchAllCollectionNames`.
- * @returns {*} Action result.
- */
-export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
-
-    let endpoint = '/collections/?context=edit&nopaging=1&fetch_only=name,id';
-
-    if (collectionsIds != undefined && collectionsIds.length > 0) {
-        const postin = { 'postin': collectionsIds };
-        endpoint += '&' + qs.stringify(postin);
-    }
-
-    const source = axios.CancelToken.source();
-
-    return new Object({ 
-        request: new Promise((resolve, reject) => {
-            axios.tainacanApi.get(endpoint, { cancelToken: source.token })
-            .then(res => {
-                const collections = res.data;
-                commit('setCollections', collections);
-                resolve( collections );
-            })
-            .catch((error) => {
-                if (axios.isCancel(error)) {
-                    console.log('Request canceled: ', error.message);
-                } else {
-                    reject(error);
-                }
-            });
-        }),
-        source: source
-    })
-};
-
 // Send Files to Item Bulk Addition
 /**
  * Dispatches `collection/sendFile`.

@@ -392,13 +392,26 @@ class REST_Filters_Controller extends REST_Controller {
 		}
 
 		if(!isset($request['collection_id'])) {
-			$args['meta_query'][] = [
+			$repository_args = $args;
+			$repository_args['meta_query'] = ( isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) )
+				? $args['meta_query']
+				: [];
+			$repository_args['meta_query'] = array_merge( [], $repository_args['meta_query'] );
+			$repository_args['meta_query'][] = [
 				'key'     => 'collection_id',
 				'value'   => 'default',
 				'compare' => '='
 			];
 
-			$filters = $this->filter_repository->fetch( $args, 'OBJECT' );
+			$filters = $this->filter_repository->fetch( $repository_args, 'OBJECT' );
+
+			if ( $request->has_param( 'append_from_collections' ) ) {
+				$append_from_collections = $request->get_param( 'append_from_collections' );
+				$collection_ids = ( $append_from_collections === 'all' ) ? [] : (array) $append_from_collections;
+				if ( $append_from_collections === 'all' || ! empty( $collection_ids ) ) {
+					$collection_filters = $this->filter_repository->fetch_by_collections( $args, $collection_ids );
+				}
+			}
 		} else {
 			$collection = $this->collection_repository->fetch($request['collection_id']);
 			$filters = $this->filter_repository->fetch_by_collection($collection, $args);
@@ -414,6 +427,18 @@ class REST_Filters_Controller extends REST_Controller {
 		$response = [];
 		foreach ( $filters as $filter ) {
 			array_push( $response, $this->prepare_item_for_response( $filter, $request ) );
+		}
+
+		if ( isset( $collection_filters ) && is_array( $collection_filters ) ) {
+			foreach ( $collection_filters as $collection_filter ) {
+				foreach ( $collection_filter['filters'] as $filter ) {
+					$item = $this->prepare_item_for_response( $filter, $request );
+					if ( is_array( $item ) ) {
+						$item['collection_name'] = $collection_filter['collection']->get_name();
+						$response[] = $item;
+					}
+				}
+			}
 		}
 
 		return new \WP_REST_Response($response, 200);
@@ -573,6 +598,36 @@ class REST_Filters_Controller extends REST_Controller {
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to filters with a specific name', 'tainacan'),
 			'type'        => 'string',
+		);
+
+		$query_params['append_from_collections'] = array(
+			'description' => __( 'On the repository filters route, appends filters from these collections. Only filters set to appear in repository level lists are returned. Pass "all" for every collection, or a comma-separated list of collection IDs. Omit the argument to return only repository filters.', 'tainacan' ),
+			'type'        => array( 'string', 'array' ),
+			'sanitize_callback' => function( $value ) {
+				if ( is_string( $value ) ) {
+					$value = trim( $value );
+					if ( $value === 'all' ) {
+						return 'all';
+					}
+					$value = explode( ',', $value );
+				}
+				if ( ! is_array( $value ) ) {
+					return [];
+				}
+
+				$sanitized = [];
+				foreach ( $value as $id ) {
+					if ( $id === 'all' ) {
+						return 'all';
+					}
+					$id = absint( $id );
+					if ( $id > 0 ) {
+						$sanitized[] = $id;
+					}
+				}
+
+				return array_values( array_unique( $sanitized ) );
+			},
 		);
 
 		$query_params = array_merge(
