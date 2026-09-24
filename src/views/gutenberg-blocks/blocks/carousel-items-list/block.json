@@ -70,6 +70,18 @@
             "type": "string",
             "default": "search"
         },
+        "order": {
+            "type": "string",
+            "default": ""
+        },
+        "orderBy": {
+            "type": "string",
+            "default": "date"
+        },
+        "orderByMetaKey": {
+            "type": "string",
+            "default": ""
+        },
         "arrowsPosition": {
             "type": "string",
             "default": "around"

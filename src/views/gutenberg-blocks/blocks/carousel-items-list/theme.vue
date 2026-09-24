@@ -176,7 +176,10 @@ export default {
         collectionBackgroundColor: String,
         collectionTextColor: String,
         tainacanApiRoot: String,
-        variableItemsWidth: Boolean
+        variableItemsWidth: Boolean,
+        order: String,
+        orderBy: String,
+        orderByMetaKey: String
     },
     data() {
         return {
@@ -289,10 +292,19 @@ export default {
                 else
                     this.paged = 1;
 
+                // Set up sorting: só interferimos quando o modo Random está ativo.
+                // Fora disso, a ordenação já vem correta na searchURL configurada no editor
+                // (ex: orderby=meta_value_num&metakey=126&order=asc) e não deve ser tocada.
+                if (this.orderBy == 'rand') {
+                    queryObject.orderby = 'rand';
+                    delete queryObject.order;
+                    delete queryObject.metakey;
+                }
+
                 // Remove unecessary queries
                 delete queryObject.admin_view_mode;
                 delete queryObject.fetch_only_meta;
-                
+
                 endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })

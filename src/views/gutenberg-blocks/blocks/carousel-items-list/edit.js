@@ -46,7 +46,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         collection,
         collectionBackgroundColor,
         collectionTextColor,
-        variableItemsWidth
+        variableItemsWidth,
+        order,
+        orderBy,
+        orderByMetaKey
     } = attributes;
 
     // Gets blocks props from hook
@@ -202,6 +205,45 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             else {
                 queryObject.perpage = 12;
                 setAttributes({ maxItemsNumber: 12 });
+            }
+
+            // Set up sorting orderby: a searchURL configurada no modal tem prioridade;
+            // o atributo do bloco só é usado se a searchURL não trouxer nenhum orderby.
+            if (queryObject.orderby != undefined && queryObject.orderby != '')
+                setAttributes({ orderBy: queryObject.orderby });
+            else if (orderBy != undefined && orderBy != 'date')
+                queryObject.orderby = orderBy;
+            else {
+                queryObject.orderby = 'date';
+                setAttributes({ orderBy: 'date' });
+            }
+
+            if (queryObject.orderby == 'rand' || orderBy == 'rand') {
+
+                // Random order: 'order' e 'metakey' não fazem sentido com orderby=rand,
+                // e a API rejeita order='' (o enum só aceita asc/desc/ASC/DESC)
+                queryObject.orderby = 'rand';
+                delete queryObject.order;
+                delete queryObject.metakey;
+                setAttributes({ orderBy: 'rand', order: '', orderByMetaKey: '' });
+
+            } else {
+
+                // Set up sorting order (mesma prioridade: searchURL > atributo)
+                if (queryObject.order != undefined && queryObject.order != '')
+                    setAttributes({ order: queryObject.order });
+                else if (order != undefined && order != '')
+                    queryObject.order = order;
+                else
+                    delete queryObject.order;
+
+                // Set up sorting metakey (mesma prioridade: searchURL > atributo)
+                if (queryObject.metakey != undefined && queryObject.metakey != '')
+                    setAttributes({ orderByMetaKey: queryObject.metakey });
+                else if (orderByMetaKey != undefined && orderByMetaKey != '')
+                    queryObject.metakey = orderByMetaKey;
+                else
+                    delete queryObject.metakey;
             }
 
             // Remove unecessary queries
@@ -560,6 +602,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                     }}
                                     min={ 1 }
                                     max={ tainacan_blocks.api_max_items_per_page ? Number(tainacan_blocks.api_max_items_per_page) : 96 }
+                                />
+                                <ToggleControl
+                                    label={__('Random order', 'tainacan')}
+                                    help={ orderBy == 'rand' ? __('Items are being displayed in a random order.', 'tainacan') : __('Toggle to display items in a random order.', 'tainacan') }
+                                    checked={ orderBy == 'rand' }
+                                    onChange={ ( isChecked ) => {
+                                        orderBy = isChecked ? 'rand' : 'date';
+                                        setAttributes({ orderBy: orderBy });
+                                        setContent();
+                                    }}
                                 />
                             </div>
                         </PanelBody>
