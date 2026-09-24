@@ -34,6 +34,7 @@ classDiagram
         +order_result(result, collection, include_disabled)
         +hook_delete_when_metadata_deleted(metadatum, permanent)
         +hook_update_when_metadata_saved_as_private(metadatum)
+        +fetch_by_collections(args, collection_ids)
     }
     class Repository {
         +entities_type : string
@@ -452,6 +453,33 @@ public hook_update_when_metadata_saved_as_private(mixed $metadatum): mixed
 | Parameter    | Type      | Description |
 |--------------|-----------|-------------|
 | `$metadatum` | **mixed** |             |
+
+***
+
+### fetch_by_collections
+
+Fetch filters across collections.
+
+```php
+public fetch_by_collections(array $args = [], array $collection_ids = []): array
+```
+
+Repository filters are not included. Only filters with
+display_in_repository_level_lists other than "no" are returned. Each
+readable collection is loaded with an unpaginated query, then its filters
+— including inherited ones — are ordered with fetch_by_collection().
+The collection paired with each list is the one whose order was applied.
+
+**Parameters:**
+
+| Parameter         | Type      | Description                                           |
+|-------------------|-----------|-------------------------------------------------------|
+| `$args`           | **array** | Args forwarded to fetch_by_collection().              |
+| `$collection_ids` | **array** | Limit the scan to these collections. Empty means all. |
+
+**Return Value:**
+
+List of [ 'filters' => Entities\Filter[], 'collection' => Entities\Collection ].
 
 ***
 

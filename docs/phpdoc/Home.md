@@ -709,6 +709,7 @@ classDiagram
     class Metadata_Sections { }
     class Collections { }
     Collections ..> Metadata
+    Filters ..> Collections
     Item_Metadata ..> Items
     Item_Metadata ..> Metadata
     Item_Metadata ..> Taxonomies

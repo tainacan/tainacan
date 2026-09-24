@@ -2294,6 +2294,7 @@
       +order_result(result, collection, include_disabled)
       +hook_delete_when_metadata_deleted(metadatum, permanent)
       +hook_update_when_metadata_saved_as_private(metadatum)
+      +fetch_by_collections(args, collection_ids)
     }
     class "Repository\n<b>Abstract base class for all Tainacan repositories.</b>" as repositories_Repository {
       +entities_type : string
@@ -2772,6 +2773,7 @@
   repositories_Filters ..> entities_Collection
   repositories_Filters ..> entities_Filter
   repositories_Filters ..> entities_Metadatum
+  repositories_Filters ..> repositories_Collections
   repositories_Item_Metadata ..> entities_Collection
   repositories_Item_Metadata ..> entities_Item
   repositories_Item_Metadata ..> entities_Item_Metadata_Entity
