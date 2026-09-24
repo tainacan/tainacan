@@ -307,10 +307,7 @@ export const dynamicFilterTypeMixin = {
                         url = `/collection/${this.filter.collection_id}/facets/${this.filter.metadatum.metadatum_id}?getSelected=${getSelected}&`;
                 }     
                 
-                if (offset != undefined && number != undefined)
-                    url += `offset=${offset}&number=${number}`;
-                else
-                    url += `nopaging=1`;
+                url += `offset=${offset}&number=${number}`;
 
                 if (search)
                     url += `&search=${search}`;
