@@ -158,6 +158,7 @@
     +order_result(result, collection, include_disabled)
     +hook_delete_when_metadata_deleted(metadatum, permanent)
     +hook_update_when_metadata_saved_as_private(metadatum)
+    +fetch_by_collections(args, collection_ids)
   }
   class "Repository\n<b>Abstract base class for all Tainacan repositories.</b>" as Repository {
     +entities_type : string
@@ -287,6 +288,7 @@
     +handle_parent_order_clone(collection)
   }
   Collections ..> Metadata
+  Filters ..> Collections
   Item_Metadata ..> Items
   Item_Metadata ..> Metadata
   Item_Metadata ..> Taxonomies
