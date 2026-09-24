@@ -11,21 +11,29 @@
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')" />
             </label>
-            <b-select
-                    v-model="collection"
+            <b-autocomplete
+                    v-model="collectionSearch"
+                    v-a11y-autocomplete="{ appendToBody: true }"
                     name="metadata_type_relationship[collection_id]"
-                    :placeholder="$i18n.get('instruction_select_collection_fetch_items' )"
+                    :placeholder="$i18n.get('instruction_select_collection_fetch_items')"
+                    :data="collections"
+                    field="name"
+                    clearable
+                    icon-right="menu-down"
                     :loading="loading"
+                    :append-to-body="true"
+                    open-on-focus
                     expanded
-                    @change="emitValues()"
-                    @focus="clear()">
-                <option
-                        v-for="option in collections"
-                        :key="option.id"
-                        :value="option.id">
-                    {{ option.name }}
-                </option>
-            </b-select>
+                    check-infinite-scroll
+                    @select="onSelectCollection"
+                    @focus="onFocusCollectionSearch"
+                    @active="onCollectionSuggestionsActive"
+                    @typing="fetchCollections"
+                    @infinite-scroll="fetchMoreCollections">
+                <template #empty>
+                    {{ $i18n.get('info_no_options_found') }}
+                </template>
+            </b-autocomplete>
             <p 
                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="help" 
@@ -142,7 +150,7 @@
 </template>
 
 <script>
-    import { tainacanApi } from '../../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
 
     export default {
         props: {
@@ -157,6 +165,12 @@
             return {
                 icon: '',
                 collections:[],
+                collectionSearch: '',
+                committedCollectionName: '',
+                collectionSearchQuery: '',
+                collectionsPage: 1,
+                totalCollections: 0,
+                collectionSearchCancel: null,
                 metadata: [],
                 loading: true,
                 collection: '',
@@ -182,6 +196,10 @@
             }
         },
         watch:{
+            collectionSearch(name) {
+                if (!name)
+                    this.onSelectCollection(null);
+            },
             collection( value ) {
                 this.collection = value;
                 if ( value && value !== '' ) {
@@ -203,35 +221,139 @@
             }
         },
         created(){
-            this.fetchCollections()
-                .then(() => {
-                    if ( this.collectionId && this.collectionId !== '' )
-                        this.collection = this.collectionId;
-                    else if ( this.value )
-                        this.collection = this.value.collection_id;
-                });
+            const initialCollectionId = ( this.collectionId && this.collectionId !== '' )
+                ? this.collectionId
+                : ( this.value && this.value.collection_id ? this.value.collection_id : '' );
+
+            if (initialCollectionId) {
+                this.collection = initialCollectionId;
+                this.fetchSelectedCollection(initialCollectionId);
+            } else {
+                this.loading = false;
+                this.browseCollections();
+            }
 
             this.displayRelatedItemMetadata = this.value && this.value.display_related_item_metadata && Array.isArray(this.value.display_related_item_metadata) ? this.value.display_related_item_metadata : [];
             this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';
             this.modelAcceptDraftItems = this.value && this.value.accept_draft_items ? this.value.accept_draft_items : 'no';
             this.modelAcceptOnlyItemsAuthoredByCurrentUser = this.value && this.value.accept_only_items_authored_by_current_user ? this.value.accept_only_items_authored_by_current_user : 'no';
         },
+        beforeUnmount() {
+            this.cancelCollectionSearch();
+        },
         methods: {
             setErrorsAttributes( type, message ){
                 this.collectionType = type;
                 this.collectionType = message;
             },
-            async fetchCollections(){
-                return await tainacanApi.get('/collections?nopaging=1&status=any')
-                    .then(res => {
-                        const collections = res.data;
+            fetchSelectedCollection(id) {
+                this.loading = true;
 
+                return tainacanApi.get('/collections/' + id + '?fetch_only=name,id')
+                    .then(res => {
+                        const name = res.data && res.data.name ? res.data.name : String(id);
+                        this.committedCollectionName = name;
+                        this.collectionSearch = name;
                         this.loading = false;
-                        this.collections = collections ? collections : [];
                     })
                     .catch(error => {
                         this.$console.log(error);
+                        this.committedCollectionName = String(id);
+                        this.collectionSearch = String(id);
+                        this.loading = false;
                     });
+            },
+            onFocusCollectionSearch() {
+                this.clear();
+                this.browseCollections();
+            },
+            onCollectionSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.collection && this.committedCollectionName && this.collectionSearch !== this.committedCollectionName)
+                    this.collectionSearch = this.committedCollectionName;
+            },
+            cancelCollectionSearch() {
+                if (this.collectionSearchCancel) {
+                    this.collectionSearchCancel.cancel('Collection search canceled.');
+                    this.collectionSearchCancel = null;
+                }
+            },
+            browseCollections() {
+                this.collectionSearchQuery = '';
+                this.collectionsPage = 1;
+                this.totalCollections = 0;
+                this.loading = true;
+                this.requestCollectionPage('');
+            },
+            fetchCollections: _.debounce(function(search) {
+                const query = search || '';
+
+                if (this.committedCollectionName && query === this.committedCollectionName)
+                    return;
+
+                if (query !== this.collectionSearchQuery) {
+                    this.collectionSearchQuery = query;
+                    this.collectionsPage = 1;
+                    this.totalCollections = 0;
+                }
+
+                if (this.collectionsPage > 1 && this.collections.length >= Number(this.totalCollections))
+                    return;
+
+                this.loading = true;
+                this.requestCollectionPage(query);
+            }, 500),
+            requestCollectionPage(query) {
+                this.cancelCollectionSearch();
+                const source = CancelToken.source();
+                this.collectionSearchCancel = source;
+
+                let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&status=any&order=asc&orderby=title';
+                if (query)
+                    endpoint += '&search=' + encodeURIComponent(query);
+
+                return tainacanApi.get(endpoint, { cancelToken: source.token })
+                    .then(res => {
+                        const pageCollections = res.data ? res.data : [];
+                        if (this.collectionsPage === 1)
+                            this.collections = pageCollections;
+                        else {
+                            for (let collection of pageCollections)
+                                this.collections.push(collection);
+                        }
+
+                        this.totalCollections = res.headers['x-wp-total'] ? Number(res.headers['x-wp-total']) : this.collections.length;
+                        this.collectionsPage++;
+                        this.loading = false;
+                    })
+                    .catch(error => {
+                        if (isCancel(error))
+                            return;
+
+                        this.$console.log(error);
+                        this.loading = false;
+                    });
+            },
+            fetchMoreCollections: _.debounce(function() {
+                this.fetchCollections(this.collectionSearchQuery);
+            }, 250),
+            onSelectCollection(collection) {
+                if (!collection || !collection.id) {
+                    if (this.collectionSearch || (!this.collection && !this.committedCollectionName))
+                        return;
+
+                    this.committedCollectionName = '';
+                    if (this.collection)
+                        this.collection = '';
+                    return;
+                }
+
+                this.committedCollectionName = collection.name || '';
+                this.collectionSearch = this.committedCollectionName;
+                if (this.collection != collection.id)
+                    this.collection = collection.id;
             },
             fetchMetadataFromCollection(value) {
                 this.loadingMetadata = true;

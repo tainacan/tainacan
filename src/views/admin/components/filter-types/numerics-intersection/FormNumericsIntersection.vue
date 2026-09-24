@@ -102,19 +102,14 @@
             <b-select
                     v-model="secondNumericMetadatumId"
                     name="numerics_intersect[secondary_filter_metadatum_id]"
-                    :placeholder="$i18n.get('instruction_select_second_numeric_to_compare' )"
-                    :loading="loading"
+                    :placeholder="$i18n.get('instruction_select_second_numeric_to_compare')"
                     expanded
-                    @change="onUpdateSecondNumericMetadatumId()"
-                    @focus="clear()">
-                <option :value="''">
-                    {{ $i18n.get('instruction_select_second_numeric_to_compare' ) }}
-                </option>
+                    @update:model-value="onSelectSecondNumericMetadatum">
                 <option
-                        v-for="option in metadata.filter(aMetadatum => aMetadatum.id != filter.metadatum_id )"
-                        :key="option.id"
-                        :value="option.id">
-                    {{ option.name }}
+                        v-for="metadatum in metadataOptions"
+                        :key="metadatum.id"
+                        :value="metadatum.id">
+                    {{ metadatum.name }}
                 </option>
             </b-select>
         </b-field>
@@ -256,7 +251,7 @@
 </template>
 
 <script>
-    import { tainacanApi } from '../../../js/axios';
+    import { mapGetters } from 'vuex';
 
     export default {
         props: {
@@ -271,8 +266,6 @@
             return {
                 step: [Number, String],
                 showEditStepOptions: false,
-                metadata: [],
-                loading: true,
                 metadataType: '',
                 metadataMessage: '',
                 secondNumericMetadatumId: [Number, String],
@@ -285,7 +278,26 @@
                 showEditSecondComparatorOptions: false
             }
         },
+        computed: {
+            ...mapGetters('metadata', {
+                storedMetadata: 'getMetadata'
+            }),
+            metadataOptions() {
+                return (this.storedMetadata || []).filter((metadatum) => {
+                    if (!metadatum || metadatum.metadata_type !== 'Tainacan\\Metadata_Types\\Numeric')
+                        return false;
+                    if (Number(metadatum.parent) > 0)
+                        return false;
+                    if (this.filter && metadatum.id == this.filter.metadatum_id)
+                        return false;
+                    return true;
+                });
+            }
+        },
         watch: {
+            storedMetadata() {
+                this.fillSelectedName();
+            },
             errors() {
                 if ( this.errors && this.errors.secondary_filter_metadatum_id !== '' )
                     this.setErrorsAttributes( 'is-danger', this.errors.secondary_filter_metadatum_id );
@@ -295,14 +307,12 @@
         },
         created() {
             this.step = this.modelValue && this.modelValue.step ? this.modelValue.step : 1;
-            this.secondNumericMetadatumId = this.modelValue && this.modelValue.secondary_filter_metadatum_id ? this.modelValue.secondary_filter_metadatum_id : '';
+            this.secondNumericMetadatumId = this.modelValue && this.modelValue.secondary_filter_metadatum_id ? this.modelValue.secondary_filter_metadatum_id : null;
             this.secondNumericMetadatumName = this.modelValue && this.modelValue.secondary_filter_metadatum_name ? this.modelValue.secondary_filter_metadatum_name : '';
             this.firstComparator = this.modelValue && this.modelValue.first_comparator ? this.modelValue.first_comparator : '>=';
             this.secondComparator = this.modelValue && this.modelValue.second_comparator ? this.modelValue.second_comparator : '<=';
             this.acceptNumericInterval = this.modelValue && this.modelValue.accept_numeric_interval ? this.modelValue.accept_numeric_interval : 'no';
-            
-            this.loading = true;
-            this.fetchMetadata();
+            this.fillSelectedName();
 
             this.comparatorsObject = {
                 '=': {
@@ -332,25 +342,18 @@
             };
         },
         methods: {
-            async fetchMetadata() {
-                
-                let endpoint = this.filter.collection_id && this.filter.collection_id !== 'default' ? ( '/collection/' + this.filter.collection_id + '/metadata' ) : '/metadata';
-                endpoint += '?metaquery[0][key]=metadata_type&metaquery[0][value]=Tainacan\\Metadata_Types\\Numeric&nopaging=1&exclude=' + this.filter.metadatum_id;
+            fillSelectedName() {
+                if (!this.secondNumericMetadatumId || this.secondNumericMetadatumName)
+                    return;
 
-                return await tainacanApi.get(endpoint)
-                    .then(res => {
-                        this.loading = false;
-                        this.metadata = res.data ? res.data : [];
-                    })
-                    .catch(error => {
-                        this.loading = false;
-                        this.$console.log(error);
-                    });
+                const selected = this.metadataOptions.find((metadatum) => metadatum.id == this.secondNumericMetadatumId);
+                if (selected && selected.name)
+                    this.secondNumericMetadatumName = selected.name;
             },
-            onUpdateSecondNumericMetadatumId() {
-                const selectedMetadatum = this.metadata.find( aMetadatum => aMetadatum.id == this.secondNumericMetadatumId );
-                this.secondNumericMetadatumName = selectedMetadatum ? selectedMetadatum.name : '';
-                this.secondNumericMetadatumId = selectedMetadatum ? selectedMetadatum.id : '';
+            onSelectSecondNumericMetadatum(id) {
+                this.clear();
+                const selected = this.metadataOptions.find((metadatum) => metadatum.id == id);
+                this.secondNumericMetadatumName = selected && selected.name ? selected.name : '';
                 this.emitValues();
             },
             emitValues() {
@@ -358,7 +361,7 @@
                     step: this.step,
                     first_comparator: this.firstComparator,
                     second_comparator: this.secondComparator,
-                    secondary_filter_metadatum_id: this.secondNumericMetadatumId,
+                    secondary_filter_metadatum_id: this.secondNumericMetadatumId || '',
                     secondary_filter_metadatum_name: this.secondNumericMetadatumName,
                     accept_numeric_interval: this.acceptNumericInterval
                 });
@@ -409,5 +412,5 @@
     .logic-divider {
         display: none;
     }
-} 
+}
 </style>

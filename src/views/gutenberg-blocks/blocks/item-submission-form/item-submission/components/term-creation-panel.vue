@@ -59,12 +59,15 @@
                         :data="parentTerms"
                         field="name"
                         clearable
+                        icon-right="menu-down"
                         :loading="isFetchingParentTerms"
                         :disabled="!hasParent"
+                        open-on-focus
                         check-infinite-scroll
-                        @select="onSelectParentTerm($event)"
-                        @update:model-value="fetchParentTerms"
-                        @focus="clearErrors('parent');"
+                        @select="onSelectParentTerm"
+                        @focus="onFocusParentTerm"
+                        @active="onParentTermSuggestionsActive"
+                        @typing="fetchParentTerms"
                         @infinite-scroll="fetchMoreParentTerms">
                     <template #default="props">
                         <div class="media">
@@ -134,6 +137,7 @@
                 isFetchingParentTerms: false,
                 parentTerms: [],
                 parentTermName: '',
+                committedParentTermName: '',
                 hasParent: false,
                 hasChangedParent: false,
                 initialParentId: undefined,
@@ -142,6 +146,12 @@
                 parentTermSearchQuery: '',
                 parentTermSearchOffset: 0,
                 form: {}
+            }
+        },
+        watch: {
+            parentTermName(name) {
+                if (!name)
+                    this.onSelectParentTerm(null);
             }
         },
         created() {
@@ -156,6 +166,7 @@
                 this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.form.parent })
                     .then((parentName) => {
                         this.parentTermName = parentName;
+                        this.committedParentTermName = parentName;
                         this.isFetchingParentTerms = false;
                         this.showCheckboxesWarning = false;
                     })
@@ -193,36 +204,58 @@
                     this.formErrors[attributes] = undefined;
                 }
             },
-            fetchParentTerms: _.debounce(function(search) {
+            onFocusParentTerm() {
+                this.clearErrors('parent');
+                this.browseParentTerms();
+            },
+            onParentTermSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
 
-                // String update
-                if (search != this.parentTermSearchQuery) {
-                    this.parentTermSearchQuery = search;
+                if (this.form.parent && this.committedParentTermName && this.parentTermName !== this.committedParentTermName)
+                    this.parentTermName = this.committedParentTermName;
+            },
+            browseParentTerms() {
+                this.parentTermSearchQuery = '';
+                this.parentTermSearchOffset = 0;
+                this.totalTerms = undefined;
+                this.parentTerms = [];
+                this.isFetchingParentTerms = true;
+                this.requestParentTerms('');
+            },
+            fetchParentTerms: _.debounce(function(search) {
+                const query = search || '';
+
+                if (this.committedParentTermName && query === this.committedParentTermName)
+                    return;
+
+                if (query !== this.parentTermSearchQuery) {
+                    this.parentTermSearchQuery = query;
                     this.parentTerms = [];
                     this.parentTermSearchOffset = 0;
-                } 
-                
-                // String cleared
-                if (!search.length) {
-                    this.parentTermSearchQuery = search;
-                    this.parentTerms = [];
-                    this.parentTermSearchOffset = 0;
+                    this.totalTerms = undefined;
                 }
 
-                // No need to load more
-                if (this.parentTermSearchOffset > 0 && this.parentTerms.length >= this.totalTerms)
-                    return
+                if (this.parentTermSearchOffset > 0 && this.totalTerms !== undefined && this.parentTerms.length >= this.totalTerms)
+                    return;
 
                 this.isFetchingParentTerms = true;
-                
+                this.requestParentTerms(query);
+            }, 500),
+            requestParentTerms(query) {
                 this.fetchPossibleParentTerms({
-                        taxonomyId: this.taxonomyId, 
-                        termId: this.form.id, 
-                        search: this.parentTermSearchQuery,
+                        taxonomyId: this.taxonomyId,
+                        termId: this.form.id,
+                        search: query,
                         offset: this.parentTermSearchOffset })
                     .then((res) => {
-                        for (let term of res.parentTerms)
-                            this.parentTerms.push(term);
+                        const terms = res.parentTerms ? res.parentTerms : [];
+                        if (this.parentTermSearchOffset === 0)
+                            this.parentTerms = terms;
+                        else {
+                            for (let term of terms)
+                                this.parentTerms.push(term);
+                        }
 
                         this.parentTermSearchOffset += 12;
                         this.totalTerms = res.totalTerms;
@@ -232,7 +265,7 @@
                         this.$console.error(error);
                         this.isFetchingParentTerms = false;
                     });
-            }, 500),
+            },
             fetchMoreParentTerms: _.debounce(function () {
                 this.fetchParentTerms(this.parentTermSearchQuery)
             }, 250),
@@ -247,9 +280,22 @@
                 this.clearErrors('parent');
             },
             onSelectParentTerm(selectedParentTerm) {
+                if (!selectedParentTerm) {
+                    if (this.parentTermName || (!this.form.parent && !this.committedParentTermName))
+                        return;
+
+                    this.form.parent = 0;
+                    this.selectedParentTerm = undefined;
+                    this.committedParentTermName = '';
+                    this.hasChangedParent = this.initialParentId != 0;
+                    this.showCheckboxesWarning = true;
+                    return;
+                }
+
                 this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
                 this.form.parent = selectedParentTerm.id;
                 this.selectedParentTerm = selectedParentTerm;
+                this.committedParentTermName = selectedParentTerm.name;
                 this.parentTermName = selectedParentTerm.name;
                 this.showCheckboxesWarning = true;
             }

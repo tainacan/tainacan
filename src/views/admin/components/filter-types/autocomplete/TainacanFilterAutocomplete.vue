@@ -13,7 +13,10 @@
                 clearable
                 :placeholder="filter.placeholder ? filter.placeholder : ( (metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata') )"
                 check-infinite-scroll
-                @update:model-value="($event) => { resetPage(); search($event); }"
+                open-on-focus
+                @focus="browseFilterOptions"
+                @active="onFilterSuggestionsActive"
+                @typing="search"
                 @select="onSelect"
                 @infinite-scroll="searchMore">
             <template #default="props">
@@ -73,6 +76,10 @@
             }
         },
         watch: {
+            selected(value) {
+                if (!value)
+                    this.onSelect(null);
+            },
             'query': {
                 handler() {
                     this.updateSelectedValues();
@@ -85,12 +92,25 @@
         },
         methods: {
             onSelect(option){
-                
-                if(!option)
+                if (!option) {
+                    if (this.selected || !this.label)
+                        return;
+
+                    this.label = '';
+                    this.resetPage();
+                    this.$emit('input', {
+                        filter: 'autocomplete',
+                        metadatum_id: this.metadatumId,
+                        collection_id: this.collectionId,
+                        value: ''
+                    });
                     return;
+                }
+
                 this.selected = option.value;
                 this.label = option.label;
 
+                this.resetPage();
                 this.$emit('input', {
                     filter: 'autocomplete',
                     metadatum_id: this.metadatumId,
@@ -99,72 +119,91 @@
                 });
                 this.updateSelectedValues();
             },
-            search: _.debounce( function(query) {
-
-                // String update
-                if (query != this.searchQuery) {
-                    this.searchQuery = query;
-                    this.options = [];
-                    this.searchOffset = 0;
-                } 
-                
-                // String cleared
-                if (!query.length) {
-                    this.searchQuery = query;
-                    this.options = [];
-                    this.searchOffset = 0;
-                }
-
-                // No need to load more
-                if (this.searchOffset > 0 && this.options.length >= this.totalFacets)
+            onFilterSuggestionsActive(isOpen) {
+                if (isOpen)
                     return;
 
-                if (this.searchQuery != '') {
+                if (this.label && this.selected !== this.label)
+                    this.selected = this.label;
+            },
+            browseFilterOptions() {
+                this.searchQuery = '';
+                this.searchOffset = 0;
+                this.totalFacets = 0;
+                this.shouldAddOptions = false;
+                this.options = [];
+                this.requestFilterOptions('');
+            },
+            search: _.debounce( function(query) {
+                const text = query || '';
 
-                    // Cancels previous Request
-                    if (this.getOptionsValuesCancel != undefined)
-                        this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+                if (this.label && text === this.label)
+                    return;
 
-                    const promise = this.usesRelationshipValues
-                        ? this.getValuesRelationship({
-                            search: this.searchQuery,
-                            isRepositoryLevel: this.isRepositoryLevel,
-                            valuesToIgnore: [],
-                            offset: this.searchOffset,
-                            number: this.searchNumber
-                        })
-                        : this.getValuesPlainText({
-                            metadatumId: this.metadatumId,
-                            search: this.searchQuery,
-                            isRepositoryLevel: this.isRepositoryLevel,
-                            valuesToIgnore: [],
-                            offset: this.searchOffset,
-                            number: this.searchNumber
-                        });
-                    
-                    promise.request
-                        .then( res => {
-                            this.totalFacets = res.headers['x-wp-total'];
-                            this.searchOffset += this.searchNumber;
-                        })
-                        .catch( error => {
-                            if (isCancel(error))
-                                this.$console.log('Request canceled: ' + error.message);
-                            else
-                                this.$console.error( error );
-                        });
-
-                    // Search Request Token for cancelling
-                    this.getOptionsValuesCancel = promise.source;
-                
-                } else {
-                    this.label = '';
-                    this.selected = '';
+                if (text !== this.searchQuery) {
+                    this.searchQuery = text;
+                    this.options = [];
+                    this.searchOffset = 0;
+                    this.totalFacets = 0;
+                    this.shouldAddOptions = false;
                 }
+
+                if (!text.length)
+                    this.label = '';
+
+                if (this.searchOffset > 0 && this.options.length >= Number(this.totalFacets))
+                    return;
+
+                this.requestFilterOptions(text);
             }, 500),
+            requestFilterOptions(query) {
+                if (this.getOptionsValuesCancel)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
+                const promise = this.usesRelationshipValues
+                    ? this.getValuesRelationship({
+                        search: query,
+                        isRepositoryLevel: this.isRepositoryLevel,
+                        valuesToIgnore: [],
+                        offset: this.searchOffset,
+                        number: this.searchNumber
+                    })
+                    : this.getValuesPlainText({
+                        metadatumId: this.metadatumId,
+                        search: query,
+                        isRepositoryLevel: this.isRepositoryLevel,
+                        valuesToIgnore: [],
+                        offset: this.searchOffset,
+                        number: this.searchNumber
+                    });
+
+                promise.request
+                    .then( res => {
+                        if (res && res.fromAggregations) {
+                            this.totalFacets = this.options.length;
+                            this.searchOffset = this.options.length;
+                            return;
+                        }
+
+                        this.totalFacets = res.headers['x-wp-total'];
+                        this.searchOffset += this.searchNumber;
+                    })
+                    .catch( error => {
+                        const cause = error && error.error ? error.error : error;
+                        if (isCancel(cause))
+                            this.$console.log('Request canceled: ' + (cause.message || error.message));
+                        else
+                            this.$console.error( error );
+                    });
+
+                this.getOptionsValuesCancel = promise.source;
+            },
             searchMore: _.debounce(function () {
+                if (this.searchOffset > 0 && this.options.length >= Number(this.totalFacets))
+                    return;
+
                 this.shouldAddOptions = true;
-                this.search(this.searchQuery);
+                this.requestFilterOptions(this.searchQuery);
             }, 250),
             updateSelectedValues(){
 

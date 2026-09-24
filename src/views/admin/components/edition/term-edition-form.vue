@@ -164,13 +164,16 @@
                             :data="parentTerms"
                             field="name"
                             clearable
+                            icon-right="menu-down"
                             :loading="isFetchingParentTerms"
                             :disabled="!hasParent"
                             :append-to-body="true"
+                            open-on-focus
                             check-infinite-scroll
-                            @select="onSelectParentTerm($event)"
-                            @update:model-value="fetchParentTerms"
-                            @focus="clearErrors('parent');"
+                            @select="onSelectParentTerm"
+                            @focus="onFocusParentTerm"
+                            @active="onParentTermSuggestionsActive"
+                            @typing="fetchParentTerms"
                             @infinite-scroll="fetchMoreParentTerms">
                         <template #default="props">
                             <div class="media">
@@ -218,50 +221,33 @@
                             :message="$i18n.getHelperMessage('terms', 'cover_page_id')" />
                     <template v-if="enableCoverPage == 'yes'">
                         <b-autocomplete
-                                v-if="coverPage == undefined || coverPage.title == undefined"
                                 id="tainacan-text-cover-page"
                                 v-model="coverPageTitle"
                                 v-a11y-autocomplete="{ appendToBody: true }"
                                 :placeholder="$i18n.get('instruction_term_cover_page')"
                                 :data="coverPages"
+                                field="name"
+                                clearable
+                                icon-right="menu-down"
                                 :loading="isFetchingPages"
                                 :append-to-body="true"
+                                open-on-focus
+                                expanded
                                 check-infinite-scroll
-                                @select="onSelectCoverPage($event)"
-                                @update:model-value="fecthCoverPages"
-                                @focus="clearErrors('cover_page_id')"
+                                @select="onSelectCoverPage"
+                                @focus="onFocusCoverPageSearch"
+                                @active="onCoverPageSuggestionsActive"
+                                @typing="fecthCoverPages"
                                 @infinite-scroll="fetchMoreCoverPages">
                             <template #default="props">
-                                {{ props.option.title.rendered }}
+                                {{ props.option.name }}
                             </template>
                             <template #empty>
                                 {{ $i18n.get('info_no_page_found') }}
                             </template>
                         </b-autocomplete>
-
-                        <div 
-                                v-if="coverPage != undefined && coverPage.title != undefined"
-                                class="control selected-cover-page">
-                            <span v-html="coverPage.title.rendered" />
-                            <span class="selected-cover-page-control">
-                                <a 
-                                        target="_blank"
-                                        @click.prevent="removeCoverPage()">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('remove_value'),
-                                                autoHide: true,
-                                                placement: 'bottom',
-                                                popperClass: ['tainacan-tooltip', 'tooltip']  
-                                            }"
-                                            class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-close" />
-                                    </span>
-                                </a>
-                            </span>
-                        </div>
                         <span 
-                                :class="{'disabled': enableCoverPage != 'yes' || coverPage == undefined || coverPage.title == undefined}"
+                                :class="{'disabled': !hasCoverPage}"
                                 class="selected-cover-page-buttons">
                             <a 
                                     target="_blank" 
@@ -351,6 +337,7 @@
     import { formHooks } from "../../js/mixins";
     import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
+    import { CancelToken, isCancel } from '../../js/axios';
 
     export default {
         name: 'TermEditionForm',
@@ -379,6 +366,7 @@
                 isFetchingParentTerms: false,
                 parentTerms: [],
                 parentTermName: '',
+                committedParentTermName: '',
                 showCheckboxesWarning: false,
                 hasParent: false,
                 hasChangedParent: false,
@@ -393,18 +381,36 @@
                 isFetchingPages: false,
                 coverPages: [],
                 coverPagesSearchQuery: '',
-                coverPagesSearchPage: 0,
+                coverPagesSearchPage: 1,
+                coverPageSearchCancel: null,
                 coverPage: {},
                 coverPageTitle: '',
+                committedCoverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
                 newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page'
+            }
+        },
+        computed: {
+            hasCoverPage() {
+                return !!(this.coverPage && this.coverPage.id && this.coverPage.title);
+            }
+        },
+        watch: {
+            parentTermName(name) {
+                if (!name)
+                    this.onSelectParentTerm(null);
+            },
+            coverPageTitle(title) {
+                if (!title)
+                    this.onSelectCoverPage(null);
             }
         },
         created() {
             this.form = JSON.parse(JSON.stringify(this.originalForm));
         },
         beforeUnmount() {
+            this.cancelCoverPageSearch();
             if (this.isModal) {
                 this.$emit('beforeClose');
             }
@@ -429,6 +435,7 @@
                 this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.form.parent })
                     .then((parentName) => {
                         this.parentTermName = parentName;
+                        this.committedParentTermName = parentName;
                         this.isFetchingParentTerms = false;
                         this.showCheckboxesWarning = false;
                     })
@@ -446,11 +453,7 @@
                 
                 this.fetchPage(this.form.cover_page_id)
                     .then((page) => {
-                        this.coverPage = page;
-                        if (this.coverPage && this.coverPage.title) {
-                            this.coverPageTitle = this.coverPage.title.rendered;
-                            this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + page.id + '&action=edit';
-                        }
+                        this.applyCoverPage(page);
                         this.isFetchingPages = false;
                     })
                     .catch((error) => {
@@ -590,37 +593,58 @@
                     this.formErrors[attributes] = undefined;
                 }
             },
-            fetchParentTerms: _.debounce(function(search) {
+            onFocusParentTerm() {
+                this.clearErrors('parent');
+                this.browseParentTerms();
+            },
+            onParentTermSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
 
-                // String update
-                if (search != this.parentTermSearchQuery) {
-                    this.parentTermSearchQuery = search;
+                if (this.form.parent && this.committedParentTermName && this.parentTermName !== this.committedParentTermName)
+                    this.parentTermName = this.committedParentTermName;
+            },
+            browseParentTerms() {
+                this.parentTermSearchQuery = '';
+                this.parentTermSearchOffset = 0;
+                this.totalTerms = undefined;
+                this.parentTerms = [];
+                this.isFetchingParentTerms = true;
+                this.requestParentTerms('');
+            },
+            fetchParentTerms: _.debounce(function(search) {
+                const query = search || '';
+
+                if (this.committedParentTermName && query === this.committedParentTermName)
+                    return;
+
+                if (query !== this.parentTermSearchQuery) {
+                    this.parentTermSearchQuery = query;
                     this.parentTerms = [];
                     this.parentTermSearchOffset = 0;
-                } 
-                
-                // String cleared
-                if (!search.length) {
-                    this.parentTermSearchQuery = search;
-                    this.parentTerms = [];
-                    this.parentTermSearchOffset = 0;
+                    this.totalTerms = undefined;
                 }
 
-                // No need to load more
                 if (this.parentTermSearchOffset > 0 && this.totalTerms !== undefined && this.parentTerms.length >= this.totalTerms)
                     return;
 
-
                 this.isFetchingParentTerms = true;
-                
+                this.requestParentTerms(query);
+            }, 500),
+            requestParentTerms(query) {
                 this.fetchPossibleParentTerms({
-                        taxonomyId: this.taxonomyId, 
-                        termId: this.form.id, 
-                        search: this.parentTermSearchQuery,
+                        taxonomyId: this.taxonomyId,
+                        termId: this.form.id,
+                        search: query,
                         offset: this.parentTermSearchOffset })
                     .then((res) => {
-                        for (let term of res.parentTerms)
-                            this.parentTerms.push(term);
+                        const terms = res.parentTerms ? res.parentTerms : [];
+                        if (this.parentTermSearchOffset === 0)
+                            this.parentTerms = terms;
+                        else {
+                            for (let term of terms)
+                                this.parentTerms.push(term);
+                        }
 
                         this.parentTermSearchOffset += 12;
                         this.totalTerms = res.totalTerms;
@@ -630,7 +654,7 @@
                         this.$console.error(error);
                         this.isFetchingParentTerms = false;
                     });
-            }, 500),
+            },
             fetchMoreParentTerms: _.debounce(function () {
                 this.fetchParentTerms(this.parentTermSearchQuery)
             }, 250),
@@ -646,73 +670,130 @@
                 this.clearErrors('parent');
             },
             onSelectParentTerm(selectedParentTerm) {
-                if ( selectedParentTerm ) {
-                    this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
-                    this.form.parent = selectedParentTerm.id;
-                    this.selectedParentTerm = selectedParentTerm;
-                    this.parentTermName = selectedParentTerm.name;
+                if (!selectedParentTerm) {
+                    if (this.parentTermName || (!this.form.parent && !this.committedParentTermName))
+                        return;
+
+                    this.form.parent = 0;
+                    this.selectedParentTerm = undefined;
+                    this.committedParentTermName = '';
+                    this.hasChangedParent = this.initialParentId != 0;
                     this.showCheckboxesWarning = true;
+                    return;
+                }
+
+                this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
+                this.form.parent = selectedParentTerm.id;
+                this.selectedParentTerm = selectedParentTerm;
+                this.committedParentTermName = selectedParentTerm.name;
+                this.parentTermName = selectedParentTerm.name;
+                this.showCheckboxesWarning = true;
+            },
+            coverPageLabel(page) {
+                const rendered = page && page.title && page.title.rendered ? page.title.rendered : '';
+                const el = document.createElement('textarea');
+                el.innerHTML = rendered;
+                return el.value;
+            },
+            applyCoverPage(page) {
+                this.coverPage = page && page.id ? page : {};
+                const title = this.coverPageLabel(page);
+                this.committedCoverPageTitle = title;
+                this.coverPageTitle = title;
+                this.coverPageEditPath = page && page.id ? tainacan_plugin.wp_admin_url + 'post.php?post=' + page.id + '&action=edit' : '';
+                this.form.cover_page_id = page && page.id ? page.id : '';
+            },
+            onFocusCoverPageSearch() {
+                this.clearErrors('cover_page_id');
+                this.browseCoverPages();
+            },
+            onCoverPageSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.form.cover_page_id && this.committedCoverPageTitle && this.coverPageTitle !== this.committedCoverPageTitle)
+                    this.coverPageTitle = this.committedCoverPageTitle;
+            },
+            cancelCoverPageSearch() {
+                if (this.coverPageSearchCancel) {
+                    this.coverPageSearchCancel.cancel('Cover page search canceled.');
+                    this.coverPageSearchCancel = null;
                 }
             },
+            browseCoverPages() {
+                this.coverPagesSearchQuery = '';
+                this.coverPagesSearchPage = 1;
+                this.totalPages = 0;
+                this.isFetchingPages = true;
+                this.requestCoverPages('');
+            },
             fecthCoverPages: _.debounce(function(search) {
+                const query = search || '';
 
-                // String update
-                if (search != this.coverPagesSearchQuery) {
-                    this.coverPagesSearchQuery = search;
-                    this.coverPages = [];
+                if (this.committedCoverPageTitle && query === this.committedCoverPageTitle)
+                    return;
+
+                if (query !== this.coverPagesSearchQuery) {
+                    this.coverPagesSearchQuery = query;
                     this.coverPagesSearchPage = 1;
-                } 
-                
-                // String cleared
-                if (!search.length) {
-                    this.coverPagesSearchQuery = search;
-                    this.coverPages = [];
-                    this.coverPagesSearchPage = 1;
+                    this.totalPages = 0;
                 }
 
-                // No need to load more
-                if (this.coverPagesSearchPage > 1 && this.coverPages.length > this.totalPages*12)
+                if (this.coverPagesSearchPage > 1 && this.coverPages.length >= Number(this.totalPages))
                     return;
 
                 this.isFetchingPages = true;
-                this.fetchPages({ search: this.coverPagesSearchQuery, page: this.coverPagesSearchPage })
-                    .then((res) => {
-                        if (res.pages) {
-                            for (let page of res.pages)
-                                this.coverPages.push(page); 
-                        }
-                        if (res.totalPages)
-                            this.totalPages = res.totalPages;
+                this.requestCoverPages(query);
+            }, 500),
+            requestCoverPages(query) {
+                this.cancelCoverPageSearch();
+                const source = CancelToken.source();
+                this.coverPageSearchCancel = source;
 
+                this.fetchPages({ search: query, page: this.coverPagesSearchPage, cancelToken: source.token })
+                    .then((res) => {
+                        const pageList = (res.pages ? res.pages : []).map(page => ({
+                            ...page,
+                            name: this.coverPageLabel(page)
+                        }));
+                        if (this.coverPagesSearchPage === 1)
+                            this.coverPages = pageList;
+                        else {
+                            for (let page of pageList)
+                                this.coverPages.push(page);
+                        }
+
+                        this.totalPages = res.totalPages ? Number(res.totalPages) : this.coverPages.length;
                         this.coverPagesSearchPage++;
                         this.isFetchingPages = false;
                     })
                     .catch((error) => {
+                        const cause = error && error.error ? error.error : error;
+                        if (isCancel(cause))
+                            return;
+
                         this.$console.error(error);
                         this.isFetchingPages = false;
                     });
-            }, 500),
+            },
             fetchMoreCoverPages: _.debounce(function () {
                 this.fecthCoverPages(this.coverPagesSearchQuery)
             }, 250),
-            onSelectCoverPage(selectedPage) { 
-                this.form.cover_page_id = selectedPage.id; 
-                this.coverPage = selectedPage;
-                this.coverPageTitle = this.coverPage.title.rendered;
-                this.coverPageEditPath = tainacan_plugin.wp_admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
-            },
-            removeCoverPage() {
-                this.coverPage = {};
-                this.coverPageTitle = '';
-                this.enableCoverPage = 'no';
-                this.form.cover_page_id = '';
+            onSelectCoverPage(selectedPage) {
+                if (!selectedPage || !selectedPage.id) {
+                    if (this.coverPageTitle || !this.form.cover_page_id)
+                        return;
+
+                    this.applyCoverPage(null);
+                    return;
+                }
+
+                this.applyCoverPage(selectedPage);
             },
             onToggleCoverPageSwitch() {
-                if (this.enableCoverPage == 'no') {
-                    this.form.cover_page_id = '';
-                    this.coverPage = {};
-                    this.coverPageTitle = '';
-                }
+                if (this.enableCoverPage == 'no')
+                    this.applyCoverPage(null);
+
                 this.clearErrors('cover_page_id');
             }
         }
@@ -886,23 +967,6 @@
     .switch {
         position: relative;
         top: -1px;
-    }
-    .selected-cover-page {
-        border: 1px solid var(--tainacan-gray2);
-        padding: calc(0.57em - 1px) 8px;
-        font-size: .875em;
-        height: auto;
-        line-height: 1em;
-        min-height: 32px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .span { vertical-align: middle;}
-
-        .selected-cover-page-control {
-            float: inline-end;
-        }
     }
     .selected-cover-page-buttons {
         float: inline-end;

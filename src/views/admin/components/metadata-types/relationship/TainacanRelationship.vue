@@ -271,39 +271,8 @@
         created() {
             this.collectionId = ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.collection_id ) ? this.itemMetadatum.metadatum.metadata_type_options.collection_id : '';
 
-            if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
-                let query = [];
-                
-                query['postin'] = Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
-                query['nopaging'] = 1;
-                query['order'] = 'asc';
-                query['fetch_only'] = 'title,document_mimetype,thumbnail';
-                query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
-                
-                if ( this.isAcceptingDraftItems )
-                    query['status'] = ['publish','private','pending','draft'];
-
-                tainacanApi.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
-                    .then( res => {
-                        if (res.data.items) {
-                            for (let item of res.data.items) {
-                                this.selected.push({
-                                    label: this.getItemLabel(item),
-                                    value: item.id,
-                                    valuesAsHtml: this.getItemMetadataValuesAsHtml(item),
-                                    img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)
-                                });
-                            }
-
-                            // Presets second tab as active to display selected items
-                            if ( this.itemMetadatum.value.length > 0 && this.itemMetadatum.metadatum.multiple != 'yes' )
-                                this.activeTab = 1;
-                        }
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
-            }
+            if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true ))
+                this.fetchSelectedItems();
 
             // Checks if current user can edit items on the related collection to offer modal
             if (this.collection && this.collection.id == this.collectionId)
@@ -315,6 +284,60 @@
             }
         },
         methods: {
+            getMaxItemsPerPage(fallback) {
+                const configuredMax = Number(typeof tainacan_plugin !== 'undefined' ? tainacan_plugin.api_max_items_per_page : 0);
+                if (!isNaN(configuredMax) && configuredMax > 0)
+                    return configuredMax;
+                return fallback || 96;
+            },
+            fetchSelectedItems() {
+                const ids = Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
+                if (!ids.length)
+                    return;
+
+                const perpage = Math.min(ids.length, this.getMaxItemsPerPage(ids.length));
+                const totalPages = Math.ceil(ids.length / perpage);
+                const requests = [];
+
+                for (let page = 1; page <= totalPages; page++) {
+                    let query = [];
+                    query['postin'] = ids;
+                    query['perpage'] = perpage;
+                    query['paged'] = page;
+                    query['order'] = 'asc';
+                    query['fetch_only'] = 'title,document_mimetype,thumbnail';
+                    query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
+
+                    if ( this.isAcceptingDraftItems )
+                        query['status'] = ['publish','private','pending','draft'];
+
+                    requests.push(tainacanApi.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query)));
+                }
+
+                Promise.all(requests)
+                    .then( responses => {
+                        for (let res of responses) {
+                            if (!res.data.items)
+                                continue;
+
+                            for (let item of res.data.items) {
+                                this.selected.push({
+                                    label: this.getItemLabel(item),
+                                    value: item.id,
+                                    valuesAsHtml: this.getItemMetadataValuesAsHtml(item),
+                                    img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)
+                                });
+                            }
+                        }
+
+                        // Presets second tab as active to display selected items
+                        if ( this.itemMetadatum.value.length > 0 && this.itemMetadatum.metadatum.multiple != 'yes' )
+                            this.activeTab = 1;
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    });
+            },
             onInput(newSelected) {
                 // First we reset the input
                 this.search('');

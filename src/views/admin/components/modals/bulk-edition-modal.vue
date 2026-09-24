@@ -157,6 +157,7 @@
                                 <template
                                         v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'author_id'">
                                     <b-autocomplete
+                                            v-model="bulkEditionProcedures[criterion].authorSearch"
                                             v-a11y-autocomplete="{ appendToBody: true }"
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone }"
                                             :clearable="!bulkEditionProcedures[criterion].isDone"
@@ -172,9 +173,10 @@
                                             icon="account"
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             check-infinite-scroll
-                                            @update:model-value="($event) => fetchUsersForAuthor($event)"
-                                            @focus.once="fetchMoreUsersForAuthor"
-                                            @select="($event) => addToBulkEditionProcedures($event.id, 'newValue', criterion)"
+                                            @focus="browseUsersForAuthor"
+                                            @active="(isOpen) => onAuthorSuggestionsActive(isOpen, criterion)"
+                                            @typing="(search) => fetchUsersForAuthor(search, criterion)"
+                                            @select="(user) => onSelectAuthor(user, criterion)"
                                             @infinite-scroll="fetchMoreUsersForAuthor">
                                         <template #default="props">
                                             <div class="media">
@@ -415,7 +417,9 @@
                     1: {
                         isDone: false,
                         isExecuting: false,
-                        totalItemsEditedWithSuccess: 0
+                        totalItemsEditedWithSuccess: 0,
+                        authorSearch: '',
+                        committedAuthorName: ''
                     }
                 },
                 groupId: null,
@@ -426,7 +430,7 @@
                 users: [],
                 isFetchingUsers: false,
                 usersPage: 1,
-                usersPerPage: 10,
+                usersPerPage: 12,
                 usersTotal: 0,
                 usersTotalPages: 0,
                 usersSearch: '',
@@ -436,6 +440,18 @@
             ...mapGetters('metadata', {
                 'metadata': 'getMetadata'
             })
+        },
+        watch: {
+            bulkEditionProcedures: {
+                deep: true,
+                handler(procedures) {
+                    Object.keys(procedures).forEach((criterion) => {
+                        const procedure = procedures[criterion];
+                        if (procedure && !procedure.authorSearch && (procedure.newValue || procedure.committedAuthorName))
+                            this.onSelectAuthor(null, criterion);
+                    });
+                }
+            }
         },
         created() {
             if (this.collectionId) {
@@ -690,7 +706,9 @@
                         [`${aleatoryKey}`]: {
                             isDone: false,
                             isExecuting: false,
-                            totalItemsEditedWithSuccess: 0
+                            totalItemsEditedWithSuccess: 0,
+                            authorSearch: '',
+                            committedAuthorName: ''
                         }
                     });
 
@@ -782,47 +800,81 @@
                     Object.assign( this.bulkEditionProcedures[criterion], { 'action': Object.values(this.getValidEditionActions(this.bulkEditionProcedures[criterion].metadatum))[0] });
                 }
             },
-            fetchUsersForAuthor: _.debounce(function (search) {
+            onSelectAuthor(user, criterion) {
+                const procedure = this.bulkEditionProcedures[criterion];
+                if (!procedure)
+                    return;
 
-                // String update
-                if (search != this.usersSearch) {
-                    this.usersSearch = search;
-                    this.users = [];
-                    this.usersPage = 1;
-                } 
-
-                // String cleared
-                if (!search.length) {
-                    this.usersSearch = search;
-                    this.users = [];
-                    this.usersPage = 1;
+                if (!user || !user.id) {
+                    if (!procedure.authorSearch && (procedure.newValue || procedure.committedAuthorName)) {
+                        procedure.committedAuthorName = '';
+                        this.addToBulkEditionProcedures(undefined, 'newValue', criterion);
+                    }
+                    return;
                 }
 
-                // No need to load more
-                if (this.usersPage > 1 && this.users.length > this.totalUsers)
+                procedure.committedAuthorName = user.name || '';
+                procedure.authorSearch = procedure.committedAuthorName;
+                this.addToBulkEditionProcedures(user.id, 'newValue', criterion);
+            },
+            onAuthorSuggestionsActive(isOpen, criterion) {
+                if (isOpen)
+                    return;
+
+                const procedure = this.bulkEditionProcedures[criterion];
+                if (procedure && procedure.newValue && procedure.committedAuthorName && procedure.authorSearch !== procedure.committedAuthorName)
+                    procedure.authorSearch = procedure.committedAuthorName;
+            },
+            browseUsersForAuthor() {
+                this.usersSearch = '';
+                this.users = [];
+                this.usersPage = 1;
+                this.totalUsers = 0;
+                this.isFetchingUsers = true;
+                this.requestUsersForAuthor('');
+            },
+            fetchUsersForAuthor: _.debounce(function (search, criterion) {
+                const query = search || '';
+                const committed = criterion && this.bulkEditionProcedures[criterion]
+                    ? this.bulkEditionProcedures[criterion].committedAuthorName
+                    : '';
+
+                if (committed && query === committed)
+                    return;
+
+                if (query !== this.usersSearch) {
+                    this.usersSearch = query;
+                    this.users = [];
+                    this.usersPage = 1;
+                    this.totalUsers = 0;
+                }
+
+                if (this.usersPage > 1 && this.users.length >= Number(this.totalUsers))
                     return;
 
                 this.isFetchingUsers = true;
-
-                this.fetchUsers({ search: this.usersSearch, page: this.usersPage })
+                this.requestUsersForAuthor(query);
+            }, 500),
+            requestUsersForAuthor(query) {
+                this.fetchUsers({ search: query, page: this.usersPage, perPage: this.usersPerPage })
                     .then((res) => {
-                        if (res.users) {
-                            for (let user of res.users)
-                                this.users.push(user); 
+                        const userList = res.users ? res.users : [];
+                        if (this.usersPage === 1)
+                            this.users = userList;
+                        else {
+                            for (let user of userList)
+                                this.users.push(user);
                         }
-                        
-                        if (res.totalUsers)
-                            this.totalUsers = res.totalUsers;
 
+                        this.totalUsers = res.totalUsers ? Number(res.totalUsers) : this.users.length;
                         this.usersPage++;
-                        
                         this.isFetchingUsers = false;
                     })
                     .catch((error) => {
                         this.$console.error(error);
                         this.isFetchingUsers = false;
                     });
-            }, 500),
+            },
             fetchMoreUsersForAuthor: _.debounce(function () {
                 this.fetchUsersForAuthor(this.usersSearch)
             }, 250),

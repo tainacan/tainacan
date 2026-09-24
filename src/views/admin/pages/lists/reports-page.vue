@@ -291,7 +291,6 @@ export default {
     data() {
         return {
             selectedCollection: 'default',
-            isFetchingCollections: false,
             isFetchingSummary: false,
             isFetchingCollectionsList: false,
             isFetchingMetadata: false,
@@ -301,9 +300,6 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('collection', {
-            collections: 'getCollections',
-        }),
         ...mapGetters('report', {
             summary: 'getSummary',
             metadata: 'getMetadata',
@@ -359,9 +355,6 @@ export default {
         }
     },
     methods: {
-        ...mapActions('collection', [
-            'fetchAllCollectionNames'
-        ]),
         ...mapActions('report', [
             'fetchSummary',
             'fetchCollectionsList',
@@ -370,12 +363,6 @@ export default {
             'fetchTaxonomiesList',
             'fetchActivities'
         ]),
-        loadCollections() {
-            this.isFetchingCollections = true;
-            this.fetchAllCollectionNames()
-                .then(() => this.isFetchingCollections = false)
-                .catch(() => this.isFetchingCollections = false);
-        },
         loadSummary(force) {
             this.isFetchingSummary = true;
             this.fetchSummary({ collectionId: this.selectedCollection, force: force })

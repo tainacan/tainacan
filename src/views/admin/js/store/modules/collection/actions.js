@@ -547,9 +547,9 @@ export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) =
  * Dispatches `collection/fetchPages`.
  * @returns {*} Action result.
  */
-export const fetchPages = ({ commit }, { search, page } ) => {
+export const fetchPages = ({ commit }, { search, page, cancelToken } ) => {
     return new Promise((resolve, reject) => {
-        axios.wpApi.get('/pages?search=' + search + '&page=' + page)
+        axios.wpApi.get('/pages?search=' + search + '&page=' + page + '&per_page=12&_fields=id,title,link', { cancelToken })
         .then(res => {
             const pages = res.data;
             const totalPages = res.headers['x-wp-total'];
@@ -567,7 +567,7 @@ export const fetchPages = ({ commit }, { search, page } ) => {
  */
 export const fetchPage = ({ commit }, pageId ) => {
     return new Promise((resolve, reject) => {
-        axios.wpApi.get('/pages/' + pageId)
+        axios.wpApi.get('/pages/' + pageId + '?_fields=id,title,link')
         .then(res => {
             let page = res.data;
             resolve( page );
