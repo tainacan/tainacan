@@ -19,11 +19,12 @@ classDiagram
         -taxonomy_repository : mixed
         -metadatum_repository : mixed
         -collections_repository : mixed
-        -prefix_transient_cahce : mixed
+        -prefix_transient_cahce : string
         +__construct()
         +init_objects()
         +register_routes()
         +reports_permissions_check(request)
+        -current_user_can_read_collection_reports(collection_id)
         +get_collections(request)
         +get_summary(request)
         +get_taxonomies_list(request)
@@ -80,9 +81,13 @@ private $collections_repository
 
 ### prefix_transient_cahce
 
+Previous reports were cached under reports_tnc_ and included staff account fields.
+
 ```php
-private $prefix_transient_cahce
+private string $prefix_transient_cahce
 ```
+
+New keys are not read from that prefix, so those transients expire unused.
 
 ***
 
@@ -122,15 +127,35 @@ public register_routes(): mixed
 
 ### reports_permissions_check
 
+Repository reports match the Reports screen (manage_tainacan).
+
 ```php
-public reports_permissions_check(mixed $request): mixed
+public reports_permissions_check(\WP_REST_Request $request): bool
+```
+
+Collection reports require management of that collection. manage_tainacan and
+manage_tainacan_collection_all are not expanded into manage_tainacan_collection_{id},
+so each one is checked on its own.
+
+**Parameters:**
+
+| Parameter  | Type                 | Description |
+|------------|----------------------|-------------|
+| `$request` | **\WP_REST_Request** |             |
+
+***
+
+### current_user_can_read_collection_reports
+
+```php
+private current_user_can_read_collection_reports(int $collection_id): bool
 ```
 
 **Parameters:**
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$request` | **mixed** |             |
+| Parameter        | Type    | Description |
+|------------------|---------|-------------|
+| `$collection_id` | **int** |             |
 
 ***
 
