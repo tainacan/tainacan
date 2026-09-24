@@ -1976,11 +1976,12 @@
         -taxonomy_repository : 
         -metadatum_repository : 
         -collections_repository : 
-        -prefix_transient_cahce : 
+        -prefix_transient_cahce : string
         +__construct()
         +init_objects()
         +register_routes()
         +reports_permissions_check(request)
+        -current_user_can_read_collection_reports(collection_id)
         +get_collections(request)
         +get_summary(request)
         +get_taxonomies_list(request)
