@@ -92,18 +92,38 @@ class Dashboard extends Pages {
 
 		// Register Tainacan Cards using WordPress Widgets API
 		$this->register_cards();
+	}
 
-		// // Add help tabs if needed
-		// $screen->add_help_tab(array(
-		// 	'id' => 'tainacan_dashboard_help_tab',
-		// 	'title' => __('Dashboard Options', 'tainacan'),
-		// 	'content' => '<p>' . __('You can customize which cards appear on this dashboard.', 'tainacan') . '</p>',
-		// ));
+	/**
+	 * Returns help tabs for the dashboard page.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array(
+			array(
+				'id'      => 'tainacan_dashboard_overview_help_tab',
+				'title'   => __( 'Overview', 'tainacan' ),
+				'content' => '<p>' . __( 'The Tainacan dashboard brings together shortcuts, repository statistics, recent collections, news and links to learning resources.', 'tainacan' ) . '</p>',
+			),
+			array(
+				'id'      => 'tainacan_dashboard_options_help_tab',
+				'title'   => __( 'Dashboard cards', 'tainacan' ),
+				'content' => '<p>' . __( 'Use Screen Options to show or hide dashboard cards. When card sorting is enabled, you can drag cards to organize the dashboard for your workflow.', 'tainacan' ) . '</p>',
+			),
+		);
+	}
 
-		// $screen->set_help_sidebar(
-		// 	'<p>' . __('For more information:', 'tainacan') . '</p>' .
-		// 	'<p><a href="https://tainacan.org/" target="_blank">' . __('Tainacan Documentation', 'tainacan') . '</a></p>'
-		// );
+	/**
+	 * Returns help sidebar content for the dashboard page.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return
+			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Tainacan Documentation', 'tainacan' ) . '</a></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/faq', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Frequently Asked Questions', 'tainacan' ) . '</a></p>';
 	}
 
 	public function render_page_content() {
