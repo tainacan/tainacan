@@ -386,6 +386,9 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function get_items( $request ) {
 		$args = $this->prepare_filters( $request );
+		// Order is applied after parent queries are merged, so paging each parent is not a page of the list.
+		unset( $args['posts_per_page'], $args['paged'], $args['offset'], $args['nopaging'] );
+		$args['posts_per_page'] = -1;
 
 		if ($request['include_disabled'] === 'true') {
 			$args['include_disabled'] = true;
@@ -635,6 +638,8 @@ class REST_Filters_Controller extends REST_Controller {
 			parent::get_wp_query_params(),
 			parent::get_meta_queries_params()
 		);
+
+		unset( $query_params['perpage'], $query_params['paged'], $query_params['offset'] );
 
 		return $query_params;
 	}

@@ -19,20 +19,20 @@ export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isCo
             else
                 endpoint = '/filters/';
 
-            endpoint += '?nopaging=1';
+            const query = {};
 
-            if (isContextEdit) {
-                endpoint += '&context=edit';
-            }
+            if (isContextEdit)
+                query.context = 'edit';
 
-            if (includeDisabled){
-                endpoint += '&include_disabled=' + includeDisabled;
-            }
+            if (includeDisabled)
+                query.include_disabled = includeDisabled;
 
-            if (customFilters != undefined && customFilters.length > 0) {
-                let postin = { 'postin': customFilters };
-                endpoint += '&' + qs.stringify(postin);
-            }
+            if (customFilters != undefined && customFilters.length > 0)
+                query.postin = customFilters;
+
+            const queryString = qs.stringify(query);
+            if (queryString)
+                endpoint += '?' + queryString;
 
             axios.tainacanApi.get(endpoint, { cancelToken: source.token })
                 .then((res) => {
@@ -233,7 +233,7 @@ export const fetchRepositoryCollectionFilters = ({ commit } ) => {
 
     return Object({
         request: new Promise((resolve, reject) => {
-            axios.tainacanApi.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&append_from_collections=all', { cancelToken: source.token })
+            axios.tainacanApi.get('/filters/?include_control_metadata_types=true&include_disabled=false&append_from_collections=all', { cancelToken: source.token })
                 .then((resp) => {
                     commit('setRepositoryCollectionFilters', groupFiltersByCollection(resp.data));
                     resolve();
@@ -265,7 +265,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collect
                 let taxonomy = res.taxonomy;
                 if (taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined) {
                     const collectionsToSearch = collectionsIds.length ? collectionsIds : taxonomy.collections_ids;
-                    const endpoint = '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&append_from_collections=' + collectionsToSearch.join(',');
+                    const endpoint = '/filters/?include_control_metadata_types=true&include_disabled=false&append_from_collections=' + collectionsToSearch.join(',');
 
                     axios.tainacanApi.get(endpoint)
                         .then((resp) => {

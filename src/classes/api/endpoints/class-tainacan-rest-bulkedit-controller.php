@@ -234,9 +234,10 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			unset($body['use_query']['paged']);
 			unset($body['use_query']['offset']);
 			unset($body['use_query']['perpage']);
-			$body['use_query']['nopaging'] = 1;
+			unset($body['use_query']['nopaging']);
 
 			$query_args = $this->prepare_filters($body['use_query']);
+			$query_args['posts_per_page'] = -1;
 			$collection_id = $request['collection_id'];
 			$args = [
 				'query' => $query_args,
