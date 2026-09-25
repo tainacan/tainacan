@@ -26,6 +26,9 @@ classDiagram
         +search_and_performance_section_description()
         +theme_templates_section_description()
         +items_list_defaults_section_description()
+        +repository_items_list_section_description()
+        +sanitize_repository_core_display(value)
+        +sanitize_repository_core_advanced_search(value)
         +gutenberg_blocks_section_description()
         +sanitize_enabled_blocks(input)
         +print_section_info()
@@ -211,6 +214,42 @@ public theme_templates_section_description(): mixed
 ```php
 public items_list_defaults_section_description(): mixed
 ```
+
+***
+
+### repository_items_list_section_description
+
+```php
+public repository_items_list_section_description(): mixed
+```
+
+***
+
+### sanitize_repository_core_display
+
+```php
+public sanitize_repository_core_display(mixed $value): string
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description        |
+|-----------|-----------|--------------------|
+| `$value`  | **mixed** | Raw setting value. |
+
+***
+
+### sanitize_repository_core_advanced_search
+
+```php
+public sanitize_repository_core_advanced_search(mixed $value): string
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description        |
+|-----------|-----------|--------------------|
+| `$value`  | **mixed** | Raw setting value. |
 
 ***
 
