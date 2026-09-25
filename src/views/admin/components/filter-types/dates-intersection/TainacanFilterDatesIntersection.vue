@@ -13,7 +13,7 @@
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
                 icon="calendar-today"
-                :years-range="[-200, 100]"
+                :years-range="datepickersYearsRange"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
                     $i18n.get('datepicker_short_monday'),
@@ -58,7 +58,7 @@
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
                 icon="calendar-today"
-                :years-range="[-200, 50]"
+                :years-range="datepickersYearsRange"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
                     $i18n.get('datepicker_short_monday'),

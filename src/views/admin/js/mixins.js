@@ -38,6 +38,18 @@ export const dateInter = {
             dateMask: ''
         }
     },
+    computed: {
+        // Years range of the datepicker year selector, defined in the Tainacan settings page
+        datepickersYearsRange() {
+            const yearMin = parseInt(tainacan_plugin.datepickers_year_min);
+            const yearMax = parseInt(tainacan_plugin.datepickers_year_max);
+
+            return [
+                isNaN(yearMin) ? -200 : yearMin,
+                isNaN(yearMax) ? 50 : yearMax
+            ];
+        }
+    },
     methods: {
         parseDateToNavigatorLanguage(date) {
             date = new Date(date.replace(/-/g, '/'));
