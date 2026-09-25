@@ -356,8 +356,8 @@
     -vue_component_page_slug : 
     -tainacan_dashboard_cards : 
     -disabled_cards : 
-    -default_news_feed_options : 
     #get_page_slug()
+    -get_default_news_feed_options()
     +init()
     +add_admin_menu()
     +admin_enqueue_css()

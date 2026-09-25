@@ -3685,7 +3685,7 @@ Argument | Type | Description
 `$args` |  | 
 `$request` | `mixed` | 
 
-Source: [class-tainacan-rest-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/class-tainacan-rest-controller.php), [line 77](https://github.com/tainacan/tainacan/blob/master/src/classes/api/class-tainacan-rest-controller.php#L77-L172)
+Source: [class-tainacan-rest-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/class-tainacan-rest-controller.php), [line 77](https://github.com/tainacan/tainacan/blob/master/src/classes/api/class-tainacan-rest-controller.php#L77-L175)
 
 ---------------------------------
 <br>
@@ -4709,7 +4709,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$tainacan_dashboard_cards` |  | 
 
-Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 224](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L224-L235)
+Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 244](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L244-L255)
 
 ---------------------------------
 <br>
@@ -4722,9 +4722,9 @@ featuring RSS feed from Tainacan website*
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$this->default_news_feed_options` |  | 
+`$this->get_default_news_feed_options()` |  | 
 
-Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 558](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L558-L566)
+Source: [class-tainacan-dashboard.php](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php), [line 578](https://github.com/tainacan/tainacan/blob/master/src/views/dashboard/class-tainacan-dashboard.php#L578-L586)
 
 ---------------------------------
 <br>
