@@ -929,6 +929,66 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertFalse( Tainacan_POI_Canary::$woke );
 	}
 
+	public function test_fetch_filters_returns_the_full_list() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Collection with many filters',
+				'description' => 'More than the default page size',
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$names = array();
+
+		for ( $i = 1; $i <= 11; $i++ ) {
+			$metadatum = $this->tainacan_entity_factory->create_entity(
+				'metadatum',
+				array(
+					'name'          => 'Metadatum ' . $i,
+					'status'        => 'publish',
+					'collection_id' => $collection->get_id(),
+					'metadata_type' => 'Tainacan\Metadata_Types\Numeric'
+				),
+				true
+			);
+
+			$filter = $this->tainacan_entity_factory->create_entity(
+				'filter',
+				array(
+					'name'        => 'Filter ' . $i,
+					'collection'  => $collection,
+					'metadatum'   => $metadatum,
+					'filter_type' => 'Tainacan\Filter_Types\Numeric_Interval',
+					'status'      => 'publish'
+				),
+				true
+			);
+
+			$names[] = $filter->get_name();
+		}
+
+		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/filters' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$data = $response->get_data();
+		$returned_names = array_map(
+			function( $filter ) {
+				return $filter['name'];
+			},
+			$data
+		);
+
+		$this->assertGreaterThan( 10, count( $data ) );
+
+		foreach ( $names as $name ) {
+			$this->assertContains( $name, $returned_names );
+		}
+	}
+
 }
 
 ?>

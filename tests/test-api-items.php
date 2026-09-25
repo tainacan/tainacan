@@ -1157,6 +1157,57 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			}
 		}
 	}
+
+	public function test_rejects_non_positive_perpage() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Paged items',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'First',
+				'collection' => $collection,
+				'status'     => 'publish'
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'Second',
+				'collection' => $collection,
+				'status'     => 'publish'
+			),
+			true
+		);
+
+		$route = $this->namespace . '/collection/' . $collection->get_id() . '/items';
+
+		foreach ( array( -1, 0 ) as $perpage ) {
+			$request = new \WP_REST_Request( 'GET', $route );
+			$request->set_query_params( array( 'perpage' => $perpage ) );
+
+			$response = $this->server->dispatch( $request );
+
+			$this->assertEquals( 400, $response->get_status() );
+			$this->assertEquals( 'rest_invalid_param', $response->get_data()['code'] );
+		}
+
+		$request = new \WP_REST_Request( 'GET', $route );
+		$request->set_query_params( array( 'perpage' => 1 ) );
+
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertCount( 1, $response->get_data()['items'] );
+	}
 }
 
 ?>

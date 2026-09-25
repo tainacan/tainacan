@@ -236,6 +236,45 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	/**
+	 * @group api
+	 */
+	function test_api_create_by_query_stores_full_set() {
+
+		$query = [
+			'metaquery' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'odd'
+				]
+			],
+			'perpage' => 4,
+			'paged' => 2,
+			'offset' => 3,
+			'nopaging' => 1
+		];
+
+		$request = new \WP_REST_Request(
+			'POST', $this->api_baseroute
+		);
+
+		$request->set_body( json_encode(['use_query' => $query]) );
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+
+		$data = $response->get_data();
+		$stored_query = $data['options']['query'];
+
+		$this->assertSame(-1, $stored_query['posts_per_page']);
+		$this->assertArrayNotHasKey('paged', $stored_query);
+		$this->assertArrayNotHasKey('offset', $stored_query);
+		$this->assertArrayNotHasKey('nopaging', $stored_query);
+		$this->assertEquals('odd', $stored_query['meta_query'][0]['value']);
+
+	}
+
 	function test_add() {
 
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
