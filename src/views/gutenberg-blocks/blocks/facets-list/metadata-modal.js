@@ -195,7 +195,7 @@ export default class MetadataModal extends React.Component {
     fetchModalMetadata(selectedCollectionId) {
 
         let someModalMetadata = [];
-        let endpoint = selectedCollectionId != 'default' ? '/collection/' + selectedCollectionId + '/metadata/?nopaging=1' : '/metadata/?nopaging=1';
+        let endpoint = selectedCollectionId != 'default' ? '/collection/' + selectedCollectionId + '/metadata/' : '/metadata/';
 
         this.setState({ 
             isLoadingMetadata: true,

@@ -27,9 +27,7 @@ export const fetchMetadata = ({commit}, {
             else
                 endpoint = '/metadata/?';
 
-            let query = {
-                nopaging: 1
-            };
+            let query = {};
             
             if (isContextEdit)
                 query['context'] = 'edit';
@@ -359,9 +357,7 @@ export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit, i
 
     let endpoint = '/collection/' + collectionId + '/metadata-sections';
 
-    let params = {
-        nopaging: 1
-    };
+    let params = {};
 
     if (isContextEdit)
         params['context'] = 'edit';

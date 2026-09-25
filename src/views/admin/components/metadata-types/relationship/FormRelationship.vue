@@ -359,7 +359,7 @@
                 this.loadingMetadata = true;
                 this.hasMetadata = false;
 
-                tainacanApi.get('/collection/' + value + '/metadata/?nopaging=1')
+                tainacanApi.get('/collection/' + value + '/metadata/')
                     .then((res) => {
                         this.loadingMetadata = false;
                         let metadata = res.data;
