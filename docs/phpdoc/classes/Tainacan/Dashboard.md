@@ -16,8 +16,8 @@ classDiagram
         -vue_component_page_slug : mixed
         -tainacan_dashboard_cards : mixed
         -disabled_cards : mixed
-        -default_news_feed_options : mixed
         #get_page_slug()
+        -get_default_news_feed_options()
         +init()
         +add_admin_menu()
         +admin_enqueue_css()
@@ -61,14 +61,6 @@ private $disabled_cards
 
 ***
 
-### default_news_feed_options
-
-```php
-private $default_news_feed_options
-```
-
-***
-
 ## Methods
 
 ### get_page_slug
@@ -78,6 +70,29 @@ This method must be implemented, providing a page_slug (page's ID or Slug), used
 ```php
 protected get_page_slug(): string
 ```
+
+***
+
+### get_default_news_feed_options
+
+Default options for the dashboard news feed.
+
+```php
+private get_default_news_feed_options(): array
+```
+
+The feed and "view all" URLs are translated at runtime so each locale
+can point to its own version of the Tainacan blog. English is the
+source language, so untranslated locales use the English blog.
+
+**Return Value:**
+
+{
+    @type string $feed_url       RSS feed URL.
+    @type string $title          Feed title shown in error messages.
+    @type string $view_all_link  URL for the "See all news" link.
+    @type int    $posts_per_feed Number of posts to display.
+}
 
 ***
 

@@ -1525,6 +1525,7 @@
       #filter_object_by_attributes(object, attributes)
       #prepare_item_for_updating(object, new_values)
       #prepare_filters(request)
+      #get_minimum_safe_perpage()
       +add_support_to_tax_query_like(args)
       #sanitize_value(value)
       -prepare_meta(mapped, request, query, mapped_v, args)
