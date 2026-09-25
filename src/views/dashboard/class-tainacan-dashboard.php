@@ -14,12 +14,32 @@ class Dashboard extends Pages {
 	private $tainacan_dashboard_cards = [];
 	private $disabled_cards = [];
 
-	private $default_news_feed_options = array(
-		'feed_url' => 'https://tainacan.org/feed/',
-		'title' => 'tainacan.org',
-		'view_all_link' => 'https://tainacan.org/blog/',
-		'posts_per_feed' => 3,
-	);
+	/**
+	 * Default options for the dashboard news feed.
+	 *
+	 * The feed and "view all" URLs are translated at runtime so each locale
+	 * can point to its own version of the Tainacan blog. English is the
+	 * source language, so untranslated locales use the English blog.
+	 *
+	 * @return array {
+	 *     @type string $feed_url       RSS feed URL.
+	 *     @type string $title          Feed title shown in error messages.
+	 *     @type string $view_all_link  URL for the "See all news" link.
+	 *     @type int    $posts_per_feed Number of posts to display.
+	 * }
+	 */
+	private function get_default_news_feed_options() {
+		return array(
+			'feed_url' =>
+				/* translators: RSS feed URL for the dashboard news card. Replace with the feed for this language, for example https://tainacan.org/feed/ for Portuguese. */
+				__( 'https://tainacan.org/en/feed/', 'tainacan' ),
+			'title' => 'tainacan.org',
+			'view_all_link' =>
+				/* translators: URL for the dashboard news card "See all news" link. Replace with the blog for this language, for example https://tainacan.org/blog/ for Portuguese. */
+				__( 'https://tainacan.org/en/blog-en/', 'tainacan' ),
+			'posts_per_feed' => 3,
+		);
+	}
 
 	public function init() {
 		parent::init();
@@ -563,7 +583,7 @@ class Dashboard extends Pages {
 		check_ajax_referer( 'tainacan_dashboard_news_nonce', '_nonce' );
 
 		// Apply filters to allow customization
-		$feed_options = apply_filters('tainacan_dashboard_news_feed', $this->default_news_feed_options);
+		$feed_options = apply_filters( 'tainacan_dashboard_news_feed', $this->get_default_news_feed_options() );
 		
 		// Includes required library for fetching rss
 		include_once(ABSPATH . WPINC . '/feed.php');
