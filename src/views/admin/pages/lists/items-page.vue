@@ -471,6 +471,7 @@
                             <span>{{ $i18n.get('label_cards') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
+                                v-if="!hidesItemsThumbnail"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'mosaic' }"
@@ -483,7 +484,7 @@
                             <span>{{ $i18n.get('label_mosaic') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item
-                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')" 
+                                v-if="!hidesItemsThumbnail" 
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
@@ -508,7 +509,7 @@
                             <span>{{ $i18n.get('label_records') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
-                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
+                                v-if="!hidesItemsThumbnail"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
@@ -839,7 +840,6 @@
     import CollectionsModal from '../../components/modals/collections-modal.vue';
     import CustomDialog from '../../components/other/custom-dialog.vue';
     import { mapActions, mapGetters } from 'vuex';
-
     export default {
         name: 'ItemsPage',
         components: {
@@ -903,6 +903,12 @@
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
+            },
+            hidesItemsThumbnail() {
+                if (this.isRepositoryLevel)
+                    return tainacan_plugin.repository_hide_items_thumbnail == true;
+
+                return !!(this.collection && this.collection.hide_items_thumbnail_on_lists == 'yes');
             },
             adminViewMode() {
                 const currentAdminViewMode = this.getAdminViewMode();
@@ -1132,7 +1138,12 @@
                 this.$eventBusSearch.setInitialAdminViewMode('table');
             else {
                 let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
-                if (existingViewMode == 'cards' || 
+                if (
+                    this.hidesItemsThumbnail &&
+                    (existingViewMode == 'grid' || existingViewMode == 'masonry' || existingViewMode == 'mosaic')
+                )
+                    this.$eventBusSearch.setInitialAdminViewMode('table');
+                else if (existingViewMode == 'cards' || 
                     existingViewMode == 'table' || 
                     existingViewMode == 'records' || 
                     existingViewMode == 'list' || 
@@ -1304,6 +1315,7 @@
                 let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
                 
+                let titleMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'title' : false);
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
 
                 // Updates Search
@@ -1312,8 +1324,8 @@
                     ((modificationDateMetadatum != undefined && modificationDateMetadatum.display) ? 'modification_date' : null),
                     ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
                     ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null),
-                    (this.isRepositoryLevel ? 'title' : null),
-                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
+                    (this.isRepositoryLevel && titleMetadatum && titleMetadatum.display ? 'title' : null),
+                    (this.isRepositoryLevel && descriptionMetadatum && descriptionMetadatum.display ? 'description' : null)
                 ];
                 this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString() , false, fetchOnlyMetadatumIds.toString());
 
@@ -1352,9 +1364,9 @@
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? (typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',')) : ['thumbnail'];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ? ((prefsFetchOnlyObject.indexOf('thumbnail') >= 0)) : true);
+                                    let thumbnailMetadatumDisplay = this.hidesItemsThumbnail ? null : (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ? ((prefsFetchOnlyObject.indexOf('thumbnail') >= 0)) : true);
 
-                                    if (this.isRepositoryLevel || !this.collection || this.collection.hide_items_thumbnail_on_lists != 'yes') {
+                                    if (!this.hidesItemsThumbnail) {
                                         metadata.push({
                                             name: this.$i18n.get('label_thumbnail'),
                                             metadatum: 'row_thumbnail',
@@ -1364,26 +1376,45 @@
                                             display: thumbnailMetadatumDisplay
                                         });
                                     }
-                                    // Repository Level always shows core metadata
+                                    let repositoryTitleDisplay = null;
+                                    let repositoryDescriptionDisplay = null;
+
                                     if (this.isRepositoryLevel) {
-                                        metadata.push({
-                                            name: this.$i18n.get('label_title'),
-                                            metadatum: 'row_title',
-                                            metadata_type_object: {core: true, related_mapped_prop: 'title'},
-                                            metadata_type: undefined,
-                                            slug: 'title',
-                                            id: undefined,
-                                            display: true
-                                        }); 
-                                        metadata.push({
-                                            name: this.$i18n.get('label_description'),
-                                            metadatum: 'row_description',
-                                            metadata_type_object: {core: true, related_mapped_prop: 'description'},
-                                            metadata_type: undefined,
-                                            slug: 'description',
-                                            id: undefined,
-                                            display: true
-                                        }); 
+                                        const repositoryTitleDisplaySetting = ['yes', 'no', 'never'].indexOf(tainacan_plugin.repository_core_title_display) >= 0 ? tainacan_plugin.repository_core_title_display : 'yes';
+                                        const repositoryDescriptionDisplaySetting = ['yes', 'no', 'never'].indexOf(tainacan_plugin.repository_core_description_display) >= 0 ? tainacan_plugin.repository_core_description_display : 'yes';
+
+                                        if (repositoryTitleDisplaySetting === 'yes')
+                                            repositoryTitleDisplay = true;
+                                        else if (repositoryTitleDisplaySetting === 'no')
+                                            repositoryTitleDisplay = !!(prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) && prefsFetchOnlyObject.indexOf('title') >= 0);
+
+                                        if (repositoryDescriptionDisplaySetting === 'yes')
+                                            repositoryDescriptionDisplay = true;
+                                        else if (repositoryDescriptionDisplaySetting === 'no')
+                                            repositoryDescriptionDisplay = !!(prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) && prefsFetchOnlyObject.indexOf('description') >= 0);
+
+                                        if (repositoryTitleDisplay !== null) {
+                                            metadata.push({
+                                                name: this.$i18n.get('label_title'),
+                                                metadatum: 'row_title',
+                                                metadata_type_object: {core: true, related_mapped_prop: 'title'},
+                                                metadata_type: undefined,
+                                                slug: 'title',
+                                                id: undefined,
+                                                display: repositoryTitleDisplay
+                                            });
+                                        }
+                                        if (repositoryDescriptionDisplay !== null) {
+                                            metadata.push({
+                                                name: this.$i18n.get('label_description'),
+                                                metadatum: 'row_description',
+                                                metadata_type_object: {core: true, related_mapped_prop: 'description'},
+                                                metadata_type: undefined,
+                                                slug: 'description',
+                                                id: undefined,
+                                                display: repositoryDescriptionDisplay
+                                            });
+                                        }
                                     }
 
                                     let fetchOnlyMetadatumIds = [];
@@ -1465,8 +1496,8 @@
                                         (modificationDateMetadatumDisplay ? 'modification_date' : null),
                                         (creationDateMetadatumDisplay ? 'creation_date' : null),
                                         (authorNameMetadatumDisplay ? 'author_name' : null),
-                                        (this.isRepositoryLevel ? 'title' : null),
-                                        (this.isRepositoryLevel ? 'description' : null)
+                                        (this.isRepositoryLevel && repositoryTitleDisplay ? 'title' : null),
+                                        (this.isRepositoryLevel && repositoryDescriptionDisplay ? 'description' : null)
                                     ];
                                     this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString() , false, fetchOnlyMetadatumIds.toString());
 
@@ -1512,7 +1543,7 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
 
-                                    const basicAttributes = (!this.isRepositoryLevel && this.collection && this.collection.hide_items_thumbnail_on_lists == 'yes') ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
+                                    const basicAttributes = this.hidesItemsThumbnail ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {

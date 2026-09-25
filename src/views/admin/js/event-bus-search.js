@@ -81,11 +81,14 @@ export default {
                 if (!ignorePrefs) {
                     let prefsFetchOnly = this.collectionId ? `fetch_only_${this.collectionId}` : 'fetch_only';
                     let prefsFetchOnlyMeta = this.collectionId ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
+                    // get() returns undefined for an empty string, so compare against '' before saving.
+                    let currentFetchOnly = app.config.globalProperties.$userPrefs.get(prefsFetchOnly) || '';
+                    let currentFetchOnlyMeta = app.config.globalProperties.$userPrefs.get(prefsFetchOnlyMeta) || '';
 
-                    if (app.config.globalProperties.$userPrefs.get(prefsFetchOnly) != metadatum)
+                    if (currentFetchOnly != metadatum)
                         app.config.globalProperties.$userPrefs.set(prefsFetchOnly, metadatum);
 
-                    if (app.config.globalProperties.$userPrefs.get(prefsFetchOnlyMeta) != metadatumIDs)
+                    if (currentFetchOnlyMeta != metadatumIDs)
                         app.config.globalProperties.$userPrefs.set(prefsFetchOnlyMeta, metadatumIDs);
                 }
             },

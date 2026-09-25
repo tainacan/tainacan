@@ -275,6 +275,11 @@ abstract class Pages {
 				!defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || 
 				false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH
 			),
+			'repository_core_title_display' => get_option( 'tainacan_option_repository_core_title_display', 'yes' ),
+			'repository_core_title_allow_advanced_search' => get_option( 'tainacan_option_repository_core_title_allow_advanced_search', 'yes' ),
+			'repository_core_description_display' => get_option( 'tainacan_option_repository_core_description_display', 'yes' ),
+			'repository_core_description_allow_advanced_search' => get_option( 'tainacan_option_repository_core_description_allow_advanced_search', 'yes' ),
+			'repository_hide_items_thumbnail' => (bool) get_option( 'tainacan_option_repository_hide_items_thumbnail', false ),
 			'tainacan_enable_relationship_metaquery' => ( 
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY

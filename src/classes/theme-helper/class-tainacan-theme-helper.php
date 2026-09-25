@@ -951,6 +951,19 @@ class Theme_Helper {
 			$props .= "data-term-id='" . $term->term_id . "' ";
 			$props .= "data-taxonomy='" . $term->taxonomy . "' ";
 		}
+
+		// Repository and term lists have no collection thumbnail setting.
+		if ( ! $collection && get_option( 'tainacan_option_repository_hide_items_thumbnail', false ) ) {
+			$args['hide-items-thumbnail'] = true;
+			$registered_view_modes = $this->get_registered_view_modes();
+			$enabled_view_modes = array_values( array_filter( $enabled_view_modes, function( $slug ) use ( $registered_view_modes ) {
+				return ! isset( $registered_view_modes[ $slug ] ) || empty( $registered_view_modes[ $slug ]['requires_thumbnail'] );
+			} ) );
+
+			if ( ! in_array( $default_view_mode, $enabled_view_modes, true ) ) {
+				$default_view_mode = in_array( 'table', $enabled_view_modes, true ) ? 'table' : ( isset( $enabled_view_modes[0] ) ? $enabled_view_modes[0] : 'table' );
+			}
+		}
 		
 		$props .= "data-default-view-mode='" . $default_view_mode . "' ";
 		$props .= "data-enabled-view-modes='" . implode(',', $enabled_view_modes) . "' ";

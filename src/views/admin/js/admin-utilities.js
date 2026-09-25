@@ -169,40 +169,49 @@ UserPrefsPlugin.install = function (app, options = {}) {
         },
         init() {
             if (tainacan_user.prefs == undefined || tainacan_user.prefs == '') {
-                let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+                this.savedPrefs = JSON.stringify(this.tainacanPrefs);
 
                 if (tainacan_user.nonce) {
-                    axios.wpApi.post('/users/me/', qs.stringify(data))
-                        .then( updatedRes => {
-                            let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
-                            this.tainacanPrefs = prefs;
-                        })
-                        .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
+                    this.flush();
                 }
             } else {
                 this.tainacanPrefs = tainacan_user.prefs ? JSON.parse(tainacan_user.prefs) : {};
+                this.savedPrefs = JSON.stringify(this.tainacanPrefs);
             }
         },
         get(key) {
             return this.tainacanPrefs[key] ? this.tainacanPrefs[key] : undefined;
         },
-        async set(key, value) {
+        set(key, value) {
             this.tainacanPrefs[key] = value;
 
-            let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+            if (!this.pendingSave) {
+                this.pendingSave = Promise.resolve().then(() => this.flush());
+            }
 
-            if (tainacan_user.nonce) {
-                    try {
-                        const res = await axios.wpApi.post('/users/me/', qs.stringify(data));
-                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                        this.tainacanPrefs[key] = prefs[key];
-                        return prefs[key];
-                    } catch (e) {
-                        console.log("Request to /users/me failed. Maybe you're not logged in.");
-                        return undefined;
-                    }
-            } else {
-                return value;
+            return this.pendingSave;
+        },
+        async flush() {
+            this.pendingSave = null;
+
+            const serialized = JSON.stringify(this.tainacanPrefs);
+            if (!tainacan_user.nonce || serialized === this.savedPrefs)
+                return this.tainacanPrefs;
+
+            const data = {'meta': {'tainacan_prefs': serialized} };
+
+            try {
+                const res = await axios.wpApi.post('/users/me/', qs.stringify(data));
+                const prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                this.savedPrefs = JSON.stringify(prefs);
+                if (JSON.stringify(this.tainacanPrefs) === serialized)
+                    this.tainacanPrefs = prefs;
+                else if (!this.pendingSave)
+                    this.pendingSave = Promise.resolve().then(() => this.flush());
+                return this.tainacanPrefs;
+            } catch (e) {
+                console.log("Request to /users/me failed. Maybe you're not logged in.");
+                return undefined;
             }
         },
         clean() {
