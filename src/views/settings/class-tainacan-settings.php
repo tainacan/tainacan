@@ -46,6 +46,17 @@ class Settings extends Pages {
 		wp_enqueue_style( 'tainacan-settings-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-settings.css', [], TAINACAN_VERSION );
 	}
 
+	function admin_enqueue_js() {
+		global $TAINACAN_BASE_URL;
+		wp_enqueue_script(
+			'tainacan-settings',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_settings.js',
+			array(),
+			TAINACAN_VERSION,
+			true
+		);
+	}
+
 	public function render_page_content() {
 		require_once('page.php');
 	}

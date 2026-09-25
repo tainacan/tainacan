@@ -6,8 +6,13 @@
         background-color: var(--tainacan-background-color);
         position: sticky;
         z-index: 1;
-        top: calc(1.5em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem));
+        top: var(--tainacan-settings-heading-top, calc(1.75em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem)));
         margin-top: 2rem;
+
+        &:focus {
+            outline: 2px solid var(--tainacan-secondary, #187181);
+            outline-offset: 2px;
+        }
     }
     .settings-section-description {
         font-size: 0.875em;
@@ -48,9 +53,124 @@
         }
     }
 
+    h2 {
+        scroll-margin-top: var(--tainacan-settings-heading-top, calc(1.5em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem)));
+    }
+
     @media screen and (max-width: 782px) {
         .form-table td {
             line-height: 1.9;
         }
+    }
+}
+
+.tainacan-settings-layout {
+    --tainacan-settings-toc-column: 14rem;
+    --tainacan-settings-toc-gap: 0;
+    --tainacan-settings-heading-top: calc(1.75em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--tainacan-settings-toc-column);
+    column-gap: var(--tainacan-settings-toc-gap);
+    align-items: start;
+
+    @supports (grid-template-columns: subgrid) {
+        @media screen and (min-width: 783px) {
+            .tainacan-settings {
+                display: grid;
+                grid-template-columns: subgrid;
+                grid-column: 1 / -1;
+                grid-row: 1;
+
+                > * {
+                    grid-column: 1;
+                }
+
+                > input[type="hidden"] {
+                    display: none;
+                }
+
+                > .form-footer {
+                    grid-column: 1 / -1;
+                }
+            }
+
+            .tainacan-settings-toc {
+                grid-column: 2;
+                grid-row: 1;
+            }
+        }
+    }
+
+    @supports not (grid-template-columns: subgrid) {
+        @media screen and (min-width: 783px) {
+            .tainacan-settings .form-footer {
+                width: calc(100% + var(--tainacan-settings-toc-column) + var(--tainacan-settings-toc-gap) + 2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
+                margin-inline-end: calc(-1 * (var(--tainacan-settings-toc-column) + var(--tainacan-settings-toc-gap) + var(--tainacan-page-container-padding-x, var(--tainacan-one-column))));
+            }
+        }
+    }
+}
+
+.tainacan-settings-toc {
+    position: sticky;
+    z-index: 1;
+    padding-top: calc(0.875em - 1px);
+    top: var(--tainacan-settings-heading-top, calc(1.5em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem)));
+    max-height: calc(100% - 6rem);
+    overflow-y: auto;
+    border-inline-start: 1px solid var(--tainacan-gray2);
+    background-color: var(--tainacan-background-color);
+
+    & > &__label {
+        display: block;
+        width: 100%;
+        margin: 0 0 0.5em;
+        padding: 0.5em 0.75em;
+        min-height: 2.5em;
+        border: none;
+        border-bottom: 1px solid var(--tainacan-gray2);
+        background: none;
+        color: var(--tainacan-heading-color);
+        font-size: 0.875em;
+        font-weight: 600;
+        text-align: start;
+    }
+
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 0.875em;
+
+        a {
+            display: block;
+            padding: 0.35em 0.75em;
+            border-inline-start: 2px solid transparent;
+            color: var(--tainacan-info-color);
+            text-decoration: none;
+
+            &:focus-visible {
+                outline: 2px solid var(--tainacan-secondary, #187181);
+                outline-offset: 2px;
+            }
+
+            &.is-active {
+                border-inline-start-color: var(--tainacan-secondary);
+                color: var(--tainacan-heading-color);
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .tainacan-settings-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tainacan-settings-toc {
+        position: static;
+        max-height: none;
+        border-inline-start: 0;
     }
 }
