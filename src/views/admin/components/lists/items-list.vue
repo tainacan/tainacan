@@ -736,7 +736,7 @@
                             @click.left.stop.prevent="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div
-                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
+                                v-if="!hidesItemsThumbnail"
                                 class="card-thumbnail">
                             <tainacan-progressive-image
                                     v-if="item.thumbnail != undefined"
@@ -2147,7 +2147,7 @@
                                                     />
                                             </div>
                                             <span
-                                                    v-if="collectionId == undefined"
+                                                    v-if="collectionId == undefined && descriptionItemMetadatum"
                                                     class="metadata-type-textarea">
                                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                                 <p
@@ -2689,6 +2689,12 @@ export default {
                     this.masonry.layout();
             },
             immediate: true
+        },
+        hidesItemsThumbnail() {
+            if (this.isRepositoryLevel)
+                return tainacan_plugin.repository_hide_items_thumbnail == true;
+
+            return !!(this.collection && this.collection.hide_items_thumbnail_on_lists == 'yes');
         }
     },
     created() {

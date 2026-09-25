@@ -369,6 +369,90 @@ class Settings extends Pages {
 		) );
 
 		/**
+		 * Repository and term item lists ---------------------------------------
+		 */
+		add_settings_section(
+			'tainacan_settings_repository_items_list',
+			__( 'Repository and term item lists', 'tainacan' ),
+			array( $this, 'repository_items_list_section_description' ),
+			'tainacan_settings'
+		);
+
+		$core_metadata_advanced_search_disabled = defined( 'TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH' ) && true === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH;
+
+		$display_options_html = '<option value="yes">' . esc_html__( 'By default', 'tainacan' ) . '</option>'
+			. '<option value="no">' . esc_html__( 'Optional', 'tainacan' ) . '</option>'
+			. '<option value="never">' . esc_html__( 'Never', 'tainacan' ) . '</option>';
+
+		$advanced_search_options_html = '<option value="default">' . esc_html__( 'By default', 'tainacan' ) . '</option>'
+			. '<option value="yes">' . esc_html__( 'Optional', 'tainacan' ) . '</option>'
+			. '<option value="no">' . esc_html__( 'Never', 'tainacan' ) . '</option>';
+
+		$this->create_tainacan_setting( array(
+			'id' => 'repository_core_title_display',
+			'section' => 'tainacan_settings_repository_items_list',
+			'title' => __( 'Core title display', 'tainacan' ),
+			'description' => __( 'Display by default on listing, or do not display, or never display. Does not change the core title setting of each collection.', 'tainacan' ),
+			'type' => 'string',
+			'input_type' => 'select',
+			'input_inner_html' => $display_options_html,
+			'sanitize_callback' => array( $this, 'sanitize_repository_core_display' ),
+			'default' => 'yes',
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'repository_core_title_allow_advanced_search',
+			'section' => 'tainacan_settings_repository_items_list',
+			'title' => __( 'Core title on advanced search', 'tainacan' ),
+			'description' => __( 'Offer this field by default on advanced search, offer it but not by default, or never offer it. Does not change the core title setting of each collection.', 'tainacan' ),
+			'type' => 'string',
+			'input_type' => 'select',
+			'input_inner_html' => $advanced_search_options_html,
+			'input_disabled' => $core_metadata_advanced_search_disabled,
+			'sanitize_callback' => array( $this, 'sanitize_repository_core_advanced_search' ),
+			'default' => 'yes',
+			'forced_value' => $core_metadata_advanced_search_disabled ? 'no' : null,
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'repository_core_description_display',
+			'section' => 'tainacan_settings_repository_items_list',
+			'title' => __( 'Core description display', 'tainacan' ),
+			'description' => __( 'Display by default on listing, or do not display, or never display. Does not change the core description setting of each collection.', 'tainacan' ),
+			'type' => 'string',
+			'input_type' => 'select',
+			'input_inner_html' => $display_options_html,
+			'sanitize_callback' => array( $this, 'sanitize_repository_core_display' ),
+			'default' => 'yes',
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'repository_core_description_allow_advanced_search',
+			'section' => 'tainacan_settings_repository_items_list',
+			'title' => __( 'Core description on advanced search', 'tainacan' ),
+			'description' => __( 'Offer this field by default on advanced search, offer it but not by default, or never offer it. Does not change the core description setting of each collection.', 'tainacan' ),
+			'type' => 'string',
+			'input_type' => 'select',
+			'input_inner_html' => $advanced_search_options_html,
+			'input_disabled' => $core_metadata_advanced_search_disabled,
+			'sanitize_callback' => array( $this, 'sanitize_repository_core_advanced_search' ),
+			'default' => 'yes',
+			'forced_value' => $core_metadata_advanced_search_disabled ? 'no' : null,
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'repository_hide_items_thumbnail',
+			'section' => 'tainacan_settings_repository_items_list',
+			'title' => __( 'Hide items thumbnail on lists', 'tainacan' ),
+			'label' => __( 'Never display the item thumbnail on the repository items list and on taxonomy term items lists', 'tainacan' ),
+			'description' => __( 'Enable this option to never display the item thumbnail on those lists, and to hide view modes that require a thumbnail. Does not change the thumbnail setting of each collection.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => false,
+		) );
+
+		/**
 		 * Gutenberg blocks -----------------------------------------------------
 		 */
 		add_settings_section(
@@ -677,9 +761,37 @@ class Settings extends Pages {
 	public function items_list_defaults_section_description() {
 	?>
 		<p class="settings-section-description">
-			<?php esc_html_e('Options that will be used as default for items list in the collection and repository pages. They might be overridden by collection settings or theme options.', 'tainacan');?>
+			<?php esc_html_e('Options that will be used as default for items list in the collection and repository public pages. They won\'t have effect on the admin items list. They might be overridden by collection settings or theme options.', 'tainacan');?>
 		</p>
 	<?php
+	}
+
+	public function repository_items_list_section_description() {
+	?>
+		<p class="settings-section-description">
+			<?php esc_html_e( 'Core title, core description, and item thumbnails on the repository items list and on taxonomy term items lists, for both public and admin pages. Each collection keeps its own definitions and it is not affected by these settings.', 'tainacan' ); ?>
+		</p>
+	<?php
+	}
+
+	/**
+	 * @param mixed $value Raw setting value.
+	 * @return string
+	 */
+	public function sanitize_repository_core_display( $value ) {
+		$value = sanitize_text_field( $value );
+
+		return in_array( $value, array( 'yes', 'no', 'never' ), true ) ? $value : 'yes';
+	}
+
+	/**
+	 * @param mixed $value Raw setting value.
+	 * @return string
+	 */
+	public function sanitize_repository_core_advanced_search( $value ) {
+		$value = sanitize_text_field( $value );
+
+		return in_array( $value, array( 'default', 'yes', 'no' ), true ) ? $value : 'yes';
 	}
 
 	public function gutenberg_blocks_section_description() {

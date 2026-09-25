@@ -257,7 +257,6 @@ OrderByHelperPlugin.install = function (app, options = {}) {
     app.config.globalProperties.$orderByHelper = OrderByHelperFunctions();
 };
 
-
 // A11Y DROPDOWN DIRECTIVE PLUGIN - Adds keyboard navigation to Buefy dropdowns
 import a11yDropdownDirective from './directives/a11y-dropdown.js';
 
