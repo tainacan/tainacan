@@ -14,6 +14,22 @@ Overview of folders:
 
 This repository includes all the tools needed to develop Tainacan, such as tests and other scripts to compile sass and other things.
 
+## Using Docker
+
+The quickest way to get a working environment is the [tainacan-docker](https://github.com/tainacan/tainacan-docker) repository. It provides containers with WordPress, PHP, MariaDB and every tool needed to build and test the plugin, so you only need Docker installed:
+
+```
+git clone https://github.com/tainacan/tainacan-docker.git
+cd tainacan-docker
+./dev.sh --build-image
+./dev.sh --start
+./dev.sh --setup
+```
+
+The plugin repository is cloned into `volumes/src/tainacan`. Check the [tainacan-docker README](https://github.com/tainacan/tainacan-docker#readme) for the daily workflow (building, running tests) and troubleshooting.
+
+If you prefer to install everything on your machine, follow the steps below.
+
 ## Before you start
 
 Tainacan is a WordPress plugin, so you will need all the basic dependencies you usually have to run a WordPress site, such as PHP and MySQL.
@@ -21,15 +37,15 @@ Tainacan is a WordPress plugin, so you will need all the basic dependencies you 
 You will also need:
 
 - `Composer` to manage dependencies
-- `Sass` to compile sass into css files
 - `WP-Cli` to configure the test environment
 - `Phpunit` to run unit tests
-- `Node` to handle dependencies and build the JS application
+- `Node` (version 22.18 or later) to handle dependencies and build the JS application. Sass is installed by `npm` as a project dependency.
 
 ```
-sudo apt-get install phpunit composer ruby ruby-dev nodejs npm
-sudo gem install sass
+sudo apt-get install phpunit composer
 ```
+
+The `nodejs` package from most Linux distributions is older than the version required by the build tools. Install Node from [nodejs.org](https://nodejs.org/en/download) or with a version manager such as [nvm](https://github.com/nvm-sh/nvm), and check it with `node --version`.
 
 On Debian/Ubuntu, you will also need `subversion` (used by the WordPress test installer) and the PHP `gd` and `mysqli` extensions:
 
