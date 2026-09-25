@@ -3,12 +3,28 @@ const globals = require('globals');
 const js = require('@eslint/js');
 
 module.exports = [
+    {
+        ignores: [
+            'src/assets/**',
+            'src/vendor/**',
+            'node_modules/**',
+            'tests/**'
+        ]
+    },
     js.configs.recommended,
     ...pluginVue.configs['flat/recommended'],
     {
         languageOptions: {
+            ecmaVersion: 'latest',
+            sourceType: 'module',
+            parserOptions: {
+                ecmaFeatures: {
+                    jsx: true
+                }
+            },
             globals: {
                 ...globals.browser,
+                'React': true,
                 'wp': true,
                 'tainacan_plugin': true,
                 'tainacan_blocks': true,
@@ -27,6 +43,9 @@ module.exports = [
             'no-console': 'warn',
             'no-unused-vars': 'warn',
             'no-undef': 'warn',
+            'no-useless-assignment': 'warn',
+            'no-empty-pattern': 'warn',
+            'no-case-declarations': 'warn',
             // Tainacan relies a lot in v-html and v-text, so we can't disable them
             'vue/no-v-html': 'off',
             'vue/no-v-text-v-html-on-component': 'off',
