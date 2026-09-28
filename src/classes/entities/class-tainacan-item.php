@@ -1365,16 +1365,15 @@ class Item extends Entity {
 			$before_metadata_list = str_replace('$id', $section_id, $before_metadata_list);
 			$before_metadata_list = str_replace('$slug', $section_slug, $before_metadata_list);
 
-			// Let theme authors tweak the metadata list wrapper
-			$before_description = isset($args['before_description']) ? $args['before_description'] : '';
-			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_description, $metadata_section );
-			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_description, $metadata_section );
+			// Themes append to this opener, so added markup stays inside the list.
+			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_metadata_list, $metadata_section );
+			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_metadata_list, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
-				$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_description, $metadata_section );	
+				$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_metadata_list, $metadata_section );	
 			}
 
 			// Renders the section metadata list wrapper
-			$return .= $before_metadata_list . $before_description;
+			$return .= $before_metadata_list;
 
 			// Renders the section metadata list, using Items' get_metadata_as_html()
 			// Note that this is already escaped in the calling function
@@ -1400,19 +1399,17 @@ class Item extends Entity {
 			} else {
 				$return .= $args['empty_metadata_list_message'];
 			}
-			// Gets the wrapper closer
+			// Gets the wrapper closer. Callbacks prepend to this string to insert markup
+			// before the list is closed.
 			$after_metadata_list = $args['after_metadata_list'];
-
-			// Let theme authors tweak the metadata list closer
-			$after_description = isset($args['after_description']) ? $args['after_description'] : '';
-			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_description, $metadata_section );
-			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_description, $metadata_section );
+			$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_metadata_list, $metadata_section );
+			$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_metadata_list, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
-				$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_description, $metadata_section );	
+				$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_metadata_list, $metadata_section );	
 			}
 			
 			// Renders the section metadata list wrapper
-			$return .= $after_description . $after_metadata_list;
+			$return .= $after_metadata_list;
 
 			// Gets the wrapper closer
 			$after = $args['after'];
