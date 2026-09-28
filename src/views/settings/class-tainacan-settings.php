@@ -473,7 +473,7 @@ class Settings extends Pages {
 			'section' => 'tainacan_settings_datepickers',
 			'title' => __( 'Years before', 'tainacan' ),
 			// translators: %s: The default number of years.
-			'description' => sprintf( __( 'How many years before the displayed year will be listed in the year selector. Must be zero or a negative number. The default is %s. Use a lower value if you deal with historical dates.', 'tainacan' ), self::DATEPICKERS_YEAR_MIN_DEFAULT ),
+			'description' => sprintf( __( 'Sets how far back the year selector goes, counting from the year being displayed. Enter zero or a negative number (e.g. -500 lets you pick up to 500 years back). The default is %s. For historical collections, use a larger negative number.', 'tainacan' ), self::DATEPICKERS_YEAR_MIN_DEFAULT ),
 			'type' => 'integer',
 			'input_type' => 'number',
 			'input_attrs' => 'max=0 step=1 required',
@@ -486,7 +486,7 @@ class Settings extends Pages {
 			'section' => 'tainacan_settings_datepickers',
 			'title' => __( 'Years after', 'tainacan' ),
 			// translators: %s: The default number of years.
-			'description' => sprintf( __( 'How many years after the displayed year will be listed in the year selector. Must be zero or a positive number. The default is %s.', 'tainacan' ), self::DATEPICKERS_YEAR_MAX_DEFAULT ),
+			'description' => sprintf( __( 'Sets how far forward the year selector goes, counting from the year being displayed. Enter zero or a positive number (e.g. 50 lets you pick up to 50 years ahead). The default is %s.', 'tainacan' ), self::DATEPICKERS_YEAR_MAX_DEFAULT ),
 			'type' => 'integer',
 			'input_type' => 'number',
 			'input_attrs' => 'min=0 step=1 required',
