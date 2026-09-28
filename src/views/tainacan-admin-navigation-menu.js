@@ -451,10 +451,22 @@ function updateTainacanHelpTab() {
             let helpTabTitle = document.querySelector('#tab-link-tainacan_admin_help_tab a');
             let helpTabContent = document.getElementById('tainacan-dynamic-help-content');
             let helpTabLink = document.getElementById('tainacan-dynamic-help-link');
-            
+            let helpTabSectionLinkWrapper = document.getElementById('tainacan-dynamic-help-section-link-wrapper');
+            let helpTabSectionLink = document.getElementById('tainacan-dynamic-help-section-link');
+
             if ( helpTabTitle ) helpTabTitle.innerText = currentHelp.title;
             if ( helpTabContent ) helpTabContent.innerHTML = currentHelp.content;
             if ( helpTabLink ) helpTabLink.href = currentHelp.link;
+
+            if ( helpTabSectionLinkWrapper && helpTabSectionLink ) {
+                if ( currentHelp !== window.tainacan_plugin.i18n.help_tabs['default'] ) {
+                    helpTabSectionLink.href = currentHelp.link;
+                    helpTabSectionLink.innerText = currentHelp.title;
+                    helpTabSectionLinkWrapper.hidden = false;
+                } else {
+                    helpTabSectionLinkWrapper.hidden = true;
+                }
+            }
         }
     }
 }
