@@ -37,23 +37,25 @@ class Background_Exporter extends Background_Process {
 			
 			$batch->progress_label = $object->get_progress_label();
 			$batch->progress_value = $object->get_progress_value();
-			
-			$batch->data = $object->_to_Array(true);
-			
-			if (true === $object->get_abort()) {
-				throw new \Exception('Process aborted by Importer');
+
+			if ( true === $object->get_abort() ) {
+				throw new \Exception( 'Process aborted by Exporter' );
 			}
-			
-			if (false === $runned) {
+
+			if ( false === $runned ) {
+				$object->prepare_output_files_for_download( $key );
+			}
+
+			$batch->data = $object->_to_Array( true );
+
+			if ( false === $runned ) {
 				$batch->output = $object->get_output();
-                $this->debug((string)$batch->output);
-				$this->update($key, $batch);
-				
+				$this->debug( (string) $batch->output );
+				$this->update( $key, $batch );
+
 				return false;
 			}
-			
-			
-			
+
 			return $batch;
 		}
 		return false;
