@@ -740,10 +740,10 @@ This function expects a $metadata_section object. For a more generic approach, c
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$before_description` |  | 
+`$before_metadata_list` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1370)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1369)
 
 ---------------------------------
 <br>
@@ -759,10 +759,10 @@ This function expects a $metadata_section object. For a more generic approach, c
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$before_description` |  | 
+`$before_metadata_list` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1371)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1370)
 
 ---------------------------------
 <br>
@@ -778,10 +778,10 @@ This function expects a $metadata_section object. For a more generic approach, c
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$before_description` |  | 
+`$before_metadata_list` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1373)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1372)
 
 ---------------------------------
 <br>
@@ -797,10 +797,10 @@ This function expects a $metadata_section object. For a more generic approach, c
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$after_description` |  | 
+`$after_metadata_list` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1408)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1405)
 
 ---------------------------------
 <br>
@@ -816,10 +816,10 @@ This function expects a $metadata_section object. For a more generic approach, c
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$after_description` |  | 
+`$after_metadata_list` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1409)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1406)
 
 ---------------------------------
 <br>
@@ -835,10 +835,10 @@ This function expects a $metadata_section object. For a more generic approach, c
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$after_description` |  | 
+`$after_metadata_list` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1411)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1408)
 
 ---------------------------------
 <br>
@@ -857,7 +857,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1422)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1419)
 
 ---------------------------------
 <br>
@@ -876,7 +876,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1424)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1421)
 
 ---------------------------------
 <br>
@@ -895,7 +895,7 @@ Argument | Type | Description
 `$after` |  | 
 `$metadata_section` | `\Tainacan\Entities\Metadata_Section` | The Metadata Section object
 
-Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1425)
+Source: [class-tainacan-item.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php), [line 1203](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item.php#L1203-L1422)
 
 ---------------------------------
 <br>
@@ -2550,7 +2550,7 @@ view modes, template tags, and theme compatibility features.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$before_description` |  | 
+`$before_metadata_list` |  | 
 `$metadata_section` |  | 
 
 **Changelog**
@@ -2559,7 +2559,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3286)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3285)
 
 ---------------------------------
 <br>
@@ -2574,7 +2574,7 @@ view modes, template tags, and theme compatibility features.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$before_description` |  | 
+`$before_metadata_list` |  | 
 `$metadata_section` |  | 
 
 **Changelog**
@@ -2583,7 +2583,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3287)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3286)
 
 ---------------------------------
 <br>
@@ -2598,7 +2598,7 @@ view modes, template tags, and theme compatibility features.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$before_description` |  | 
+`$before_metadata_list` |  | 
 `$metadata_section` |  | 
 
 **Changelog**
@@ -2607,7 +2607,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3289)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3288)
 
 ---------------------------------
 <br>
@@ -2622,7 +2622,7 @@ view modes, template tags, and theme compatibility features.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$after_description` |  | 
+`$after_metadata_list` |  | 
 `$metadata_section` |  | 
 
 **Changelog**
@@ -2631,7 +2631,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3318)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3315)
 
 ---------------------------------
 <br>
@@ -2646,7 +2646,7 @@ view modes, template tags, and theme compatibility features.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$after_description` |  | 
+`$after_metadata_list` |  | 
 `$metadata_section` |  | 
 
 **Changelog**
@@ -2655,7 +2655,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3319)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3316)
 
 ---------------------------------
 <br>
@@ -2670,7 +2670,7 @@ view modes, template tags, and theme compatibility features.
 
 Argument | Type | Description
 -------- | ---- | -----------
-`$after_description` |  | 
+`$after_metadata_list` |  | 
 `$metadata_section` |  | 
 
 **Changelog**
@@ -2679,7 +2679,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3321)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3318)
 
 ---------------------------------
 <br>
@@ -2703,7 +2703,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3332)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3329)
 
 ---------------------------------
 <br>
@@ -2727,7 +2727,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3334)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3331)
 
 ---------------------------------
 <br>
@@ -2751,7 +2751,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3335)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 9](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L9-L3332)
 
 ---------------------------------
 <br>
@@ -2763,7 +2763,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'ASC'` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3517](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3517-L3517)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3514](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3514-L3514)
 
 ---------------------------------
 <br>
@@ -2775,7 +2775,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'name'` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3518](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3518-L3518)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3515](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3515-L3515)
 
 ---------------------------------
 <br>
@@ -2787,7 +2787,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `12` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3520](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3520-L3520)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3517](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3517-L3517)
 
 ---------------------------------
 <br>
