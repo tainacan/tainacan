@@ -1344,6 +1344,36 @@ return apply_filters( 'tainacan-i18n', [
 			'title'   => __( 'Filters', 'tainacan' ),
 			'content' => '<p>' . __( 'Filters allow users to explore and navigate through your items using faceted search.', 'tainacan' ) . '</p>',
 			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/filters'
+		],
+		'/items' => [
+			'title'   => __( 'Items', 'tainacan' ),
+			'content' => '<p>' . __( 'Items are the individual records of your digital archive. Browse, create and edit them across the repository or inside a specific collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'/my-items' => [
+			'title'   => __( 'My items', 'tainacan' ),
+			'content' => '<p>' . __( 'This is the list of items you have created or last edited.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'/activities' => [
+			'title'   => __( 'Activities', 'tainacan' ),
+			'content' => '<p>' . __( 'Activities keep a log of the actions performed on the repository or a collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/activities'
+		],
+		'/capabilities' => [
+			'title'   => __( 'Capabilities', 'tainacan' ),
+			'content' => '<p>' . __( 'Capabilities control which user roles can view or manage the repository or a collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/capabilities'
+		],
+		'/reports' => [
+			'title'   => __( 'Reports', 'tainacan' ),
+			'content' => '<p>' . __( 'Reports summarize statistics and information about the repository or a collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/reports'
+		],
+		'/importers' => [
+			'title'   => __( 'Importers', 'tainacan' ),
+			'content' => '<p>' . __( 'Importers bring data from external files or repositories into Tainacan.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/importers'
 		]
 	]
 ] );
