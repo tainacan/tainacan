@@ -35,3 +35,6 @@ add_action('init', ['Tainacan\Migrations', 'run_migrations']);
 
 // Hook to update .htaccess when the plugin is activated
 register_activation_hook(__FILE__, ['Tainacan\Private_Files', 'add_htaccess_rules']);
+
+// Remove the exporter files cleanup event when the plugin is deactivated.
+register_deactivation_hook(__FILE__, array( 'Tainacan\Exporter_Files', 'deactivate' ) );

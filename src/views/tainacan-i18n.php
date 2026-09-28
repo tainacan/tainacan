@@ -522,6 +522,9 @@ return apply_filters( 'tainacan-i18n', [
 	'label_copy_link_url'		                 	 => __( 'Copy link URL', 'tainacan' ),
 	'label_open_externally'		                 	 => __( 'Open externally', 'tainacan' ),
 	'label_no_output_info'			                 => __( 'No output info', 'tainacan' ),
+	'label_exporter_file_available_until'			 => __( 'Download available until:', 'tainacan' ),
+	'label_exporter_file_expired'         			 => __( 'This export file has expired.', 'tainacan' ),
+	'label_exporter_file_expiration_notice' 		 => __( 'Export files are temporarily available. Download them before the expiration date.', 'tainacan' ),
 	'label_output'			                 	 	 => __( 'Output', 'tainacan' ),
 	'label_no_mapping'			                 	 => __( 'No mapping', 'tainacan' ),
 	/* translators: The sorting/order option 'desc'. A noun, not a verb */
