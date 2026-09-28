@@ -230,6 +230,7 @@ class Admin extends Pages {
 			'<div id="tainacan-dynamic-help-sidebar">' .
 			'<p>' . __('For more information:', 'tainacan') . '</p>' .
 			'<p><a id="tainacan-dynamic-help-link" href="https://tainacan.github.io/tainacan-wiki/" target="_blank">' . __('Tainacan Documentation', 'tainacan') . '</a></p>' .
+			'<p id="tainacan-dynamic-help-section-link-wrapper" hidden><a id="tainacan-dynamic-help-section-link" href="https://tainacan.github.io/tainacan-wiki/" target="_blank"></a></p>' .
 			'</div>'
 		);
 	}
