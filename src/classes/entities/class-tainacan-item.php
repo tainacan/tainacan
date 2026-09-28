@@ -1365,7 +1365,7 @@ class Item extends Entity {
 			$before_metadata_list = str_replace('$id', $section_id, $before_metadata_list);
 			$before_metadata_list = str_replace('$slug', $section_slug, $before_metadata_list);
 
-			// Themes such as Blocksy append to this opener, so added markup stays inside the list.
+			// Themes append to this opener, so added markup stays inside the list.
 			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_metadata_list, $metadata_section );
 			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_metadata_list, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
