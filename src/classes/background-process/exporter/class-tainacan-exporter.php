@@ -857,12 +857,31 @@ abstract class Exporter {
 		return false;
 	}
 
-	private function set_output_files($output_files) {
+	private function set_output_files( $output_files ) {
 		$this->output_files = $output_files;
 	}
+
 	protected function get_output_files() {
 		return $this->output_files;
 	}
+
+	/**
+	 * Associates the output files with their background process and
+	 * starts their expiration period.
+	 *
+	 * @param int $process_id Background process ID.
+	 */
+	public function prepare_output_files_for_download( $process_id ) {
+		$exporter_files = \Tainacan\Exporter_Files::get_instance();
+
+		$this->set_output_files(
+			$exporter_files->prepare_output_files(
+				$this->get_output_files(),
+				$process_id
+			)
+		);
+	}
+
 	/**
 	 * runs one iteration
 	 */
