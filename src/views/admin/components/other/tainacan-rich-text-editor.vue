@@ -40,6 +40,7 @@ import 'tinymce/themes/silver';
 import 'tinymce/plugins/code';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
+import 'tinymce/plugins/autolink';
 import './tainacan-tinymce-skin.scss';
 import contentCss from 'tinymce/skins/content/default/content.css';
 import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
@@ -96,7 +97,7 @@ function stopRichTextEditorAuxObserverWhenIdle() {
 
 const EDITOR_INIT = {
     menubar: false,
-    plugins: 'link lists code',
+    plugins: 'link lists code autolink',
     skin: false,
     content_css: false,
     content_style: `${contentCss}\n${contentUiCss}`,
@@ -110,6 +111,7 @@ const EDITOR_INIT = {
     height: 200,
     resize: true,
     toolbar_mode: 'wrap',
+    entity_encoding: 'raw',
     setup(editor) {
         let richTextEditorDialogMatcher;
         let richTextEditorMenuMarker;
