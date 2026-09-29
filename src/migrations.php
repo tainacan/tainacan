@@ -576,8 +576,6 @@ class Migrations {
 			KEY `wp_tainacan_logs__wp_posts_log_migration_ref_IDX` (`_wp_posts_log_migration_ref`) USING BTREE
 		) $charset_collate;\n";
 
-		error_log($query);
-
 		$wpdb->query( $query );
 	}
 }

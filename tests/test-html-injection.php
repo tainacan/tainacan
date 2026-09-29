@@ -195,7 +195,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$link = '<a href="https://tainacan.org">Tainacan</a>';
-		$collection = $this->tainacan_entity_factory->create_entity( 'collection', [ 'name' => 'Collection' ], true );
+		$collection = $this->tainacan_entity_factory->create_entity( 'collection', [ 'name' => 'Collection', 'status' => 'publish' ], true );
 		$item = $this->tainacan_entity_factory->create_entity(
 			'item',
 			[
