@@ -170,81 +170,80 @@
                         class="tabs-content"
                         role="tabpanel"
                         :aria-labelledby="capabilitiesTab == 'collections' ? 'collections-tab-label' : ''">
-                    <span 
-                            v-if="isLoadingCollections"
-                            class="spinner is-active"
-                            style="float: none; margin: 0 auto;" />
-                    <template v-if="!isLoadingCollections"> 
-                        <!-- <h3>{{ __("Role's Collection Related Capabilities List", "tainacan") }}</h3> -->
-                        <div class="alignleft collection-selector">
-                            <label 
-                                    for="bulk-action-selector-top" 
-                                    class="sr-only">
-                                {{ __("Select the collection to change capabilities", "tainacan") }}
-                            </label>
-                            <span class="select">
-                                <select 
-                                        id="collection-select" 
-                                        name="collection"
-                                        :value="selectedCollection"
-                                        @input="selectedCollection = $event.target.value">
-                                    <option value="all">
-                                        {{ __("All Collections", "tainacan") }}
-                                    </option>
-                                    <option 
-                                            v-for="(collection, index) of collections"
-                                            :key="index"
-                                            :value="collection.id">
-                                        {{ collection.name }}
-                                    </option>
-                                </select>
-                            </span>
-                        </div>
-                        <br class="clear">
+                    <div class="alignleft collection-selector">
+                        <label 
+                                for="collection-select" 
+                                class="sr-only">
+                            {{ __("Select the collection to change capabilities", "tainacan") }}
+                        </label>
+                        <b-autocomplete
+                                id="collection-select"
+                                v-model="collectionSearch"
+                                v-a11y-autocomplete="{ appendToBody: true }"
+                                name="collection"
+                                :placeholder="__('Select the collection to change capabilities', 'tainacan')"
+                                :data="collectionOptions"
+                                field="name"
+                                icon-right="menu-down"
+                                :loading="isFetchingCollections"
+                                :append-to-body="true"
+                                open-on-focus
+                                expanded
+                                check-infinite-scroll
+                                @select="onSelectCollection"
+                                @focus="browseCollections"
+                                @active="onCollectionSuggestionsActive"
+                                @typing="fetchCollections"
+                                @infinite-scroll="fetchMoreCollections">
+                            <template #empty>
+                                {{ __("No collections found", "tainacan") }}
+                            </template>
+                        </b-autocomplete>
+                    </div>
+                    <br class="clear">
 
-                        <div 
-                                v-if="!isLoadingCapabilities"
-                                class="capabilities-list">
-                            <div
-                                    v-for="(group, groupIndex) of groupedCollectionCapabilities"
-                                    :key="groupIndex"
-                                    class="capability-group">
-                                <h3>{{ groupIndex }}</h3>
-                                <ul>
-                                    <template 
-                                            v-for="(capability, index) of group"
-                                            :key="index">
-                                        <li :id="'capability-' + capability.replace('%d', selectedCollection)">
-                                            <label>
-                                                <input
-                                                        :id="'capability_' + capability.replace('%d', selectedCollection)"
-                                                        type="checkbox"
-                                                        name="roles[]"
-                                                        :style="{ 'margin-left': collectionCapabilities[capability].deps && collectionCapabilities[capability].deps.size > 0 ? ( collectionCapabilities[capability].deps.size + 'em') : '0' }"
-                                                        :disabled="isCapabilityDisabled(capability, selectedCollection)"
-                                                        :checked="isCapabilityChecked(capability, selectedCollection)"
-                                                        @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
-                                                <span 
-                                                        v-tooltip="{
-                                                            content: collectionCapabilities[capability].description,
-                                                            autoHide: true,
-                                                            delay: { show: 500, hide: 0 },
-                                                            placement: 'auto-end',
-                                                            instantMove: true,
-                                                            popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                                        }"
-                                                        class="name column-name"
-                                                        :data-colname="__('Capability name', 'tainacan')">
-                                                    {{ collectionCapabilities[capability].display_name }}
-                                                </span>
-                                            </label>
-                                        </li>
-                                        <br>
-                                    </template>
-                                </ul>
-                            </div>
+                    <div 
+                            v-if="!isLoadingCapabilities"
+                            class="capabilities-list">
+                        <div
+                                v-for="(group, groupIndex) of groupedCollectionCapabilities"
+                                :key="groupIndex"
+                                class="capability-group">
+                            <h3>{{ groupIndex }}</h3>
+                            <ul>
+                                <template 
+                                        v-for="(capability, index) of group"
+                                        :key="index">
+                                    <li :id="'capability-' + capability.replace('%d', selectedCollection)">
+                                        <label>
+                                            <input
+                                                    :id="'capability_' + capability.replace('%d', selectedCollection)"
+                                                    type="checkbox"
+                                                    name="roles[]"
+                                                    :style="{ 'margin-left': collectionCapabilities[capability].deps && collectionCapabilities[capability].deps.size > 0 ? ( collectionCapabilities[capability].deps.size + 'em') : '0' }"
+                                                    :disabled="isCapabilityDisabled(capability, selectedCollection)"
+                                                    :checked="isCapabilityChecked(capability, selectedCollection)"
+                                                    @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: collectionCapabilities[capability].description,
+                                                        autoHide: true,
+                                                        delay: { show: 500, hide: 0 },
+                                                        placement: 'auto-end',
+                                                        instantMove: true,
+                                                        popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                    }"
+                                                    class="name column-name"
+                                                    :data-colname="__('Capability name', 'tainacan')">
+                                                {{ collectionCapabilities[capability].display_name }}
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <br>
+                                </template>
+                            </ul>
                         </div>
-                    </template>
+                    </div>
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ __("The capability \"Manage Tainacan\" may affect other capabilities related to repository and collections.", "tainacan") }}</p>
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ __("Capabilities related to All Collections shall affect other Collections capabilities.", "tainacan") }}</p>
                 </div> <!-- End of Collections Tab -->
@@ -389,6 +388,7 @@
     import { nextTick } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from '../../admin/js/mixins';
+    import { tainacanApi, CancelToken, isCancel } from '../../admin/js/axios';
 
     export default {
         mixins: [ formHooks ],
@@ -399,8 +399,14 @@
                 isLoadingRole: false,
                 isLoadingCapabilities: false,
                 selectedCollection: 'all',
+                collectionSearch: '',
+                committedCollectionName: '',
+                collectionSearchQuery: '',
+                collectionSearchCancel: null,
                 collections: [],
-                isLoadingCollections: false,
+                collectionsPage: 1,
+                totalCollectionPages: 0,
+                isFetchingCollections: false,
                 form: {
                     name: '',
                     capabilities: {}
@@ -467,10 +473,24 @@
             },
             groupedRepositoryCapabilities() {
                 return _.groupBy(Object.keys(this.repositoryCapabilities), this.getCapabilityRelatedEntity);
+            },
+            allCollectionsOption() {
+                return {
+                    id: 'all',
+                    name: this.__('All Collections', 'tainacan')
+                };
+            },
+            collectionOptions() {
+                return [
+                    this.allCollectionsOption,
+                    ...this.collections.filter((collection) => collection && String(collection.id) !== 'all')
+                ];
             }
         },
         created() {
             this.roleSlug = this.$route.params.roleSlug;
+            this.collectionSearch = this.__('All Collections', 'tainacan');
+            this.committedCollectionName = this.collectionSearch;
         },
         mounted() {
             if (this.roleSlug !== 'new') {
@@ -542,20 +562,7 @@
                     this.isLoadingCapabilities = false;
                 });
 
-            this.isLoadingCollections = true;
-            this.fetchAllCollectionNames()
-                .then((resp) => {
-                    resp.request
-                        .then((collections) => {
-                            this.collections = collections;
-                            this.isLoadingCollections = false;
-                        }).catch(() => {
-                            this.isLoadingCollections = false;
-                        });
-                })
-                .catch(() => {
-                    this.isLoadingCollections = false;
-                }); 
+            this.browseCollections();
 
             this.isLoadingAdminUIOptions = true;
             this.fetchAdminUIOptions()
@@ -570,10 +577,10 @@
                     this.isLoadingAdminUIOptions = false;
                 });
         },
+        beforeUnmount() {
+            this.cancelCollectionSearch();
+        },
         methods: {
-            ...mapActions('collection', [
-                'fetchAllCollectionNames'
-            ]),
             ...mapActions('capability', [
                 'createRole',
                 'updateRole',
@@ -582,6 +589,87 @@
                 'fetchAdminUIOptions',
                 'updateAdminUIOptions'
             ]),
+            onCollectionSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.committedCollectionName && this.collectionSearch !== this.committedCollectionName)
+                    this.collectionSearch = this.committedCollectionName;
+            },
+            cancelCollectionSearch() {
+                if (this.collectionSearchCancel) {
+                    this.collectionSearchCancel.cancel('Collection search canceled.');
+                    this.collectionSearchCancel = null;
+                }
+            },
+            browseCollections() {
+                this.collectionSearchQuery = '';
+                this.collectionsPage = 1;
+                this.totalCollectionPages = 0;
+                this.isFetchingCollections = true;
+                this.requestCollectionPage('');
+            },
+            fetchCollections: _.debounce(function(search) {
+                const allLabel = this.__('All Collections', 'tainacan');
+                const query = !search || search === allLabel ? '' : search;
+
+                if (this.committedCollectionName && query === this.committedCollectionName)
+                    return;
+
+                if (query !== this.collectionSearchQuery) {
+                    this.collectionSearchQuery = query;
+                    this.collectionsPage = 1;
+                    this.totalCollectionPages = 0;
+                }
+
+                if (this.totalCollectionPages > 0 && this.collectionsPage > this.totalCollectionPages)
+                    return;
+
+                this.isFetchingCollections = true;
+                this.requestCollectionPage(query);
+            }, 500),
+            requestCollectionPage(query) {
+                this.cancelCollectionSearch();
+                const source = CancelToken.source();
+                this.collectionSearchCancel = source;
+
+                let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&fetch_only=name,id&order=asc&orderby=title';
+                if (query)
+                    endpoint += '&search=' + encodeURIComponent(query);
+
+                tainacanApi.get(endpoint, { cancelToken: source.token })
+                    .then(res => {
+                        const pageCollections = Array.isArray(res.data) ? res.data : [];
+                        if (this.collectionsPage === 1)
+                            this.collections = pageCollections;
+                        else {
+                            for (let collection of pageCollections)
+                                this.collections.push(collection);
+                        }
+
+                        this.totalCollectionPages = res.headers['x-wp-totalpages'] ? Number(res.headers['x-wp-totalpages']) : 0;
+                        this.collectionsPage++;
+                        this.isFetchingCollections = false;
+                    })
+                    .catch(error => {
+                        if (isCancel(error))
+                            return;
+
+                        this.isFetchingCollections = false;
+                        this.$console.error(error);
+                    });
+            },
+            fetchMoreCollections: _.debounce(function() {
+                this.fetchCollections(this.collectionSearchQuery);
+            }, 250),
+            onSelectCollection(collection) {
+                if (!collection || collection.id == null || collection.id === '')
+                    return;
+
+                this.selectedCollection = String(collection.id) === 'all' ? 'all' : String(collection.id);
+                this.committedCollectionName = collection.name || '';
+                this.collectionSearch = this.committedCollectionName;
+            },
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;
                 const capabilities = this.form.capabilities && Object.keys(this.form.capabilities).length ? this.form.capabilities : {};
@@ -986,9 +1074,16 @@
         }
 
     }
+    .collection-selector {
+        min-width: 280px;
+        max-width: 420px;
+        margin-bottom: 1em;
+    }
     @media only screen and (max-width: 783px) {
-        #collection-select {
+        .collection-selector {
             width: 100%;
+            max-width: none;
+            float: none;
         }
         .nav-tab-wrapper {
             border-bottom: 1px solid var(--tainacan-gray2);

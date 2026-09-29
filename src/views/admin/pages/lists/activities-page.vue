@@ -48,6 +48,7 @@
 
             <b-field class="header-item">
                 <b-autocomplete
+                        v-model="userFilterName"
                         v-a11y-autocomplete
                         clearable
                         :data="users"
@@ -58,8 +59,9 @@
                         field="name"
                         icon="account"
                         check-infinite-scroll
-                        @update:model-value="fetchUsersForFiltering"
-                        @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
+                        @focus="browseUsersForFiltering"
+                        @active="onUserFilterSuggestionsActive"
+                        @typing="fetchUsersForFiltering"
                         @select="filterActivitiesByUser"
                         @infinite-scroll="fetchMoreUsersForFiltering">
                     <template #default="props">
@@ -248,6 +250,8 @@
                 users: [],
                 isFetchingUsers: false,
                 userIdForFiltering: null,
+                userFilterName: '',
+                committedUserName: '',
                 usersForFilteringSearchQuery: '',
                 usersForFilteringSearchPage: 1,
                 totalUsers: 0,
@@ -291,6 +295,12 @@
                     defaultActivitiesPerPageOptions.push(Number(this.activitiesPerPage));
                 
                 return defaultActivitiesPerPageOptions.sort((a,b) => a - b);
+            }
+        },
+        watch: {
+            userFilterName(name) {
+                if (!name)
+                    this.filterActivitiesByUser(null);
             }
         },
         created() {
@@ -408,8 +418,74 @@
                 this.loadActivities();
             },
             filterActivitiesByUser(user) {
-                this.userIdForFiltering = user != null && user.id != undefined ? user.id : null;
+                if (!user || user.id == undefined) {
+                    if (this.userFilterName || (this.userIdForFiltering == null && !this.committedUserName))
+                        return;
+
+                    this.committedUserName = '';
+                    this.userIdForFiltering = null;
+                    this.loadActivities();
+                    return;
+                }
+
+                this.committedUserName = user.name || '';
+                this.userFilterName = this.committedUserName;
+                this.userIdForFiltering = user.id;
                 this.loadActivities();
+            },
+            onUserFilterSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.userIdForFiltering && this.committedUserName && this.userFilterName !== this.committedUserName)
+                    this.userFilterName = this.committedUserName;
+            },
+            browseUsersForFiltering() {
+                this.usersForFilteringSearchQuery = '';
+                this.users = [];
+                this.usersForFilteringSearchPage = 1;
+                this.totalUsers = 0;
+                this.isFetchingUsers = true;
+                this.requestUsersForFiltering('');
+            },
+            fetchUsersForFiltering: _.debounce(function (search) {
+                const query = search || '';
+
+                if (this.committedUserName && query === this.committedUserName)
+                    return;
+
+                if (query !== this.usersForFilteringSearchQuery) {
+                    this.usersForFilteringSearchQuery = query;
+                    this.users = [];
+                    this.usersForFilteringSearchPage = 1;
+                    this.totalUsers = 0;
+                }
+
+                if (this.usersForFilteringSearchPage > 1 && this.users.length >= Number(this.totalUsers))
+                    return;
+
+                this.isFetchingUsers = true;
+                this.requestUsersForFiltering(query);
+            }, 500),
+            requestUsersForFiltering(query) {
+                this.fetchUsers({ search: query, page: this.usersForFilteringSearchPage })
+                    .then((res) => {
+                        const userList = res.users ? res.users : [];
+                        if (this.usersForFilteringSearchPage === 1)
+                            this.users = userList;
+                        else {
+                            for (let user of userList)
+                                this.users.push(user);
+                        }
+
+                        this.totalUsers = res.totalUsers ? Number(res.totalUsers) : this.users.length;
+                        this.usersForFilteringSearchPage++;
+                        this.isFetchingUsers = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingUsers = false;
+                    });
             },
             dateFormatter(dateObject) {
                 if (dateObject == null || dateObject.length == 0 || dateObject[0] == null || dateObject[1] == null)
@@ -422,47 +498,6 @@
                     moment(dateString[1], this.dateFormat).toDate()
                 ];
             },
-            fetchUsersForFiltering: _.debounce(function (search) {
-
-                // String update
-                if (search != this.usersForFilteringSearchQuery) {
-                    this.usersForFilteringSearchQuery = search;
-                    this.users = [];
-                    this.usersForFilteringSearchPage = 1;
-                } 
-                
-                // String cleared
-                if (!search.length) {
-                    this.usersForFilteringSearchQuery = search;
-                    this.users = [];
-                    this.usersForFilteringSearchPage = 1;
-                }
-
-                // No need to load more
-                if (this.usersForFilteringSearchPage > 1 && this.users.length > this.totalUsers)
-                    return;
-
-                this.isFetchingUsers = true;
-
-                this.fetchUsers({ search: this.usersForFilteringSearchQuery, page: this.usersForFilteringSearchPage })
-                    .then((res) => {
-                        if (res.users) {
-                            for (let user of res.users)
-                                this.users.push(user); 
-                        }
-                        
-                        if (res.totalUsers)
-                            this.totalUsers = res.totalUsers;
-
-                        this.usersForFilteringSearchPage++;
-                        
-                        this.isFetchingUsers = false;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                        this.isFetchingUsers = false;
-                    });
-            }, 500),
             fetchMoreUsersForFiltering: _.debounce(function () {
                 this.fetchUsersForFiltering(this.usersForFilteringSearchQuery)
             }, 250),

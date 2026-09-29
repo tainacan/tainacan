@@ -222,7 +222,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
     fetchModalMetadataSections(existingCollectionId) {
 
         let someModalMetadataSections = [];
-        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata-sections/?nopaging=1';
+        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata-sections/';
         
         this.setState({ 
             isLoadingMetadataSections: true,

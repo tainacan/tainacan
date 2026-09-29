@@ -37,10 +37,10 @@
                             class="field-body">
                         <div class="field has-addons">
                             <b-autocomplete
+                                    v-model="authorSearch"
                                     v-a11y-autocomplete="{ appendToBody: true }"
                                     :clearable="item.status !== 'auto-draft'"
-                                    :clear-on-select="true"
-                                    :model-value="usersSearch ? usersSearch : item.author_name"
+                                    :clear-on-select="false"
                                     :data="users"
                                     :placeholder="$i18n.get('instruction_type_search_users')"
                                     keep-first
@@ -50,8 +50,9 @@
                                     icon="account"
                                     :disabled="item.status === 'auto-draft'"
                                     check-infinite-scroll
-                                    @update:model-value="fetchUsersForAuthor"
-                                    @focus.once="($event) => fetchUsersForAuthor($event.target.value)"
+                                    @focus="browseUsersForAuthor"
+                                    @active="onAuthorSuggestionsActive"
+                                    @typing="fetchUsersForAuthor"
                                     @select="openAuthorEditingDialog"
                                     @infinite-scroll="fetchMoreUsersForAuthor">
                                 <template #default="props">
@@ -294,10 +295,12 @@ export default {
             users: [],
             isFetchingUsers: false,
             usersPage: 1,
-            usersPerPage: 10,
+            usersPerPage: 12,
             usersTotal: 0,
             usersTotalPages: 0,
             usersSearch: '',
+            authorSearch: '',
+            committedAuthorName: '',
         };
     },
     computed: {
@@ -311,10 +314,15 @@ export default {
     watch: {
         item: {
             handler() {
-                this.currentSlug = this.item.slug ? JSON.parse(JSON.stringify(this.item.slug)) : '';
+                this.currentSlug = this.item && this.item.slug ? JSON.parse(JSON.stringify(this.item.slug)) : '';
+                const authorName = this.item && this.item.author_name ? this.item.author_name : '';
+                if (authorName !== this.committedAuthorName) {
+                    this.committedAuthorName = authorName;
+                    this.authorSearch = authorName;
+                }
             },
             deep: true,
-            imediate: true
+            immediate: true
         }
     },
     methods: {
@@ -334,7 +342,8 @@ export default {
                     message: this.$i18n.get('info_editing_publication_authorship') + ' <br><br><strong>' + this.$i18n.getWithVariables( 'info_change_author_from_%s_to_%s', [ this.item.author_name,nextAuthor.name ] ) + '<strong>',
                     onConfirm: () => {
                         this.$emit('on-update-item-author', nextAuthor.id);
-                        this.usersSearch = nextAuthor.name;
+                        this.committedAuthorName = nextAuthor.name;
+                        this.authorSearch = nextAuthor.name;
                     }
                 },
                 trapFocus: true,
@@ -346,51 +355,64 @@ export default {
                 }
             });   
         },
+        browseUsersForAuthor() {
+            this.usersSearch = '';
+            this.users = [];
+            this.usersPage = 1;
+            this.totalUsers = 0;
+            this.isFetchingUsers = true;
+            this.requestUsersForAuthor('');
+        },
+        onAuthorSuggestionsActive(isOpen) {
+            if (isOpen)
+                return;
+
+            if (this.committedAuthorName && this.authorSearch !== this.committedAuthorName)
+                this.authorSearch = this.committedAuthorName;
+        },
         fetchUsersForAuthor: _.debounce(function (search) {
+            const query = search || '';
 
-            // String update
-            if (search != this.usersSearch) {
-                this.usersSearch = search;
+            if (this.committedAuthorName && query === this.committedAuthorName)
+                return;
+
+            if (query !== this.usersSearch) {
+                this.usersSearch = query;
                 this.users = [];
                 this.usersPage = 1;
-            } 
-
-            // String cleared
-            if (!search.length) {
-                this.usersSearch = search;
-                this.users = [];
-                this.usersPage = 1;
+                this.totalUsers = 0;
             }
 
-            // No need to load more
-            if (this.usersPage > 1 && this.users.length > this.totalUsers)
+            if (this.usersPage > 1 && this.users.length >= Number(this.totalUsers))
                 return;
 
             this.isFetchingUsers = true;
-
-            this.fetchUsers({ search: this.usersSearch, page: this.usersPage })
+            this.requestUsersForAuthor(query);
+        }, 500),
+        requestUsersForAuthor(query) {
+            this.fetchUsers({ search: query, page: this.usersPage, perPage: this.usersPerPage })
                 .then((res) => {
-                    if (res.users) {
-                        for (let user of res.users)
-                            this.users.push(user); 
+                    const userList = res.users ? res.users : [];
+                    if (this.usersPage === 1)
+                        this.users = userList;
+                    else {
+                        for (let user of userList)
+                            this.users.push(user);
                     }
-                    
-                    if (res.totalUsers)
-                        this.totalUsers = res.totalUsers;
 
+                    this.totalUsers = res.totalUsers ? Number(res.totalUsers) : this.users.length;
                     this.usersPage++;
-                    
                     this.isFetchingUsers = false;
                 })
                 .catch((error) => {
                     this.$console.error(error);
                     this.isFetchingUsers = false;
                 });
-            }, 500),
-            fetchMoreUsersForAuthor: _.debounce(function () {
-                this.fetchUsersForAuthor(this.usersSearch)
-            }, 250),
-            updateSlug: _.debounce(function($event) {
+        },
+        fetchMoreUsersForAuthor: _.debounce(function () {
+            this.fetchUsersForAuthor(this.usersSearch)
+        }, 250),
+        updateSlug: _.debounce(function($event) {
                 if ( !$event || this.form.slug == $event )
                     return;
 

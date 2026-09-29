@@ -234,6 +234,8 @@
                     font-size: 0.75em;
                     margin-bottom: 1em;
                     color: var(--tainacan-info-color);
+                    overflow-wrap: break-word;
+                    word-wrap: break-word;
                     -webkit-column-break-inside: avoid;
                     page-break-inside: avoid;
                     break-inside: avoid;

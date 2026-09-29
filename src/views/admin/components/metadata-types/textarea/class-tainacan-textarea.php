@@ -48,11 +48,11 @@ class Textarea extends Metadata_Type {
 	}
 	
 	public function get_multivalue_prefix() {
-		return '<p>';
+		return '<div class="metadata-value">';
 	}
 	
 	public function get_multivalue_suffix() {
-		return '</p>';
+		return '</div>';
 	}
 
 	/**

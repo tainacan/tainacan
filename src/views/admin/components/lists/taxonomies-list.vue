@@ -161,7 +161,8 @@
                                 :label="$i18n.get('label_description')"
                                 :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" 
                                 @click="onClickTaxonomy($event, taxonomy.id, index)">
-                            <p
+                            <div
+                                    class="metadata-value"
                                     v-tooltip="{
                                         delay: {
                                             show: 500,

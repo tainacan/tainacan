@@ -403,6 +403,9 @@ class REST_Metadata_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 
 			$args = $this->prepare_filters( $request );
+			// Order is applied after parent queries are merged, so paging each parent is not a page of the list.
+			unset( $args['posts_per_page'], $args['paged'], $args['offset'], $args['nopaging'] );
+			$args['posts_per_page'] = -1;
 
 			if ($request['include_disabled'] === 'true') {
 				$args['include_disabled'] = true;
@@ -622,6 +625,8 @@ class REST_Metadata_Controller extends REST_Controller {
 		);
 
 		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		unset( $query_params['perpage'], $query_params['paged'], $query_params['offset'] );
 
 		return $query_params;
 	}

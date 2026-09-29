@@ -108,7 +108,6 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'paged'        => 'paged',
 			'postin'       => 'post__in',
 			'relation'     => 'relation',
-			'nopaging'     => 'nopaging',
 			'metatype'     => 'meta_type',
 			'hierarchical' => 'hierarchical',
 			'exclude'      => 'post__not_in',
@@ -162,7 +161,11 @@ abstract class REST_Controller extends \WP_REST_Controller {
 					$args = $this->prepare_meta($mapped, $request, $tax_query, $mapped_v, $args);
 				}
 				else {
-					$args[ $mapped_v ] = $request[ $mapped ];
+					if ( $mapped === 'perpage' && (int) $request[ $mapped ] < 1 ) {
+						$args[ $mapped_v ] = $this->get_minimum_safe_perpage();
+					} else {
+						$args[ $mapped_v ] = $request[ $mapped ];
+					}
 				}
 			}
 		}
@@ -170,6 +173,21 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		$args['perm'] = 'readable';
 		
 		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
+	}
+
+	/**
+	 * Positive page size used when a request asks for a non-positive perpage.
+	 *
+	 * perpage=-1 would otherwise become posts_per_page=-1 and skip the LIMIT.
+	 *
+	 * @return int
+	 */
+	protected function get_minimum_safe_perpage() {
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+
+		$max = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE ) ? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
+
+		return $max > 0 ? $max : 96;
 	}
 
 	public function add_support_to_tax_query_like($args) {
@@ -428,6 +446,17 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'description'        => __( "Maximum number of objects to be returned in result set.", 'tainacan' ),
 			'type'               => 'number',
 			'default'            => 10,
+			'minimum'            => 1,
+			'validate_callback'  => function( $value ) {
+				if ( (int) $value < 1 ) {
+					return new \WP_Error(
+						'rest_invalid_param',
+						__( 'perpage must be a positive number.', 'tainacan' )
+					);
+				}
+
+				return true;
+			},
 		);
 
 		$query_params['paged'] = array(

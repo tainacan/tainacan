@@ -221,7 +221,7 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
     fetchModalMetadata(existingCollectionId) {
 
         let someModalMetadata = [];
-        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata/?nopaging=1';
+        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata/';
         
         this.setState({ 
             isLoadingMetadata: true,

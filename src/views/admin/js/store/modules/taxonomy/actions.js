@@ -328,10 +328,7 @@ export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, searc
 
     const excludeTree = termId && termId != 'new' ? qs.stringify({ exclude_tree: termId }) : '';
 
-    let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&hideempty=0&offset=0&number=20&order=asc&' + excludeTree;
-
-    if (offset)
-        endpoint += '&offset=' + offset;
+    let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&hideempty=0&offset=' + (offset || 0) + '&number=12&order=asc&' + excludeTree;
 
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get(endpoint)

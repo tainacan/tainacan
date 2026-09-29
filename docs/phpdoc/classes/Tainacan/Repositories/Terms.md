@@ -15,6 +15,24 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
+    class Terms {
+        +entities_type : mixed
+        #init()
+        #_get_map()
+        +get_default_properties(map)
+        +insert(term)
+        +get_mapped_property(entity, prop)
+        +fetch(args, taxonomies)
+        +update(object, args)
+        +delete_child_terms(parentTerm, permanent)
+        +delete(term, permanent)
+        +term_exists(searched_term, taxonomy, parent, return_term)
+        +register_post_type()
+        +can_edit(term, user)
+        +can_read(term, user)
+        +can_delete(term, user)
+        +can_publish(term, user)
+    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -51,24 +69,6 @@ classDiagram
         +get_descendants_ids(id, depth)
         +get_capabilities()
         #sanitize_value(content)
-    }
-    class Terms {
-        +entities_type : mixed
-        #init()
-        #_get_map()
-        +get_default_properties(map)
-        +insert(term)
-        +get_mapped_property(entity, prop)
-        +fetch(args, taxonomies)
-        +update(object, args)
-        +delete_child_terms(parentTerm, permanent)
-        +delete(term, permanent)
-        +term_exists(searched_term, taxonomy, parent, return_term)
-        +register_post_type()
-        +can_edit(term, user)
-        +can_read(term, user)
-        +can_delete(term, user)
-        +can_publish(term, user)
     }
     Repository ..> Repository
     Repository ..> Terms

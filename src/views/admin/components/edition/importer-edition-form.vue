@@ -115,20 +115,30 @@
                                 :message="$i18n.get('info_target_collection_helper')"
                                 extra-classes="tainacan-repository-tooltip" />
                         <br>
-                        <div class="is-inline">
-                            <b-select
+                        <div>
+                            <b-autocomplete
                                     id="tainacan-select-target-collection"
-                                    expanded
-                                    :model-value="collectionId"
-                                    :loading="isFetchingCollections"
+                                    v-model="collectionSearch"
+                                    v-a11y-autocomplete="{ appendToBody: true }"
                                     :placeholder="$i18n.get('instruction_select_a_target_collection')"
-                                    @update:model-value="onSelectCollection($event)">
-                                <option
-                                        v-for="collection of collections"
-                                        :key="collection.id"
-                                        :value="collection.id">{{ collection.name }}
-                                </option>
-                            </b-select>
+                                    :data="collections"
+                                    field="name"
+                                    clearable
+                                    icon-right="menu-down"
+                                    :loading="isFetchingCollections"
+                                    :append-to-body="true"
+                                    open-on-focus
+                                    expanded
+                                    check-infinite-scroll
+                                    @select="onSelectCollection"
+                                    @focus="browseCollections"
+                                    @active="onCollectionSuggestionsActive"
+                                    @typing="fetchCollections"
+                                    @infinite-scroll="fetchMoreCollections">
+                                <template #empty>
+                                    {{ $i18n.get('info_no_options_found') }}
+                                </template>
+                            </b-autocomplete>
                             <router-link
                                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                                     style="font-size: 0.875em;"
@@ -211,6 +221,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { tainacanApi, CancelToken, isCancel } from '../../js/axios';
 
 export default {
     name: 'ImporterEditionForm',
@@ -236,8 +247,20 @@ export default {
             importerSourceInfo: null,
             collections: [],
             collectionId: undefined,
+            collectionSearch: '',
+            committedCollectionName: '',
+            collectionSearchQuery: '',
+            collectionSearchCancel: null,
+            collectionsPage: 1,
+            totalCollectionPages: 0,
             url: '',
             backgroundProcess: undefined
+        }
+    },
+    watch: {
+        collectionSearch(name) {
+            if (!name)
+                this.onSelectCollection(null);
         }
     },
     created() {
@@ -246,7 +269,8 @@ export default {
         this.sessionId = this.$route.params.sessionId;
 
         if (this.collectionId != undefined) {
-            this.onSelectCollection(this.collectionId);
+            this.mappedCollection['id'] = this.collectionId;
+            this.fetchSelectedCollection(this.collectionId);
         }
 
         // Set importer's name
@@ -274,6 +298,9 @@ export default {
         else
             this.createImporter();    
     },
+    beforeUnmount() {
+        this.cancelCollectionSearch();
+    },
     methods: {
         ...mapActions('importer', [
             'fetchAvailableImporters',
@@ -286,9 +313,6 @@ export default {
             'fetchImporterSourceInfo',
             'updateImporterCollection',
             'runImporter'
-        ]),
-        ...mapActions('collection', [
-            'fetchAllCollectionNames'
         ]),
         createImporter() {
             // Puts loading on Draft Importer creation
@@ -305,7 +329,7 @@ export default {
                     this.isLoading = false;
 
                     if (this.importer.manual_collection)
-                        this.loadCollections();
+                        this.browseCollections();
                     
                 })
                 .catch(error => this.$console.error(error));
@@ -325,7 +349,7 @@ export default {
                     this.isLoading = false;
 
                     if (this.importer.manual_collection)
-                        this.loadCollections();
+                        this.browseCollections();
                     
                 })
                 .catch(error => this.$console.error(error));
@@ -455,29 +479,122 @@ export default {
         goToMappingPage() {
             this.$router.push(this.$routerHelper.getImporterMappingPath(this.importerType, this.sessionId, this.collectionId));
         },
-        loadCollections() {
-            // Generates options for target collection
-            this.isFetchingCollections = true;
-            this.fetchAllCollectionNames()
-                .then((resp) => {
-                    resp.request.then((collections) => {
-                        this.collections = Array.isArray(collections)? collections.filter((collection) => {
-                            return collection.current_user_can_edit_items;
-                        }) : [];
-                        this.isFetchingCollections = false;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                        this.isFetchingCollections = false;
-                    }); 
+        fetchSelectedCollection(id) {
+            return tainacanApi.get('/collections/' + id + '?context=edit&fetch_only=name,id')
+                .then(res => {
+                    const name = res.data && res.data.name ? res.data.name : String(id);
+                    this.committedCollectionName = name;
+                    this.collectionSearch = name;
                 })
-                .catch(() => {
-                    this.isFetchingCollections = false;
-                }); 
+                .catch(error => {
+                    this.$console.error(error);
+                    this.committedCollectionName = String(id);
+                    this.collectionSearch = String(id);
+                });
         },
-        onSelectCollection(collectionId) {
-            this.collectionId = collectionId;
-            this.mappedCollection['id'] = collectionId;
+        onCollectionSuggestionsActive(isOpen) {
+            if (isOpen)
+                return;
+
+            if (this.collectionId && this.committedCollectionName && this.collectionSearch !== this.committedCollectionName)
+                this.collectionSearch = this.committedCollectionName;
+        },
+        cancelCollectionSearch() {
+            if (this.collectionSearchCancel) {
+                this.collectionSearchCancel.cancel('Collection search canceled.');
+                this.collectionSearchCancel = null;
+            }
+        },
+        beginCollectionSearch() {
+            this.cancelCollectionSearch();
+            this.collectionSearchCancel = CancelToken.source();
+        },
+        browseCollections() {
+            this.collectionSearchQuery = '';
+            this.collectionsPage = 1;
+            this.totalCollectionPages = 0;
+            this.beginCollectionSearch();
+            this.isFetchingCollections = true;
+            this.loadCollectionPage('');
+        },
+        fetchCollections: _.debounce(function(search) {
+            const query = search || '';
+
+            if (this.committedCollectionName && query === this.committedCollectionName)
+                return;
+
+            if (query !== this.collectionSearchQuery) {
+                this.collectionSearchQuery = query;
+                this.collectionsPage = 1;
+                this.totalCollectionPages = 0;
+            }
+
+            if (this.totalCollectionPages > 0 && this.collectionsPage > this.totalCollectionPages)
+                return;
+
+            this.beginCollectionSearch();
+            this.isFetchingCollections = true;
+            this.loadCollectionPage(query);
+        }, 500),
+        fetchMoreCollections: _.debounce(function() {
+            this.fetchCollections(this.collectionSearchQuery);
+        }, 250),
+        loadCollectionPage(query) {
+            const source = this.collectionSearchCancel;
+            let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&context=edit&fetch_only=name,id&order=asc&orderby=title';
+            if (query)
+                endpoint += '&search=' + encodeURIComponent(query);
+
+            return tainacanApi.get(endpoint, { cancelToken: source.token })
+                .then(res => {
+                    if (this.collectionSearchCancel !== source)
+                        return;
+
+                    const pageCollections = Array.isArray(res.data) ? res.data : [];
+                    const editableCollections = pageCollections.filter(collection => collection && collection.current_user_can_edit_items);
+
+                    if (this.collectionsPage === 1)
+                        this.collections = editableCollections;
+                    else {
+                        for (let collection of editableCollections)
+                            this.collections.push(collection);
+                    }
+
+                    this.totalCollectionPages = res.headers['x-wp-totalpages'] ? Number(res.headers['x-wp-totalpages']) : 0;
+                    this.collectionsPage++;
+
+                    const hasMorePages = this.totalCollectionPages > 0
+                        ? this.collectionsPage <= this.totalCollectionPages
+                        : pageCollections.length >= 12;
+
+                    if (editableCollections.length === 0 && pageCollections.length > 0 && hasMorePages)
+                        return this.loadCollectionPage(query);
+
+                    this.isFetchingCollections = false;
+                })
+                .catch(error => {
+                    if (isCancel(error) || this.collectionSearchCancel !== source)
+                        return;
+
+                    this.$console.error(error);
+                    this.isFetchingCollections = false;
+                });
+        },
+        onSelectCollection(collection) {
+            if (!collection || !collection.id) {
+                if (this.collectionSearch || (this.collectionId == undefined && !this.committedCollectionName))
+                    return;
+
+                this.committedCollectionName = '';
+                this.collectionId = undefined;
+                this.mappedCollection['id'] = undefined;
+                return;
+            }
+
+            this.committedCollectionName = collection.name || '';
+            this.collectionSearch = this.committedCollectionName;
+            this.collectionId = collection.id;
+            this.mappedCollection['id'] = collection.id;
         }
     }
 }
@@ -514,9 +631,6 @@ export default {
         align-items: center;
     }
 
-    .is-inline .control{
-        display: inline;
-    }
     .drop-inner{
         padding: 0.25em 0.5em;
     }

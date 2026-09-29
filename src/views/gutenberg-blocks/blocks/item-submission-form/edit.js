@@ -129,7 +129,7 @@ export default function ({ attributes, setAttributes }) {
         isLoadingCollectionMetadata = true;
         setAttributes({ isLoadingCollectionMetadata, isLoadingCollectionMetadata });
 
-        tainacanApi.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
+        tainacanApi.get('/collection/' + selectedCollectionId + '/metadata/?include_disabled=false&parent=0')
             .then(response => {
                 if ( Array.isArray(enabledMetadata) && enabledMetadata.length == 0 )
                     enabledMetadata = {};

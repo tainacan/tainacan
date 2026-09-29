@@ -340,7 +340,6 @@
                 revealedFilterIds: [],
                 taxonomyFiltersCollectionNames: {},
                 repositoryCollectionNames: {},
-                collectionNameSearchCancel: undefined,
                 filtersSearchCancel: undefined,
                 repositoryFiltersSearchCancel: undefined,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
@@ -382,40 +381,15 @@
         watch: {
             taxonomyFilters: {
                 handler() {
-                    if ( this.taxonomyFilters != undefined && Object.keys(this.taxonomyFilters).length ) {
-                        
-                        Object.assign( this.taxonomyFiltersCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
-                                                        
-                        // Cancels previous collection name Request
-                        if (this.collectionNameSearchCancel != undefined)
-                            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-                        let collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
-        
-                        this.fetchAllCollectionNames( collectionIds.filter(aCollectionId => aCollectionId !== 'repository-filters') )
-                            .then((resp) => {
-                                resp.request
-                                    .then((collections) => {
-                                        for (let collection of collections)
-                                            Object.assign( this.taxonomyFiltersCollectionNames, { [collection.id]: collection.name });
-                                    });
-                                // Search Request Token for cancelling
-                                this.collectionNameSearchCancel = resp.source;     
-                            });
-                    }
+                    this.taxonomyFiltersCollectionNames = this.collectionNamesFromFilters(this.taxonomyFilters);
                 },
                 deep: true
             },
             repositoryCollectionFilters: {
                 handler() {
-                    if ( this.repositoryCollectionFilters != undefined && Object.keys(this.repositoryCollectionFilters).length ) {
-                        
-                        Object.assign( this.repositoryCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
-                        
-                        for ( let collection of this.getCollections() )
-                            Object.assign( this.repositoryCollectionNames, { [collection.id]: collection.name });
-                    }
+                    this.repositoryCollectionNames = this.collectionNamesFromFilters(this.repositoryCollectionFilters);
                 },
-                deep: true                
+                deep: true
             }
         },
         mounted() {
@@ -425,10 +399,6 @@
                 this.$eventBusSearchEmitter.on('isLoadingItems', this.updateIsLoadingItems);
         },
         beforeUnmount() {
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-        
             // Cancels previous Repository Filters Request
             if (this.repositoryFiltersSearchCancel != undefined)
                 this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
@@ -442,17 +412,25 @@
      
         },
         methods: {
-            ...mapGetters('collection',[
-                'getCollections'
-            ]),
-            ...mapActions('collection',[
-                'fetchAllCollectionNames'
-            ]),
             ...mapActions('filter', [
                 'fetchFilters',
                 'fetchTaxonomyFilters',
                 'fetchRepositoryCollectionFilters'
             ]),
+            collectionNamesFromFilters(filtersObject) {
+                const names = { 'repository-filters': this.$i18n.get('repository') };
+
+                for (const [key, filters] of Object.entries(filtersObject || {})) {
+                    if (key === 'repository-filters' || !Array.isArray(filters))
+                        continue;
+
+                    const namedFilter = filters.find((filter) => filter && filter.collection_name);
+                    if (namedFilter)
+                        names[key] = namedFilter.collection_name;
+                }
+
+                return names;
+            },
             prepareFilters() {
                 // Cancels previous Request
                 if (this.filtersSearchCancel != undefined)

@@ -21,6 +21,7 @@ classDiagram
         #filter_object_by_attributes(object, attributes)
         #prepare_item_for_updating(object, new_values)
         #prepare_filters(request)
+        #get_minimum_safe_perpage()
         +add_support_to_tax_query_like(args)
         #sanitize_value(value)
         -prepare_meta(mapped, request, query, mapped_v, args)
@@ -108,6 +109,18 @@ protected prepare_filters(mixed $request): array
 **Throws:**
 
 - [`Exception`](../../Exception)
+
+***
+
+### get_minimum_safe_perpage
+
+Positive page size used when a request asks for a non-positive perpage.
+
+```php
+protected get_minimum_safe_perpage(): int
+```
+
+perpage=-1 would otherwise become posts_per_page=-1 and skip the LIMIT.
 
 ***
 
