@@ -628,9 +628,9 @@ class Item extends Entity {
 	 *     @type string      $after_title               String to be added after each metadata title
 	 *                                                  Default '</h3>'
 	 *     @type string      $before_value              String to be added before each metadata value
-	 *                                                  Default '<p>'
+	 *                                                  Default '<div class="metadata-value">'
 	 *     @type string      $after_value               String to be added after each metadata value
-	 *                                                  Default '</p>'
+	 *                                                  Default '</div>'
 	 * }
 	 *
 	 * @return string        The HTML output
@@ -656,8 +656,8 @@ class Item extends Entity {
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
-			'before_value' 			=> '<p>',
-			'after_value' 			=> '</p>',
+			'before_value' 			=> '<div class="metadata-value">',
+			'after_value' 			=> '</div>',
 			'metadatum_index'		=> null
 		);
 		$args = wp_parse_args($args, $defaults);
@@ -802,9 +802,9 @@ class Item extends Entity {
 	 *     @type string      $after_title               String to be added after each metadata title
 	 *                                                  Default '</h3>'
 	 *     @type string      $before_value              String to be added before each metadata value
-	 *                                                  Default '<p>'
+	 *                                                  Default '<div class="metadata-value">'
 	 *     @type string      $after_value               String to be added after each metadata value
-	 *                                                  Default '</p>'
+	 *                                                  Default '</div>'
 	 * }
 	 * @param int			 $section_index				The Metadatum index, if passed from an array
 	 *
@@ -822,8 +822,8 @@ class Item extends Entity {
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
-			'before_value' 			=> '<p>',
-			'after_value' 			=> '</p>'
+			'before_value' 			=> '<div class="metadata-value">',
+			'after_value' 			=> '</div>',
 		);
 		$args = wp_parse_args($args, $defaults);
 

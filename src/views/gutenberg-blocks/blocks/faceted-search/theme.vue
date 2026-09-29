@@ -2045,9 +2045,12 @@
                     font-size: 1em !important;
                     color: var(--tainacan-info-color);
                 }
-                .tainacan-compound-metadatum p {
+                .tainacan-compound-metadatum p,
+                .tainacan-compound-metadatum .child-metadatum-value {
                     margin-bottom: 0.75em;
                     font-size: 1em;
+                    overflow-wrap: break-word;
+                    word-wrap: break-word;
                 }
                 .tainacan-metadatum .label {
                     font-size: 1em;

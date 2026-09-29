@@ -326,8 +326,8 @@ class Compound extends Metadata_Type {
 						echo wp_kses_post($child_label_before . esc_html($child_label) . $child_label_after);
 
 						$child_value = $meta->get_value_as_html();
-						$child_value_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-value', '<p class="child-metadatum-value">', $meta);
-						$child_value_after = apply_filters('tainacan-get-child-item-metadatum-as-html-after-value', '</p>', $meta);
+						$child_value_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-value', '<div class="child-metadatum-value">', $meta);
+						$child_value_after = apply_filters('tainacan-get-child-item-metadatum-as-html-after-value', '</div>', $meta);
 						echo wp_kses_post($child_value_before . $child_value . $child_value_after);
 					?>
 				</div>

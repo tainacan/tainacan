@@ -257,7 +257,7 @@
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
-                                class="icon is-large has-text-secondary">
+                                class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next tainacan-icon-is-rtl-mirrored" />
                         </span>
                     </button>
@@ -290,7 +290,7 @@
                                     class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-30px" />
+                                        class="tainacan-icon tainacan-icon-30px" />
                             </span>
                             <circular-counter 
                                     v-if="isPlaying"
@@ -345,7 +345,7 @@
                 <hr>
             </div>
 
-            <h3 class="has-text-white has-text-weight-semibold">
+            <h3 class="has-text-weight-semibold">
                 {{ $i18n.get('metadata') }}
             </h3>
             
@@ -385,13 +385,13 @@
                             aria-id="metadata-collapse-for-slideshow"
                             :model-value="!collapseAll">
                         <template #trigger="props">
-                            <label class="label has-text-white">
+                            <label class="label">
                                 <span 
                                         aria-hidden="true"
                                         class="icon">
                                     <i 
                                             :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored' : !props.open}"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
+                                            class="tainacan-icon tainacan-icon-1-25em" />
                                 </span>
                                 <span 
                                         v-tooltip="{
@@ -410,8 +410,8 @@
                             </label>
                         </template>
                         <div class="content">
-                            <p  
-                                    class="has-text-white"
+                            <div
+                                    class="metadata-value"
                                     v-html="metadatum.value_as_html" />
                         </div>
                     </b-collapse>

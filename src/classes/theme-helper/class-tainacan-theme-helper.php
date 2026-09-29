@@ -2968,9 +2968,9 @@ class Theme_Helper {
 		 *     @type string      $after_title               String to be added after each metadata title
 		 *                                                  Default '</h3>'
 		 *     @type string      $before_value              String to be added before each metadata value
-		 *                                                  Default '<p>'
+		 *                                                  Default '<div class="metadata-value">'
 		 *     @type string      $after_value               String to be added after each metadata value
-		 *                                                  Default '</p>'
+		 *                                                  Default '</div>'
 		 * }
 	 * 
 	 * @param int|string $item_id       (Optional) The item ID to retrive the metadatum as a HTML string to be used as output. Default is the global $post
@@ -3006,8 +3006,8 @@ class Theme_Helper {
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
-			'before_value' 			=> '<p>',
-			'after_value' 			=> '</p>'
+			'before_value' 			=> '<div class="metadata-value">',
+			'after_value' 			=> '</div>',
 		);
 		$args = wp_parse_args($args, $defaults);
 
