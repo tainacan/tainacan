@@ -39,7 +39,7 @@ You will also need:
 - `Composer` to manage dependencies
 - `WP-Cli` to configure the test environment
 - `Phpunit` to run unit tests
-- `Node` (version 22.18 or later) to handle dependencies and build the JS application. Sass is installed by `npm` as a project dependency.
+- `Node` (version 22.18+ or 24.11+) to handle dependencies and build the JS application. Sass is installed by `npm` as a project dependency.
 
 ```
 sudo apt-get install phpunit composer
