@@ -247,7 +247,8 @@
                                 :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"
                                 @click.left="onClickCollection($event, collection.id, index)" 
                                 @click.right="onRightClickCollection($event, collection.id, index)">
-                            <p
+                            <div
+                                    class="metadata-value"
                                     v-tooltip="{
                                         delay: {
                                             show: 500,

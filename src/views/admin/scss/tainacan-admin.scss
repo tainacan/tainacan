@@ -160,9 +160,12 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
             font-size: 1em;
             color: var(--tainacan-info-color);
         }
-        .tainacan-compound-metadatum p {
+        .tainacan-compound-metadatum p,
+        .tainacan-compound-metadatum .child-metadatum-value {
             margin-bottom: 0.75em;
             font-size: 1em;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
         }
         .tainacan-metadatum .label {
             font-size: 1em;
@@ -193,7 +196,25 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
     }
 }
 
-// Inside the admin item page
+// Inside the admin item page. The value wrapper used to be a paragraph, so it
+// received the WordPress admin rule `p { font-size: 13px; line-height: 1.5; }`.
+.content > .metadata-value {
+    margin-bottom: 1em;
+    font-size: 0.813em;
+    line-height: 1.5;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    > :first-child {
+        margin-top: 0;
+    }
+    > :last-child {
+        margin-bottom: 0;
+    }
+    > .metadata-value:not(:last-child) {
+        margin-bottom: 1em;
+    }
+}
 .metadata-type-textarea,
 .metadata-type-compound {
     .multivalue-separator {
@@ -217,6 +238,8 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
     .tainacan-compound-group {
         list-style: none;
         margin-inline-start: 0;
+        border-inline-start: 0;
+        padding-inline-start: 0;
 
         & > .tainacan-compound-metadatum:not(:last-child) {
             border-bottom: 1px solid var(--tainacan-gray2);
@@ -230,8 +253,13 @@ html.is-clipped .page-container:not(.is-filters-menu-open) {
         .label:not(:last-child) {
             margin-bottom: 0.3em;
         }
-        p:not(:last-child) {
+        p:not(:last-child),
+        .child-metadatum-value:not(:last-child) {
             margin-bottom: 0.75em;
+        }
+        .child-metadatum-value {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
         }
     }
 }
