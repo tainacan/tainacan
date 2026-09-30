@@ -34,6 +34,7 @@
         },
         emits: [
             'update:value',
+			'update:edited-with-rich-text-editor',
             'blur',
             'mobile-special-focus'
         ],
@@ -47,7 +48,7 @@
                 return this.itemMetadatum &&
                     this.itemMetadatum.metadatum &&
                     this.itemMetadatum.metadatum.metadata_type_object &&
-                    this.itemMetadatum.metadatum.metadata_type_object.core &&
+					this.itemMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Core_Description' &&
                     typeof tainacan_plugin !== 'undefined' &&
                     tainacan_plugin.tainacan_allow_rich_text_editor === '1' &&
                     this.itemMetadatum.metadatum.metadata_type_options &&
@@ -61,7 +62,10 @@
             }
         },
         created() {
-            this.localValue = this.value ? JSON.parse(JSON.stringify(this.value)) : '';
+			const initialValue = this.shouldUseRichTextEditor && typeof this.itemMetadatum.value_for_rich_text_editor === 'string'
+				? this.itemMetadatum.value_for_rich_text_editor
+				: this.value;
+			this.localValue = initialValue ? JSON.parse(JSON.stringify(initialValue)) : '';
         },
         methods: {
             onInput(value) {
@@ -70,6 +74,8 @@
                     return;
 
                 this.localValue = value;
+				if (this.itemMetadatum?.metadatum?.metadata_type === 'Tainacan\\Metadata_Types\\Core_Description')
+					this.$emit('update:edited-with-rich-text-editor', this.shouldUseRichTextEditor);
                 this.changeValue(value);
             },
             changeValue: _.debounce(function(value) {

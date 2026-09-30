@@ -19,6 +19,9 @@ use Tainacan\Entities\Item;
 class Items extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	const CORE_DESCRIPTION_RICH_TEXT_META_KEY = '_tainacan_core_description_saved_with_rich_text_editor';
+	private $core_description_lock_depth = [];
+
 	public $entities_type = '\Tainacan\Entities\Item';
 
 	// temporary variable used to filter items query
@@ -252,7 +255,122 @@ class Items extends Repository {
 	}
 
 	public function insert( $item ) {
-		return parent::insert( $item );
+		$existing_post = $item->get_id() ? get_post( $item->get_id() ) : null;
+		if ( $existing_post && $existing_post->post_content !== $item->get_description() ) {
+			return $this->with_core_description_lock( $item, function () use ( $item ) {
+				return $this->insert_item_and_sync_description( $item );
+			} );
+		}
+		return $this->insert_item_and_sync_description( $item );
+	}
+
+	private function insert_item_and_sync_description( $item ) {
+		$existing_post = $item->get_id() ? get_post( $item->get_id() ) : null;
+		$previous_description = $existing_post ? $existing_post->post_content : null;
+		$collection = $item->get_collection();
+		$metadatum = $collection instanceof Entities\Collection ? $collection->get_core_description_metadatum() : null;
+		$had_mirror = $existing_post && $metadatum instanceof Entities\Metadatum && metadata_exists( 'post', $item->get_id(), $metadatum->get_id() );
+		$previous_mirror = $had_mirror ? get_post_meta( $item->get_id(), $metadatum->get_id(), true ) : null;
+		$saved_item = parent::insert( $item );
+
+		if ( ! $saved_item instanceof Entities\Item ) {
+			return $saved_item;
+		}
+
+		$description = $saved_item->get_description();
+		if ( $previous_description !== $description ) {
+			if ( $metadatum instanceof Entities\Metadatum ) {
+				if ( ! $this->sync_core_description_metadata( $saved_item, $metadatum, $description ) ) {
+					$this->restore_core_description( $saved_item, $previous_description, $metadatum, $had_mirror, $previous_mirror );
+					return false;
+				}
+			}
+			if ( ! $this->set_core_description_saved_with_rich_text_editor( $saved_item, false ) ) {
+				$this->restore_core_description( $saved_item, $previous_description, $metadatum, $had_mirror, $previous_mirror );
+				return false;
+			}
+		}
+
+		return $saved_item;
+	}
+
+	/**
+	 * Keep the queryable copy in the same form as a regular single-value metadatum.
+	 */
+	public function sync_core_description_metadata( Item $item, Entities\Metadatum $metadatum, $description ) {
+		if ( $description === '' ) {
+			delete_post_meta( $item->get_id(), $metadatum->get_id() );
+			return ! metadata_exists( 'post', $item->get_id(), $metadatum->get_id() );
+		}
+		update_post_meta( $item->get_id(), $metadatum->get_id(), wp_slash( $description ) );
+		return get_post_meta( $item->get_id(), $metadatum->get_id(), true ) === $description;
+	}
+
+	private function restore_core_description( Item $item, $previous_description, $metadatum, $had_mirror, $previous_mirror ) {
+		if ( null === $previous_description ) {
+			wp_delete_post( $item->get_id(), true );
+			return;
+		}
+		wp_update_post( [ 'ID' => $item->get_id(), 'post_content' => wp_slash( $previous_description ) ] );
+		if ( $metadatum instanceof Entities\Metadatum ) {
+			if ( $had_mirror ) {
+				update_post_meta( $item->get_id(), $metadatum->get_id(), wp_slash( $previous_mirror ) );
+			} else {
+				delete_post_meta( $item->get_id(), $metadatum->get_id() );
+			}
+		}
+	}
+
+	/**
+	 * Serialize description writes for one item across concurrent requests.
+	 */
+	public function with_core_description_lock( Item $item, callable $callback ) {
+		global $wpdb;
+		$item_id = $item->get_id();
+		if ( ! $item_id || isset( $this->core_description_lock_depth[ $item_id ] ) ) {
+			if ( $item_id ) {
+				$this->core_description_lock_depth[ $item_id ]++;
+			}
+			try {
+				return $callback();
+			} finally {
+				if ( $item_id ) {
+					$this->core_description_lock_depth[ $item_id ]--;
+				}
+			}
+		}
+
+		$lock_name = 'tainacan_core_description_' . $item_id;
+		if ( '1' !== (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 10 ) ) ) {
+			throw new \RuntimeException( 'Could not lock the item description for saving' );
+		}
+		$this->core_description_lock_depth[ $item_id ] = 1;
+		try {
+			return $callback();
+		} finally {
+			unset( $this->core_description_lock_depth[ $item_id ] );
+			$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock_name ) );
+		}
+	}
+
+	/**
+	 * Whether the current item description was saved by the rich text editor.
+	 */
+	public function is_core_description_saved_with_rich_text_editor( Item $item ) {
+		return get_post_meta( $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY, true ) === 'yes';
+	}
+
+	/**
+	 * Store the editor state on the item, independently of its metadatum definition.
+	 */
+	public function set_core_description_saved_with_rich_text_editor( Item $item, $saved_with_rich_text_editor ) {
+		if ( $saved_with_rich_text_editor ) {
+			update_post_meta( $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY, 'yes' );
+			return $this->is_core_description_saved_with_rich_text_editor( $item );
+		}
+
+		delete_post_meta( $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY );
+		return ! metadata_exists( 'post', $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY );
 	}
 
 	/**
