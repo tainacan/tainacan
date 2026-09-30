@@ -49,12 +49,13 @@ class Term_Importer extends Importer {
 			return false;
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Return a handle positioned after the UTF-8 BOM. WP_Filesystem::get_contents() would load the whole import file.
 		$handle = fopen( $this->tmp_file, 'r' );
 		if ( $handle === false ) {
 			return false;
 		}
 
-		$bom = fread( $handle, 3 );
+		$bom = fread( $handle, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Read only the 3-byte UTF-8 BOM so the returned handle stays positioned for the importer.
 		if ( $bom !== "\xEF\xBB\xBF" ) {
 			rewind( $handle );
 		}

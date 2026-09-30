@@ -751,6 +751,7 @@ abstract class Exporter {
 		$file_suffix = "{$exporter_folder}/{$prefix}_{$key}";
 
 		if (!is_dir($upload_dir . $exporter_folder)) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir -- Create the exporter directory on the local uploads disk. WP_Filesystem follows the configured transport, which may not be the disk these files are written to.
 			if (!mkdir($upload_dir . $exporter_folder)) {
 				return false;
 			}
@@ -772,13 +773,14 @@ abstract class Exporter {
 	*/
 	public function append_to_file($key, $data) {
 		if ( array_key_exists ( $key , $this->output_files ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Append one chunk to the local export file. WP_Filesystem::put_contents() would replace the file or load it all.
 			$fp = fopen($this->output_files[$key]['filename'], 'a');
 			if($fp == false) {
 				$file_name = $this->output_files[$key]['filename'];
 				throw new \Exception('Cannot open file ' . esc_html($file_name));
 			}
-			fwrite($fp, $data);
-			fclose($fp);
+			fwrite($fp, $data); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Append one chunk to the local export file. WP_Filesystem::put_contents() would replace the file or load it all.
+			fclose($fp); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Append one chunk to the local export file. WP_Filesystem::put_contents() would replace the file or load it all.
 		} else { // será?
 			$this->add_new_file($key);
 			$this->append_to_file($key, $data);
