@@ -363,11 +363,11 @@ abstract class Exporter {
 	}
 
 	public function add_log($message ) {
-		$this->log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function add_error_log($message ) {
-		$this->error_log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->error_log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function is_finished() {
