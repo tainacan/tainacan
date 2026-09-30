@@ -24,7 +24,7 @@ class Settings extends TAINACAN_UnitTestCase {
 		$field = $wp_settings_fields['tainacan_settings']['tainacan_settings_search_and_performance']['tainacan_option_allow_rich_text_editor'];
 
 		$this->assertSame( 'Rich text editor', $field['title'] );
-		$this->assertSame( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata.', $field['args']['description'] );
+		$this->assertSame( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Core Description metadata.', $field['args']['description'] );
 		$this->assertFalse( $field['args']['input_disabled'] );
 		$this->assertFalse( $field['args']['default'] );
 		$this->assertNull( $field['args']['forced_value'] );

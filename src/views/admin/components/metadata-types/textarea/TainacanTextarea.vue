@@ -44,9 +44,12 @@
         },
         computed: {
             shouldUseRichTextEditor() {
-                return tainacan_plugin.tainacan_allow_rich_text_editor === '1' &&
-                    this.itemMetadatum &&
+                return this.itemMetadatum &&
                     this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_object &&
+                    this.itemMetadatum.metadatum.metadata_type_object.core &&
+                    typeof tainacan_plugin !== 'undefined' &&
+                    tainacan_plugin.tainacan_allow_rich_text_editor === '1' &&
                     this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.use_rich_text_editor === 'yes';
             },

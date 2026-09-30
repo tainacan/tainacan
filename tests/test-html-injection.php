@@ -191,7 +191,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 		$this->assertSame( 'Description ' . $link, $collection->get_description() );
 	}
 
-	public function test_preserves_links_for_rich_text_capable_metadata_only() {
+	public function test_preserves_links_for_core_description_metadata_only() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$link = '<a href="https://tainacan.org">Tainacan</a>';
@@ -205,16 +205,6 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 			],
 			true
 		);
-		$rich_text_metadatum = $this->tainacan_entity_factory->create_entity(
-			'metadatum',
-			[
-				'name' => 'Rich text',
-				'collection' => $collection,
-				'metadata_type' => 'Tainacan\\Metadata_Types\\Textarea',
-				'metadata_type_options' => [ 'use_rich_text_editor' => 'yes' ]
-			],
-			true
-		);
 		$plain_text_metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			[
@@ -225,17 +215,11 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 
-		$rich_text_value = new \Tainacan\Entities\Item_Metadata_Entity( $item, $Tainacan_Metadata->fetch( $rich_text_metadatum->get_id() ) );
-		$rich_text_value->set_value( $link );
-		$rich_text_value->validate();
-		$rich_text_value = $Tainacan_Item_Metadata->insert( $rich_text_value );
-
 		$plain_text_value = new \Tainacan\Entities\Item_Metadata_Entity( $item, $Tainacan_Metadata->fetch( $plain_text_metadatum->get_id() ) );
 		$plain_text_value->set_value( $link );
 		$plain_text_value->validate();
 		$plain_text_value = $Tainacan_Item_Metadata->insert( $plain_text_value );
 
-		$this->assertSame( $link, $rich_text_value->get_value() );
 		$this->assertSame( 'Tainacan', $plain_text_value->get_value() );
 
 		$core_description_value = new \Tainacan\Entities\Item_Metadata_Entity( $item, $collection->get_core_description_metadatum() );

@@ -315,13 +315,12 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_text = new Item_Metadata_Entity($i, $metadatum_text);
 		$item_metadata_text->set_value($value_text);
 		
-		$value_textarea = "GOOGLE: www.google.com\n\nGOOGLE: https://www.google.com";
+		$value_textarea = 'GOOGLE: www.google.com \\n GOOGLE: https://www.google.com';
 		$item_metadata_textarea = new Item_Metadata_Entity($i, $metadatum_textarea);
 		$item_metadata_textarea->set_value($value_textarea);
 
 		$response_text = 'GOOGLE: <a href="http://www.google.com" rel="nofollow">http://www.google.com</a>';
-		$response_textarea = '<p>' . $response_text . "</p>\n" .
-			'<p>GOOGLE: <a href="https://www.google.com" rel="nofollow">https://www.google.com</a></p>' . "\n";
+		$response_textarea = $response_text . ' \\n GOOGLE: <a href="https://www.google.com" rel="nofollow">https://www.google.com</a>';
 
 		$this->assertSame($response_text, $item_metadata_text->get_value_as_html());
 		$this->assertSame($response_textarea, $item_metadata_textarea->get_value_as_html());
@@ -333,10 +332,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_textarea->set_value($badFormatted_HTML);
 
 		$this->assertSame($badFormatted_HTML . "</p>", $item_metadata_text->get_value_as_html());
-		$this->assertSame(
-			"<p> I started my content </p>\n<div> and make something else here </div>\n<p> without closing its HTML properly</p>\n",
-			$item_metadata_textarea->get_value_as_html()
-		);
+		$this->assertSame($badFormatted_HTML . "</p>", $item_metadata_textarea->get_value_as_html());
 	}
 
 	/**

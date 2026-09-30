@@ -188,7 +188,7 @@ class Settings extends Pages {
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Rich text editor', 'tainacan' ),
 			'label' => __( 'Allow the rich text editor in text inputs', 'tainacan' ),
-			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata.', 'tainacan' ),
+			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Core Description metadata.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'input_disabled' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ),
