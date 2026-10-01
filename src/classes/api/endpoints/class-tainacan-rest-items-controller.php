@@ -1504,6 +1504,7 @@ class REST_Items_Controller extends REST_Controller {
 		$entities_erros = [];
 		if( isset($files['document']) && !is_array($files['document']['tmp_name']) == 1 && $files['document']['size'] > 0 ) {
 			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . sanitize_file_name($files['document']['name']);
+			// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Keep the upload in the local temp directory under its original filename so Media::insert_attachment_from_file() can read that path. Replacing this with media_handle_upload() is tracked in https://github.com/tainacan/tainacan/issues/1226.
 			move_uploaded_file($files['document']['tmp_name'], $tmp_file_name);
 			$document_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
 			if($document_id === false) {
@@ -1514,11 +1515,12 @@ class REST_Items_Controller extends REST_Controller {
 				$item->set_document($document_id);
 				$insert_attachments[] = $document_id;
 			}
-			unlink($tmp_file_name);
+			wp_delete_file($tmp_file_name);
 		}
 
 		if( isset($files['thumbnail']) && !is_array($files['thumbnail']['tmp_name']) == 1 && $files['thumbnail']['size'] > 0 ) {
 			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['thumbnail']['name'];
+			// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Keep the upload in the local temp directory under its original filename so Media::insert_attachment_from_file() can read that path. Replacing this with media_handle_upload() is tracked in https://github.com/tainacan/tainacan/issues/1226.
 			move_uploaded_file($files['thumbnail']['tmp_name'], $tmp_file_name);
 			$thumbnail_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name);
 			if($thumbnail_id === false) {
@@ -1528,7 +1530,7 @@ class REST_Items_Controller extends REST_Controller {
 				$item->set__thumbnail_id($thumbnail_id);
 				$insert_attachments[] = $thumbnail_id;
 			}
-			unlink($tmp_file_name);
+			wp_delete_file($tmp_file_name);
 		} else {
 			$thumbnail_id = $this->items_repository->get_thumbnail_id_from_document($item);
 			if (!is_null($thumbnail_id)) {
@@ -1542,9 +1544,10 @@ class REST_Items_Controller extends REST_Controller {
 			$attachments_name = is_array($files['attachments']['name']) ? $files['attachments']['name'] : [$files['attachments']['name']];
 			for ($i = 0; $i < count($attachments); $i++) {
 				$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $attachments_name[$i];
+				// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Keep the upload in the local temp directory under its original filename so Media::insert_attachment_from_file() can read that path. Replacing this with media_handle_upload() is tracked in https://github.com/tainacan/tainacan/issues/1226.
 				move_uploaded_file($attachments[$i], $tmp_file_name);
 				$attachment_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
-				unlink($tmp_file_name);
+				wp_delete_file($tmp_file_name);
 				if($attachment_id === false) {
 					$entities_erros[] = ['attachments' => __('Error while creating attachment ', 'tainacan') . "($attachments_name[$i])" ];
 					break;
