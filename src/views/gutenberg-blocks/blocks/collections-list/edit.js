@@ -5,7 +5,7 @@ const { RangeControl,  Button, ToggleControl, Placeholder, PanelBody } = wp.comp
 const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
-import CollectionsModal from './collections-modal.js';
+import CollectionsSelectionModal from '../../js/selection/tainacan-collections-selection-modal.js';
 
 export default function({ attributes, setAttributes, isSelected }) {
     let { 
@@ -201,7 +201,8 @@ export default function({ attributes, setAttributes, isSelected }) {
                 (
                 <div>
                     { isModalOpen ? 
-                        <CollectionsModal
+                        <CollectionsSelectionModal
+                            prefixNumericIds={ true }
                             selectedCollectionsObject={ selectedCollectionsObject } 
                             onApplySelection={ (aSelectedCollectionsObject) =>{
                                 selectedCollectionsObject = aSelectedCollectionsObject

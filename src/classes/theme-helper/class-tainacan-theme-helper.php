@@ -1796,6 +1796,7 @@ class Theme_Helper {
 	 * @param array $args {
 		 *     Optional. Array of arguments.
 		 *     @type string  $itemId                            The Item ID
+		 *     @type array   $relatedCollectionIds              Collection IDs to include. Empty lists every related collection.
 		 *     @type string  $itemsListLayout                   The type of list to be rendered. Accepts 'grid', 'list', 'mosaic', 'carousel', 'gallery' and 'tainacan-view-mode. 
 		 * 	   @type string  $order                             Sorting direction to the related items query. Either 'desc' or 'asc'. 
 		 * 	   @type string  $orderby                           Sortby metadata. By now we're accepting only 'title' and 'date'.
@@ -1860,12 +1861,23 @@ class Theme_Helper {
 		if (!count($related_items))
 			return;
 
+		$allowed_related_collection_ids = $this->parse_id_list( isset( $args['relatedCollectionIds'] ) ? $args['relatedCollectionIds'] : [] );
+
 		// Always pass the default class. We force passing the wp-block-tainacan-carousel-related-items because themes might have used it to style before the other layouts exist;
 		$output = '<div data-module="related-items-list" class="' .  esc_attr($args['className']) . ' wp-block-tainacan-carousel-related-items wp-block-tainacan-related-items' . '">';
+		$has_visible_related_group = false;
 		
 		foreach($related_items as $collection_id => $related_group) {
 			
+			if ( ! empty( $allowed_related_collection_ids ) ) {
+				$related_group_collection_id = isset( $related_group['collection_id'] ) ? (int) $related_group['collection_id'] : 0;
+				if ( ! in_array( $related_group_collection_id, $allowed_related_collection_ids, true ) ) {
+					continue;
+				}
+			}
+
 			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
+				$has_visible_related_group = true;
 				// Adds a heading with the collection name
 				$collection_heading = '';
 				if ( $args['hideCollectionHeading'] !== true && isset($related_group['collection_name']) ) {
@@ -1988,6 +2000,10 @@ class Theme_Helper {
 		}
 		
 		$output .= '</div>';
+
+		if ( ! $has_visible_related_group ) {
+			return;
+		}
 
 		return $output;
 	}
@@ -3727,6 +3743,35 @@ class Theme_Helper {
 				}) .
 			'</ul>'
 		]);
+	}
+
+	/**
+	 * Parses a list of IDs from an array or a JSON string.
+	 *
+	 * Non-numeric values and IDs below 1 are dropped.
+	 *
+	 * @param mixed $ids
+	 * @return int[]
+	 */
+	private function parse_id_list( $ids ) {
+		if ( is_string( $ids ) ) {
+			$decoded = json_decode( $ids, true );
+			$ids = is_array( $decoded ) ? $decoded : [];
+		}
+
+		if ( ! is_array( $ids ) ) {
+			return [];
+		}
+
+		$parsed_ids = [];
+
+		foreach ( $ids as $id ) {
+			if ( is_numeric( $id ) && (int) $id > 0 ) {
+				$parsed_ids[] = (int) $id;
+			}
+		}
+
+		return array_values( array_unique( $parsed_ids ) );
 	}
 
 	/**
