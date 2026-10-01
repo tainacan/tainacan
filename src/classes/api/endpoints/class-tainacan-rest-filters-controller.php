@@ -142,7 +142,7 @@ class REST_Filters_Controller extends REST_Controller {
 		}
 
 		if (!$valid_type) {
-			throw new \InvalidArgumentException(__('Invalid filter type.', 'tainacan'));
+			throw new \InvalidArgumentException( 'Invalid filter type.' );
 		}
 
 		$filter_type = new $type();
