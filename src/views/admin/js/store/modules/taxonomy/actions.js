@@ -379,7 +379,9 @@ export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) =
     });
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms )
+        // silentError: the caller (terms list) renders the detailed per-term
+        // validation errors itself, so the global handler must not duplicate it.
+        axios.tainacanApi.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms, { silentError: true } )
         .then(res => {
             resolve( res.data );
         })
