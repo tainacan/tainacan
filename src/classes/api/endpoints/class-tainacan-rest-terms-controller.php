@@ -163,7 +163,11 @@ class REST_Terms_Controller extends REST_Controller {
 
 		if( is_array($body) ){
 			if ( count($body) > TAINACAN_API_MAX_BATCH_TERMS ) {
-				$message = sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS );
+				$message = sprintf(
+					/* translators: %d: maximum number of terms allowed in one batch. */
+					__('Batch size exceeds the maximum allowed (%d).', 'tainacan'),
+					TAINACAN_API_MAX_BATCH_TERMS
+				);
 				// Same shape as per-term validation errors returned below (array of objects).
 				return new \WP_REST_Response([
 					[
@@ -300,7 +304,11 @@ class REST_Terms_Controller extends REST_Controller {
 		if ( is_array($terms) && count($terms) > TAINACAN_API_MAX_BATCH_TERMS ) {
 			return new \WP_Error(
 				'rest_too_many_terms',
-				sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS ),
+				sprintf(
+					/* translators: %d: maximum number of terms allowed in one batch. */
+					__('Batch size exceeds the maximum allowed (%d).', 'tainacan'),
+					TAINACAN_API_MAX_BATCH_TERMS
+				),
 				array( 'status' => 400 )
 			);
 		}
@@ -402,7 +410,11 @@ class REST_Terms_Controller extends REST_Controller {
 		if ( is_array($terms) && count($terms) > TAINACAN_API_MAX_BATCH_TERMS ) {
 			return new \WP_Error(
 				'rest_too_many_terms',
-				sprintf( __('Batch size exceeds the maximum allowed (%d).', 'tainacan'), TAINACAN_API_MAX_BATCH_TERMS ),
+				sprintf(
+					/* translators: %d: maximum number of terms allowed in one batch. */
+					__('Batch size exceeds the maximum allowed (%d).', 'tainacan'),
+					TAINACAN_API_MAX_BATCH_TERMS
+				),
 				array( 'status' => 400 )
 			);
 		}
