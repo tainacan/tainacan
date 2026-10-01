@@ -1189,7 +1189,6 @@
                                         }"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div
-                                        class="metadata-value"
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined &&
                                             column.metadata_type_object.related_mapped_prop == 'description'"
@@ -1204,9 +1203,9 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
+                                        class="metadata-value"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div
-                                        class="metadata-value"
                                         v-if="item.metadata != undefined &&
                                             column.metadatum !== 'row_thumbnail' &&
                                             column.metadatum !== 'row_actions' &&
@@ -1226,6 +1225,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
+                                        class="metadata-value"
                                         v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
 
                                 <span 
