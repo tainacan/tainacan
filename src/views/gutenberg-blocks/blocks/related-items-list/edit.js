@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { useEffect, useState } = wp.element;
 
-const { Icon, Spinner, Button, Placeholder, ToolbarDropdownMenu, PanelBody, ToggleControl, BaseControl } = wp.components;
+const { Placeholder, Icon, Spinner, Button, ToolbarDropdownMenu, PanelBody, ToggleControl, BaseControl } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { InnerBlocks, BlockControls, useBlockProps, InspectorControls } = wp.blockEditor;
@@ -12,6 +12,7 @@ import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single
 import CollectionsSelectionModal from '../../js/selection/tainacan-collections-selection-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 import tainacanApi from '../../js/axios.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 import axios from 'axios';
 
 const placeholderTemplate = [[
@@ -394,25 +395,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
             }
             { !templateMode && !relatedItems.length && !isLoading ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 -2 12 16"
-                                height="24px"
-                                width="24px">
-                            <path d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>
-                        </svg>
-                        {__('Select an item to create a set of lists with items related to it via relationship metadata.', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Related Items List', 'tainacan' ) }
+                    instructions={ __( 'Select an item to create a set of lists with items related to it via relationship metadata.', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"
@@ -425,16 +411,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
             { !templateMode && !isLoading && itemId && relatedItems.reduce((total, relation) => total + Number(relation.total_items), 0) <= 0 ?
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>{ __('The selected item does not contain other items related to it.', 'tainacan') }</p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Related Items List', 'tainacan' ) }
+                    instructions={ __( 'The selected item does not contain other items related to it.', 'tainacan' ) }
+                >
                      <Button
                         isPrimary
                         type="button"
@@ -448,16 +428,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
             { !templateMode && !isLoading && itemId && relatedItems.reduce((total, relation) => total + Number(relation.total_items), 0) > 0 && visibleRelatedItems(relatedItems).reduce((total, relation) => total + Number(relation.total_items), 0) <= 0 ?
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>{ __('None of the related items belong to the selected collections.', 'tainacan') }</p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Related Items List', 'tainacan' ) }
+                    instructions={ __( 'None of the related items belong to the selected collections.', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"

@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { Placeholder, BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
@@ -15,6 +15,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function({ attributes, setAttributes, isSelected, clientId }) {
     let {
@@ -579,7 +580,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                     <Button
                                         style={{ margin: '6px auto 16px auto', display: 'block' }}
                                         id="parent-term-selection"
-                                        isPrimary
+                                        isSecondary
                                         onClick={ () => openParentTermModal() }>
                                         {__('Select parent term', 'tainacan')}
                                     </Button> 
@@ -820,43 +821,27 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
             { !facets.length && !isLoading && !(searchString != undefined && searchString != '') ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                viewBox="0 0 24 24"
-                                height="24px"
-                                width="24px">
-                            <path d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
-                        </svg>
-                        {__('List facets from a Tainacan Collection or Repository', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Facets List', 'tainacan' ) }
+                    instructions={ __( 'List facets from a Tainacan Collection or Repository', 'tainacan' ) }
+                >
                     {
-                        parentTerm && parentTerm.id && isMetadatumTypeTaxonomy(metadatumType)? 
-                            <div style={{ display: 'flex' }}>
-                                <Button
-                                    isPrimary
-                                    type="button"
-                                    onClick={ () => openParentTermModal() }>
-                                    {__('Change parent term', 'tainacan')}
-                                </Button>
-                                <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                        parentTerm && parentTerm.id && isMetadatumTypeTaxonomy(metadatumType)?
+                            <>
                                 <Button
                                     isPrimary
                                     type="button"
                                     onClick={ () => openMetadataModal() }>
                                     {__('Change facets source', 'tainacan')}
                                 </Button>
-                            </div>
-                        : 
+                                <Button
+                                    isSecondary
+                                    type="button"
+                                    onClick={ () => openParentTermModal() }>
+                                    {__('Change parent term', 'tainacan')}
+                                </Button>
+                            </>
+                        :
                         <Button
                             isPrimary
                             type="button"
@@ -864,7 +849,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             {__('Select facets', 'tainacan')}
                         </Button>
                     }
-                        
+
                 </Placeholder>
                 ) : null
             }
