@@ -381,6 +381,7 @@
         components:{
             TainacanText: defineAsyncComponent(() => import('../metadata-types/text/TainacanText.vue')),
             TainacanTextarea: defineAsyncComponent(() => import('../metadata-types/textarea/TainacanTextarea.vue')),
+            TainacanRichText: defineAsyncComponent(() => import('../metadata-types/rich-text/TainacanRichText.vue')),
             TainacanSelectbox: defineAsyncComponent(() => import('../metadata-types/selectbox/TainacanSelectbox.vue')),
             TainacanNumeric: defineAsyncComponent(() => import('../metadata-types/numeric/TainacanNumeric.vue')),
             TainacanDate: defineAsyncComponent(() => import('../metadata-types/date/TainacanDate.vue')),

@@ -220,7 +220,8 @@ class Item_Metadata extends Repository {
 	protected function is_rich_text_capable_metadata( Entities\Item_Metadata_Entity $item_metadata ) {
 		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
 
-		return $metadata_type instanceof \Tainacan\Metadata_Types\Core_Description;
+		return $metadata_type instanceof \Tainacan\Metadata_Types\Core_Description ||
+			$metadata_type instanceof \Tainacan\Metadata_Types\Rich_Text;
 	}
 
 	/**

@@ -115,7 +115,7 @@
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{
-                                        'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
+                                        'metadata-type-textarea': column.metadata_type_object != undefined && ['tainacan-textarea', 'tainacan-rich-text'].includes(column.metadata_type_object.component),
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
                                         'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
                                         'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
@@ -178,7 +178,7 @@
                                                     show: 500,
                                                     hide: 300,
                                                 },
-                                                popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
+                                                popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && ['tainacan-textarea', 'tainacan-rich-text'].includes(column.metadata_type_object.component) ? 'metadata-type-textarea' : '' ],
                                                 content: renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                                 html: true,
                                                 autoHide: false,

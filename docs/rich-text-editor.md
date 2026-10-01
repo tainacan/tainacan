@@ -23,11 +23,19 @@ Textarea metadata fields remain plain text.
 
 The switch defaults to `no`, so enabling the setting or constant does not change existing metadata fields. Set it to `yes` for each metadata that should display the rich text editor in item editing forms. It appears in the relevant metadata-type options section.
 
-When the setting is disabled, or the constant has any value other than boolean `true`, Tainacan does not load the rich text editor, hides this per-metadata switch, and uses the original textarea even when a metadata was previously configured to use rich text. Its saved setting is retained, ready to be used again when rich text is enabled.
+When the setting is disabled, or the constant has any value other than boolean `true`, Tainacan does not use the rich text editor for the fields controlled by this setting. It hides the Core Description switch and uses the original textarea even when Core Description was previously configured to use rich text. Its saved setting is retained, ready to be used again when rich text is enabled. The dedicated **Rich Text** metadata type is an exception: it always uses the rich text editor.
 
 Descriptions and Core Description metadata retain WordPress-safe formatting, including links, even while the editor is disabled or not selected for a metadata field. Other text inputs, such as titles and names, remove links when saved.
 
 When `TAINACAN_ALLOW_RICH_TEXT_EDITOR` is defined, it overrides the saved setting and disables its control in the Tainacan settings page. This lets host managers keep the global choice over administrator preferences. Reload the Tainacan admin page after changing the setting or constant.
+
+## Rich Text metadata type
+
+Choose **Rich Text** when creating a metadatum to edit its item values with TinyMCE from the beginning. Unlike **Textarea**, this type always uses the rich text editor, even when the global editor setting or constant is disabled. There is no per-metadatum editor switch, conversion of existing text, or editor-state flag. Existing Textarea and Core Description metadata do not change type automatically.
+
+Rich Text values are stored as WordPress-safe HTML in item metadata. Links, paragraphs, lists, and emphasis survive saving; executable markup and unsafe link protocols are removed by the server. `value` in the item metadata REST API contains the stored HTML, and `value_as_html` displays it without adding line breaks or links a second time. Existing item metadata create, read, and update routes are used without a new request parameter. Rich Text also supports multiple values and the normal metadata options, including a character limit based on visible text in the editor.
+
+An editor containing only an empty paragraph is treated as empty for required-field validation and optional-value removal. Bulk editing and item forms use the same editor. Exporters and integrations that read `value` receive HTML and should strip tags if they need plain text.
 
 ## Core Description in item editing
 

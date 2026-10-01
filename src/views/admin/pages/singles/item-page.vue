@@ -142,7 +142,7 @@
                                                 </label>
                                                 <div
                                                         :class="{
-                                                            'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
+                                                            'metadata-type-textarea': ['tainacan-textarea', 'tainacan-rich-text'].includes(itemMetadatum.metadatum.metadata_type_object.component),
                                                             'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
                                                             'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
                                                         }"
@@ -1244,4 +1244,3 @@
         }
     }
 </style>
-

@@ -208,6 +208,7 @@
         components:{
             TainacanText: defineAsyncComponent(() => import('./text/TainacanText.vue')),
             TainacanTextarea: defineAsyncComponent(() => import('./textarea/TainacanTextarea.vue')),
+            TainacanRichText: defineAsyncComponent(() => import('./rich-text/TainacanRichText.vue')),
             TainacanSelectbox: defineAsyncComponent(() => import('./selectbox/TainacanSelectbox.vue')),
             TainacanNumeric: defineAsyncComponent(() => import('./numeric/TainacanNumeric.vue')),
             TainacanDate: defineAsyncComponent(() => import('./date/TainacanDate.vue')),
