@@ -200,6 +200,7 @@
     -get_default_search_sentence()
     +process_request_filters(args)
     +get_attachments_schema()
+    +get_list_schema()
     +get_schema()
   }
   class "REST_Filters_Controller\n<b>REST API controller for managing Tainacan filters.</b>" as REST_Filters_Controller {
@@ -260,6 +261,7 @@
     +get_endpoint_args_for_item_schema(method)
     +get_endpoint_arg_for_schema(name, properties, repository)
     +get_schema()
+    +get_list_schema()
   }
   class "REST_Facets_Controller\n<b>REST API controller for managing Tainacan facets.</b>" as REST_Facets_Controller {
     -metadatum_repository : 
@@ -321,7 +323,7 @@
     +get_schema()
   }
   class "REST_Metadatum_Mappers_Controller\n<b>REST API controller for managing Tainacan metadatum mappers.</b>" as REST_Metadatum_Mappers_Controller {
-    #get_schema()
+    +get_schema()
     +__construct()
     +register_routes()
     +prepare_item_for_response(mapper, request)
