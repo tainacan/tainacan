@@ -1,14 +1,15 @@
 const { __ } = wp.i18n;
 
-const { useEffect } = wp.element;
+const { useEffect, useState } = wp.element;
 
-const { Icon, Spinner, Button, Placeholder, ToolbarDropdownMenu, PanelBody, ToggleControl } = wp.components;
+const { Icon, Spinner, Button, Placeholder, ToolbarDropdownMenu, PanelBody, ToggleControl, BaseControl } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { InnerBlocks, BlockControls, useBlockProps, InspectorControls } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
+import CollectionsSelectionModal from '../../js/selection/tainacan-collections-selection-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
@@ -62,10 +63,13 @@ export default function ({ attributes, setAttributes, isSelected }) {
         itemsListLayout,
         tainacanViewMode,
         templateMode,
-        isDynamic
+        isDynamic,
+        relatedCollectionIds
     } = attributes;
 
     let itemRequestSource = undefined;
+    const [isCollectionsModalOpen, setIsCollectionsModalOpen] = useState(false);
+    const [selectedCollectionNames, setSelectedCollectionNames] = useState([]);
   
     // Gets blocks props from hook
     const blockProps = useBlockProps();
@@ -91,7 +95,35 @@ export default function ({ attributes, setAttributes, isSelected }) {
         setAttributes({
             relatedItemsTemplate: getRelatedItemsTemplates(relatedItems)
         })
-    }, [ relatedItems, itemsListLayout, tainacanViewMode ]);
+    }, [ relatedItems, itemsListLayout, tainacanViewMode, relatedCollectionIds ]);
+
+    useEffect(() => {
+        if ( !relatedCollectionIds || !relatedCollectionIds.length ) {
+            setSelectedCollectionNames([]);
+            return;
+        }
+
+        let source = axios.CancelToken.source();
+        const params = new URLSearchParams();
+        params.set('orderby', 'title');
+        params.set('order', 'asc');
+        params.set('perpage', String(relatedCollectionIds.length));
+        relatedCollectionIds.forEach((id) => params.append('postin[]', id));
+
+        tainacanApi.get('/collections/?' + params.toString(), { cancelToken: source.token })
+            .then((response) => {
+                setSelectedCollectionNames((response.data || []).map((collection) => ({
+                    id: String(collection.id),
+                    name: collection.name
+                })));
+            })
+            .catch((error) => {
+                if ( !axios.isCancel(error) )
+                    console.log('Error trying to fetch selected collections: ' + error);
+            });
+
+        return () => source.cancel('Selected collections request canceled.');
+    }, [ relatedCollectionIds ]);
 
     const layoutControls = [
         {
@@ -149,10 +181,19 @@ export default function ({ attributes, setAttributes, isSelected }) {
         } );
     }
 
+    function visibleRelatedItems(itemsRelatedToThis) {
+        const allowedIds = (relatedCollectionIds || []).map((id) => String(id));
+
+        if ( !allowedIds.length )
+            return itemsRelatedToThis;
+
+        return itemsRelatedToThis.filter((collection) => allowedIds.includes(String(collection.collection_id)));
+    }
+
     function getRelatedItemsTemplates(itemsRelatedToThis) {
         let innerBlocksTemplate = [];
         
-        itemsRelatedToThis.forEach((collection) => {
+        visibleRelatedItems(itemsRelatedToThis).forEach((collection) => {
 
             let innerItemsList = itemsListLayout !== 'carousel' ?
                 [
@@ -228,6 +269,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
             itemsListLayout: itemsListLayout
         });
     }
+
+    const relatedCollectionsLabel = (relatedCollectionIds || []).length
+        ? ( selectedCollectionNames.length
+            ? selectedCollectionNames.map((collection) => collection.name).join(', ')
+            : relatedCollectionIds.join(', ') )
+        : __('All related collections.', 'tainacan');
     
     return (
         <div { ...blockProps }>
@@ -247,7 +294,48 @@ export default function ({ attributes, setAttributes, isSelected }) {
                         }
                     />
                 </PanelBody>
+                <PanelBody
+                    title={ __('Related collections', 'tainacan') }
+                    initialOpen={ true }
+                >
+                    <BaseControl
+                        id="related-collections-selection"
+                        label={ __('Showing relations from:', 'tainacan') }
+                    >
+                        <span style={{ fontWeight: 'bold', top: '-3px', position: 'relative' }}>&nbsp;{ relatedCollectionsLabel }</span>
+                        <br />
+                        <Button
+                            style={{ margin: '6px auto 16px auto', display: 'block' }}
+                            id="related-collections-selection"
+                            isSecondary
+                            onClick={ () => setIsCollectionsModalOpen(true) }>
+                            { __('Select collections', 'tainacan') }
+                        </Button>
+                    </BaseControl>
+                </PanelBody>
             </InspectorControls>
+
+            { isCollectionsModalOpen ?
+                <CollectionsSelectionModal
+                    modalTitle={ __('Select collections to display relations from', 'tainacan') }
+                    selectedCollectionsObject={ (relatedCollectionIds || []).map((id) => {
+                        const known = selectedCollectionNames.find((collection) => String(collection.id) === String(id));
+                        return known || { id: String(id), name: String(id) };
+                    }) }
+                    onApplySelection={ (selection) => {
+                        setAttributes({
+                            relatedCollectionIds: selection.map((collection) => String(collection.id).replace(/^collection-id-/, ''))
+                        });
+                        setSelectedCollectionNames(selection.map((collection) => ({
+                            id: String(collection.id).replace(/^collection-id-/, ''),
+                            name: collection.name
+                        })));
+                        setIsCollectionsModalOpen(false);
+                    }}
+                    onCancelSelection={ () => setIsCollectionsModalOpen(false) }
+                />
+                : null
+            }
 
             { isSelected ? 
                 ( 
@@ -352,6 +440,29 @@ export default function ({ attributes, setAttributes, isSelected }) {
                         type="button"
                         onClick={ () => openSingleItemModal() }>
                         {__('Select another Item', 'tainacan')}
+                    </Button>
+                </Placeholder>
+                :
+                null
+            }
+
+            { !templateMode && !isLoading && itemId && relatedItems.reduce((total, relation) => total + Number(relation.total_items), 0) > 0 && visibleRelatedItems(relatedItems).reduce((total, relation) => total + Number(relation.total_items), 0) <= 0 ?
+                <Placeholder
+                    className="tainacan-block-placeholder"
+                    icon={(
+                        <span style={{ display: 'inline-block', width: '148px' }}>
+                            <img
+                                style={{ width: '100%', height: 'auto' }}
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
+                                alt="Tainacan Logo"/>
+                        </span>
+                    )}>
+                    <p>{ __('None of the related items belong to the selected collections.', 'tainacan') }</p>
+                    <Button
+                        isPrimary
+                        type="button"
+                        onClick={ () => setAttributes({ relatedCollectionIds: [] }) }>
+                        {__('Show all related collections', 'tainacan')}
                     </Button>
                 </Placeholder>
                 :

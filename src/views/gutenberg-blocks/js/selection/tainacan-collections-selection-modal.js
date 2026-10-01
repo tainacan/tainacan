@@ -1,4 +1,4 @@
-import tainacanApi from '../../js/axios.js';
+import tainacanApi from '../axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
@@ -6,53 +6,78 @@ const { __ } = wp.i18n;
 const { TextControl, Button, Modal, CheckboxControl, Spinner } = wp.components;
 const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
-export default class CollectionsModal extends React.Component {
+function storedCollectionId(collection, prefixNumericIds) {
+    if (prefixNumericIds && !isNaN(collection.id))
+        return 'collection-id-' + collection.id;
+
+    return collection.id;
+}
+
+function matchesCollectionId(storedId, collectionId) {
+    return storedId == collectionId || storedId == ('collection-id-' + collectionId);
+}
+
+export default class CollectionsSelectionModal extends React.Component {
     constructor(props) {
         super(props);
 
-        // Initialize state
         this.state = {
             searchCollectionName: '',
             collectionsRequestSource: undefined,
             collections: [],
-            temporarySelectedCollections: [], 
-            isLoadingCollections: false, 
+            temporarySelectedCollections: [],
+            isLoadingCollections: false,
             modalCollections: [],
             totalModalCollections: 0,
             collectionsPerPage: 24,
             collectionsPage: 1,
         };
-        
-        // Bind events
+
         this.selectTemporaryCollection = this.selectTemporaryCollection.bind(this);
         this.removeTemporaryCollectionOfId = this.removeTemporaryCollectionOfId.bind(this);
         this.applySelectedCollections = this.applySelectedCollections.bind(this);
         this.isTemporaryCollectionSelected = this.isTemporaryCollectionSelected.bind(this);
         this.toggleSelectTemporaryCollection = this.toggleSelectTemporaryCollection.bind(this);
         this.cancelSelection = this.cancelSelection.bind(this);
-        this.selectCollection = this.selectCollection.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
+        this.buildCollectionsQuery = this.buildCollectionsQuery.bind(this);
     }
 
     componentWillMount() {
-
         this.fetchModalCollections();
-        
-        this.setState( { 
-            collections: [], 
+
+        this.setState({
+            collections: [],
             collectionsPage: 1,
-            temporarySelectedCollections: JSON.parse(JSON.stringify(this.props.selectedCollectionsObject))
-        } );
+            temporarySelectedCollections: JSON.parse(JSON.stringify(this.props.selectedCollectionsObject || []))
+        });
+    }
+
+    buildCollectionsQuery({ paged, search }) {
+        const params = new URLSearchParams();
+        params.set('orderby', 'title');
+        params.set('order', 'asc');
+        params.set('perpage', String(this.state.collectionsPerPage));
+
+        if (paged)
+            params.set('paged', String(paged));
+
+        params.set('status', 'publish');
+
+        if (search)
+            params.set('search', search);
+
+        return '/collections/?' + params.toString();
     }
 
     selectTemporaryCollection(collection) {
-        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => existingCollection.id == collection.id);
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => matchesCollectionId(existingCollection.id, collection.id));
 
         if (existingCollectionIndex < 0) {
             let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
             aTemporarySelectedCollections.push({
-                id: collection.id,
+                id: storedCollectionId(collection, this.props.prefixNumericIds),
                 name: collection.name,
                 url: collection.url,
                 thumbnail: collection.thumbnail
@@ -62,8 +87,7 @@ export default class CollectionsModal extends React.Component {
     }
 
     removeTemporaryCollectionOfId(collectionId) {
-
-        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => existingCollection.id == collectionId);
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => matchesCollectionId(existingCollection.id, collectionId));
 
         if (existingCollectionIndex >= 0) {
             let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
@@ -78,7 +102,7 @@ export default class CollectionsModal extends React.Component {
     }
 
     isTemporaryCollectionSelected(collectionId) {
-        return this.state.temporarySelectedCollections.findIndex(collection => collection.id == collectionId) >= 0;
+        return this.state.temporarySelectedCollections.findIndex((collection) => matchesCollectionId(collection.id, collectionId)) >= 0;
     }
 
     toggleSelectTemporaryCollection(collection, isChecked) {
@@ -89,7 +113,6 @@ export default class CollectionsModal extends React.Component {
     }
 
     cancelSelection() {
-
         this.setState({
             collectionsPage: 1,
             modalCollections: []
@@ -98,34 +121,23 @@ export default class CollectionsModal extends React.Component {
         this.props.onCancelSelection();
     }
 
-    selectCollection(selectedCollectionId) {
-
-        this.setState({
-            collectionId: selectedCollectionId
-        });
-        this.fetchCollection();
-        this.fetchModalCollections();
-    }
-
     fetchModalCollections() {
-
         let currentModalCollections = this.state.modalCollections;
         if (this.state.collectionsPage <= 1)
             currentModalCollections = [];
 
-        let endpoint = '/collections/?orderby=title&order=asc&status=publish&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionsPage;
-        
-        this.setState({ 
-            isLoadingCollections: true, 
+        let endpoint = this.buildCollectionsQuery({ paged: this.state.collectionsPage });
+
+        this.setState({
+            isLoadingCollections: true,
             modalCollections: currentModalCollections,
         });
 
         tainacanApi.get(endpoint)
             .then(response => {
-
                 for (let collection of response.data) {
-                    currentModalCollections.push({ 
-                        name: collection.name, 
+                    currentModalCollections.push({
+                        name: collection.name,
                         id: collection.id,
                         url: collection.url,
                         thumbnail: [{
@@ -136,16 +148,17 @@ export default class CollectionsModal extends React.Component {
                 }
 
                 this.setState({
-                    collectionsPage: this.state.collectionsPage + 1,  
-                    isLoadingCollections: false, 
+                    collectionsPage: this.state.collectionsPage + 1,
+                    isLoadingCollections: false,
                     modalCollections: currentModalCollections,
                     totalModalCollections: response.headers['x-wp-total']
                 });
-                
+
                 return currentModalCollections;
             })
             .catch(error => {
                 console.log('Error trying to fetch collections: ' + error);
+                this.setState({ isLoadingCollections: false });
             });
     }
 
@@ -159,17 +172,12 @@ export default class CollectionsModal extends React.Component {
             isLoadingCollections: true
         });
 
-        let endpoint = '/collections/?orderby=title&status=publish&order=asc&perpage=' + this.state.collectionsPerPage;
-
-        if (name != undefined && name != '')
-            endpoint += '&search=' + name;
+        let endpoint = this.buildCollectionsQuery({ search: name });
 
         tainacanApi.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
-
-                let someCollections = this.state.collections;
-                someCollections = response.data.map((collection) => ({ 
-                    name: collection.name, 
+                let someCollections = response.data.map((collection) => ({
+                    name: collection.name,
                     id: collection.id,
                     url: collection.url,
                     thumbnail: [{
@@ -178,65 +186,75 @@ export default class CollectionsModal extends React.Component {
                     }]
                 }));
 
-                this.setState({ 
-                    isLoadingCollections: false, 
+                this.setState({
+                    isLoadingCollections: false,
                     collections: someCollections
                 });
 
                 return someCollections;
             })
             .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
+                if (!axios.isCancel(error)) {
+                    console.log('Error trying to fetch collections: ' + error);
+                    this.setState({ isLoadingCollections: false });
+                }
             });
     }
 
+    renderCollectionOption(collection) {
+        return (
+            <li
+                key={ collection.id }
+                className="modal-checkbox-list-item">
+                { collection.thumbnail ?
+                    <img
+                        aria-hidden
+                        src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}
+                        alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
+                    : null
+                }
+                <CheckboxControl
+                    label={ collection.name }
+                    checked={ this.isTemporaryCollectionSelected(collection.id) }
+                    onChange={ ( isChecked ) => { this.toggleSelectTemporaryCollection(collection, isChecked) } }
+                />
+            </li>
+        );
+    }
+
     render() {
+        const modalTitle = this.props.modalTitle || __('Select the desired collections from your repository', 'tainacan');
+
         return (
             <Modal
                     className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
-                    title={__('Select the desired collections from your repository', 'tainacan')}
+                    title={ modalTitle }
                     onRequestClose={ () => this.cancelSelection() }
-                    contentLabel={__('Select collections', 'tainacan')}>
+                    contentLabel={ this.props.contentLabel || __('Select collections', 'tainacan') }>
 
                 <div>
                     <div className="modal-search-area">
-                        <TextControl 
+                        <TextControl
+                                placeholder={ __('Search by collection\'s name', 'tainacan') }
                                 label={__('Search for a collection', 'tainacan')}
                                 value={ this.state.searchCollectionName }
                                 onInput={(value) => {
-                                    this.setState({ 
+                                    this.setState({
                                         searchCollectionName: value.target.value
                                     });
                                 }}
                                 onChange={(value) => this.fetchCollections(value)}/>
                     </div>
                     {(
-                    this.state.searchCollectionName != '' ? ( 
+                    this.state.searchCollectionName != '' ? (
 
                         this.state.collections.length > 0 ?
                         (
                             <div>
                                 <ul className="modal-checkbox-list">
                                 {
-                                    this.state.collections.map((collection) =>
-                                    <li 
-                                        key={ collection.id }
-                                        className="modal-checkbox-list-item">
-                                        { collection.thumbnail ?
-                                            <img
-                                                aria-hidden
-                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}
-                                                alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
-                                            : null
-                                        }
-                                        <CheckboxControl
-                                            label={ collection.name }
-                                            checked={ this.isTemporaryCollectionSelected(collection.id) }
-                                            onChange={ ( isChecked ) => { this.toggleSelectTemporaryCollection(collection, isChecked) } }
-                                        />
-                                    </li>
-                                    )
-                                }                                                
+                                    this.state.collections.map((collection) => this.renderCollectionOption(collection))
+                                }
                                 </ul>
                                 { this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> : null }
                             </div>
@@ -245,37 +263,21 @@ export default class CollectionsModal extends React.Component {
                         <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no collections found.', 'tainacan') }</p>
                         </div>
-                    ) : 
-                    this.state.modalCollections.length > 0 ? 
-                    (   
+                    ) :
+                    this.state.modalCollections.length > 0 ?
+                    (
                         <div>
                             <ul className="modal-checkbox-list">
                             {
-                                this.state.modalCollections.map((collection) =>
-                                    <li 
-                                        key={ collection.id }
-                                        className="modal-checkbox-list-item">
-                                        { collection.thumbnail ?
-                                            <img
-                                                aria-hidden
-                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}
-                                                alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
-                                            : null
-                                        }
-                                        <CheckboxControl
-                                            label={ collection.name }
-                                            checked={ this.isTemporaryCollectionSelected(collection.id) }
-                                            onChange={ ( isChecked ) => { this.toggleSelectTemporaryCollection(collection, isChecked) } } />
-                                    </li>
-                                )
-                            } 
-                            { this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> : null }                                               
+                                this.state.modalCollections.map((collection) => this.renderCollectionOption(collection))
+                            }
+                            { this.state.isLoadingCollections ? <div className="spinner-container"><Spinner /></div> : null }
                             </ul>
                             <div className="modal-loadmore-section">
                                 <p>{ __('Showing', 'tainacan') + " " + this.state.modalCollections.length + " " + __('of', 'tainacan') + " " + this.state.totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>
                                 {
                                     this.state.modalCollections.length < this.state.totalModalCollections ? (
-                                    <Button 
+                                    <Button
                                         isSecondary
                                         isSmall
                                         onClick={ () => this.fetchModalCollections() }>
@@ -296,7 +298,7 @@ export default class CollectionsModal extends React.Component {
                         onClick={ () => this.cancelSelection() }>
                         {__('Cancel', 'tainacan')}
                     </Button>
-                    <Button 
+                    <Button
                         isPrimary
                         type="button"
                         onClick={ () => this.applySelectedCollections() }>

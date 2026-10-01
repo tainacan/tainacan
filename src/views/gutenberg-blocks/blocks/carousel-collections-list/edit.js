@@ -8,7 +8,7 @@ const { useSelect } = wp.data;
 
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
-import CarouselCollectionsModal from './carousel-collections-modal.js';
+import CollectionsSelectionModal from '../../js/selection/tainacan-collections-selection-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -376,7 +376,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 (
                 <div>
                     { isModalOpen ?
-                        <CarouselCollectionsModal
+                        <CollectionsSelectionModal
                             selectedCollectionsObject={ selectedCollections }
                             onApplySelection={ (aSelectionOfCollections) => {
                                 selectedCollections = aSelectionOfCollections;
