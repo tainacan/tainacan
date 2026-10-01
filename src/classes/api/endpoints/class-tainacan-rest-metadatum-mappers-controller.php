@@ -16,9 +16,48 @@ use Tainacan\Entities\Metadatum;
  * @since 1.0.0
  */
 class REST_Metadatum_Mappers_Controller extends REST_Controller {
-	protected function get_schema() {
-        return "TODO:get_schema";
-    }
+	public function get_schema() {
+	       return [
+	           '$schema'    => 'http://json-schema.org/draft-04/schema#',
+	           'title'      => 'metadatum-mapper',
+	           'type'       => 'object',
+	           'tags'       => [ $this->rest_base ],
+	           'properties' => [
+	               'slug' => [
+	                   'description' => __('The mapper slug', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'name' => [
+	                   'description' => __('The mapper name', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'allow_extra_metadata' => [
+	                   'description' => __('Whether the mapper allows extra metadata to be registered', 'tainacan'),
+	                   'type'        => 'boolean',
+	               ],
+	               'context_url' => [
+	                   'description' => __('URL of the mapper documentation/context', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'metadata' => [
+	                   'description' => __('The mapper metadata definitions', 'tainacan'),
+	                   'type'        => 'object',
+	               ],
+	               'prefix' => [
+	                   'description' => __('The tag prefix used by the mapper (e.g. dc:)', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'sufix' => [
+	                   'description' => __('The tag sufix used by the mapper', 'tainacan'),
+	                   'type'        => 'string',
+	               ],
+	               'header' => [
+	                   'description' => __('API/file header used by the mapper, or false when it defines none', 'tainacan'),
+	                   'type'        => ['string', 'boolean'],
+	               ],
+	           ],
+	       ];
+	   }
 
 	/**
 	 * REST_Metadatum_Mappers_Controller constructor.
@@ -41,6 +80,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 			        'callback'            => array($this, 'update_item'),
 			        'permission_callback' => array($this, 'update_item_permissions_check'),
 			    ),
+			    'schema' => [$this, 'get_schema'],
 			)
 		);
 	}
@@ -116,11 +156,13 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	           count($body['metadata_mappers']) > 0 &&
 	           \Tainacan\Mappers_Handler::get_mapper_from_request($request)
 	    ) {
-	        $metadatum_mapper = $body['metadata_mappers'][0];
-	        $metadatum = \Tainacan\Repositories\Repository::get_entity_by_post($metadatum_mapper['metadatum_id']);
-	        if($metadatum instanceof \Tainacan\Entities\Metadatum && $metadatum->can_edit()) {
-	            return true;
+	        foreach ($body['metadata_mappers'] as $metadatum_mapper) {
+	            $metadatum = \Tainacan\Repositories\Repository::get_entity_by_post($metadatum_mapper['metadatum_id']);
+	            if (!($metadatum instanceof \Tainacan\Entities\Metadatum) || !$metadatum->can_edit()) {
+	                return false;
+	            }
 	        }
+	        return true;
 	    }
 	    return false;
 	}
@@ -170,7 +212,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
         	                return new \WP_REST_Response([
         	                    'error_message' => __('One or more values are invalid.', 'tainacan'),
         	                    'errors'        => $metadatum->get_errors(),
-        	                    'metadatum'         => $this->prepare_item_for_response($prepared, $request),
+        	                    'metadatum'         => $this->prepare_metadatum_for_response($metadatum, $request),
         	                ], 400);
         	            }
     	            }

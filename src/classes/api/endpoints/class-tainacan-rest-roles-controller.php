@@ -131,7 +131,7 @@ class REST_Roles_Controller extends REST_Controller {
 
 		//global $wpdb;
 		//$name = $wpdb->prepare( $request['name'], '' );
-		$name = esc_html( esc_sql( $request['name'] ) );
+		$name = sanitize_text_field( $request['name'] );
 
 		$role_slug = sanitize_title($name);
 
@@ -207,7 +207,7 @@ class REST_Roles_Controller extends REST_Controller {
 		if ( in_array($role_slug, $this->core_roles) ) {
 			return new \WP_REST_Response([
 				'error_message' => __('This role name is protected.', 'tainacan'),
-				'error'         => $name
+				'error'         => $role_slug
 			], 400);
 		}
 
@@ -258,7 +258,7 @@ class REST_Roles_Controller extends REST_Controller {
 
 		if ( isset($request['name']) ) {
 
-			$name = esc_html( esc_sql( $request['name'] ) );
+			$name = sanitize_text_field( $request['name'] );
 			// allow restricted name format ...
 			if( preg_match('/^[a-zA-Z0-9-_ ]*$/', $name) == false ) {
 				return new \WP_REST_Response([
@@ -627,7 +627,11 @@ class REST_Roles_Controller extends REST_Controller {
 	 */
 	public function update_admin_ui_options( $request ) {
 
-		update_option('tainacan_admin_ui_options', $request['admin_ui_options']);
+		$admin_ui_options = $request['admin_ui_options'];
+		if (is_array($admin_ui_options)) {
+			$admin_ui_options = map_deep($admin_ui_options, 'sanitize_text_field');
+		}
+		update_option('tainacan_admin_ui_options', $admin_ui_options);
 
 		$response = array(
 			'admin_ui_options' => get_option('tainacan_admin_ui_options', [])
