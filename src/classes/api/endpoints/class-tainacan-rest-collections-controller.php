@@ -206,7 +206,6 @@ class REST_Collections_Controller extends REST_Controller {
 			$response,
 			$total_collections,
 			$max_pages,
-			(int) $collections->query_vars['paged'],
 			(int) $collections->query_vars['posts_per_page'],
 			$rest_response
 		);

@@ -935,17 +935,14 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Prepares a paginated response with proper headers and Link header.
+	 * Prepares a paginated response with the standard total headers.
 	 *
-	 * This helper builds a paginated response including the X-WP-Total,
-	 * X-WP-TotalPages, and X-WP-ItemsPerPage headers, as well as the Link
-	 * header for pagination navigation. It is designed to work with the
-	 * get_paginated_list_schema() method.
+	 * Sets X-WP-Total, X-WP-TotalPages, and X-WP-ItemsPerPage. It is designed
+	 * to work with the get_paginated_list_schema() method.
 	 *
 	 * @param array        $data        The data to include in the response.
 	 * @param int          $total       Total number of items.
 	 * @param int          $total_pages Total number of pages.
-	 * @param int          $current_page Current page number.
 	 * @param int          $per_page    Number of items per page.
 	 * @param \WP_REST_Response|null $response Optional. The response object to modify.
 	 *
@@ -953,31 +950,12 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.3.0
 	 */
-	protected function prepare_paginated_response( $data, $total, $total_pages, $current_page, $per_page, $response = null ) {
+	protected function prepare_paginated_response( $data, $total, $total_pages, $per_page, $response = null ) {
 		$response = $response ?: new \WP_REST_Response( $data, 200 );
 
 		$response->header( 'X-WP-Total', (int) $total );
 		$response->header( 'X-WP-TotalPages', (int) $total_pages );
 		$response->header( 'X-WP-ItemsPerPage', (int) $per_page );
-
-		// Add Link header for pagination navigation.
-		// WP_REST_Response does not expose a link() method, so we build the
-		// RFC 8288 Link header manually (multiple links comma-separated).
-		$base   = rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) );
-		$links  = array();
-
-		if ( $current_page < $total_pages ) {
-			$next_link = sprintf( '%s?page=%d&per_page=%d', $base, $current_page + 1, $per_page );
-			$links[]   = sprintf( '<%s>; rel="next"', $next_link );
-		}
-		if ( $current_page > 1 ) {
-			$prev_link = sprintf( '%s?page=%d&per_page=%d', $base, $current_page - 1, $per_page );
-			$links[]   = sprintf( '<%s>; rel="prev"', $prev_link );
-		}
-
-		if ( ! empty( $links ) ) {
-			$response->header( 'Link', implode( ', ', $links ) );
-		}
 
 		return $response;
 	}
