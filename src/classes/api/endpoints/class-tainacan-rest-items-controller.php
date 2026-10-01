@@ -1600,12 +1600,16 @@ class REST_Items_Controller extends REST_Controller {
 				], 400);
 			}
 			$secret_key = get_option("tnc_option_recaptch_secret_key");
+			$remote_ip  = '';
+			if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+				$remote_ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+			}
 
 			$response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
 				'body' => [
 					'secret'   => $secret_key,
 					'response' => $captcha_data,
-					'remoteip' => $_SERVER['REMOTE_ADDR'],
+					'remoteip' => $remote_ip,
 				],
 			]);
 			$body = wp_remote_retrieve_body( $response );
