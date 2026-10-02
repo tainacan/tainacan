@@ -87,8 +87,7 @@
                         :taxonomy-id="taxonomyId"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                         @on-edition-finished="($event) => addTermToBeCreated($event)"
-                        @on-edition-canceled="() => isTermCreationPanelOpen = false"
-                        @on-error-found="($event) => $console.log('Form with errors: ' + $event)" />
+                        @on-edition-canceled="() => isTermCreationPanelOpen = false" />
             </transition>
         </template>
     </div>

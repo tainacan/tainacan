@@ -334,9 +334,7 @@
                         if ( this.itemMetadatum.value.length > 0 && this.itemMetadatum.metadatum.multiple != 'yes' )
                             this.activeTab = 1;
                     })
-                    .catch(error => {
-                        this.$console.log(error);
-                    });
+                    .catch(() => undefined);
             },
             onInput(newSelected) {
                 // First we reset the input
@@ -395,9 +393,9 @@
 
                             this.isLoading = false;
                         })
-                        .catch(error => {
+                        .catch(() => {
                             this.isLoading = false;
-                            this.$console.log(error);
+                            
                         });
                 }
 

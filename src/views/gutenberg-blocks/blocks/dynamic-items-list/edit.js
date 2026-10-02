@@ -1,4 +1,4 @@
-const { __, sprintf } = wp.i18n;
+const { __ } = wp.i18n;
 
 const { Placeholder, Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, ColorPalette, BaseControl, PanelBody } = wp.components;
 
@@ -207,12 +207,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 // Initializes some variables
                 mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
                 mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
-                mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumnsRows) : 3;
+                mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
                 mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
                 mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
-                sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+                sampleBackgroundImage = selectedItems && selectedItems[0] && selectedItems[0] ? getItemThumbnail(selectedItems[0], 'tainacan-medium') : ''; 
 
-                const mosaicGroups = mosaicPartition(response.data.items);
+                const mosaicGroups = mosaicPartition(selectedItems);
                 for (let mosaicGroup of mosaicGroups)
                     items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
 
@@ -468,16 +468,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
     }
 
     function removeItemOfId(itemId) {
-        
-        let existingItemIndex = -1;
 
         let existingSelectedItemIndex = selectedItems.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
         if (existingSelectedItemIndex >= 0)
             selectedItems.splice(existingSelectedItemIndex, 1);
 
         if (layout == 'mosaic') {
-            existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
-
             setAttributes({ 
                 selectedItems: selectedItems,
                 content: <div></div> 
@@ -485,7 +481,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             // In the case of the mosaic layout, we need to re-render as the items array is organized in groups.
             setContent();
         } else {
-            existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
+            let existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
 
             if (existingItemIndex >= 0)
                 items.splice(existingItemIndex, 1);

@@ -195,7 +195,7 @@
                     })
                     .catch( (error) => {
                         if (isCancel(error)) {
-                            this.$console.log('Request canceled: ' + error.message);
+                            
                             this.updateSelectedValues();
                         } else
                             this.$console.error( error );
@@ -248,9 +248,7 @@
                     .catch((error) => {
                         this.isLoadingMore = false;
                         this.shouldAddOptions = false;
-                        if (isCancel(error))
-                            this.$console.log('Request canceled: ' + error.message);
-                        else
+                        if (!isCancel(error))
                             this.$console.error( error );
                     });
 

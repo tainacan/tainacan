@@ -29,23 +29,24 @@ module.exports = [
                 'tainacan_plugin': true,
                 'tainacan_blocks': true,
                 'tainacan_user': true,
+                'tainacan_commands': true,
+                'tainacan_dashboard': true,
                 '_': true,
                 'jQuery': true,
                 'tainacan_extra_components': true,
                 'tainacan_extra_plugins': true,
                 'grecaptcha': true,
-                'webkit': true
+                'webkit': true,
+                '__webpack_public_path__': true,
             }
         },
         rules: {
             /* Override/add rules settings here, such as: */
-            // Basic rules that we want to receive a warning instead of error
-            'no-console': 'warn',
+            // Basic rules that we want to receive a warning instead of error.
+            // console.log and console.info are traces. warn and error stay for failures worth keeping.
+            'no-console': ['warn', { allow: ['warn', 'error'] }],
             'no-unused-vars': 'warn',
             'no-undef': 'warn',
-            'no-useless-assignment': 'warn',
-            'no-empty-pattern': 'warn',
-            'no-case-declarations': 'warn',
             // Tainacan relies a lot in v-html and v-text, so we can't disable them
             'vue/no-v-html': 'off',
             'vue/no-v-text-v-html-on-component': 'off',
@@ -61,6 +62,13 @@ module.exports = [
             // These have impact on how some props that are passed and we have mixed types, such as collectionId as a string or number... would require careful refactoring.
             'vue/require-prop-type-constructor': 'off',
             'vue/require-default-prop': 'off'
+        }
+    },
+    {
+        // Vuex actions that ignore an unused store context still need the first argument (`{}`) so the payload stays the second argument.
+        files: ['src/views/admin/js/store/**/actions.js'],
+        rules: {
+            'no-empty-pattern': 'off'
         }
     }
 ];

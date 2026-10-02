@@ -13,7 +13,7 @@ export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isCo
     return new Object({ 
         request: new Promise((resolve, reject) => {
             
-            let endpoint = '';
+            let endpoint;
             if (!isRepositoryLevel) 
                 endpoint = '/collection/' + collectionId + '/filters/';
             else
@@ -41,11 +41,8 @@ export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isCo
                     resolve (filters);
                 }) 
                 .catch((error) => {
-                    if (axios.isCancel(error)) {
-                        console.log('Request canceled: ', error.message);
-                    } else {
+                    if (!axios.isCancel(error))
                         reject(error);
-                    }
                 });
         }),
         source: source
@@ -58,7 +55,7 @@ export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isCo
  */
 export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filterType, status, isRepositoryLevel, newIndex }) => {
     return new Promise(( resolve, reject ) => {
-        let endpoint = '';
+        let endpoint;
         if (!isRepositoryLevel) 
             endpoint = '/collection/' + collectionId + '/metadatum/' + metadatumId +'/filters/';
         else
@@ -105,7 +102,6 @@ export const updateFilter = ( { commit }, { filterId, index, options }) => {
                 resolve( filter );
             })
             .catch( (error) => {
-                console.log(JSON.parse(JSON.stringify(error)));
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
@@ -186,7 +182,6 @@ export const fetchFilterTypes = ({ commit} ) => {
                 resolve (filterTypes);
             })
             .catch((error) => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -239,9 +234,7 @@ export const fetchRepositoryCollectionFilters = ({ commit } ) => {
                     resolve();
                 })
                 .catch((error) => {
-                    if (axios.isCancel(error))
-                        console.log('Request canceled: ', error.message);
-                    else
+                    if (!axios.isCancel(error))
                         reject(error);
                 });
         }),
@@ -283,7 +276,6 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collect
                             resolve();
                         })
                         .catch((error) => {
-                            console.log(error);
                             reject(error);
                         });
                 }

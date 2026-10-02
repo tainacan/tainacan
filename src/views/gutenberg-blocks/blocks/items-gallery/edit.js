@@ -122,13 +122,11 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
 
     function removeItemOfId(itemId) {
         
-        let existingItemIndex = -1;
-
         let existingSelectedItemIndex = selectedItems.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
         if (existingSelectedItemIndex >= 0)
             selectedItems.splice(existingSelectedItemIndex, 1);
 
-        existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
+        let existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
 
         if (existingItemIndex >= 0)
             items.splice(existingItemIndex, 1);
@@ -187,7 +185,6 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
 
             itemsRequestSource = axios.CancelToken.source();
             
-            let endpoint = '/collection' + collectionId + '/items'
             let queryObject = searchParams;
 
             // Set up max items to be shown
@@ -204,7 +201,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
             delete queryObject.admin_view_mode;
             delete queryObject.fetch_only_meta;
             
-            endpoint = '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            let endpoint = '/collection/' + collectionId + '/items?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
             
             tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {

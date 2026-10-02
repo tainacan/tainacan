@@ -2,10 +2,10 @@ const { __ } = wp.i18n;
 
 const { useEffect } = wp.element;
 
-const { Placeholder, Button, ToolbarDropdownMenu, SVG, Path } = wp.components;
+const { Placeholder, Button } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
-const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
+const { useBlockProps, BlockControls } = wp.blockEditor;
 
 import TainacanSingleItemMetadatumSelectionModal from '../../js/selection/tainacan-single-item-metadatum-selection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
@@ -22,6 +22,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
         isModalOpen,
         dataSource,
         templateMode,
+        textAlign
     } = attributes;
     
     // Gets blocks props from hook
@@ -30,9 +31,6 @@ export default function ({ attributes, setAttributes, isSelected }) {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}
 	} );
-    const className = blockProps.className;
-    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
-
     // Checks if we are in template mode, if so, gets the collection Id from URL.
     useEffect(() => {
         if ( !templateMode || ( templateMode && !collectionId ) ) {

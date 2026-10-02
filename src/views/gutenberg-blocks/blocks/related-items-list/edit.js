@@ -118,10 +118,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                     name: collection.name
                 })));
             })
-            .catch((error) => {
-                if ( !axios.isCancel(error) )
-                    console.log('Error trying to fetch selected collections: ' + error);
-            });
+            .catch(() => undefined);
 
         return () => source.cancel('Selected collections request canceled.');
     }, [ relatedCollectionIds ]);

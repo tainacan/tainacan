@@ -770,9 +770,7 @@ export default {
                         .then(res => {
                             this.preloadedItem = res.data;
                         })
-                        .catch(error => {
-                            this.$console.log( error );
-                        });
+                        .catch(() => undefined);
                 }
             }
         },

@@ -225,17 +225,17 @@ export default {
                         items = toPlainItemIds(
                             app.config.globalProperties.$store.getters['search/getSelectedItems']
                         );
-                    } catch (e) {
+                    } catch {
                         items = [];
                     }
                 }
 
-                let query = {};
+                let query;
                 try {
                     query = JSON.parse(JSON.stringify(
                         app.config.globalProperties.$store.getters['search/getPostQuery'] || {}
                     ));
-                } catch (e) {
+                } catch {
                     query = {};
                 }
 

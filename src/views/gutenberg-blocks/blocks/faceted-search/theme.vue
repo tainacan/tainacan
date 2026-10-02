@@ -1037,7 +1037,7 @@
                                 this.$userPrefs.set(orderByKey, { 
                                     slug: 'creation_date',
                                     name: this.$i18n.get('label_creation_date')
-                                }).catch(() => { });
+                                }).catch(() => undefined);
                             }
                         } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
                             this.$route.query.orderby = 'date'
@@ -1255,7 +1255,7 @@
             this.$eventBusSearchEmitter.on('startSlideshowFromItem', (index) => {
                 let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
                 delete currentQuery['slideshow-from'];
-                this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
+                this.$router.replace({ query: currentQuery }).catch(() => undefined);
 
                 this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
                 this.onChangeViewMode('slideshow');
