@@ -119,7 +119,7 @@ install_db() {
 	fi
 
 	# create database
-	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
+	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA || echo "Database $DB_NAME already exists, skipping creation."
 }
 
 install_wp
