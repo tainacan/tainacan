@@ -41,7 +41,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
 		parent::__construct();
     }
 
-
 	/**
 	 * Register the BG Processes route and their endpoints
 	 */
@@ -124,16 +123,41 @@ class REST_Background_Processes_Controller extends REST_Controller {
             ),
 
         ));
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/file', array(
-            array(
-                'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array($this, 'get_file'),
-                'permission_callback' => array($this, 'bg_processes_permissions_check'),
-            ),
-
-        ));
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/file',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_file' ),
+					'permission_callback' => array(
+						$this,
+						'bg_processes_permissions_check',
+					),
+					'args'                => array(
+						'guid'       => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+							'description'       => __(
+								'File identifier.',
+								'tainacan'
+							),
+						),
+						'process_id' => array(
+							'type'        => 'integer',
+							'required'    => false,
+							'minimum'     => 1,
+							'description' => __(
+								'Background process ID associated with an exporter file.',
+								'tainacan'
+							),
+						),
+					),
+				),
+			)
+		);
     }
-
 
 	/**
 	 *
@@ -254,15 +278,48 @@ class REST_Background_Processes_Controller extends REST_Controller {
         return new \WP_REST_Response( $result, 200 );
     }
 
-    public function prepare_item_for_response($item, $request) {
-        $key_log = $item->bg_uuid ?? $item->ID;
-        $item->log = $this->get_log_url($key_log, $item->action);
-        $item->error_log = $this->get_log_url($key_log, $item->action, 'error');
-        $nonce = wp_create_nonce( 'wp_rest' );
-        $item->output = $item->output ?? '';
-        $item->output = str_replace("&_wpnonce=[nonce]", "&_wpnonce=$nonce", $item->output);
-        return $item;
-    }
+	public function prepare_item_for_response( $item, $request ) {
+		if ( ! is_object( $item ) ) {
+			return $item;
+		}
+
+		$item = \Tainacan\Exporter_Files::get_instance()
+			->prepare_process_for_response( $item );
+
+		$key_log = $item->bg_uuid ?? $item->ID;
+		$item->log = $this->get_log_url( $key_log, $item->action );
+		$item->error_log = $this->get_log_url(
+			$key_log,
+			$item->action,
+			'error'
+		);
+
+		$nonce = wp_create_nonce( 'wp_rest' );
+		$item->output = $item->output ?? '';
+		$item->output = str_replace(
+			'&_wpnonce=[nonce]',
+			'&_wpnonce=' . $nonce,
+			$item->output
+		);
+
+		if (
+			! empty( $item->exporter_files ) &&
+			is_array( $item->exporter_files )
+		) {
+			foreach ( $item->exporter_files as &$file ) {
+				if ( ! empty( $file['url'] ) ) {
+					$file['url'] = str_replace(
+						'&_wpnonce=[nonce]',
+						'&_wpnonce=' . $nonce,
+						$file['url']
+					);
+				}
+			}
+			unset( $file );
+		}
+
+		return $item;
+	}
 
     public function update_item( $request ) {
         global $wpdb;
@@ -350,28 +407,80 @@ class REST_Background_Processes_Controller extends REST_Controller {
         return new \WP_REST_Response( $result, 200 );
     }
 
-    public function delete_item( $request ) {
-        global $wpdb;
-        $id = $request['id'];
+	public function delete_item( $request ) {
+		global $wpdb;
 
-        $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
-        $id_q = $wpdb->prepare("AND ID = %d", $id);
+		$id = absint( $request['id'] );
 
-        // do not allow users without permission to see others people process
-        if (current_user_can('edit_users')) {
-            if ( isset($user_q['all_users']) && $user_q['all_users'] ) {
-                $user_q = "";
-            }
-        }
+		if ( empty( $id ) ) {
+			return new \WP_REST_Response(
+				array(
+					'code'    => 'invalid_background_process',
+					'message' => __(
+						'Invalid background process.',
+						'tainacan'
+					),
+					'data'    => array( 'status' => 400 ),
+				),
+				400
+			);
+		}
 
-        $query = "DELETE FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
+		$process = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->table} WHERE ID = %d LIMIT 1",
+				$id
+			)
+		);
 
-        $result = $wpdb->query($query);
+		if ( ! $process ) {
+			return new \WP_REST_Response(
+				array(
+					'code'    => 'background_process_not_found',
+					'message' => __(
+						'Background process not found.',
+						'tainacan'
+					),
+					'data'    => array( 'status' => 404 ),
+				),
+				404
+			);
+		}
 
-        // TODO: delete log files
+		if (
+			(int) $process->user_id !== get_current_user_id() &&
+			! current_user_can( 'edit_users' )
+		) {
+			return new \WP_REST_Response(
+				array(
+					'code'    => 'background_process_forbidden',
+					'message' => __(
+						'You are not allowed to delete this background process.',
+						'tainacan'
+					),
+					'data'    => array( 'status' => 403 ),
+				),
+				403
+			);
+		}
 
-        return new \WP_REST_Response( $result, 200 );
-    }
+		/*
+		 * Exporter files must be removed before their process reference
+		 * is deleted from the database.
+		 */
+		\Tainacan\Exporter_Files::get_instance()
+			->delete_process_files( $process );
+
+		$result = $wpdb->delete(
+			$this->table,
+			array( 'ID' => $id ),
+			array( '%d' )
+		);
+
+		// TODO: delete log files.
+
+		return new \WP_REST_Response( $result, 200 );
+	}
 
     public function get_log_url($id, $action, $type = '') {
         $suffix = $type ? '-' . $type : '';
@@ -388,74 +497,139 @@ class REST_Background_Processes_Controller extends REST_Controller {
         return $logs_url;
     }
 
-    public function get_file( $request ) {
-        if( !isset($request['guid']) )  {
-            return new \WP_REST_Response([
-                'error_message' => __('guid must be specified', 'tainacan' )
-            ], 400);
-        }
-        if (!is_user_logged_in() || !current_user_can('read') ) {
-            $error_def = [
-                "code" => "unauthorized",
-                "message" => "Unauthorized",
-                "data" => [ "status" => 403 ],
-            ];
-            return new \WP_REST_Response($error_def, 403, array('content-type' => 'text/html; charset=utf-8'));
-        }
+	public function get_file( $request ) {
+		if ( empty( $request['guid'] ) ) {
+			return new \WP_REST_Response(
+				array(
+					'error_message' => __(
+						'guid must be specified',
+						'tainacan'
+					),
+				),
+				400
+			);
+		}
 
-        $guid = $request['guid'];
+		if ( ! is_user_logged_in() || ! current_user_can( 'read' ) ) {
+			return new \WP_REST_Response(
+				array(
+					'code'    => 'unauthorized',
+					'message' => __( 'Unauthorized', 'tainacan' ),
+					'data'    => array( 'status' => 403 ),
+				),
+				403
+			);
+		}
 
-        // Reject traversal/absolute-path attempts outright, regardless of what realpath() later resolves.
-        if ( strpos($guid, '..') !== false || preg_match('#^([a-zA-Z]:)?[\\\\/]#', $guid) ) {
-            $error_def = [
-                "code" => "unauthorized_file_path",
-                "message" => "Unauthorized file path",
-                "data" => [ "status" => 403 ],
-            ];
-            return new \WP_REST_Response($error_def, 403, array('content-type' => 'application/json; charset=utf-8'));
-        }
+		$guid = $request['guid'];
 
-        $upload_url = wp_upload_dir();
-        $base_dir = realpath($upload_url['basedir'] . '/tainacan');
+		/*
+		 * Reject traversal and absolute-path attempts before normalizing
+		 * and resolving the requested file.
+		 */
+		if (
+			strpos( $guid, '..' ) !== false ||
+			preg_match( '#^([a-zA-Z]:)?[\\\\/]#', $guid )
+		) {
+			return new \WP_REST_Response(
+				array(
+					'code'    => 'unauthorized_file_path',
+					'message' => __( 'Unauthorized file path', 'tainacan' ),
+					'data'    => array( 'status' => 403 ),
+				),
+				403,
+				array( 'content-type' => 'application/json; charset=utf-8' )
+			);
+		}
 
-        if ( $base_dir === false ) {
-            return new \WP_REST_Response([
-                'error_message' => __('Base directory not found', 'tainacan' )
-            ], 404);
-        }
+		$upload_dir   = wp_upload_dir();
+		$tainacan_dir = realpath(
+			trailingslashit( $upload_dir['basedir'] ) . 'tainacan'
+		);
 
-        $path = $base_dir . '/' . $guid;
-        $real_file_path = realpath($path);
+		if ( false === $tainacan_dir ) {
+			return new \WP_REST_Response(
+				array(
+					'error_message' => __(
+						'Base directory not found',
+						'tainacan'
+					),
+				),
+				404
+			);
+		}
 
-        // The resolved target must live inside the resolved base directory, not just share a string prefix with it.
-        if ( $real_file_path === false || strpos($real_file_path, $base_dir . DIRECTORY_SEPARATOR) !== 0 ) {
-            $error_def = [
-                "code" => "unauthorized_file_path",
-                "message" => "Unauthorized file path",
-                "data" => [ "status" => 403 ],
-            ];
-            return new \WP_REST_Response($error_def, 403, array('content-type' => 'application/json; charset=utf-8'));
-        }
+		$guid           = sanitize_text_field(
+			wp_unslash( $request['guid'] )
+		);
+		$normalized_guid = ltrim( wp_normalize_path( $guid ), '/' );
+		$exporter_files = \Tainacan\Exporter_Files::get_instance();
 
-        if ( file_exists( $path ) ) {
+		if ( strpos( $normalized_guid, 'exporter/' ) === 0 ) {
+			if ( empty( $request['process_id'] ) ) {
+				return new \WP_REST_Response(
+					array(
+						'code'    => 'missing_exporter_process',
+						'message' => __(
+							'The exporter process must be specified.',
+							'tainacan'
+						),
+						'data'    => array( 'status' => 400 ),
+					),
+					400
+				);
+			}
 
-            $finfo = @finfo_open(FILEINFO_MIME_TYPE);
-            $mime_type = @finfo_file($finfo, $path);
-            $file_name = @basename($path);
-            http_response_code(200);
-            header('Content-Description: File Transfer');
-            header("Content-Disposition: attachment; filename=$file_name"); 
-            header("Content-Type: $mime_type");
-            header("Content-Length: " . @filesize( $path ));
-            if (\ob_get_level() > 0) {
-                \ob_clean();
-            }
-            \flush();
-            \readfile($path);
-            exit;
-        } else {
-            return new \WP_REST_Response("file not found", 404, array('content-type' => 'text/html; charset=utf-8'));
-        }
-    }
+			$file = $exporter_files->get_process_file(
+				$request['process_id'],
+				$normalized_guid
+			);
+
+			if ( is_wp_error( $file ) ) {
+				return rest_convert_error_to_response( $file );
+			}
+
+			$path = $file['path'];
+		} else {
+			/*
+			 * Log files keep their existing authentication behavior because
+			 * they are not exporter output files.
+			 */
+			$path = $exporter_files->get_file_path( $normalized_guid );
+
+			if ( is_wp_error( $path ) ) {
+				return rest_convert_error_to_response( $path );
+			}
+		}
+
+		$finfo     = @finfo_open( FILEINFO_MIME_TYPE );
+		$mime_type = $finfo ? @finfo_file( $finfo, $path ) : null;
+		$file_name = basename( $path );
+
+		if ( $finfo ) {
+			finfo_close( $finfo );
+		}
+
+		http_response_code( 200 );
+		header( 'Content-Description: File Transfer' );
+		header(
+			'Content-Disposition: attachment; filename="'
+			. $file_name
+			. '"'
+		);
+		header(
+			'Content-Type: '
+			. ( $mime_type ?: 'application/octet-stream' )
+		);
+		header( 'Content-Length: ' . filesize( $path ) );
+
+		if ( \ob_get_level() > 0 ) {
+			\ob_clean();
+		}
+
+		\flush();
+		\readfile( $path );
+		exit;
+	}
 
 }

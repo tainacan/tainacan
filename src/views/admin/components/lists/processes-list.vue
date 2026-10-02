@@ -109,19 +109,19 @@
                     <span
                             class="process-queued-on"
                             :label="$i18n.get('label_queued_on')"
-                            :aria-label="$i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on)">
+                            :aria-label="$i18n.get('label_queued_on') + ' ' + getUTCDate(bgProcess.queued_on)">
                         <p
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: getDate(bgProcess.queued_on),
+                                    content: getUTCDate(bgProcess.queued_on),
                                     autoHide: false,
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
-                            <span class="has-text-weight-bold">{{ $i18n.get('label_queued_on') + " " }}</span>{{ getDate(bgProcess.queued_on) }}</p>
+                            <span class="has-text-weight-bold">{{ $i18n.get('label_queued_on') + " " }}</span>{{ getUTCDate(bgProcess.queued_on) }}</p>
                     </span>
 
                     <!-- Status-->
@@ -301,9 +301,34 @@
                         <!-- Output -->
                         <span
                                 class="process-output"
+                                :class="{
+                                    'has-unavailable-exporter-file':
+                                        bgProcess.output_files_expired ||
+                                        bgProcess.output_files_download_allowed === false
+                                }"
                                 :label="$i18n.get('label_output')"
-                                :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
+                                :aria-label="$i18n.get('label_output') + ': ' + (
+                                    bgProcess.output_files_expired
+                                        ? $i18n.get('label_exporter_file_expired')
+                                        : (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))
+                                )">
                             <p v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info')" />
+
+                            <p
+                                    v-if="bgProcess.output_files_expired"
+                                    class="has-text-danger">
+                                {{ $i18n.get('label_exporter_file_expired') }}
+                            </p>
+
+                            <p
+                                    v-else-if="bgProcess.output_files_expires_at"
+                                    class="exporter-file-expiration-notice">
+                                {{ $i18n.get('label_exporter_file_expiration_notice') }}
+                                <strong>
+                                    {{ $i18n.get('label_exporter_file_available_until') }}
+                                    {{ getDate(bgProcess.output_files_expires_at) }}
+                                </strong>
+                            </p>
                         </span>
 
                         <!-- Logs -->
@@ -341,19 +366,19 @@
                         <span
                                 class="process-last-processed-on"
                                 :label="$i18n.get('label_last_processed_on')"
-                                :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last)">
+                                :aria-label="$i18n.get('label_last_processed_on') + ' ' + getUTCDate(bgProcess.processed_last)">
                             <p
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: getDate(bgProcess.processed_last),
+                                        content: getUTCDate(bgProcess.processed_last),
                                         autoHide: false,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
-                                <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getDate(bgProcess.processed_last) }}</p>
+                                <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getUTCDate(bgProcess.processed_last) }}</p>
                         </span>
                     </div>
                 </transition>
@@ -524,6 +549,15 @@
             },
             getDate(rawDate) {
                 let date = moment(rawDate).format(this.dateFormat);
+
+                if (date != 'Invalid date') {
+                    return date;
+                } else {
+                    return this.$i18n.get('info_unknown_date');
+                }
+            },
+            getUTCDate(rawDate) {
+                let date = moment.utc(rawDate).local().format(this.dateFormat);
 
                 if (date != 'Invalid date') {
                     return date;
@@ -721,6 +755,10 @@
                     column-gap: 4em;
                     column-rule: none;
                     padding: 0 0.75em;
+                }
+
+                &.has-unavailable-exporter-file :deep(a) {
+                    display: none;
                 }
             }
 
