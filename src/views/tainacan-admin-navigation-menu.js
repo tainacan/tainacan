@@ -433,3 +433,48 @@ function handleUITweakButtons() {
 handleMenuCollapses();
 handleDynamicMenusAndBreadcrumbs();
 handleUITweakButtons();
+// Dynamic Help Tab Update via hashchange (covers all SPA routes)
+function updateTainacanHelpTab() {
+    if ( window.tainacan_plugin && window.tainacan_plugin.i18n && window.tainacan_plugin.i18n.help_tabs ) {
+        let hash = window.location.hash || '#/';
+        let pathKey = hash.replace(/^#/, '').split('?')[0];
+        
+        // Exact match or fallback to default
+        let currentHelp = window.tainacan_plugin.i18n.help_tabs[pathKey];
+        if ( !currentHelp ) {
+            // Check if it's a sub-route, e.g., /collections/123 -> fallback to /collections
+            let parts = pathKey.split('/');
+            if (parts.length > 2) {
+                currentHelp = window.tainacan_plugin.i18n.help_tabs['/' + parts[1]];
+            }
+        }
+        
+        currentHelp = currentHelp || window.tainacan_plugin.i18n.help_tabs['default'];
+        
+        if ( currentHelp ) {
+            let helpTabTitle = document.querySelector('#tab-link-tainacan_admin_help_tab a');
+            let helpTabContent = document.getElementById('tainacan-dynamic-help-content');
+            let helpTabLink = document.getElementById('tainacan-dynamic-help-link');
+            let helpTabSectionLinkWrapper = document.getElementById('tainacan-dynamic-help-section-link-wrapper');
+            let helpTabSectionLink = document.getElementById('tainacan-dynamic-help-section-link');
+
+            if ( helpTabTitle ) helpTabTitle.innerText = currentHelp.title;
+            if ( helpTabContent ) helpTabContent.innerHTML = currentHelp.content;
+            if ( helpTabLink ) helpTabLink.href = currentHelp.link;
+
+            if ( helpTabSectionLinkWrapper && helpTabSectionLink ) {
+                if ( currentHelp !== window.tainacan_plugin.i18n.help_tabs['default'] ) {
+                    helpTabSectionLink.href = currentHelp.link;
+                    helpTabSectionLink.innerText = currentHelp.title;
+                    helpTabSectionLinkWrapper.hidden = false;
+                } else {
+                    helpTabSectionLinkWrapper.hidden = true;
+                }
+            }
+        }
+    }
+}
+window.addEventListener('hashchange', updateTainacanHelpTab);
+// Run once on load to set initial state
+setTimeout(updateTainacanHelpTab, 500);
+

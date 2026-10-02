@@ -1318,5 +1318,63 @@ return apply_filters( 'tainacan-i18n', [
 	'error_thumbnail_alt_ai_empty_response'          => __( 'The generator did not return alternative text. Please try again or enter it manually.', 'tainacan' ),
 	'error_thumbnail_alt_ai_unavailable'             => __( 'Alt text generation is not available on this site.', 'tainacan' ),
 	'error_thumbnail_alt_ai_failed_detail'           => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
+
+	'help_tabs' => [
+		'default' => [
+			'title'   => __( 'Tainacan Help', 'tainacan' ),
+			'content' => '<p>' . __( 'Welcome to Tainacan! Navigate through the menu to see specific help for each section.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/'
+		],
+		'/collections' => [
+			'title'   => __( 'Collections', 'tainacan' ),
+			'content' => '<p>' . __( 'Collections are the core of Tainacan. Here you manage the main groupings of your digital archive. You can create, edit, and configure collections.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/collections'
+		],
+		'/taxonomies' => [
+			'title'   => __( 'Taxonomies', 'tainacan' ),
+			'content' => '<p>' . __( 'Taxonomies are controlled vocabularies. You can use them as filters and metadata for your items.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/taxonomies'
+		],
+		'/metadata' => [
+			'title'   => __( 'Metadata', 'tainacan' ),
+			'content' => '<p>' . __( 'Metadata are the properties that describe your items. You can create repository-level metadata or collection-level metadata.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/metadata'
+		],
+		'/filters' => [
+			'title'   => __( 'Filters', 'tainacan' ),
+			'content' => '<p>' . __( 'Filters allow users to explore and navigate through your items using faceted search.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/filters'
+		],
+		'/items' => [
+			'title'   => __( 'Items', 'tainacan' ),
+			'content' => '<p>' . __( 'Items are the individual records of your digital archive. Browse, create and edit them across the repository or inside a specific collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'/my-items' => [
+			'title'   => __( 'My items', 'tainacan' ),
+			'content' => '<p>' . __( 'This is the list of items you have created or last edited.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'/activities' => [
+			'title'   => __( 'Activities', 'tainacan' ),
+			'content' => '<p>' . __( 'Activities keep a log of the actions performed on the repository or a collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/activities'
+		],
+		'/capabilities' => [
+			'title'   => __( 'Capabilities', 'tainacan' ),
+			'content' => '<p>' . __( 'Capabilities control which user roles can view or manage the repository or a collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/capabilities'
+		],
+		'/reports' => [
+			'title'   => __( 'Reports', 'tainacan' ),
+			'content' => '<p>' . __( 'Reports summarize statistics and information about the repository or a collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/reports'
+		],
+		'/importers' => [
+			'title'   => __( 'Importers', 'tainacan' ),
+			'content' => '<p>' . __( 'Importers bring data from external files or repositories into Tainacan.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/importers'
+		]
+	]
 ] );
 ?>

@@ -212,6 +212,28 @@ class Admin extends Pages {
 			);
 		}
 	}
+
+	function load_page() {
+		parent::load_page();
+		$screen = get_current_screen();
+		if ( ! $screen ) {
+			return;
+		}
+
+		$screen->add_help_tab(array(
+			'id'      => 'tainacan_admin_help_tab',
+			'title'   => __('Tainacan Help', 'tainacan'),
+			'content' => '<div id="tainacan-dynamic-help-content"><p>' . __('Welcome to Tainacan! Navigate through the menu to see specific help for each section.', 'tainacan') . '</p></div>',
+		));
+
+		$screen->set_help_sidebar(
+			'<div id="tainacan-dynamic-help-sidebar">' .
+			'<p>' . __('For more information:', 'tainacan') . '</p>' .
+			'<p><a id="tainacan-dynamic-help-link" href="https://tainacan.github.io/tainacan-wiki/" target="_blank">' . __('Tainacan Documentation', 'tainacan') . '</a></p>' .
+			'<p id="tainacan-dynamic-help-section-link-wrapper" hidden><a id="tainacan-dynamic-help-section-link" href="https://tainacan.github.io/tainacan-wiki/" target="_blank"></a></p>' .
+			'</div>'
+		);
+	}
 	
 	function admin_enqueue_css() {
 		global $TAINACAN_BASE_URL;
