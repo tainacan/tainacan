@@ -26,7 +26,7 @@ import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';
 import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
-export default function({ attributes, setAttributes, isSelected, clientId }) {
+export default function({ attributes, setAttributes }) {
     let {
         termId,
         taxonomyId,
@@ -73,8 +73,6 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         secondaryColor,
         order,
         orderBy,
-        orderByMeta,
-        orderByType,
         collectionOrderBy,
         collectionOrderByMeta,
         collectionOrderByType,
@@ -188,7 +186,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         }
     }
 
-    function onUpdateListType( aListType, props) {
+    function onUpdateListType( aListType) {
         listType = aListType;
 
         if (listType != 'collection') {
@@ -1010,7 +1008,6 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                     existingCollectionDefaultViewMode={ collectionDefaultViewMode } 
                     existingCollectionEnabledViewModes={ collectionEnabledViewModes }
                     onSelectCollection={ ({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, collectionDefaultOrder, collectionDefaultOrderBy, collectionDefaultOrderByMeta, collectionDefaultOrderByType }) => {
-                        collectionId = collectionId;
                         collectionDefaultViewMode = collectionDefaultViewMode ? collectionDefaultViewMode : defaultViewMode;
                         collectionEnabledViewModes = collectionEnabledViewModes && collectionEnabledViewModes.length ? collectionEnabledViewModes : enabledViewModes;
                         order = collectionDefaultOrder ? collectionDefaultOrder : 'ASC';
@@ -1024,7 +1021,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                             collectionEnabledViewModes: collectionEnabledViewModes,
                             enabledViewModes: collectionEnabledViewModes,
                             order: order,
-                            collectionOrderBy, collectionOrderBy,
+                            collectionOrderBy,
                             collectionOrderByMeta: collectionOrderByMeta,
                             collectionOrderByType: collectionOrderByType,
                             isCollectionModalOpen: false

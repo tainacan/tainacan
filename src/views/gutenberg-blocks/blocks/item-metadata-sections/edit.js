@@ -34,7 +34,6 @@ export default function ({ attributes, setAttributes, isSelected }) {
             [ `has-text-align-${ textAlign }` ]: textAlign,
         }
     } );
-    const className = blockProps.className;
 
     useEffect(() => {
         setContent();

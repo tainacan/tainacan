@@ -128,7 +128,7 @@ export default function ({ attributes, setAttributes }) {
 
     function loadCollectionMetadata(selectedCollectionId) {
         isLoadingCollectionMetadata = true;
-        setAttributes({ isLoadingCollectionMetadata, isLoadingCollectionMetadata });
+        setAttributes({ isLoadingCollectionMetadata });
 
         tainacanApi.get('/collection/' + selectedCollectionId + '/metadata/?include_disabled=false&parent=0')
             .then(response => {
@@ -731,7 +731,6 @@ export default function ({ attributes, setAttributes }) {
                         filterOptionsBy={ { allows_submission: 'yes' } }
                         existingCollectionId={ collectionId }
                         onSelectCollection={ ({ collectionId }) => {
-                            collectionId = collectionId;
                             setAttributes({
                                 collectionId: collectionId,
                                 isCollectionModalOpen: false

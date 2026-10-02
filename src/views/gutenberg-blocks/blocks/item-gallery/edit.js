@@ -62,7 +62,6 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
 
     // Gets blocks props from hook
     const blockProps = useBlockProps();
-    const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
     useEffect(() => {

@@ -41,7 +41,6 @@ export default function ({ attributes, setAttributes, isSelected }) {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}
 	} );
-    const className = blockProps.className;
 
     // Checks if we are in template mode, if so, gets the collection Id from URL.
     useEffect(() => {

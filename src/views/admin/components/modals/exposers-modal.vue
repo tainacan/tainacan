@@ -422,8 +422,8 @@ export default {
         this.fetchAvailableExposers()
             .then(() => {
                 this.isLoading = false;
-            }).catch((error) => {
-                this.$console.log(error);
+            }).catch(() => {
+                
                 this.isLoading = false;
             });
 
@@ -524,7 +524,6 @@ export default {
             let successful = false;
             try {
                 successful = document.execCommand('copy');
-                this.$console.log('Fallback: Copying text command was ' + (successful ? 'successful' : 'unsuccessful'));
                 if (successful && !skipToast) {
                     this.$buefy.toast.open({
                         duration: 3000,
@@ -576,7 +575,6 @@ export default {
 
             return navigator.clipboard.writeText(text)
                 .then(() => {
-                    this.$console.log('Async: Copying to clipboard was successful!');
                     if (skipToast) {
                         this.announceCopyStatus(this.$i18n.get('info_url_copied'));
                     } else {

@@ -156,8 +156,7 @@ export default class CollectionsSelectionModal extends React.Component {
 
                 return currentModalCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
+            .catch(() => {
                 this.setState({ isLoadingCollections: false });
             });
     }
@@ -194,10 +193,8 @@ export default class CollectionsSelectionModal extends React.Component {
                 return someCollections;
             })
             .catch(error => {
-                if (!axios.isCancel(error)) {
-                    console.log('Error trying to fetch collections: ' + error);
+                if (!axios.isCancel(error))
                     this.setState({ isLoadingCollections: false });
-                }
             });
     }
 

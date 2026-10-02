@@ -27,7 +27,6 @@ export default function ({ attributes, setAttributes, context }) {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}
 	} );
-    const className = blockProps.className;
 
     if (context['tainacan/metadataSectionId'])
         sectionId = context['tainacan/metadataSectionId'];

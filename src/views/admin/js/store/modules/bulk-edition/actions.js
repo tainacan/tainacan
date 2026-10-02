@@ -60,7 +60,6 @@ export const fetchGroup = ({commit}, { collectionId, groupId }) => {
                 resolve(response.data);
             })
             .catch(error => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -82,7 +81,6 @@ export const fetchSequenceGroup = ({commit}, { collectionId, groupId }) => {
                 resolve(response.data);
             })
             .catch(error => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -119,7 +117,7 @@ export const setValueInBulk = ({commit}, parameters) => {
  * @param {*} parameters.bodyParams - Request body payload for the operation.
  * @returns {*} Action result.
  */
-export const addValueInBulk = ({commit}, parameters) => {
+export const addValueInBulk = ({}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
@@ -141,7 +139,7 @@ export const addValueInBulk = ({commit}, parameters) => {
  * @param {*} parameters.bodyParams - Request body payload for the operation.
  * @returns {*} Action result.
  */
-export const removeValueInBulk = ({commit}, parameters) => {
+export const removeValueInBulk = ({}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
@@ -160,7 +158,7 @@ export const removeValueInBulk = ({commit}, parameters) => {
  * @param {*} parameters.bodyParams - Request body payload for the operation.
  * @returns {*} Action result.
  */
-export const clearValuesInBulk = ({commit}, parameters) => {
+export const clearValuesInBulk = ({}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
@@ -179,7 +177,7 @@ export const clearValuesInBulk = ({commit}, parameters) => {
  * @param {*} parameters.bodyParams - Request body payload for the operation.
  * @returns {*} Action result.
  */
-export const replaceValueInBulk = ({commit}, parameters) => {
+export const replaceValueInBulk = ({}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
@@ -278,9 +276,7 @@ export const trashItemsInBulk = ({commit}, parameters) => {
             commit('setLastUpdated');
             return response;
         })
-        .catch(error => {
-            console.log(error);
-        });
+        .catch(() => undefined);
 };
 
 /**
@@ -290,7 +286,7 @@ export const trashItemsInBulk = ({commit}, parameters) => {
  * @param {*} parameters.groupId - Bulk edit group identifier.
  * @returns {*} Action result.
  */
-export const untrashItemsInBulk = ({commit}, parameters) => {
+export const untrashItemsInBulk = ({}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
 
@@ -298,9 +294,7 @@ export const untrashItemsInBulk = ({commit}, parameters) => {
         .then(response => {
             return response;
         })
-        .catch(error => {
-            console.log(error);
-        });
+        .catch(() => undefined);
 };
 
 /**
@@ -319,9 +313,7 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
             commit('setLastUpdated');
             return response;
         })
-        .catch(error => {
-            console.log(error);
-        });
+        .catch(() => undefined);
 };
 
 
@@ -366,7 +358,6 @@ export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, item
                 resolve(response.data);
             })
             .catch(error => {
-                console.log(error);
                 reject(error);
             });
     });

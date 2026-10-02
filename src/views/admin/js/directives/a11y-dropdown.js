@@ -216,7 +216,7 @@ export default {
                     focusItem(items.length - 1);
                     break;
                     
-                case 'Enter':
+                case 'Enter': {
                     // Only handle if we're on a dropdown item (not in input/textarea)
                     if (activeElement.tagName !== 'INPUT' && 
                         activeElement.tagName !== 'TEXTAREA' &&
@@ -233,8 +233,9 @@ export default {
                         }
                     }
                     break;
+                }
                     
-                case ' ':
+                case ' ': {
                     // Same as Enter, but only if not in input/textarea
                     if (activeElement.tagName !== 'INPUT' && 
                         activeElement.tagName !== 'TEXTAREA' &&
@@ -251,8 +252,9 @@ export default {
                         }
                     }
                     break;
+                }
                     
-                case 'Escape':
+                case 'Escape': {
                     // Focus the trigger button to close dropdown
                     const trigger = el.querySelector('.dropdown-trigger');
                     if (trigger) {
@@ -265,6 +267,7 @@ export default {
                         }
                     }
                     break;
+                }
             }
         };
 

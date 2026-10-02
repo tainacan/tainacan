@@ -94,9 +94,7 @@ export default class SearchBarModal extends React.Component {
             
                 return otherModalCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     selectCollection(selectedCollectionId) {
@@ -168,9 +166,7 @@ export default class SearchBarModal extends React.Component {
                 
                 return someCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     resetCollections() {

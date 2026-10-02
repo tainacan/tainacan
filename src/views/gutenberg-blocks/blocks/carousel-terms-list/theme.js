@@ -21,6 +21,9 @@ export default (element) => {
             blocks.forEach((block) => {
 
                 const VueCarouselTermsList = createApp({
+                    mounted() {
+                        block.classList.add('has-mounted');
+                    },
                     render() { 
                         return h(CarouselTermsListTheme, {
                             blockId: block.id,
@@ -42,14 +45,11 @@ export default (element) => {
                             tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root', undefined),
                             variableTermsWidth: getDataAttribute(block, 'variable-terms-width', false) == 'true',
                         });
-                    },
-                    mounted() {
-                        block.classList.add('has-mounted');
                     }
                 });
 
                 VueCarouselTermsList.use(ThumbnailHelperPlugin);
-                VueCarouselTermsList.component('tainacan-progressive-image', TainacanProgressiveImage);
+                VueCarouselTermsList.component('TainacanProgressiveImage', TainacanProgressiveImage);
 
                 VueCarouselTermsList.mount('#' + block.id);
             });

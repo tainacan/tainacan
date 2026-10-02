@@ -13,7 +13,6 @@ import ParentTermModal from './parent-term-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
-import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
@@ -99,8 +98,6 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         imageSize = 'tainacan-medium';
         setAttributes({ imageSize: imageSize });
     }
-
-    const thumbHelper = ThumbnailHelperFunctions();
 
     // Get available image sizes
     const {	imageSizes } = useSelect(

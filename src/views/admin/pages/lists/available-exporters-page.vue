@@ -54,8 +54,8 @@
                     this.availableExporters = res;
    
                     this.isLoading = false;
-                }).catch((error) => {
-                    this.$console.log(error);
+                }).catch(() => {
+                    
                     this.isLoading = false;
             });
         },

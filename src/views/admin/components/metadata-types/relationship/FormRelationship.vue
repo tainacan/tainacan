@@ -256,8 +256,8 @@
                         this.collectionSearch = name;
                         this.loading = false;
                     })
-                    .catch(error => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
                         this.committedCollectionName = String(id);
                         this.collectionSearch = String(id);
                         this.loading = false;
@@ -332,7 +332,7 @@
                         if (isCancel(error))
                             return;
 
-                        this.$console.log(error);
+                        
                         this.loading = false;
                     });
             },
