@@ -191,10 +191,10 @@ abstract class Repository {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
-		$sanitized_title = $this->sanitize_value($obj->get('name'));
+		$sanitized_title = $this->sanitize_value($obj->get('name'), true);
 		$sanitized_desc = $this->sanitize_rich_text_value($obj->get('description'));
 		if ( $obj instanceof Entities\Item ) {
-			$sanitized_title = $this->sanitize_value($obj->get('title'));
+			$sanitized_title = $this->sanitize_value($obj->get('title'), true);
 
 			// get collection to determine post type
 			$collection = $obj->get_collection();
@@ -213,7 +213,7 @@ abstract class Repository {
 			$obj->WP_Post->post_title = $sanitized_title;
 			$obj->WP_Post->post_content = $sanitized_desc;
 		} else {
-			$obj->WP_Post->post_title = $this->sanitize_value($obj->WP_Post->post_title);
+			$obj->WP_Post->post_title = $this->sanitize_value($obj->WP_Post->post_title, true);
 			$obj->WP_Post->post_content = $this->sanitize_rich_text_value($obj->WP_Post->post_content);
 		}
 		
@@ -1008,7 +1008,14 @@ abstract class Repository {
 
 	}
 
-	protected function sanitize_value($content) {
+	/**
+	 * Sanitize post HTML, optionally removing anchor tags while keeping their text.
+	 *
+	 * @param mixed $content Value to sanitize.
+	 * @param bool $remove_links Whether anchor tags must be removed.
+	 * @return mixed
+	 */
+	protected function sanitize_value($content, $remove_links = false) {
 		if( $content == null ) {
 			return '';
 		}
@@ -1017,7 +1024,9 @@ abstract class Repository {
 		}
 
 		$allowed_html = wp_kses_allowed_html('post');
-		unset($allowed_html['a']);
+		if ( $remove_links ) {
+			unset($allowed_html['a']);
+		}
 
 		return trim(wp_kses($content, $allowed_html));
 	}

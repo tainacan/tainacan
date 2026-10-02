@@ -214,7 +214,7 @@ class Item_Metadata extends Repository {
 			return $this->sanitize_rich_text_value( $value );
 		}
 
-		return $this->sanitize_value( $value );
+		return $this->sanitize_value( $value, $item_metadata->get_metadatum()->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Core_Title );
 	}
 
 	protected function is_rich_text_capable_metadata( Entities\Item_Metadata_Entity $item_metadata ) {
@@ -256,7 +256,7 @@ class Item_Metadata extends Repository {
 						$insert[] = $exists->term_id;
 					} else {
 						$create_term = new Entities\Term();
-						$new_term = $this->sanitize_value($new_term);
+						$new_term = $this->sanitize_value($new_term, true);
 						$create_term->set_name($new_term);
 						$create_term->set_taxonomy( $taxonomy->get_db_identifier() );
 						if ($create_term->validate()) { // Item_Metadata Entity was validated before, so this should be fine

@@ -477,7 +477,7 @@ class Logs extends Repository {
 		$new_value = $obj->get_new_value();
 
 		$data = [
-			'title'            => $this->sanitize_value( (string) $obj->get_title() ),
+			'title'            => $this->sanitize_value( (string) $obj->get_title(), true ),
 			'date'             => $obj->get_date() ?: current_time( 'mysql' ),
 			'description'      => $this->sanitize_value( (string) $obj->get_description() ),
 			'slug'             => uniqid( Entities\Log::get_post_type() . '-' ),

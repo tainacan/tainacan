@@ -25,7 +25,7 @@ The switch defaults to `no`, so enabling the setting or constant does not change
 
 When the setting is disabled, or the constant has any value other than boolean `true`, Tainacan does not use the rich text editor for the fields controlled by this setting. It hides the Core Description switch and uses the original textarea even when Core Description was previously configured to use rich text. Its saved setting is retained, ready to be used again when rich text is enabled. The dedicated **Rich Text** metadata type is an exception: it always uses the rich text editor.
 
-Descriptions and Core Description metadata retain WordPress-safe formatting, including links, even while the editor is disabled or not selected for a metadata field. Other text inputs, such as titles and names, remove links when saved.
+Non-title content retains WordPress-safe HTML, including links, even when the rich text editor is disabled. This includes Text and Textarea metadata values and item text-document content; plain inputs still display the stored HTML as text. Item titles, entity names used as titles (collections, taxonomies, metadata definitions, filters, and metadata sections), log titles, and taxonomy term names remove anchor tags while retaining their text. Existing type validation and removal of executable markup or unsafe link protocols still apply.
 
 When `TAINACAN_ALLOW_RICH_TEXT_EDITOR` is defined, it overrides the saved setting and disables its control in the Tainacan settings page. This lets host managers keep the global choice over administrator preferences. Reload the Tainacan admin page after changing the setting or constant.
 
@@ -57,3 +57,9 @@ The Core Description entry in `GET /tainacan/v2/item/{item_id}/metadata?context=
 `value` remains the stored, unformatted value for editing and integrations. `value_as_html` remains the display representation. The two additional fields are omitted from public view responses and from other metadata types.
 
 When updating the Core Description through `PUT /tainacan/v2/item/{item_id}/metadata/{metadatum_id}`, send the boolean `edited_with_rich_text_editor` alongside `values`: use `true` for HTML produced by TinyMCE and `false` for a textarea save. Requests that omit the parameter continue to work and are treated as plain text saves. Tainacan rejects `true` if the editor has been disabled since the form loaded; reload the item before retrying. The server validates the mode and does not accept the read-only saved-state field as a write parameter.
+
+## Conditional link sanitization for developers
+
+`Repository::sanitize_value($content, $remove_links = false)` and `REST_Controller::sanitize_value($value, $remove_links = false)` use WordPress's allowed post HTML. Safe anchor tags are preserved by default. Pass `true` when the value represents a title or another field that must exclude anchors. The option removes the anchor tag, not its visible text; it does not strip all HTML or turn a plain input into a rich text editor.
+
+Title persistence paths explicitly request link removal, including the Core Title metadata mirror. REST title/name filters and queries targeting Core Title or taxonomy term names apply the same policy to their criteria. Queries for other metadata preserve safe anchors so their criteria can match stored HTML. This change does not migrate previously saved values or restore links removed by earlier saves. Plain-text representations such as `value_as_string` and excerpts continue to strip HTML tags.
