@@ -37,6 +37,31 @@ Rich Text values are stored as WordPress-safe HTML in item metadata. Links, para
 
 An editor containing only an empty paragraph is treated as empty for required-field validation and optional-value removal. Bulk editing and item forms use the same editor. Exporters and integrations that read `value` receive HTML and should strip tags if they need plain text.
 
+## Bulk copying between Textarea and Rich Text
+
+In a collection's item list, select the items to edit, open **Actions for the selection → Bulk edit selected items**, and choose the destination metadatum, **Copy value**, and the source metadatum. Each selected item receives its own source value. Copying replaces the destination value; it does not change the source or either metadata definition.
+
+Textarea and Rich Text can be copied in both directions, independently of the global rich text editor setting:
+
+- **Textarea → Rich Text:** the server creates links with WordPress `make_clickable()`, then creates paragraphs with `wpautop()`, before saving through the destination's normal validation and sanitization. Existing links are kept without nested anchors.
+- **Rich Text → Textarea:** the server copies the stored value without paragraph or link conversion. Safe HTML remains in the Textarea value; copying does not turn it into plain text or enable a rich text editor on that field.
+- **Same type → same type:** the existing copy behavior remains, without the new conversion.
+
+For example, a Textarea value containing `First paragraph`, a blank line, and `https://example.org` becomes:
+
+```html
+<p>First paragraph</p>
+<p><a href="https://example.org">https://example.org</a></p>
+```
+
+WordPress determines link attributes and paragraph formatting. Copying this HTML back to Textarea retains the safe tags and link rather than extracting their visible text. See [Conditional link sanitization for developers](#conditional-link-sanitization-for-developers) for the existing HTML policy.
+
+A single value can be copied to a single or multiple destination; a multiple destination receives one entry for a single source value. Multiple sources can only be copied to multiple destinations, keeping the entry order and formatting each entry independently. The new cross-type copies apply to top-level metadata, including applicable inherited metadata. Text, Core Description, and children of compound metadata are not included in this new compatibility rule.
+
+An empty source clears an optional destination. If the destination requires a value, validation rejects the empty copy and retains the previous saved value. The text `0` is a value, and visually empty Rich Text markup follows the existing empty-value normalization. Repeating the copy starts from the source again, so it does not accumulate formatting from the previous destination.
+
+Bulk copy is asynchronous. Adding a criterion to the queue confirms that it was submitted; check the background process result for completion or validation and permission errors. Item permissions and the metadata's normal validation rules still apply when the worker runs.
+
 ## Core Description in item editing
 
 Core Description is the item's main description. It uses a textarea by default. To edit it with TinyMCE, enable the global rich text editor setting and turn on **Use rich text editor** in that Core Description metadatum's type options. The option belongs to the metadatum definition; the saved content state belongs to each item.

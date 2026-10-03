@@ -221,6 +221,7 @@
                                             :loading="metadataIsLoading"
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatumIdCopyFrom }"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom || metadataIsLoading"
+                                            :model-value="bulkEditionProcedures[criterion].metadatumIdCopyFrom"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                             @update:model-value="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
@@ -729,6 +730,20 @@
                     this.dones.splice(criterionIndex, 1)
                 }
             },
+            canCopyMetadataValue(source, destination) {
+                if (!source || !destination || source.id == destination.id)
+                    return false;
+                if (source.id === 'created_by')
+                    return destination.parent <= 0 && destination.metadata_type_object?.component === 'tainacan-user';
+                if (!source.metadata_type || !destination.metadata_type || (source.multiple === 'yes' && destination.multiple !== 'yes'))
+                    return false;
+                if (source.metadata_type === destination.metadata_type)
+                    return true;
+
+                const types = ['Tainacan\\Metadata_Types\\Textarea', 'Tainacan\\Metadata_Types\\Rich_Text'];
+                return types.includes(source.metadata_type) && types.includes(destination.metadata_type)
+                    && source.parent <= 0 && destination.parent <= 0;
+            },
             getValidEditionActions(metadatum) {
                 let validEditionActions = JSON.parse(JSON.stringify(this.editionActions));
                 
@@ -746,21 +761,11 @@
                         continue;
                     }
 
-                    // For allowing copy, we also need to check more details of the metadata
-                    // We only offer copy when there is another metadataum of same type, that is not a child component;
-                    // The exception are User metadatum, as we can also copy values from created_by
+                    // Offer copy only when a selectable source exists, including created_by for User.
                     if (actionKey == 'copy' && metadatum.metadata_type_object) {
-                        const otherMetadatumOfSameTypeIndex = this.metadata.findIndex(otherMetadatum => {
-                            return (
-                                otherMetadatum.id != metadatum.id && 
-                                otherMetadatum.metadata_type_object.component == metadatum.metadata_type_object.component &&
-                                otherMetadatum.parent <= 0
-                            );
-                        });
-                        
-                        if ((otherMetadatumOfSameTypeIndex < 0 && metadatum.metadata_type_object.component != 'tainacan-user') || metadatum.parent > 0) {
+                        const hasSource = this.metadata.some(source => source.parent <= 0 && this.canCopyMetadataValue(source, metadatum));
+                        if ((!hasSource && !this.canCopyMetadataValue({ id: 'created_by' }, metadatum)) || metadatum.parent > 0)
                             delete validEditionActions[actionKey];
-                        }
                     }
                 }
                 
@@ -774,13 +779,7 @@
                     
                     const selectedMetadatum = this.bulkEditionProcedures[criterion].metadatum;
                     if (selectedMetadatum.metadata_type_object && selectedMetadatum.metadata_type) {
-                        return JSON.parse(JSON.stringify(this.metadata)).filter((metadatum) => {
-                            return (
-                                metadatum.id != selectedMetadatum.id &&
-                                metadatum.metadata_type == selectedMetadatum.metadata_type &&
-                                (selectedMetadatum.multiple == 'yes' || (metadatum.multiple != 'yes' && selectedMetadatum.multiple != 'yes'))
-                            )
-                        });
+                        return this.metadata.filter(source => this.canCopyMetadataValue(source, selectedMetadatum));
                     }
                 }
 
@@ -791,6 +790,15 @@
                     value = value[0];
 
                 Object.assign( this.bulkEditionProcedures[criterion], { [`${key}`]: value });
+
+                if (key === 'metadatum' || key === 'action') {
+                    const procedure = this.bulkEditionProcedures[criterion];
+                    const source = procedure.metadatumIdCopyFrom === 'created_by'
+                        ? { id: 'created_by' }
+                        : this.metadata.find(metadatum => metadatum.id == procedure.metadatumIdCopyFrom);
+                    if (procedure.action !== this.editionActions.copy || !this.canCopyMetadataValue(source, procedure.metadatum))
+                        procedure.metadatumIdCopyFrom = undefined;
+                }
 
                 // Presets the action in case the selected metadatum only offers one possible option
                 if (
