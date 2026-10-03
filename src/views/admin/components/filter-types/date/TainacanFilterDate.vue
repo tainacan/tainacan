@@ -46,7 +46,7 @@
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
-                :years-range="[-200, 50]"
+                :years-range="datepickersYearsRange"
                 :day-names="[
                     $i18n.get('datepicker_short_sunday'),
                     $i18n.get('datepicker_short_monday'),
