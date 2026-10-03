@@ -139,7 +139,17 @@
                                         :message="$i18n.getHelperMessage('metadata', 'description')"
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
+                            <component
+                                    :is="'tainacan-rich-text-editor'"
+                                    v-if="isRichTextEditorAllowed"
+                                    id="tainacan-metadatum-description"
+                                    v-model="form.description"
+                                    name="description"
+                                    :invalid="formErrors['description'] != undefined"
+                                    @focus="clearErrors('description')" />
                             <b-input
+                                    v-else
+                                    id="tainacan-metadatum-description"
                                     v-model="form.description"
                                     type="textarea"
                                     name="description"
@@ -525,9 +535,9 @@
     import { nextTick } from 'vue';
     import {mapActions} from 'vuex';
     import { formHooks } from "../../js/mixins";
-
     import FormText from '../metadata-types/text/FormText.vue';
     import FormTextarea from '../metadata-types/textarea/FormTextarea.vue';
+    import FormRichText from '../metadata-types/rich-text/FormRichText.vue';
     import FormRelationship from '../metadata-types/relationship/FormRelationship.vue';
     import FormTaxonomy from '../metadata-types/taxonomy/FormTaxonomy.vue';
     import FormSelectbox from '../metadata-types/selectbox/FormSelectbox.vue';
@@ -542,6 +552,7 @@
         components: {
             'tainacan-form-text': FormText,
             'tainacan-form-textarea': FormTextarea,
+            'tainacan-form-rich-text': FormRichText,
             'tainacan-form-relationship': FormRelationship,
             'tainacan-form-taxonomy': FormTaxonomy,
             'tainacan-form-selectbox': FormSelectbox,
@@ -576,6 +587,7 @@
                 hideMetadataTypeOptions: false,
                 showAdvancedOptions: false,
                 showCardinalityOptions: false,
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 showHTMLFormattingOptions: false
             }
         },
@@ -869,5 +881,3 @@
     }
 
 </style>
-
-

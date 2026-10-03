@@ -62,7 +62,16 @@
                                 :title="$i18n.getHelperTitle('taxonomies', 'description')" 
                                 :message="$i18n.getHelperMessage('taxonomies', 'description')"
                                 extra-classes="tainacan-repository-tooltip" />
+                        <component
+                                :is="'tainacan-rich-text-editor'"
+                                v-if="isRichTextEditorAllowed"
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                name="description"
+                                :invalid="editFormErrors['description'] != undefined"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 type="textarea"
@@ -315,7 +324,6 @@
     import { mapActions } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
-
     export default {
         name: 'TaxonomyEditionForm',
         components: {
@@ -385,6 +393,7 @@
                 editFormErrors: {},
                 formErrorMessage: '',
                 entityName: 'taxonomy',
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 updatedAt: undefined,
                 shouldReloadTermsList: false,
                 themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
@@ -772,4 +781,3 @@
         }
     }
 </style>
-

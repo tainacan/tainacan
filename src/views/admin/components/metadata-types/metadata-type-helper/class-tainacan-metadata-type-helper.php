@@ -23,6 +23,7 @@ class Metadata_Type_Helper {
 		//register metadatum types
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Text');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Textarea');
+		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Rich_Text');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Date');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Numeric');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Selectbox');

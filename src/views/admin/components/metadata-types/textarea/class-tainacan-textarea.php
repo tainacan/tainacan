@@ -49,7 +49,7 @@ class Textarea extends Metadata_Type {
 	}
 
 	/**
-	 * Get the value as a HTML string with links and breakline tag.
+	 * Render stored text as HTML with links and paragraphs.
 	 * @return string
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
@@ -61,11 +61,11 @@ class Textarea extends Metadata_Type {
 			if ( $html_formatting === 'list' ) {
 				$total = count( $value );
 				if ( $total === 1 ) {
-					$return .= nl2br($this->make_clickable_links( reset( $value ) ));
+					$return .= wpautop($this->make_clickable_links( reset( $value ) ));
 				} elseif ( $total > 1 ) {
 					$return .= '<ul>';
 					foreach ( $value as $el ) {
-						$return .= '<li>' . nl2br($this->make_clickable_links($el)) . '</li>';
+						$return .= '<li>' . wpautop($this->make_clickable_links($el)) . '</li>';
 					}
 					$return .= '</ul>';
 				}
@@ -77,7 +77,7 @@ class Textarea extends Metadata_Type {
 				$separator = $item_metadata->get_multivalue_separator();
 				foreach ( $value as $el ) {
 					$return .= $prefix;
-					$return .= nl2br($this->make_clickable_links($el));
+					$return .= wpautop($this->make_clickable_links($el));
 					$return .= $suffix;
 					$count++;
 					if ( $count < $total ) {
@@ -86,7 +86,7 @@ class Textarea extends Metadata_Type {
 				}
 			}
 		} else {
-			$return = nl2br($this->make_clickable_links($value));
+			$return = wpautop($this->make_clickable_links($value));
 		}
 
 		return 

@@ -1033,6 +1033,11 @@ class REST_Items_Controller extends REST_Controller {
 
 				if($prepared_item->validate()){
 					$updated_item = $this->items_repository->update($prepared_item);
+					if ( ! $updated_item instanceof Entities\Item ) {
+						return new \WP_REST_Response( [
+							'error_message' => __( 'Could not save the item.', 'tainacan' ),
+						], 500 );
+					}
 
 					do_action('tainacan-api-item-updated', $updated_item, $attributes);
 
@@ -1219,6 +1224,12 @@ class REST_Items_Controller extends REST_Controller {
 								$errors[] = $new_item_metadatum->get_errors();
 							}
 						}
+					}
+
+					if ( $new_item->get_description() === $item->get_description() &&
+						$items_repo->is_core_description_saved_with_rich_text_editor( $item ) &&
+						! $items_repo->set_core_description_saved_with_rich_text_editor( $new_item, true ) ) {
+						return new \WP_REST_Response( [ 'error_message' => __( 'Could not copy the item description editor state.', 'tainacan' ) ], 500 );
 					}
 
 					if ($args['status'] != 'draft') {

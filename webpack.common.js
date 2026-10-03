@@ -68,7 +68,12 @@ const TainacanPluginConfig = {
                 loader: 'file-loader'
             },
             {
+                test: /tinymce[\\/]skins[\\/](content[\\/]default|ui[\\/]oxide)[\\/]content\.css$/,
+                type: 'asset/source'
+            },
+            {
                 test: /\.css$/,
+                exclude: /tinymce[\\/]skins[\\/](content[\\/]default|ui[\\/]oxide)[\\/]content\.css$/,
                 use: [
                     'style-loader',
                     'css-loader',

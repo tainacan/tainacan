@@ -285,6 +285,11 @@ abstract class Pages {
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
+			'tainacan_allow_rich_text_editor' => (
+				defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' )
+					? true === TAINACAN_ALLOW_RICH_TEXT_EDITOR
+					: (bool) get_option( 'tainacan_option_allow_rich_text_editor', false )
+			),
 			'tainacan_index_pdf_content' => \Tainacan\Media::is_index_pdf_content_enabled(),
 			'tainacan_enable_image_blurhash' => \Tainacan\Media::is_image_blurhash_enabled(),
 			'document_content_index_max_characters' => \Tainacan\Media::get_document_content_index_max_characters(),
@@ -314,6 +319,11 @@ abstract class Pages {
 			$class = new $metadata_type;
 			$settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 		}
+		$core_description = new \Tainacan\Metadata_Types\Core_Description();
+		$settings['i18n']['helpers_label'][$core_description->get_component()] = array_merge(
+			$settings['i18n']['helpers_label'][$core_description->get_component()],
+			$core_description->get_form_labels()
+		);
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types();
 		
@@ -913,4 +923,3 @@ abstract class Pages {
 	}
 
 }
-

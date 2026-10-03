@@ -129,7 +129,17 @@
                                         :message="$i18n.get('info_help_term_description')"
                                         extra-classes="tainacan-repository-tooltip" />
                             </label>
+                            <component
+                                    :is="'tainacan-rich-text-editor'"
+                                    v-if="isRichTextEditorAllowed"
+                                    id="tainacan-term-description"
+                                    v-model="form.description"
+                                    name="description"
+                                    :invalid="formErrors['description'] !== '' && formErrors['description'] !== undefined"
+                                    @focus="clearErrors('description')" />
                             <b-input
+                                    v-else
+                                    id="tainacan-term-description"
                                     v-model="form.description"
                                     type="textarea"
                                     name="description"
@@ -388,6 +398,7 @@
                 committedCoverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page'
             }
         },
@@ -980,5 +991,3 @@
     }
 
 </style>
-
-
