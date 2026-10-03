@@ -385,7 +385,7 @@ class REST_Logs_Controller extends REST_Controller {
 			}
 		}
 
-		$max_pages = ceil($total_logs / (int) $args['posts_per_page'] ?? 12);
+		$max_pages = ceil($total_logs / ((int) ($args['posts_per_page'] ?? 12)));
 
 		$rest_response = new \WP_REST_Response($response, 200);
 

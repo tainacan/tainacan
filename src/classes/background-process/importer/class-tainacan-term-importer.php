@@ -45,11 +45,12 @@ class Term_Importer extends Importer {
 	 * @return resource|false File handle positioned after the BOM, or false on failure.
 	 */
 	protected function open_tmp_file() {
-		if ( ! isset( $this->tmp_file ) || ! file_exists( $this->tmp_file ) ) {
+		$tmp_file = $this->get_tmp_file();
+		if ( empty( $tmp_file ) || ! is_file( $tmp_file ) ) {
 			return false;
 		}
 
-		$handle = fopen( $this->tmp_file, 'r' );
+		$handle = fopen( $tmp_file, 'r' );
 		if ( $handle === false ) {
 			return false;
 		}
@@ -157,7 +158,7 @@ class Term_Importer extends Importer {
 
 		if (($handle = $this->open_tmp_file()) !== false) {
 			$file = $handle;
-			$this->set_current_step_total( filesize($this->tmp_file) );
+			$this->set_current_step_total( filesize( $this->get_tmp_file() ) );
 		} else {
 			$this->add_error_log(' Error reading the file ');
 			return false;

@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder,  ColorPalette, BaseControl, PanelBody } = wp.components;
+const { Placeholder, RangeControl, Spinner, Button, ToggleControl, SelectControl, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
@@ -16,6 +16,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function({ attributes, setAttributes, isSelected, clientId }){
     let {
@@ -668,42 +669,26 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             }
             { !items.length && !isLoading ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                height="24px"
-                                width="24px">
-                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                        </svg>
-                        {__('List items on a Carousel, using search or item selection.', 'tainacan')}
-                    </p>
-                    { 
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Collection\'s Items Carousel', 'tainacan' ) }
+                    instructions={ __( 'List items on a Carousel, using search or item selection.', 'tainacan' ) }
+                >
+                    {
                         loadStrategy != 'parent' ?
-                            <div>
+                            <>
                                 <Button
                                     isPrimary
                                     type="button"
                                     onClick={ () => openCarouseltemsModal('selection') }>
                                     {__('Select Items', 'tainacan')}
-                                </Button> 
-                                <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                                </Button>
                                 <Button
-                                    isPrimary
+                                    isSecondary
                                     type="button"
                                     onClick={ () => openCarouseltemsModal('search') }>
                                     {__('Configure a search', 'tainacan')}
                                 </Button>
-                            </div>
+                            </>
                         : null
                     }
                 </Placeholder>

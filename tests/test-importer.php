@@ -56,6 +56,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		fclose($file);
 
 		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($id); 
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
 		$importer_instance->set_tmp_file( $file_name );
 		
 		// file isset on importer
@@ -289,6 +291,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		// Close the file
 		fclose($file);
 
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
 		$importer_instance->set_tmp_file( $file_name );
 		
 		// file isset on importer
@@ -455,6 +459,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		// Close the file
 		fclose($file);
 
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
 		$importer_instance->set_tmp_file( $file_name );
 		
 		// file isset on importer
@@ -603,6 +609,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		// Close the file
 		fclose($file);
 
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
 		$importer_instance->set_tmp_file( $file_name );
 		
 		// file isset on importer
@@ -713,6 +721,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		fputcsv($file, array('102', 'Data 21', 'Data 22'));
 		fclose($file);
 
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
 		$importer_instance->set_tmp_file( $file_name );
 
 		$this->assertEquals( 2, $importer_instance->get_source_number_of_items() );
@@ -727,5 +737,81 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
 		$special_fields = $importer_instance->get_source_special_fields();
 		$this->assertEquals( array( 'special_item_id' ), $special_fields );
+	}
+
+	/**
+	 * @group importer
+	 */
+	public function test_set_tmp_file_rejects_paths_outside_uploads() {
+		$importer = \Tainacan\Importer_Handler::get_instance()->initialize_importer( 'csv' );
+
+		$this->assertFalse( $importer->set_tmp_file( '/etc/passwd' ) );
+		$this->assertFalse( $importer->set_tmp_file( '../../../wp-config.php' ) );
+		$this->assertNull( $importer->get_tmp_file() );
+
+		$file_name = 'outside-uploads.csv';
+		$file = fopen( $file_name, 'w' );
+		fputcsv( $file, [ 'Column 1' ] );
+		fputcsv( $file, [ 'Value' ] );
+		fclose( $file );
+
+		$this->assertFalse( $importer->set_tmp_file( $file_name ) );
+		$this->assertNull( $importer->get_tmp_file() );
+		$this->assertSame( [], $importer->get_source_metadata() );
+		unlink( $file_name );
+
+		$allowed = $this->move_source_into_uploads( $this->write_csv_fixture( 'inside-uploads.csv', [ 'Column 1' ], [ [ 'Value' ] ] ) );
+		$this->assertNotFalse( $allowed );
+		$this->assertTrue( $importer->set_tmp_file( $allowed ) );
+		$this->assertSame( [ 'Column 1' ], $importer->get_source_metadata() );
+	}
+
+	/**
+	 * A path already stored on the object, outside uploads, must not be opened.
+	 *
+	 * @group importer
+	 */
+	public function test_get_tmp_file_ignores_unvalidated_stored_path() {
+		$importer = \Tainacan\Importer_Handler::get_instance()->initialize_importer( 'csv' );
+		$reflection = new \ReflectionProperty( $importer, 'tmp_file' );
+		$reflection->setAccessible( true );
+		$reflection->setValue( $importer, '/etc/passwd' );
+
+		$this->assertNull( $importer->get_tmp_file() );
+		$this->assertSame( [], $importer->get_source_metadata() );
+	}
+
+	private function write_csv_fixture( $file_name, array $headers, array $rows ) {
+		$file = fopen( $file_name, 'w' );
+		fputcsv( $file, $headers );
+		foreach ( $rows as $row ) {
+			fputcsv( $file, $row );
+		}
+		fclose( $file );
+		return $file_name;
+	}
+
+	/**
+	 * set_tmp_file() only accepts files inside the uploads directory.
+	 *
+	 * @param string $file_name Path to an existing file.
+	 * @return string|false Destination path, or false on failure.
+	 */
+	private function move_source_into_uploads( $file_name ) {
+		$upload_dir = wp_upload_dir();
+		if ( ! empty( $upload_dir['error'] ) ) {
+			return false;
+		}
+
+		$destination = trailingslashit( $upload_dir['basedir'] ) . wp_unique_filename( $upload_dir['basedir'], basename( $file_name ) );
+		$moved = @rename( $file_name, $destination );
+		if ( ! $moved ) {
+			$moved = copy( $file_name, $destination );
+			if ( $moved && file_exists( $file_name ) ) {
+				unlink( $file_name );
+			}
+		}
+
+		return $moved ? $destination : false;
 	}
 }

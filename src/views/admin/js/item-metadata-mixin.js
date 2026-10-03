@@ -65,7 +65,7 @@ export const itemMetadataMixin = {
                         if ( parentId )
                             this.$emitter.emit('updateErrorMessageOf#' + parentId );
                     })
-                    .catch(({ error_message, error, item_metadata }) => {
+                    .catch(({ error }) => {
                         this.isUpdatingValues = false;
                         let index = this.errors.findIndex( errorItem => ( errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ) ) || ( errorItem.metadatum_id == parentId ) );
                         let messages = [];
@@ -126,7 +126,7 @@ export const itemMetadataMixin = {
         clearAllErrors() {
             this.errors = [];
         },
-        removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {
+        removeItemMetadataGroup({ itemId, metadatumId, parentMetaId }) {
             
             this.isUpdatingValues = true;
             

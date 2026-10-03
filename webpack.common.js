@@ -129,8 +129,9 @@ const TainacanPluginConfig = {
             localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'ca', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv', 'sq', 'sk', 'uk', 'de'],
         }),
         new ESLintPlugin({
-            extensions: ['vue'],
-            exclude: ['/node_modules/']
+            extensions: ['vue', 'js'],
+            // A leading slash is an absolute path and does not match this project.
+            exclude: ['**/node_modules/**']
         })
     ],
     stats: {

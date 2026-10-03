@@ -291,7 +291,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     return -1;
                 return index;
             },
-            paddingFn: (viewportSize, itemData, index) => {
+            paddingFn: (viewportSize, itemData) => {
                 return {
                     // check based on slide index
                     top: (itemData.title && itemData.title.name && !self.options.hide_media_name) ? 60 : 0,
@@ -473,7 +473,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         let items = [];
 
         this.getGallerySlides(el).forEach((liElement) => {
-            let item = {};
+            let item;
             let fullContentElement = liElement.querySelectorAll('.media-full-content *');
 
             if ( !fullContentElement.length ) {
@@ -859,7 +859,7 @@ export default (element) => {
     if (rawConfig) {
         try {
             component = { ...defaultComponentConfig, ...(JSON.parse(rawConfig) || {}) };
-        } catch (e) {
+        } catch {
             component = null;
         }
     }

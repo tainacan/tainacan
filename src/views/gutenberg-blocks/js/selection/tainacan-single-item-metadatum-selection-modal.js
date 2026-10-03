@@ -141,27 +141,21 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
             
                 return otherModalCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     fetchCollection(collectionId) {
         tainacanApi.get('/collections/' + collectionId)
             .then((response) => {
                 this.setState({ collectionName: response.data.name });
-            }).catch(error => {
-                console.log('Error trying to fetch collection: ' + error);
-            });
+            }).catch(() => undefined);
     }
 
     fetchItem(itemId) {
         tainacanApi.get('/items/' + itemId)
             .then((response) => {
                 this.setState({ itemTitle: response.data.title });
-            }).catch(error => {
-                console.log('Error trying to fetch collection: ' + error);
-            });
+            }).catch(() => undefined);
     }
 
     selectCollection(selectedCollectionId) {
@@ -213,9 +207,7 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
                 
                 return someCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     fetchModalMetadata(existingCollectionId) {
@@ -249,9 +241,7 @@ export default class TainacanSingleItemMetadatumSelectionModal extends React.Com
             
                 return otherModalMetadata;
             })
-            .catch(error => {
-                console.log('Error trying to fetch metadata: ' + error);
-            });
+            .catch(() => undefined);
     }
 
 

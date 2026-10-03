@@ -148,9 +148,7 @@
                         .then((newValue) => {
                             this.attachmentsPerPage = newValue;
                         })
-                        .catch(() => {
-                            this.$console.log("Error settings user prefs for attachments per page")
-                        });
+                        .catch(() => undefined);
                 }
                 this.attachmentsPerPage = value;
                 this.loadAttachments();

@@ -81,7 +81,7 @@ export const fetchItemMetadatum = ({ commit }, { item_id, metadatum_id }) => {
  * Dispatches `item/fetchCompoundFirstParentMetaId`.
  * @returns {Promise<number|string>} Resolves with the generated parent_meta_id; rejects with API validation details.
  */
-export const fetchCompoundFirstParentMetaId = ({ commit }, { item_id, metadatum_id }) => {
+export const fetchCompoundFirstParentMetaId = ({}, { item_id, metadatum_id }) => {
    
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, { values: [] })
@@ -174,11 +174,8 @@ export const fetchItem = ({ commit }, { itemId, contextEdit, fetchOnly } ) => {
                     resolve( res.data );
                 })
                 .catch((thrown) => {
-                    if (axios.isCancel(thrown)) {
-                        console.log('Request canceled: ', thrown.message);
-                    } else {
+                    if (!axios.isCancel(thrown))
                         reject(thrown);
-                    }
                 }); 
         }),
         source: source
@@ -258,7 +255,7 @@ export const updateItem = ({ commit }, item) => {
  * Dispatches `item/duplicateItem`.
  * @returns {Promise<Array>} Resolves with duplicated items; rejects on request error.
  */
-export const duplicateItem = ({ commit }, { collectionId, itemId, copies }) => {
+export const duplicateItem = ({}, { collectionId, itemId, copies }) => {
 
     return new Promise((resolve, reject) => {
         axios.tainacanApi.post('/collection/' + collectionId + '/items/' + itemId + '/duplicate', { copies: new Number(copies) })
@@ -462,7 +459,7 @@ export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
  * Dispatches `item/deletePermanentlyAttachment`.
  * @returns {Promise<Object>} Resolves with deleted attachment response; rejects with error.response.
  */
-export const deletePermanentlyAttachment = ( { commit }, attachmentId) => {
+export const deletePermanentlyAttachment = ( {}, attachmentId) => {
     return new Promise(( resolve, reject ) => {
         axios.wpApi.delete('/media/' + attachmentId + '?force=true')
             .then( res => {
@@ -515,7 +512,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
  * Dispatches `item/updateThumbnail`.
  * @returns {Promise<Object>} Resolves with updated item; rejects with API error_message and errors.
  */
-export const updateThumbnail = ({ commit }, { itemId, thumbnailId, thumbnailAlt }) => {
+export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put('/items/' + itemId, {
             _thumbnail_id: thumbnailId
@@ -644,7 +641,7 @@ export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_i
  * Dispatches `item/submitItemSubmission`.
  * @returns {Promise<number|string>} Resolves with fake item id for upload finalization; rejects with API errors and error_message.
  */
-export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata, captchaResponse }) => {
+export const submitItemSubmission = ({}, { itemSubmission, itemSubmissionMetadata, captchaResponse }) => {
     return new Promise((resolve, reject) => {
 
         let item = JSON.parse(JSON.stringify(itemSubmission)); // Use a copy as the next request will need document, attachment and thumbnail
@@ -676,7 +673,7 @@ export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissio
  * Dispatches `item/finishItemSubmission`.
  * @returns {Promise<Object>} Resolves with finalized item response; rejects with API errors and error_message.
  */
-export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId }) => {
+export const finishItemSubmission = ({}, { itemSubmission, fakeItemId }) => {
     return new Promise((resolve, reject) => {
         let config = {
             headers: { 'Content-Type': 'multipart/form-data' }

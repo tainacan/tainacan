@@ -167,7 +167,7 @@ export const setStatus= ({ commit }, status ) => {
  * Dispatches `search/setOrderBy`.
  * @returns {*} Action result.
  */
-export const setOrderBy = ({ state, commit }, orderBy ) => {
+export const setOrderBy = ({ commit }, orderBy ) => {
     commit('removePostQueryAttribute', 'orderby');
     commit('removePostQueryAttribute', 'metakey');
     commit('removePostQueryAttribute', 'metatype');

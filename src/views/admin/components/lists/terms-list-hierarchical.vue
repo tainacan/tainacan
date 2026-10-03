@@ -532,8 +532,8 @@ export default {
 
                     this.isColumnLoading = false;
                 })
-                .catch(error => {
-                    this.$console.log(error);
+                .catch(() => {
+                    
                     this.isColumnLoading = false;
                 });
 
@@ -567,8 +567,8 @@ export default {
                         
                         this.isColumnLoading = false;
                     })
-                    .catch(error => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
 
                         this.isColumnLoading = false;
                     });
@@ -597,9 +597,7 @@ export default {
                         .then(() => {
                             this.onTermRemovalFinished(term);
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                     }
                 },
                 trapFocus: true,
@@ -629,9 +627,7 @@ export default {
                         .then(() => {
                             this.resetTermsListUI();
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                     }
                 },
                 trapFocus: true,
@@ -660,9 +656,7 @@ export default {
                         .then(() => {
                             this.resetTermsListUI();
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                     }
                 },
                 trapFocus: true,
@@ -824,15 +818,22 @@ export default {
                             });
                         })
                         .catch((errors) => {
-                            let wrongValues = '';
-                            for (let i = 0; i < errors.length; i++) {
-                                wrongValues += errors[i].term_name;
-                                if ( i < errors.length - 1 )
-                                    wrongValues += ', ';
+                            const detail = errors?.[0]?.errors?.[0]?.name
+                                || errors?.[0]?.error_message
+                                || '';
+                            const namedErrors = Array.isArray(errors)
+                                ? errors.filter(error => error && error.term_name)
+                                : [];
+
+                            let errorMessage = detail;
+                            if (namedErrors.length) {
+                                const wrongValues = namedErrors.map(error => error.term_name).join(', ');
+                                errorMessage = (namedErrors.length > 1
+                                    ? this.$i18n.getWithVariables('info_terms_creation_failed_due_to_values_%s', [ wrongValues ])
+                                    : this.$i18n.getWithVariables('info_terms_creation_failed_due_to_value_%s', [ wrongValues ]))
+                                    + (detail ? ' ' + detail : '');
                             }
 
-                            let errorMessage = errors.length > 1 ? this.$i18n.getWithVariables('info_terms_creation_failed_due_to_values_%s', [ wrongValues ]) : this.$i18n.getWithVariables('info_terms_creation_failed_due_to_value_%s', [ wrongValues ]); 
-                            errorMessage += ' ' + errors[0]['errors'][0]['name'];
                             this.$buefy.snackbar.open({
                                 message: this.$htmlSanitizer.sanitize(errorMessage),
                                 type: 'is-danger',
