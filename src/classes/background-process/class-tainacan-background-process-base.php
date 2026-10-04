@@ -73,7 +73,7 @@ abstract class Background_Process_Base extends Async_Request {
 	 * When true, the nonce check in maybe_handle() is bypassed because cron
 	 * dispatches are internal server-side requests that don't carry a nonce.
 	 *
-	 * @since 1.2.1
+	 * @since 1.4.0
 	 * @var bool
 	 * @access protected
 	 */
@@ -83,11 +83,11 @@ abstract class Background_Process_Base extends Async_Request {
 	 * Maximum time (in seconds) a process can remain in 'running' status
 	 * without updating its processed_last timestamp before being considered stale.
 	 *
-	 * @since 1.2.1
+	 * @since 1.4.0
 	 * @var int
 	 * @access protected
 	 */
-	protected $stale_process_timeout = 900; // 15 minutes
+	protected $stale_process_timeout = 1800; // 30 minutes
 	
 	/**
 	 * queue_lock_time
@@ -589,7 +589,7 @@ abstract class Background_Process_Base extends Async_Request {
 	 * This watchdog marks stale processes as 'errored' and releases the lock
 	 * so that the cron healthcheck can re-dispatch queued work.
 	 *
-	 * @since 1.2.1
+	 * @since 1.4.0
 	 * @return void
 	 */
 	protected function detect_and_cleanup_stale_processes() {
@@ -644,7 +644,7 @@ abstract class Background_Process_Base extends Async_Request {
 	 * and on shutdown to help the watchdog distinguish live processes from
 	 * stale ones.
 	 *
-	 * @since 1.2.1
+	 * @since 1.4.0
 	 * @return void
 	 */
 	public function record_heartbeat() {

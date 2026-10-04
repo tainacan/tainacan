@@ -194,7 +194,7 @@ abstract class Background_Process extends Background_Process_Base {
 	/**
 	 * Default maximum number of retries for a failed background process.
 	 *
-	 * @since 1.2.1
+	 * @since 1.4.0
 	 * @var int
 	 */
 	protected $default_max_retries = 3;
