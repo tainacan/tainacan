@@ -532,8 +532,8 @@ export default {
 
                     this.isColumnLoading = false;
                 })
-                .catch(error => {
-                    this.$console.log(error);
+                .catch(() => {
+                    
                     this.isColumnLoading = false;
                 });
 
@@ -567,8 +567,8 @@ export default {
                         
                         this.isColumnLoading = false;
                     })
-                    .catch(error => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
 
                         this.isColumnLoading = false;
                     });
@@ -597,9 +597,7 @@ export default {
                         .then(() => {
                             this.onTermRemovalFinished(term);
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                     }
                 },
                 trapFocus: true,
@@ -629,9 +627,7 @@ export default {
                         .then(() => {
                             this.resetTermsListUI();
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                     }
                 },
                 trapFocus: true,
@@ -660,9 +656,7 @@ export default {
                         .then(() => {
                             this.resetTermsListUI();
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                     }
                 },
                 trapFocus: true,

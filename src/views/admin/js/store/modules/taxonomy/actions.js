@@ -200,7 +200,7 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
  * Dispatches `taxonomy/sendChildTerm`.
  * @returns {*} Action result.
  */
-export const sendChildTerm = ({ commit }, { taxonomyId, term, itemId, metadatumId }) => {
+export const sendChildTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
     
     if ( itemId != undefined )
         term['item_id'] = itemId;
@@ -324,7 +324,7 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
  * Dispatches `taxonomy/fetchPossibleParentTerms`.
  * @returns {*} Action result.
  */
-export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search, offset } ) => {
+export const fetchPossibleParentTerms = ({}, { taxonomyId, termId, search, offset } ) => {
 
     const excludeTree = termId && termId != 'new' ? qs.stringify({ exclude_tree: termId }) : '';
 
@@ -353,7 +353,7 @@ export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, searc
  * Dispatches `taxonomy/fetchParentName`.
  * @returns {*} Action result.
  */
-export const fetchParentName = ({ commit }, { taxonomyId, parentId } ) => {
+export const fetchParentName = ({}, { taxonomyId, parentId } ) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/taxonomy/' + taxonomyId + '/terms/' + parentId + '?fetch_only=name')
         .then(res => {

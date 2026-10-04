@@ -59,7 +59,7 @@ const isParameterTrue = function(value) {
 const maybeConvertFromJSON = function(someString) {
     try {
         return JSON.parse(someString);
-    } catch(error) {
+    } catch {
         return someString;
     }
 }
@@ -151,7 +151,7 @@ export default (element) => {
             VueItemsList.use(routerTheme);
 
             if ( !possibleHideFilters )
-                VueItemsList.component('filters-items-list', defineAsyncComponent(() => import('../../../admin/components/search/filters-items-list.vue')));
+                VueItemsList.component('FiltersItemsList', defineAsyncComponent(() => import('../../../admin/components/search/filters-items-list.vue')));
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
@@ -204,8 +204,8 @@ export default (element) => {
             VueItemsList.use(ConsolePlugin, {visual: false});
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
             VueItemsList.use(ModalFocusReturnPlugin);
-            VueItemsList.component('help-button', HelpButton);
-            VueItemsList.component('tainacan-progressive-image', TainacanProgressiveImage);
+            VueItemsList.component('HelpButton', HelpButton);
+            VueItemsList.component('TainacanProgressiveImage', TainacanProgressiveImage);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {

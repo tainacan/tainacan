@@ -1,11 +1,12 @@
 const { __ } = wp.i18n;
 
-const { RangeControl, TextControl, SelectControl, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { Placeholder, RangeControl, TextControl, SelectControl, Button, ToggleControl, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import SearchBarModal from './search-bar-modal.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function({ attributes, setAttributes, isSelected }) {
     let {
@@ -390,37 +391,16 @@ export default function({ attributes, setAttributes, isSelected }) {
 
             { !collectionSlug ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <span className="icon">
-                            <i>
-                                <svg width="24" height="24" viewBox="-2 -2 20 20">
-                                <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
-                                    c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
-                                    c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
-                                    c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
-                                    C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
-                                    c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
-                                    c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>       
-                                </svg>
-                            </i> 
-                        </span>
-                        {__('Set up a custom search bar to redirect to an item\'s list', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Search Bar', 'tainacan' ) }
+                    instructions={ __( 'Set up a custom search bar to redirect to an item\'s list', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"
                         onClick={ () => openSearchBarModal() }>
                         {__('Select search source', 'tainacan')}
-                    </Button>   
+                    </Button>
                 </Placeholder>
                 ) : null
             }

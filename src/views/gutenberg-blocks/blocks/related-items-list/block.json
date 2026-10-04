@@ -48,6 +48,10 @@
         "templateMode": {
             "type": "boolean",
             "default": false
+        },
+        "relatedCollectionIds": {
+            "type": "array",
+            "default": []
         }
     },
     "supports": {

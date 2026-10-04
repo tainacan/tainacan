@@ -32,7 +32,8 @@ class CSV extends Importer {
 	 * @return resource|false File handle positioned after the BOM, or false on failure.
 	 */
 	protected function open_tmp_file() {
-		if ( ! isset( $this->tmp_file ) || ! file_exists( $this->tmp_file ) ) {
+		$tmp_file = $this->get_tmp_file();
+		if ( empty( $tmp_file ) || ! is_file( $tmp_file ) ) {
 			return false;
 		}
 
@@ -118,8 +119,9 @@ class CSV extends Importer {
 	}
 
 	public function get_source_file_name() {
-		if ( isset( $this->tmp_file ) && file_exists( $this->tmp_file ) ) {
-			return basename( $this->tmp_file );
+		$tmp_file = $this->get_tmp_file();
+		if ( ! empty( $tmp_file ) && is_file( $tmp_file ) ) {
+			return basename( $tmp_file );
 		}
 		return false;
 	}

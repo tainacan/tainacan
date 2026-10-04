@@ -3,6 +3,7 @@
     +__construct()
     #filter_object_by_attributes(object, attributes)
     #prepare_item_for_updating(object, new_values)
+    #get_readonly_fields()
     #prepare_filters(request)
     #get_minimum_safe_perpage()
     +add_support_to_tax_query_like(args)
@@ -13,12 +14,15 @@
     +get_wp_query_params()
     #get_meta_queries_params()
     +get_repository_schema(repository)
-    +get_permissions_schema()
+    #get_permissions_schema()
     +get_base_properties_schema()
     {abstract} #get_schema()
     +get_list_schema()
     +tainacan_sanitize_post_statuses(statuses, request, parameter)
     #validate_array_fields(body, fields)
+    #get_param_schema(param_name, properties)
+    #get_paginated_list_schema()
+    #prepare_paginated_response(data, total, total_pages, per_page, response)
   }
   package endpoints as endpoints {
     class "REST_Roles_Controller\n<b>REST API controller for managing Tainacan roles and capabilities.</b>" as endpoints_REST_Roles_Controller {
@@ -222,6 +226,7 @@
       -get_default_search_sentence()
       +process_request_filters(args)
       +get_attachments_schema()
+      +get_list_schema()
       +get_schema()
     }
     class "REST_Filters_Controller\n<b>REST API controller for managing Tainacan filters.</b>" as endpoints_REST_Filters_Controller {
@@ -282,6 +287,7 @@
       +get_endpoint_args_for_item_schema(method)
       +get_endpoint_arg_for_schema(name, properties, repository)
       +get_schema()
+      +get_list_schema()
     }
     class "REST_Facets_Controller\n<b>REST API controller for managing Tainacan facets.</b>" as endpoints_REST_Facets_Controller {
       -metadatum_repository : 
@@ -343,7 +349,7 @@
       +get_schema()
     }
     class "REST_Metadatum_Mappers_Controller\n<b>REST API controller for managing Tainacan metadatum mappers.</b>" as endpoints_REST_Metadatum_Mappers_Controller {
-      #get_schema()
+      +get_schema()
       +__construct()
       +register_routes()
       +prepare_item_for_response(mapper, request)

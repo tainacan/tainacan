@@ -22,7 +22,7 @@ export default {
         let trackedInput = null;
         let idBase = '';
         let listboxId = '';
-        let rootObserver = null;
+        let rootObserver;
         let dropdownObserver = null;
         let syncRafId = null;
         let lastInputFocusTime = 0;

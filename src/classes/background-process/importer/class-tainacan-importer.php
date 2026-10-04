@@ -256,11 +256,61 @@ abstract class Importer {
 	}
 
 	public function get_tmp_file(){
-		return $this->tmp_file;
+		$path = $this->resolve_allowed_tmp_file( $this->tmp_file );
+		return $path === false ? null : $path;
 	}
 
+	/**
+	 * Store the importer source file.
+	 *
+	 * The path must be an existing file inside the WordPress uploads directory.
+	 * Absolute paths are accepted only after realpath() confirms that location,
+	 * which is how attachments from media_handle_sideload() are stored.
+	 *
+	 * @param mixed $filepath
+	 * @return bool
+	 */
 	public function set_tmp_file($filepath){
-		$this->tmp_file = $filepath;
+		$path = $this->resolve_allowed_tmp_file( $filepath );
+		if ( $path === false ) {
+			return false;
+		}
+
+		$this->tmp_file = $path;
+		return true;
+	}
+
+	/**
+	 * Resolve a source path and confirm it is a file inside the uploads directory.
+	 *
+	 * @param mixed $filepath
+	 * @return string|false Canonical path, or false when the path is not allowed.
+	 */
+	private function resolve_allowed_tmp_file( $filepath ) {
+		if ( ! is_string( $filepath ) || $filepath === '' || strpos( $filepath, "\0" ) !== false ) {
+			return false;
+		}
+
+		$upload_dir = wp_upload_dir();
+		if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) ) {
+			return false;
+		}
+
+		$base_dir = realpath( $upload_dir['basedir'] );
+		$real_file_path = realpath( $filepath );
+
+		if ( $base_dir === false || $real_file_path === false || ! is_file( $real_file_path ) ) {
+			return false;
+		}
+
+		$base_dir = trailingslashit( wp_normalize_path( $base_dir ) );
+		$real_file_path = wp_normalize_path( $real_file_path );
+
+		if ( strpos( $real_file_path, $base_dir ) !== 0 ) {
+			return false;
+		}
+
+		return $real_file_path;
 	}
 
 	public function get_tmp_file_id(){
@@ -341,13 +391,18 @@ abstract class Importer {
 	 */
 	public function add_file( $file ){
 		$new_file = $this->upload_file( $file );
-		if ( is_numeric( $new_file ) ) {
-			$this->tmp_file = get_attached_file( $new_file );
-			$this->tmp_file_id = (int) $new_file;
-			return true;
-		} else {
+		if ( ! is_numeric( $new_file ) ) {
 			return false;
 		}
+
+		$attached_file = get_attached_file( $new_file );
+		if ( ! $this->set_tmp_file( $attached_file ) ) {
+			wp_delete_attachment( $new_file, true );
+			return false;
+		}
+
+		$this->tmp_file_id = (int) $new_file;
+		return true;
 	}
 
 	/**

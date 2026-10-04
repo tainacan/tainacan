@@ -1856,9 +1856,6 @@ export default {
             const taxonomyTermValues = Object.values(this.form.collection_taxonomies[taxonomySlug]['terms']).map(aTerm => aTerm.id || aTerm.slug || aTerm);
 
             this.updateCollectionTaxonomyValues({ collectionId: this.collection.id, taxonomyValues: { [taxonomyRestBase]: taxonomyTermValues } })
-                .then(() => {
-                    this.$console.log('Collection Taxonomy Values updated successfully');
-                })
                 .catch((error) => {
                     this.$console.error(error);
                 });

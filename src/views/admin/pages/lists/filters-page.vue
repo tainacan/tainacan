@@ -875,7 +875,7 @@ export default {
                                 // Reload Available Metadatum Types List
                                 this.updateListOfMetadata();
                             })
-                            .catch((error) => { this.$console.log(error)});
+                            .catch(() => undefined);
                     
                         if (!this.isRepositoryLevel)
                             this.updateFiltersOrder();

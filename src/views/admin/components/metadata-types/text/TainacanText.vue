@@ -216,9 +216,7 @@
                         this.searchOffset += this.searchNumber;
                     })
                     .catch( error => {
-                        if (isCancel(error))
-                            this.$console.log('Request canceled: ' + error.message);
-                        else
+                        if (!isCancel(error))
                             this.$console.error( error );
                     });
 

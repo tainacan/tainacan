@@ -388,8 +388,8 @@
                         this.selectedCollections = ids.map((id) => byId[id]).filter(Boolean);
                         this.loadingCollections = false;
                     })
-                    .catch((error) => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
                         this.loadingCollections = false;
                     });
             },
@@ -435,7 +435,7 @@
                         if (isCancel(error))
                             return;
 
-                        this.$console.log(error);
+                        
                         this.loadingCollections = false;
                     });
             }, 500),
@@ -458,8 +458,8 @@
                         this.taxonomySearch = name;
                         this.loading = false;
                     })
-                    .catch(error => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
                         this.selectedTaxonomy = null;
                         this.loading = false;
                         this.fetchTaxonomies('');
@@ -534,7 +534,7 @@
                         if (isCancel(error))
                             return;
 
-                        this.$console.log(error);
+                        
                         this.loading = false;
                     });
             },

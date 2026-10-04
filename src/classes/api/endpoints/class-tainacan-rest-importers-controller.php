@@ -189,58 +189,87 @@ class REST_Importers_Controller extends REST_Controller {
 		$session_id = $request['session_id'];
 		$body = json_decode($request->get_body(), true);
 
-		if (!empty($body)) {
-			$attributes = [];
+		if ( empty($body) || ! is_array($body) ) {
+			return new \WP_REST_Response([
+				'error_message' => __('The body cannot be empty', 'tainacan'),
+				'body'          => $body
+			], 400);
+		}
 
-			foreach ($body as $att => $value){
-				$attributes[$att] = $value;
-			}
-			
-			$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
-			$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
-			
-			if ($importer) {
-				foreach ($body as $att => $value) {
-					if ($att == 'collection') {
-						if (is_array($value) && isset($value['id'])) {
-							if ($importer->add_collection($value) === false ) {
-								return new \WP_REST_Response([
-									'error_message' => __('Error while creating metadatum, please review the metadatum description.', 'tainacan' ),
-									'session_id' => $session_id
-								], 400);
-							}
-							continue;
-						} else {
-							return new \WP_REST_Response([
-								'error_message' => __('Invalid collection', 'tainacan' ),
-								'session_id' => $session_id
-							], 400);
-						}
-					}
-					
-					$att = sanitize_key($att);
-					$method = 'set_' . $att;
-					if (method_exists($importer, $method)) {
-						$importer->$method($value);
-					}
-				}
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 
-				$response = $importer->_to_Array();
-				$Tainacan_Importer_Handler->save_importer_instance($importer);
-				return new \WP_REST_Response( $response, 200 );
-
-			}
-
+		if ( ! $importer ) {
 			return new \WP_REST_Response([
 				'error_message' => __('Importer Session not found', 'tainacan' ),
 				'session_id' => $session_id
 			], 400);
 		}
 
-		return new \WP_REST_Response([
-			'error_message' => __('The body cannot be empty', 'tainacan'),
-			'body'          => $body
-		], 400);
+		$has_url = false;
+		$has_options = false;
+		$has_collection = false;
+		$url = null;
+		$options = null;
+		$collection = null;
+
+		foreach ( $body as $att => $value ) {
+			$att = sanitize_key( $att );
+
+			if ( $att === 'url' ) {
+				$has_url = true;
+				$url = $value;
+				continue;
+			}
+
+			if ( $att === 'options' ) {
+				if ( ! is_array( $value ) ) {
+					return new \WP_REST_Response([
+						'error_message' => __('Invalid options', 'tainacan' ),
+						'session_id' => $session_id
+					], 400);
+				}
+				$has_options = true;
+				$options = $value;
+				continue;
+			}
+
+			if ( $att === 'collection' ) {
+				if ( ! is_array( $value ) || ! isset( $value['id'] ) ) {
+					return new \WP_REST_Response([
+						'error_message' => __('Invalid collection', 'tainacan' ),
+						'session_id' => $session_id
+					], 400);
+				}
+				$has_collection = true;
+				$collection = $value;
+				continue;
+			}
+
+			return new \WP_REST_Response([
+				'error_message' => __('Unknown importer attribute.', 'tainacan' ),
+				'session_id' => $session_id
+			], 400);
+		}
+
+		if ( $has_collection && $importer->add_collection( $collection ) === false ) {
+			return new \WP_REST_Response([
+				'error_message' => __('Error while creating metadatum, please review the metadatum description.', 'tainacan' ),
+				'session_id' => $session_id
+			], 400);
+		}
+
+		if ( $has_url ) {
+			$importer->set_url( $url );
+		}
+
+		if ( $has_options ) {
+			$importer->set_options( $options );
+		}
+
+		$response = $importer->_to_Array();
+		$Tainacan_Importer_Handler->save_importer_instance($importer);
+		return new \WP_REST_Response( $response, 200 );
 	}
 
 
