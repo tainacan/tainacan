@@ -184,23 +184,25 @@ class Term_Importer extends Importer {
 		}
 		if (($values =  fgetcsv($file, 0, $this->get_option('delimiter'), '"')) !== FALSE) {
 			$position_file = ftell($file);
-			if ($values[$position] == '') { // next degree
+			// Rows may have fewer columns than the current degree (e.g. trailing delimiters trimmed)
+			$cell = fn( $i ) => $values[ $i ] ?? '';
+			if ($cell($position) == '') { // next degree
 				$position++;
 				array_push($parent, $last_term);
 			}
-			while( $position > 0 && !($values[$position] != '' && $values[$position-1] == '' )) {  // back degree
+			while( $position > 0 && !($cell($position) != '' && $cell($position-1) == '' )) {  // back degree
 				$position--;
 				array_pop($parent);
 			}
-			if ($position == 0 && $values[$position] == '') {
+			if ($position == 0 && $cell($position) == '') {
 				$this->add_error_log("incorrect formatted csv");
 				$this->abort();
 				return false;
 			}
 
 			$term = new \Tainacan\Entities\Term();
-			$term->set_name($values[$position]);
-			$term->set_description($values[$position+1]);
+			$term->set_name($cell($position));
+			$term->set_description($cell($position+1));
 			$term->set_taxonomy($id_taxonomy);
 
 			$term_repo = \Tainacan\Repositories\Terms::get_instance();
