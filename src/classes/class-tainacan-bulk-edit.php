@@ -97,6 +97,7 @@ class __Bulk_Edit  {
 			remove_filter('posts_pre_query', '__return_empty_array');
 			remove_filter('posts_fields_request', [$this, 'add_fields_to_query']);
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $items_query->request is the SQL built and escaped by WP_Query.
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) {$items_query->request}" );
 
 			$bulk_params = [
@@ -113,6 +114,7 @@ class __Bulk_Edit  {
 			}
 			$insert_q = rtrim($insert_q, ',');
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $insert_q is a list of tuples, each built with $wpdb->prepare().
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) VALUES $insert_q" );
 
 			$bulk_params = [
