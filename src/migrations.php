@@ -580,4 +580,60 @@ class Migrations {
 
 		$wpdb->query( $query );
 	}
+
+	/**
+		* Adds retry tracking columns and a status index to the background
+		* process table.
+		*
+		* The retry mechanism (see Background_Process::maybe_handle()) relies on
+		* the `retry_count` and `max_retries` columns, and the watchdog uses the
+		* `status` column to detect stale processes. This migration ensures both
+		* columns and the index exist for installations created before the retry
+		* feature was introduced.
+		*
+		* @since 1.2.1
+		*/
+	static function alter_table_tnc_bg_process_add_retry_columns() {
+		global $wpdb;
+
+		$table_name    = $wpdb->prefix . 'tnc_bg_process';
+		$database_name = DB_NAME;
+
+		// Add retry_count column if it does not exist.
+		$column_exists = $wpdb->get_results(
+			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'retry_count' AND table_schema = '$database_name'"
+		);
+
+		if ( empty( $column_exists ) ) {
+			$wpdb->query(
+				"ALTER TABLE $table_name ADD retry_count int unsigned NOT NULL default 0"
+			);
+		}
+
+		// Add max_retries column if it does not exist.
+		$column_exists = $wpdb->get_results(
+			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'max_retries' AND table_schema = '$database_name'"
+		);
+
+		if ( empty( $column_exists ) ) {
+			$wpdb->query(
+				"ALTER TABLE $table_name ADD max_retries int unsigned NOT NULL default 3"
+			);
+		}
+
+		// Add an index on the status column to speed up watchdog queries.
+		$index_exists = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema = %s AND table_name = %s AND index_name = 'status'",
+				$database_name,
+				$table_name
+			)
+		);
+
+		if ( empty( $index_exists ) ) {
+			$wpdb->query(
+				"ALTER TABLE $table_name ADD INDEX status (status)"
+			);
+		}
+	}
 }
