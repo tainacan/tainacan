@@ -34,20 +34,29 @@
                             :label="$i18n.get('label_source_collection')">
                         <span class="required-metadatum-asterisk">*</span>
                         <br>
-                        <b-select
-                                v-model="selectedCollection"
-                                expanded
-                                :loading="isFetchingCollections"
+                        <b-autocomplete
+                                id="tainacan-select-source-collection"
+                                v-model="collectionSearch"
+                                v-a11y-autocomplete="{ appendToBody: true }"
                                 :placeholder="$i18n.get('instruction_select_a_collection')"
-                                :required="true"
-                                @update:model-value="formErrorMessage = null">
-                            <option
-                                    v-for="collection in collections"
-                                    :key="collection.id"
-                                    :value="collection.id">
-                                {{ collection.name }}
-                            </option>
-                        </b-select>
+                                :data="collections"
+                                field="name"
+                                clearable
+                                icon-right="menu-down"
+                                :loading="isFetchingCollections"
+                                :append-to-body="true"
+                                open-on-focus
+                                expanded
+                                check-infinite-scroll
+                                @select="onSelectCollection"
+                                @focus="browseCollections"
+                                @active="onCollectionSuggestionsActive"
+                                @typing="fetchCollections"
+                                @infinite-scroll="fetchMoreCollections">
+                            <template #empty>
+                                {{ $i18n.get('info_no_options_found') }}
+                            </template>
+                        </b-autocomplete>
                     </b-field>
 
                     <transition name="filter-item">
@@ -128,6 +137,7 @@
 <script>
 
     import { mapActions } from 'vuex';
+    import { tainacanApi, CancelToken, isCancel } from '../../js/axios';
 
     export default {
         name: "ExporterEditionForm",
@@ -137,6 +147,12 @@
                 exporterName: '',
                 collections: [],
                 isFetchingCollections: false,
+                collectionSearch: '',
+                committedCollectionName: '',
+                collectionSearchQuery: '',
+                collectionSearchCancel: null,
+                collectionsPage: 1,
+                totalCollectionPages: 0,
                 selectedMapping: undefined,
                 selectedCollection: undefined,
                 sendEmail: '0',
@@ -144,6 +160,12 @@
                 exporterSession: {},
                 formErrorMessage: '',
                 isLoading: false
+            }
+        },
+        watch: {
+            collectionSearch(name) {
+                if (!name)
+                    this.onSelectCollection(null);
             }
         },
         created() {
@@ -160,18 +182,8 @@
                     this.isLoading = false;
                 });
 
-            this.isFetchingCollections = true;
-
-            this.fetchCollections({ page: 1, collectionsPerPage: -1})
-                .then(response => {
-                    this.collections = response.collections;
-                    this.isFetchingCollections = false;
-                })
-                .catch(error => {
-                    this.isFetchingCollections = false;
-                    this.$console.error(error);
-                });
-
+            if (this.selectedCollection != undefined)
+                this.fetchSelectedCollection(this.selectedCollection);
 
             // Set exporter's name
             this.fetchAvailableExporters().then((exporterTypes) => {
@@ -193,6 +205,9 @@
                 );
             });
         },
+        beforeUnmount() {
+            this.cancelCollectionSearch();
+        },
         methods: {
             ...mapActions('exporter', [
                 'fetchAvailableExporters',
@@ -200,9 +215,115 @@
                 'updateExporterSession',
                 'runExporterSession'
             ]),
-            ...mapActions('collection', [
-                'fetchCollections'
-            ]),
+            fetchSelectedCollection(id) {
+                return tainacanApi.get('/collections/' + id + '?fetch_only=name,id')
+                    .then(res => {
+                        const name = res.data && res.data.name ? res.data.name : String(id);
+                        this.committedCollectionName = name;
+                        this.collectionSearch = name;
+                    })
+                    .catch(error => {
+                        this.$console.error(error);
+                        this.committedCollectionName = String(id);
+                        this.collectionSearch = String(id);
+                    });
+            },
+            onCollectionSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                if (this.selectedCollection && this.committedCollectionName && this.collectionSearch !== this.committedCollectionName)
+                    this.collectionSearch = this.committedCollectionName;
+            },
+            cancelCollectionSearch() {
+                if (this.collectionSearchCancel) {
+                    this.collectionSearchCancel.cancel('Collection search canceled.');
+                    this.collectionSearchCancel = null;
+                }
+            },
+            beginCollectionSearch() {
+                this.cancelCollectionSearch();
+                this.collectionSearchCancel = CancelToken.source();
+            },
+            browseCollections() {
+                this.collectionSearchQuery = '';
+                this.collectionsPage = 1;
+                this.totalCollectionPages = 0;
+                this.beginCollectionSearch();
+                this.isFetchingCollections = true;
+                this.loadCollectionPage('');
+            },
+            fetchCollections: _.debounce(function(search) {
+                const query = search || '';
+
+                if (this.committedCollectionName && query === this.committedCollectionName)
+                    return;
+
+                if (query !== this.collectionSearchQuery) {
+                    this.collectionSearchQuery = query;
+                    this.collectionsPage = 1;
+                    this.totalCollectionPages = 0;
+                }
+
+                if (this.totalCollectionPages > 0 && this.collectionsPage > this.totalCollectionPages)
+                    return;
+
+                this.beginCollectionSearch();
+                this.isFetchingCollections = true;
+                this.loadCollectionPage(query);
+            }, 500),
+            fetchMoreCollections: _.debounce(function() {
+                this.fetchCollections(this.collectionSearchQuery);
+            }, 250),
+            loadCollectionPage(query) {
+                const source = this.collectionSearchCancel;
+                let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&fetch_only=name,id&order=asc&orderby=title';
+                if (query)
+                    endpoint += '&search=' + encodeURIComponent(query);
+
+                return tainacanApi.get(endpoint, { cancelToken: source.token })
+                    .then(res => {
+                        if (this.collectionSearchCancel !== source)
+                            return;
+
+                        const pageCollections = Array.isArray(res.data) ? res.data : [];
+
+                        if (this.collectionsPage === 1)
+                            this.collections = pageCollections;
+                        else {
+                            for (let collection of pageCollections)
+                                this.collections.push(collection);
+                        }
+
+                        this.totalCollectionPages = res.headers['x-wp-totalpages'] ? Number(res.headers['x-wp-totalpages']) : 0;
+                        this.collectionsPage++;
+
+                        this.isFetchingCollections = false;
+                    })
+                    .catch(error => {
+                        if (isCancel(error) || this.collectionSearchCancel !== source)
+                            return;
+
+                        this.$console.error(error);
+                        this.isFetchingCollections = false;
+                    });
+            },
+            onSelectCollection(collection) {
+                this.formErrorMessage = null;
+
+                if (!collection || !collection.id) {
+                    if (this.collectionSearch || (this.selectedCollection == undefined && !this.committedCollectionName))
+                        return;
+
+                    this.committedCollectionName = '';
+                    this.selectedCollection = undefined;
+                    return;
+                }
+
+                this.committedCollectionName = collection.name || '';
+                this.collectionSearch = this.committedCollectionName;
+                this.selectedCollection = collection.id;
+            },
             runExporter(){
                 this.runButtonLoading = true;
 
