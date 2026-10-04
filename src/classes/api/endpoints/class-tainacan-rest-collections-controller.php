@@ -185,9 +185,6 @@ class REST_Collections_Controller extends REST_Controller {
 
 		$rest_response = new \WP_REST_Response($response, 200);
 
-		$rest_response->header('X-WP-Total', (int) $total_collections);
-		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
-
 		// Per https://developer.wordpress.org/reference/functions/wp_count_posts/ — one property per registered
 		// status (core and custom). Header suffix must be a safe token; values are always integers.
 		$collection_status_counts = wp_count_posts( 'tainacan-collection', 'readable' );
@@ -205,7 +202,13 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 		}
 
-		return $rest_response;
+		return $this->prepare_paginated_response(
+			$response,
+			$total_collections,
+			$max_pages,
+			(int) $collections->query_vars['posts_per_page'],
+			$rest_response
+		);
 	}
 
 	/**
@@ -487,6 +490,11 @@ class REST_Collections_Controller extends REST_Controller {
 			], 400);
 		}
 
+		$order_error = $this->validate_collection_order_fields( $body );
+		if ( $order_error instanceof \WP_REST_Response ) {
+			return $order_error;
+		}
+
 		$this->collection = new Collection();
 
 		try {
@@ -531,8 +539,11 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return object|Entities\Collection|\WP_Error
 	 */
 	public function prepare_item_for_database( $request ) {
-
+		$readonly = $this->get_readonly_fields();
 		foreach ($request as $key => $value){
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$set_ = 'set_' . $key;
 			if(method_exists($this->collection, $set_)) $this->collection->$set_($value);
 		}
@@ -600,6 +611,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 			$attributes = [];
 
 			foreach ($body as $att => $value){
@@ -655,6 +671,24 @@ class REST_Collections_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Reject collection order fields that are not arrays.
+	 *
+	 * JSON bodies read via get_body() bypass REST schema type checks when
+	 * Content-Type is not application/json (for example text/plain).
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param mixed $body Decoded request body.
+	 * @return true|\WP_REST_Response
+	 */
+	private function validate_collection_order_fields( $body ) {
+		return $this->validate_array_fields(
+			$body,
+			array( 'filters_order', 'metadata_order', 'metadata_section_order' )
+		);
 	}
 
 	public function validate_filters_metadata_order($value, $request, $param) {
@@ -713,6 +747,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( !empty($body) && isset($body['metadata_order']) ) {
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 
 			$collection = $this->collections_repository->fetch($collection_id);
 
@@ -772,6 +811,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( !empty($body) && isset($body['metadata_section_order']) ) {
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 
 			$collection = $this->collections_repository->fetch($collection_id);
 
@@ -856,6 +900,11 @@ class REST_Collections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( !empty($body) && isset($body['filters_order']) ) {
+			$order_error = $this->validate_collection_order_fields( $body );
+			if ( $order_error instanceof \WP_REST_Response ) {
+				return $order_error;
+			}
+
 
 			$collection = $this->collections_repository->fetch($collection_id);
 
@@ -922,7 +971,7 @@ class REST_Collections_Controller extends REST_Controller {
 					'description' => __('Limits the result set to collections with a specific name', 'tainacan'),
 					'type'        => 'string',
 				);
-	
+
 				$endpoint_args = array_merge(
 					$endpoint_args,
 					parent::get_wp_query_params(),
@@ -976,15 +1025,18 @@ class REST_Collections_Controller extends REST_Controller {
 		];
 
 		$main_schema = parent::get_repository_schema( $this->collections_repository );
-		$permissions_schema = parent::get_permissions_schema();
 
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
-			$permissions_schema
+			parent::get_permissions_schema()
 		);
 
 		return $schema;
+	}
+
+	function get_list_schema() {
+		return parent::get_paginated_list_schema();
 	}
 
 }

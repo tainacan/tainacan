@@ -56,6 +56,23 @@ private set_finish_status(mixed $status): mixed
 
 ***
 
+### close
+
+Mark a process as done
+
+```php
+public close(mixed $key, mixed $status = 'finished'): $this
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$key`    | **mixed** | Key.        |
+| `$status` | **mixed** |             |
+
+***
+
 ### task
 
 Task

@@ -101,8 +101,8 @@ export default {
             .then((res) => {
                 this.collections = res.collections;
                 this.isLoading = false;
-            }).catch((error) => {
-                this.$console.log(error);
+            }).catch(() => {
+                
                 this.isLoading = false;
             });
 

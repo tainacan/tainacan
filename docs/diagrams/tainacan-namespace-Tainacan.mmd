@@ -1,36 +1,36 @@
 classDiagram
     direction TB
-    class Cli { }
-    class Theme_Helper { }
-    class Gutenberg_Blocks { }
-    class Exposers_Handler { }
-    class Cli_Document { }
-    class Media { }
-    class __Bulk_Edit { }
-    class Pdf_Extracted_Text_Quality { }
-    class Roles_Editor { }
-    class Settings { }
-    class Dashboard { }
-    class Background_Process_Base { }
-    class Async_Request { }
     class Pages { }
-    class Cli_Collection { }
-    class Cli_Control_Metadata { }
-    class Admin { }
-    class Private_Files { }
-    class Background_Process { }
-    class Cli_Move_Attachments { }
-    class Cli_Garbage_Collector { }
-    class Background_Process_Heartbeat { }
-    class Search_Engine { }
+    class System_Check { }
     class Admin_Commands { }
+    class Admin { }
+    class Gutenberg_Blocks { }
+    class Theme_Helper { }
+    class Pdf_Extracted_Text_Quality { }
+    class Media { }
+    class Mappers_Handler { }
+    class Background_Process { }
+    class Cli_Control_Metadata { }
+    class Background_Process_Base { }
+    class Settings { }
+    class Roles_Editor { }
+    class Cli { }
+    class Cli_Collection { }
+    class Mobile_App { }
+    class Dashboard { }
+    class Embed { }
+    class Cli_Garbage_Collector { }
+    class __Bulk_Edit { }
+    class Exposers_Handler { }
+    class Async_Request { }
     class Admin_Bar_Items { }
+    class Background_Process_Heartbeat { }
+    class Cli_Document { }
     class Logs_Wp_Posts_Migration { }
     class Cli_Logs { }
-    class Mappers_Handler { }
-    class Embed { }
-    class System_Check { }
-    class Mobile_App { }
+    class Cli_Move_Attachments { }
+    class Search_Engine { }
+    class Private_Files { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
     Cli_Logs ..> Logs_Wp_Posts_Migration

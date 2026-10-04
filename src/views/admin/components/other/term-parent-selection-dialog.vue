@@ -49,12 +49,16 @@
                             :data="parentTerms"
                             field="name"
                             clearable
+                            icon-right="menu-down"
                             :loading="isFetchingParentTerms"
                             :disabled="!hasParent"
                             check-infinite-scroll
                             :append-to-body="true"
-                            @select="onSelectParentTerm($event)"
-                            @update:model-value="fetchParentTerms"
+                            open-on-focus
+                            @select="onSelectParentTerm"
+                            @focus="browseParentTerms"
+                            @active="onParentTermSuggestionsActive"
+                            @typing="fetchParentTerms"
                             @infinite-scroll="fetchMoreParentTerms">
                         <template #default="props">
                             <div class="media">
@@ -131,7 +135,14 @@
                 parentTermSearchOffset: 0,
                 selectedParentTerm: undefined,
                 parentTermName: '',
+                committedParentTermName: '',
                 totalTerms: undefined
+            }
+        },
+        watch: {
+            parentTermName(name) {
+                if (!name)
+                    this.onSelectParentTerm(null);
             }
         },
         mounted() {
@@ -145,36 +156,54 @@
             ...mapActions('taxonomy', [
                 'fetchPossibleParentTerms'
             ]),
-            fetchParentTerms: _.debounce(function(search) {
+            browseParentTerms() {
+                this.parentTermSearchQuery = '';
+                this.parentTermSearchOffset = 0;
+                this.totalTerms = undefined;
+                this.parentTerms = [];
+                this.isFetchingParentTerms = true;
+                this.requestParentTerms('');
+            },
+            onParentTermSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
 
-                // String update
-                if (search != this.parentTermSearchQuery) {
-                    this.parentTermSearchQuery = search;
+                if (this.selectedParentTerm && this.committedParentTermName && this.parentTermName !== this.committedParentTermName)
+                    this.parentTermName = this.committedParentTermName;
+            },
+            fetchParentTerms: _.debounce(function(search) {
+                const query = search || '';
+
+                if (this.committedParentTermName && query === this.committedParentTermName)
+                    return;
+
+                if (query !== this.parentTermSearchQuery) {
+                    this.parentTermSearchQuery = query;
                     this.parentTerms = [];
                     this.parentTermSearchOffset = 0;
-                } 
-                
-                // String cleared
-                if (!search.length) {
-                    this.parentTermSearchQuery = search;
-                    this.parentTerms = [];
-                    this.parentTermSearchOffset = 0;
+                    this.totalTerms = undefined;
                 }
 
-                // No need to load more
                 if (this.parentTermSearchOffset > 0 && this.totalTerms !== undefined && this.parentTerms.length >= this.totalTerms)
-                    return
+                    return;
 
                 this.isFetchingParentTerms = true;
-                
+                this.requestParentTerms(query);
+            }, 500),
+            requestParentTerms(query) {
                 this.fetchPossibleParentTerms({
-                        taxonomyId: this.taxonomyId, 
-                        termId: this.excludeTree, 
-                        search: this.parentTermSearchQuery,
+                        taxonomyId: this.taxonomyId,
+                        termId: this.excludeTree,
+                        search: query,
                         offset: this.parentTermSearchOffset })
                     .then((res) => {
-                        for (let term of res.parentTerms)
-                            this.parentTerms.push(term);
+                        const terms = res.parentTerms ? res.parentTerms : [];
+                        if (this.parentTermSearchOffset === 0)
+                            this.parentTerms = terms;
+                        else {
+                            for (let term of terms)
+                                this.parentTerms.push(term);
+                        }
 
                         this.parentTermSearchOffset += 12;
                         this.totalTerms = res.totalTerms;
@@ -184,18 +213,23 @@
                         this.$console.error(error);
                         this.isFetchingParentTerms = false;
                     });
-            }, 500),
+            },
             fetchMoreParentTerms: _.debounce(function () {
                 this.fetchParentTerms(this.parentTermSearchQuery)
             }, 250),
             onSelectParentTerm(selectedParentTerm) {
-                if ( selectedParentTerm ) {
-                    this.selectedParentTerm = selectedParentTerm.id;
-                    this.parentTermName = selectedParentTerm.name;
-                } else {
+                if (!selectedParentTerm) {
+                    if (this.parentTermName || (this.selectedParentTerm == undefined && !this.committedParentTermName))
+                        return;
+
                     this.selectedParentTerm = undefined;
-                    this.parentTermName = '';
+                    this.committedParentTermName = '';
+                    return;
                 }
+
+                this.selectedParentTerm = selectedParentTerm.id;
+                this.committedParentTermName = selectedParentTerm.name;
+                this.parentTermName = selectedParentTerm.name;
             }
         }
     }

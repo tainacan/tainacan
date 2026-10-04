@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :id="inputId">
         <tainacan-taxonomy-tag-input
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 v-model:value="valueComponent"
@@ -13,7 +13,7 @@
                 @show-add-new-term="openTermCreationModal" />
         <checkbox-radio-metadata-input
                 v-else
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                :input-id="inputId"
                 :is-modal="false"
                 :parent="0"
                 :allow-new="allowNewFromOptions"
@@ -87,8 +87,7 @@
                         :taxonomy-id="taxonomyId"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                         @on-edition-finished="($event) => addTermToBeCreated($event)"
-                        @on-edition-canceled="() => isTermCreationPanelOpen = false"
-                        @on-error-found="($event) => $console.log('Form with errors: ' + $event)" />
+                        @on-edition-canceled="() => isTermCreationPanelOpen = false" />
             </transition>
         </template>
     </div>
@@ -109,6 +108,7 @@
         },
         props: {
             itemMetadatum: Object,
+            inputId: String,
             value: [ Number, String, Array, Object, Boolean ],
             disabled: false,
             forcedComponentType: '',

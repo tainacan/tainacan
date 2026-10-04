@@ -209,9 +209,15 @@ class REST_Metadata_Controller extends REST_Controller {
 		$metadatum = new Entities\Metadatum();
 
 		$meta = json_decode( $request, true );
+		$readonly = $this->get_readonly_fields();
 		foreach ( $meta as $key => $value ) {
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$set_ = 'set_' . $key;
-			$metadatum->$set_( $value );
+			if ( method_exists($metadatum, $set_) ) {
+				$metadatum->$set_( $value );
+			}
 		}
 
 		if($collection_id) {
@@ -234,6 +240,12 @@ class REST_Metadata_Controller extends REST_Controller {
 		if(!empty($request->get_body()) && isset($request['collection_id'])){
 			$collection_id = $request['collection_id'];
 
+			$body = json_decode($request->get_body(), true);
+			$options_error = $this->validate_array_fields( $body, array( 'metadata_type_options' ) );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			try {
 				$prepared = $this->prepare_item_for_database( $request->get_body(), $collection_id );
 			} catch (\Exception $exception){
@@ -254,6 +266,12 @@ class REST_Metadata_Controller extends REST_Controller {
 				], 400);
 			}
 		} elseif (!empty($request->get_body())) {
+			$body = json_decode($request->get_body(), true);
+			$options_error = $this->validate_array_fields( $body, array( 'metadata_type_options' ) );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			try {
 				$prepared = $this->prepare_item_for_database( $request->get_body() );
 			} catch ( \Exception $exception ) {
@@ -391,6 +409,9 @@ class REST_Metadata_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 
 			$args = $this->prepare_filters( $request );
+			// Order is applied after parent queries are merged, so paging each parent is not a page of the list.
+			unset( $args['posts_per_page'], $args['paged'], $args['offset'], $args['nopaging'] );
+			$args['posts_per_page'] = -1;
 
 			if ($request['include_disabled'] === 'true') {
 				$args['include_disabled'] = true;
@@ -507,6 +528,11 @@ class REST_Metadata_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
+			$options_error = $this->validate_array_fields( $body, array( 'metadata_type_options' ) );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			$attributes = [];
 
 			$metadatum_id = $request['metadatum_id'];
@@ -605,6 +631,8 @@ class REST_Metadata_Controller extends REST_Controller {
 		);
 
 		$query_params = array_merge($query_params, parent::get_meta_queries_params());
+
+		unset( $query_params['perpage'], $query_params['paged'], $query_params['offset'] );
 
 		return $query_params;
 	}

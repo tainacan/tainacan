@@ -187,6 +187,7 @@ class REST_Exporters_Controller extends REST_Controller {
 							], 400);
 						}
 					}
+					$att = sanitize_key($att);
 					$method = 'set_' . $att;
 					if (method_exists($exporter, $method)) {
 						$exporter->$method($value);

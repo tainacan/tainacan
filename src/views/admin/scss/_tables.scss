@@ -99,7 +99,10 @@
             .column-small-width {
                 min-width: 80px;
                 max-width: 80px;
-                p {
+                > p,
+                > .metadata-value,
+                > a > p,
+                > a > .metadata-value {
                     color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
@@ -108,7 +111,10 @@
             .column-default-width {
                 min-width: 80px;
                 max-width: 160px;
-                p {
+                > p,
+                > .metadata-value,
+                > a > p,
+                > a > .metadata-value {
                     color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
@@ -117,7 +123,10 @@
             .column-medium-width {
                 min-width: 120px;
                 max-width: 200px;
-                p {
+                > p,
+                > .metadata-value,
+                > a > p,
+                > a > .metadata-value {
                     color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
@@ -126,7 +135,10 @@
             .column-large-width {
                 min-width: 120px;
                 max-width: 250px;
-                p {
+                > p,
+                > .metadata-value,
+                > a > p,
+                > a > .metadata-value {
                     color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
@@ -135,7 +147,10 @@
             .column-main-content {
                 min-width: 120px !important;
                 max-width: 240px !important;
-                p { 
+                > p,
+                > .metadata-value,
+                > a > p,
+                > a > .metadata-value { 
                     font-size: 0.875em !important;
                     line-height: 1.125em;
                     color: var(--tainacan-input-color) !important;
@@ -214,7 +229,10 @@
                             z-index: -1;
                         }
 
-                        p { 
+                        > p,
+                        > .metadata-value,
+                        > a > p,
+                        > a > .metadata-value {
                             font-size: 0.875em;
                             margin: 0px; 
                             text-overflow: ellipsis;
@@ -281,12 +299,15 @@
                                             margin-inline-end: 0.5em;
                                             font-size: 0.95em;
                                         }
-                                        p {
+                                        p,
+                                        .child-metadatum-value {
                                             margin-top: 0;
                                             margin-bottom: 0;
                                             padding-top: 0;
                                             padding-bottom: 0;
                                             font-size: 1.0em;
+                                            overflow-wrap: break-word;
+                                            word-wrap: break-word;
                                         }
                                     }
                                 }
@@ -298,7 +319,8 @@
                         :deep(.tainacan-compound-group) {
                             display: inline-block;
                             font-size: 1.125em;
-                            margin-top: -0.25em;
+                            margin-top: 0;
+                            margin-bottom: 0;
                             text-overflow: ellipsis;
                             white-space: nowrap;
                             overflow: hidden;
@@ -328,9 +350,12 @@
                                     margin-inline-end: 0.15em;
                                 }
                             }
-                            p {
+                            p,
+                            .child-metadatum-value {
                                 font-size: 1em !important;
                                 line-height: 1.25em !important;
+                                overflow-wrap: break-word;
+                                word-wrap: break-word;
                             }
                         }   
                         :deep(.tainacan-taxonomy-tree-level) {

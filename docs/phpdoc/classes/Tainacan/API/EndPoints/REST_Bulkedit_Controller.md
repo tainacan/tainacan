@@ -480,6 +480,14 @@ The updated entity.
 
 ***
 
+### get_readonly_fields
+
+```php
+protected get_readonly_fields(): mixed
+```
+
+***
+
 ### prepare_filters
 
 ```php
@@ -495,6 +503,18 @@ protected prepare_filters(mixed $request): array
 **Throws:**
 
 - [`Exception`](../../../Exception)
+
+***
+
+### get_minimum_safe_perpage
+
+Positive page size used when a request asks for a non-positive perpage.
+
+```php
+protected get_minimum_safe_perpage(): int
+```
+
+perpage=-1 would otherwise become posts_per_page=-1 and skip the LIMIT.
 
 ***
 
@@ -587,9 +607,20 @@ public get_repository_schema(\Tainacan\Repositories\Repository $repository): mix
 
 ### get_permissions_schema
 
+Returns a schema definition for permission-related object properties.
+
 ```php
-public get_permissions_schema(): mixed
+protected get_permissions_schema(): array
 ```
+
+This helper builds a schema object describing whether the current user
+can edit or delete the object, including the context in which the
+permissions apply. It is used for documenting API endpoints and for
+client-side validation.
+
+**Return Value:**
+
+The schema definition.
 
 ***
 
@@ -642,5 +673,98 @@ status is invalid.
 **Return Value:**
 
 Array of valid status slugs or WP_Error if any status is not allowed.
+
+***
+
+### validate_array_fields
+
+Reject named fields that are present in a decoded JSON body but are not arrays.
+
+```php
+protected validate_array_fields(mixed $body, array $fields): true|\WP_REST_Response
+```
+
+JSON bodies read via get_body() bypass REST schema type checks when
+Content-Type is not application/json (for example text/plain).
+
+**Parameters:**
+
+| Parameter | Type      | Description                                   |
+|-----------|-----------|-----------------------------------------------|
+| `$body`   | **mixed** | Decoded request body or nested object.        |
+| `$fields` | **array** | Field names that must be arrays when present. |
+
+***
+
+### get_param_schema
+
+Returns a single schema property definition for a field.
+
+```php
+protected get_param_schema(string $param_name, array $properties): array
+```
+
+The return value is keyed by the field name so it can be safely merged
+into an object schema's `properties` map via `array_merge()`. Each call
+therefore contributes one distinct property instead of overwriting the
+shared `title`/`description`/`type` keys (which previously caused every
+merged property except the last one to be lost).
+
+**Parameters:**
+
+| Parameter     | Type       | Description                      |
+|---------------|------------|----------------------------------|
+| `$param_name` | **string** | The name of the parameter.       |
+| `$properties` | **array**  | The properties of the parameter. |
+
+**Return Value:**
+
+A single-entry map of field name => property schema.
+
+***
+
+### get_paginated_list_schema
+
+Returns a schema definition for paginated list responses.
+
+```php
+protected get_paginated_list_schema(): array
+```
+
+This helper builds a schema object describing the structure of paginated
+list responses returned by the API. It includes fields for the total
+number of items, total number of pages, the current page number, the
+number of items per page, and the array of items.
+
+**Return Value:**
+
+The schema definition.
+
+***
+
+### prepare_paginated_response
+
+Prepares a paginated response with the standard total headers.
+
+```php
+protected prepare_paginated_response(array $data, int $total, int $total_pages, int $per_page, \WP_REST_Response|null $response = null): \WP_REST_Response
+```
+
+Sets X-WP-Total, X-WP-TotalPages, and X-WP-ItemsPerPage. It is designed
+to work with the get_paginated_list_schema() method.
+
+**Parameters:**
+
+| Parameter      | Type                        | Description                              |
+|----------------|-----------------------------|------------------------------------------|
+| `$data`        | **array**                   | The data to include in the response.     |
+| `$total`       | **int**                     | Total number of items.                   |
+| `$total_pages` | **int**                     | Total number of pages.                   |
+| `$per_page`    | **int**                     | Number of items per page.                |
+| `$response`    | **\WP_REST_Response\|null** | Optional. The response object to modify. |
+
+**Return Value:**
+
+The paginated response.
 
 ***

@@ -488,11 +488,11 @@
                             class="metadata-section-header section-label">
                         <span   
                                 class="collapse-handle"
-                                role="button"
-                                :tabindex="!hideCollapses && !isSectionHidden(metadataSection.id) ? 0 : -1"
-                                :aria-label="!hideCollapses ? $i18n.get('label_collapse') : $i18n.get('label_expand')"
-                                :aria-expanded="!metadataSectionCollapses[sectionIndex]"
-                                :aria-controls="'metadata-section-id-' + metadataSection.id"
+                                :role="hideCollapses ? undefined : 'button'"
+                                :tabindex="hideCollapses ? undefined : (!isSectionHidden(metadataSection.id) ? 0 : -1)"
+                                :aria-label="hideCollapses ? undefined : $i18n.get('label_collapse')"
+                                :aria-expanded="hideCollapses ? undefined : !metadataSectionCollapses[sectionIndex]"
+                                :aria-controls="hideCollapses ? undefined : ('metadata-section-id-' + metadataSection.id)"
                                 @click="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''"
                                 @keydown.enter.prevent="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''"
                                 @keydown.space.prevent="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''">

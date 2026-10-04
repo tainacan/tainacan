@@ -444,9 +444,7 @@
                                 .then(() => {
                                     this.updateMetadataOrder();
                                 })
-                                .catch(() => {
-                                    this.$console.log("Error deleting metadatum.")
-                                });
+                                .catch(() => undefined);
                         }
                     },
                     trapFocus: true,

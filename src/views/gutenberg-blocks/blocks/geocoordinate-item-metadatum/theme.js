@@ -24,7 +24,7 @@ const mapObserverOptions = {
 
 // The mapObserver repeats part of the initialization logic to prevent the map from looking broke 
 // when it becomes visible after being hidden, for example inside section tabs
-const mapObserver = new IntersectionObserver((entries, observer) => {
+const mapObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             if ( 

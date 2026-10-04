@@ -140,18 +140,14 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
             
                 return otherModalCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     fetchCollection(collectionId) {
         tainacanApi.get('/collections/' + collectionId)
             .then((response) => {
                 this.setState({ collectionName: response.data.name });
-            }).catch(error => {
-                console.log('Error trying to fetch collection: ' + error);
-            });
+            }).catch(() => undefined);
     }
 
     fetchItem(itemId, collectionId) {
@@ -160,9 +156,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
         tainacanApi.get('/collections/' + resolvedCollectionId + '/items/' + itemId)
             .then((response) => {
                 this.setState({ itemTitle: response.data.title });
-            }).catch(error => {
-                console.log('Error trying to fetch collection: ' + error);
-            });
+            }).catch(() => undefined);
     }
 
     selectCollection(selectedCollectionId) {
@@ -214,15 +208,13 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
                 
                 return someCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     fetchModalMetadataSections(existingCollectionId) {
 
         let someModalMetadataSections = [];
-        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata-sections/?nopaging=1';
+        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata-sections/';
         
         this.setState({ 
             isLoadingMetadataSections: true,
@@ -248,9 +240,7 @@ export default class TainacanSingleItemMetadataSectionSelectionModal extends Rea
             
                 return otherModalMetadataSections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch metadataSections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
 

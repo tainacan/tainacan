@@ -147,7 +147,7 @@
                                             }"
                                             :aria-label="column.name + ': ' + (item.title != undefined && item.title != '' ? item.title : $i18n.get('label_value_not_provided'))"
                                             v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.title != undefined && item.title != '' ? item.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
-                                    <p
+                                    <div
                                             v-if="!collectionId &&
                                                 column.metadata_type_object != undefined && 
                                                 column.metadata_type_object.related_mapped_prop == 'description'"
@@ -162,8 +162,9 @@
                                                 placement: 'auto-start',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
+                                            class="metadata-value"
                                             v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.description != undefined && item.description != '' ? item.description : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
-                                    <p
+                                    <div
                                             v-if="item.metadata != undefined &&
                                                 column.metadatum !== 'row_thumbnail' &&
                                                 column.metadatum !== 'row_actions' &&
@@ -182,6 +183,7 @@
                                                 autoHide: false,
                                                 placement: 'auto-start'
                                             }"
+                                            class="metadata-value"
                                             v-html="renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
 
                                     <span v-if="column.metadatum == 'row_thumbnail'">

@@ -200,7 +200,7 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
  * Dispatches `taxonomy/sendChildTerm`.
  * @returns {*} Action result.
  */
-export const sendChildTerm = ({ commit }, { taxonomyId, term, itemId, metadatumId }) => {
+export const sendChildTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
     
     if ( itemId != undefined )
         term['item_id'] = itemId;
@@ -324,14 +324,11 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
  * Dispatches `taxonomy/fetchPossibleParentTerms`.
  * @returns {*} Action result.
  */
-export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search, offset } ) => {
+export const fetchPossibleParentTerms = ({}, { taxonomyId, termId, search, offset } ) => {
 
     const excludeTree = termId && termId != 'new' ? qs.stringify({ exclude_tree: termId }) : '';
 
-    let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&hideempty=0&offset=0&number=20&order=asc&' + excludeTree;
-
-    if (offset)
-        endpoint += '&offset=' + offset;
+    let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&hideempty=0&offset=' + (offset || 0) + '&number=12&order=asc&' + excludeTree;
 
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get(endpoint)
@@ -356,7 +353,7 @@ export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, searc
  * Dispatches `taxonomy/fetchParentName`.
  * @returns {*} Action result.
  */
-export const fetchParentName = ({ commit }, { taxonomyId, parentId } ) => {
+export const fetchParentName = ({}, { taxonomyId, parentId } ) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get('/taxonomy/' + taxonomyId + '/terms/' + parentId + '?fetch_only=name')
         .then(res => {
@@ -382,7 +379,9 @@ export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) =
     });
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms )
+        // silentError: the caller (terms list) renders the detailed per-term
+        // validation errors itself, so the global handler must not duplicate it.
+        axios.tainacanApi.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms, { silentError: true } )
         .then(res => {
             resolve( res.data );
         })

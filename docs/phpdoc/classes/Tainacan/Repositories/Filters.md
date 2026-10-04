@@ -15,6 +15,27 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
+    class Filters {
+        +entities_type : mixed
+        +filters_types : mixed
+        #init()
+        #_get_map()
+        +get_cpt_labels()
+        +register_post_type()
+        +update(object, new_values)
+        +fetch(args, output)
+        +register_filter_type(class_name)
+        +deregister_filter_type(class_name)
+        +fetch_filter_types(output)
+        +fetch_supported_filter_types(types)
+        +fetch_ids(args)
+        +fetch_by_collection(collection, args)
+        +fetch_ids_by_collection(collection, args)
+        +order_result(result, collection, include_disabled)
+        +hook_delete_when_metadata_deleted(metadatum, permanent)
+        +hook_update_when_metadata_saved_as_private(metadatum)
+        +fetch_by_collections(args, collection_ids)
+    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -51,26 +72,6 @@ classDiagram
         +get_descendants_ids(id, depth)
         +get_capabilities()
         #sanitize_value(content)
-    }
-    class Filters {
-        +entities_type : mixed
-        +filters_types : mixed
-        #init()
-        #_get_map()
-        +get_cpt_labels()
-        +register_post_type()
-        +update(object, new_values)
-        +fetch(args, output)
-        +register_filter_type(class_name)
-        +deregister_filter_type(class_name)
-        +fetch_filter_types(output)
-        +fetch_supported_filter_types(types)
-        +fetch_ids(args)
-        +fetch_by_collection(collection, args)
-        +fetch_ids_by_collection(collection, args)
-        +order_result(result, collection, include_disabled)
-        +hook_delete_when_metadata_deleted(metadatum, permanent)
-        +hook_update_when_metadata_saved_as_private(metadatum)
     }
     Repository ..> Filters
     Repository ..> Repository
@@ -452,6 +453,33 @@ public hook_update_when_metadata_saved_as_private(mixed $metadatum): mixed
 | Parameter    | Type      | Description |
 |--------------|-----------|-------------|
 | `$metadatum` | **mixed** |             |
+
+***
+
+### fetch_by_collections
+
+Fetch filters across collections.
+
+```php
+public fetch_by_collections(array $args = [], array $collection_ids = []): array
+```
+
+Repository filters are not included. Only filters with
+display_in_repository_level_lists other than "no" are returned. Each
+readable collection is loaded with an unpaginated query, then its filters
+— including inherited ones — are ordered with fetch_by_collection().
+The collection paired with each list is the one whose order was applied.
+
+**Parameters:**
+
+| Parameter         | Type      | Description                                           |
+|-------------------|-----------|-------------------------------------------------------|
+| `$args`           | **array** | Args forwarded to fetch_by_collection().              |
+| `$collection_ids` | **array** | Limit the scan to these collections. Empty means all. |
+
+**Return Value:**
+
+List of [ 'filters' => Entities\Filter[], 'collection' => Entities\Collection ].
 
 ***
 

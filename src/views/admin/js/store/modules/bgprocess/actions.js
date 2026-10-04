@@ -6,7 +6,7 @@ import qs from 'qs';
  * Dispatches `bgprocess/fetchProcesses`.
  * @returns {*} Action result.
  */
-export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore, searchDates, search}) => {
+export const fetchProcesses = ({ commit }, {page, processesPerPage, searchDates, search}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/bg-processes?all_users=1';
 
@@ -99,7 +99,7 @@ export const fetchProcess = ({ commit }, id) => {
  * Dispatches `bgprocess/fetchProcessErrorLog`.
  * @returns {*} Action result.
  */
-export const fetchProcessErrorLog = ({ commit }, { id: id, isFull: isFull }) => {
+export const fetchProcessErrorLog = ({ commit }, { id }) => {
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get(`/bg-processes/${id}/log`)
         .then( res => {

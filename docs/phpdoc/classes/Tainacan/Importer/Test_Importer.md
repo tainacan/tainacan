@@ -17,37 +17,10 @@ create test collections and items
 ```mermaid
 classDiagram
     direction TB
-    class Test_Importer {
-        #steps : mixed
-        #selectbox_values : mixed
-        #date_values : mixed
-        #numeric_values : mixed
-        #text_values : mixed
-        #textarea_values : mixed
-        #extra_values : mixed
-        #tax_repo : mixed
-        #col_repo : mixed
-        #items_repo : mixed
-        #metadata_repo : mixed
-        #item_metadata_repo : mixed
-        +__construct(attributes)
-        +options_form()
-        +create_taxonomies()
-        +create_collections()
-        +link_relationship()
-        +close_taxonomies()
-        +finish_processing()
-        +process_item(index, collection_definition)
-        +after_inserted_item(inserted_item, collection_index)
-        +get_col1_number_of_items()
-        +get_col2_number_of_items()
-        -create_metadata(args, collection)
-        +get_col1_item(index)
-        +get_col2_item(index)
-    }
     class Importer {
         -id : identifier
         #tmp_file : string
+        #tmp_file_id : int
         #collections : array
         -options : array
         #default_options : array
@@ -78,6 +51,9 @@ classDiagram
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        -resolve_allowed_tmp_file(filepath)
+        +get_tmp_file_id()
+        +set_tmp_file_id(id)
         +get_collections()
         +set_collections(value)
         +get_options()
@@ -90,6 +66,7 @@ classDiagram
         +get_log()
         +get_error_log()
         +add_file(file)
+        +delete_source_file()
         +add_log(message)
         +add_error_log(message)
         +add_collection(collection)
@@ -122,6 +99,34 @@ classDiagram
         +after_inserted_item(insertedItem, collection_index)
         +run()
         +create_new_metadata(metadata_description, collection_id, parent_id)
+    }
+    class Test_Importer {
+        #steps : mixed
+        #selectbox_values : mixed
+        #date_values : mixed
+        #numeric_values : mixed
+        #text_values : mixed
+        #textarea_values : mixed
+        #extra_values : mixed
+        #tax_repo : mixed
+        #col_repo : mixed
+        #items_repo : mixed
+        #metadata_repo : mixed
+        #item_metadata_repo : mixed
+        +__construct(attributes)
+        +options_form()
+        +create_taxonomies()
+        +create_collections()
+        +link_relationship()
+        +close_taxonomies()
+        +finish_processing()
+        +process_item(index, collection_definition)
+        +after_inserted_item(inserted_item, collection_index)
+        +get_col1_number_of_items()
+        +get_col2_number_of_items()
+        -create_metadata(args, collection)
+        +get_col1_item(index)
+        +get_col2_item(index)
     }
     Importer <|-- Test_Importer
 ```
@@ -573,15 +578,43 @@ public get_tmp_file(): mixed
 
 ### set_tmp_file
 
+Store the importer source file.
+
 ```php
-public set_tmp_file(mixed $filepath): mixed
+public set_tmp_file(mixed $filepath): bool
 ```
+
+The path must be an existing file inside the WordPress uploads directory.
+Absolute paths are accepted only after realpath() confirms that location,
+which is how attachments from media_handle_sideload() are stored.
 
 **Parameters:**
 
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$filepath` | **mixed** |             |
+
+***
+
+### get_tmp_file_id
+
+```php
+public get_tmp_file_id(): mixed
+```
+
+***
+
+### set_tmp_file_id
+
+```php
+public set_tmp_file_id(mixed $id): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$id`     | **mixed** |             |
 
 ***
 
@@ -705,6 +738,16 @@ public add_file(mixed $file): bool
 | Parameter | Type      | Description                    |
 |-----------|-----------|--------------------------------|
 | `$file`   | **mixed** | File to be managed by importer |
+
+***
+
+### delete_source_file
+
+Delete the uploaded source file and its WordPress attachment.
+
+```php
+public delete_source_file(): bool
+```
 
 ***
 

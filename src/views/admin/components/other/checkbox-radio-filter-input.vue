@@ -558,8 +558,8 @@
 
                             this.isSelectedTermsLoading = false;
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
+                        .catch(() => {
+                            
                             this.isSelectedTermsLoading = false;
                         });
                     
@@ -573,8 +573,8 @@
 
                             this.isSelectedTermsLoading = false;
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
+                        .catch(() => {
+                            
                             this.isSelectedTermsLoading = false;
                         });
                 }
@@ -695,9 +695,7 @@
                         }
                     })
                     .catch(error => {
-                        if (isCancel(error))
-                            this.$console.log('Request canceled: ' + error.message);
-                        else
+                        if (!isCancel(error))
                             this.$console.error( error );
                     })
 
@@ -735,9 +733,7 @@
                             this.noMoreSearchPage = !res.data.last_term || !res.data.last_term.es_term;
                         }
 
-                    }).catch((error) => {
-                    this.$console.log(error);
-                });
+                    }).catch(() => undefined);
                 
             }, 500),
             highlightHierarchyPath(){
@@ -881,8 +877,8 @@
 
                         this.isColumnLoading = false;
                     })
-                    .catch(error => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
 
                         this.isColumnLoading = false;
                     });
@@ -921,8 +917,8 @@
 
                             this.isColumnLoading = false;
                         })
-                        .catch(error => {
-                            this.$console.log(error);
+                        .catch(() => {
+                            
 
                             this.isColumnLoading = false;
                         });

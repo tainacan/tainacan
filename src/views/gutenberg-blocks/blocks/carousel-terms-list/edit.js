@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder,  PanelBody } = wp.components;
+const { Placeholder, RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
@@ -14,6 +14,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function({ attributes, setAttributes, isSelected, clientId }){
     let {
@@ -432,25 +433,10 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
 
             { !taxonomyId && !terms.length && !isLoading ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                height="24px"
-                                width="24px">
-                            <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                        </svg>
-                        {__('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Terms Carousel', 'tainacan' ) }
+                    instructions={ __( 'List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"

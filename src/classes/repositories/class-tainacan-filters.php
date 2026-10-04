@@ -55,7 +55,7 @@ class Filters extends Repository {
 			'filter_type_options' => [
 				'map'         => 'meta',
 				'title'       => __( 'Filter type options', 'tainacan' ),
-				'type'        => ['array', 'object', 'string'],
+				'type'        => ['array', 'object'],
 				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The filter type options', 'tainacan' ),
 				'validation'  => ''
@@ -571,7 +571,6 @@ class Filters extends Repository {
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_filters_order();
 		if ( $order ) {
-			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 
 			if ( is_array( $result ) ) {
 				$result_ordinate = [];
@@ -673,6 +672,84 @@ class Filters extends Repository {
 			
 		}
 		
+	}
+
+	/**
+	 * Fetch filters across collections.
+	 *
+	 * Repository filters are not included. Only filters with
+	 * display_in_repository_level_lists other than "no" are returned. Each
+	 * readable collection is loaded with an unpaginated query, then its filters
+	 * — including inherited ones — are ordered with fetch_by_collection().
+	 * The collection paired with each list is the one whose order was applied.
+	 *
+	 * @param array $args           Args forwarded to fetch_by_collection().
+	 * @param array $collection_ids Limit the scan to these collections. Empty means all.
+	 *
+	 * @return array List of [ 'filters' => Entities\Filter[], 'collection' => Entities\Collection ].
+	 */
+	public function fetch_by_collections( $args = [], $collection_ids = [] ) {
+		$collections_repository = Collections::get_instance();
+		$collection_args = [
+			'posts_per_page' => -1,
+		];
+
+		$collection_ids = array_values( array_filter( array_map( 'absint', (array) $collection_ids ) ) );
+		if ( ! empty( $collection_ids ) ) {
+			$collection_args['post__in'] = $collection_ids;
+		}
+
+		$collections = $collections_repository->fetch( $collection_args, 'OBJECT' );
+		if ( ! is_array( $collections ) ) {
+			return [];
+		}
+
+		$filter_args = $args;
+		if ( ! isset( $filter_args['meta_query'] ) || ! is_array( $filter_args['meta_query'] ) ) {
+			$filter_args['meta_query'] = [];
+		}
+		$filter_args['meta_query'][] = [
+			'key'     => 'collection_id',
+			'value'   => 'default',
+			'compare' => '!=',
+		];
+		$filter_args['meta_query'][] = [
+			'key'     => 'display_in_repository_level_lists',
+			'value'   => 'no',
+			'compare' => '!=',
+		];
+
+		$results = [];
+		foreach ( $collections as $collection ) {
+			if ( ! $collection instanceof Entities\Collection || ! $collection->can_read() ) {
+				continue;
+			}
+
+			$collection_filters = [];
+			foreach ( $this->fetch_by_collection( $collection, $filter_args ) as $filter ) {
+				if ( ! $filter instanceof Entities\Filter || $filter->get_metadatum() === null ) {
+					continue;
+				}
+
+				$options = $filter->get_metadatum()->get_metadata_type_options();
+				if ( $options != null && isset( $options['only_repository'] ) && $options['only_repository'] != 'no' ) {
+					continue;
+				}
+
+				$collection_filters[] = $filter;
+			}
+
+			if ( empty( $collection_filters ) ) {
+				continue;
+			}
+
+			$results[] = [
+				'filters'    => $collection_filters,
+				'collection' => $collection,
+			];
+		}
+
+		return $results;
 	}
 	
 }

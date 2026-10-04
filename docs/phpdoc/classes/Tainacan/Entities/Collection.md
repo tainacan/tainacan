@@ -872,7 +872,7 @@ public get_enabled_view_modes(): string
 Get collection metadata ordination
 
 ```php
-public get_metadata_order(): object|string
+public get_metadata_order(): array
 ```
 
 ***
@@ -882,7 +882,7 @@ public get_metadata_order(): object|string
 Get collection metadata section ordination
 
 ```php
-public get_metadata_section_order(): array|object|string
+public get_metadata_section_order(): array
 ```
 
 ***
@@ -932,7 +932,7 @@ public get_cover_page_id(): string
 Get collection filters ordination
 
 ```php
-public get_filters_order(): string
+public get_filters_order(): array
 ```
 
 ***

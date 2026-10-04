@@ -557,7 +557,7 @@ export default {
             }
         },
         fetchMetadata() {
-            let metadataEndpoint = '/collection/' + this.collectionId + '/metadata/?nopaging=1';
+            let metadataEndpoint = '/collection/' + this.collectionId + '/metadata/';
 
             if ( this.displayedMetadata != undefined && this.displayedMetadata.length > 0 )
                 metadataEndpoint += '&' + qs.stringify({ postin: this.displayedMetadata });

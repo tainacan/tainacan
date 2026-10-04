@@ -683,7 +683,6 @@ class Metadata extends Repository {
 		$section_order = $collection->get_metadata_section_order();
 
 		if ( $order ) {
-			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 
 			if ( is_array( $result ) ) {
 				$result_ordinate = [];
@@ -1843,9 +1842,10 @@ class Metadata extends Repository {
 	 */
 	public function metadata_is_enabled($collection, $metadata) {
 		$order = $collection->get_metadata_order();
-		if($order == false) return true;
-		$order = ( is_array( $order ) ) ? $order : unserialize( $order );
-		if( is_array($order) ) {
+		if ( empty( $order ) ) {
+			return true;
+		}
+		if ( is_array( $order ) ) {
 			foreach ($order as $metadata_order) {
 				if( $metadata_order['id'] == $metadata->get_id() || $metadata_order['id'] == $metadata->get_parent() ) {
 					if($metadata_order['enabled'] == false)
