@@ -243,6 +243,7 @@ class __Bulk_Edit  {
 
 		$query = $wpdb->prepare("UPDATE $wpdb->posts SET post_status = %s WHERE ID IN ($select_q)", $value);
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is prepared and $select_q comes from _build_select().
 		$run = $wpdb->query($query);
 
 		if ($run) {
@@ -396,14 +397,17 @@ class __Bulk_Edit  {
 		$query_original_status = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) $select_insert";
 		$query_trash_time = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) $select_insert_time";
 
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Queries only contain table names, literals and prepared fragments from _build_select().
 		$wpdb->query($query_original_status);
 		$wpdb->query($query_trash_time);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 
 		$query = "UPDATE $wpdb->posts SET post_status = 'trash' WHERE ID IN ($select_q)";
 
 		// TODO trash comments?
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains table names, literals and the prepared $select_q from _build_select().
 		return $wpdb->query($query);
 
 	}
@@ -423,9 +427,11 @@ class __Bulk_Edit  {
 		$query_delete_meta1 = "DELETE FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_status' AND post_id IN ( SELECT implicitTemp.post_id FROM ($select_q) implicitTemp )";
 		$query_delete_meta2 = "DELETE FROM $wpdb->postmeta WHERE meta_key = '_wp_trash_meta_time' AND post_id IN ( SELECT implicitTemp.post_id FROM ($select_q) implicitTemp )";
 
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Queries only contain table names, literals and the prepared $select_q from _build_select().
 		$affected = $wpdb->query( $query_restore );
 		$wpdb->query( $query_delete_meta1 );
 		$wpdb->query( $query_delete_meta2 );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		// TODO untrash comments?
 
@@ -446,6 +452,7 @@ class __Bulk_Edit  {
 
 		$query_delete = "DELETE FROM $wpdb->posts WHERE ID IN ($select_q) $security";
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query_delete only contains table names, literals and the prepared $select_q from _build_select().
 		return $wpdb->query($query_delete);
 
 	}
@@ -494,6 +501,7 @@ class __Bulk_Edit  {
 
 					$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
 
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains table names and $insert_q, which is prepared in _build_select().
 					$return = $wpdb->query($query);
 
 				}
@@ -521,6 +529,7 @@ class __Bulk_Edit  {
 
 				$query = "INSERT IGNORE INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains table names and $insert_q, which is prepared in _build_select().
 				$affected = $wpdb->query($query);
 
 				if ($type->get_core()) {
@@ -533,6 +542,7 @@ class __Bulk_Edit  {
 					$update_q = $this->_build_select( "post_id" );
 					$core_query = $wpdb->prepare( "UPDATE $wpdb->posts SET $column = %s WHERE ID IN ($update_q)", $v );
 
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $core_query is prepared; $column comes from a fixed whitelist.
 					$wpdb->query($core_query);
 				}
 
@@ -579,6 +589,7 @@ class __Bulk_Edit  {
 
 				$query = $wpdb->prepare( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d AND object_id IN ($delete_q)", $term->term_taxonomy_id );
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is prepared and $delete_q comes from _build_select().
 				return $wpdb->query($query);
 
 				//TODO update term count
@@ -593,6 +604,7 @@ class __Bulk_Edit  {
 
 			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s AND post_id IN ( SELECT implicitTemp.post_id FROM ($delete_q) implicitTemp )", $metadatum->get_id(), $value );
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is prepared and $delete_q comes from _build_select().
 			return $wpdb->query($query);
 
 		}
@@ -662,6 +674,7 @@ class __Bulk_Edit  {
 				$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q ";
 
 				// Add
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains table names and $insert_q, which is built only from prepared fragments.
 				$wpdb->query($query);
 
 				// Remove
@@ -682,6 +695,7 @@ class __Bulk_Edit  {
 
 			$query = "INSERT IGNORE INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains table names and $insert_q, which is built only from prepared fragments.
 			$affected = $wpdb->query($query);
 
 			if ($type->get_core()) {
@@ -697,6 +711,7 @@ class __Bulk_Edit  {
 
 				$core_query = $wpdb->prepare( "UPDATE $wpdb->posts SET $column = %s WHERE ID IN ($update_q)", $newvalue );
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $core_query is prepared; $column comes from a fixed whitelist.
 				$wpdb->query($core_query);
 			}
 
@@ -728,6 +743,7 @@ class __Bulk_Edit  {
 
 				$query = "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ($delete_tax_q) AND object_id IN ($delete_q)";
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains table names, the prepared $delete_tax_q and $delete_q from _build_select().
 				return $wpdb->query($query);
 
 				//TODO update term count
@@ -743,6 +759,7 @@ class __Bulk_Edit  {
 			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s AND post_id IN ( SELECT implicitTemp.post_id FROM ($delete_q) implicitTemp )", $metadatum->get_id() );
 
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is prepared and $delete_q comes from _build_select().
 			return $wpdb->query($query);
 
 		}
