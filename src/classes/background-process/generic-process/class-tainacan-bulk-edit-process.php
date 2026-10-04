@@ -187,8 +187,8 @@ class Bulk_Edit_Process extends Generic_Process {
 				return false;
 			}
 
-			/* translators: %d is the ID of the process that is creating the control metadata */
-			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%d" (attempt %d/%d)', 'tainacan' ), $params['control_metadata'], $retries, self::MAX_CONTROL_METADATA_WAIT_RETRIES ) );
+			/* translators: 1: ID of the process that is creating the control metadata, 2: current attempt number, 3: maximum number of attempts */
+			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%1$d" (attempt %2$d/%3$d)', 'tainacan' ), $params['control_metadata'], $retries, self::MAX_CONTROL_METADATA_WAIT_RETRIES ) );
 			return 0;
 		}
 
