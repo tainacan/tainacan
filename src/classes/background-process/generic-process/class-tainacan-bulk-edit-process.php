@@ -187,8 +187,8 @@ class Bulk_Edit_Process extends Generic_Process {
 				return false;
 			}
 
-			/* translators: %d is the ID of the process that is creating the control metadata */
-			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%d" (attempt %d/%d)', 'tainacan' ), $params['control_metadata'], $retries, self::MAX_CONTROL_METADATA_WAIT_RETRIES ) );
+			/* translators: 1: ID of the process that is creating the control metadata, 2: current attempt number, 3: maximum number of attempts */
+			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%1$d" (attempt %2$d/%3$d)', 'tainacan' ), $params['control_metadata'], $retries, self::MAX_CONTROL_METADATA_WAIT_RETRIES ) );
 			return 0;
 		}
 
@@ -263,7 +263,15 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function bulk_list_get_item($count) {
 		global $wpdb;
-		$results = $wpdb->get_results( "select post_id, meta_key from $wpdb->postmeta where meta_key = '{$this->meta_key}' AND meta_value = '" . $this->get_group_id() . "' ORDER BY post_id DESC LIMIT $count, 1", ARRAY_A );
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT post_id, meta_key FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id DESC LIMIT %d, 1",
+				$this->meta_key,
+				$this->get_group_id(),
+				$count
+			),
+			ARRAY_A
+		);
 		foreach($results as $meta) {
 			$item = $this->items_repository->fetch((int)$meta['post_id'], [], 'OBJECT');
 			if($item instanceof \Tainacan\Entities\Item) {

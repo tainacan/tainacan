@@ -156,14 +156,14 @@ class REST_Background_Processes_Controller extends REST_Controller {
         if ($perpage > 100) {
             $perpage = 100;
         }
-        $paged = isset($request['paged']) && is_numeric($request['paged']) ? $request['paged'] : 1;
+        $paged = isset($request['paged']) && is_numeric($request['paged']) ? (int) $request['paged'] : 1;
         if ($paged < 1) {
             $paged = 1;
         }
 
         $offset = ($paged - 1) * $perpage;
 
-        $limit_q = "LIMIT $offset,$perpage";
+        $limit_q = $wpdb->prepare("LIMIT %d, %d", $offset, $perpage);
 
         $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
         $status_q = "";
@@ -192,9 +192,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
         if (isset($request['datequery'])) {
             $from = $request['datequery'][0]['after'];
             $to = $request['datequery'][0]['before'];
-            $date_query = "AND processed_last >= %s AND processed_last <= %s";
-
-            $date_range = $wpdb->prepare($date_query, $from, $to);
+            $date_range = $wpdb->prepare("AND processed_last >= %s AND processed_last <= %s", $from, $to);
         }
 
         $process_type = '';
@@ -214,8 +212,10 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $query = "SELECT * $base_query $limit_q";
         $count_query = "SELECT COUNT(ID) $base_query";
 
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Queries only contain the table name, fixed SQL fragments and fragments built with $wpdb->prepare().
         $result = $wpdb->get_results($query);
         $total_items = $wpdb->get_var($count_query);
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         $response = [];
 
@@ -248,6 +248,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains the table name and fragments built with $wpdb->prepare().
         $result = $wpdb->get_row($query);
 
         if ( ! $result ) {
@@ -310,6 +311,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
         }
 
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains the table name and fragments built with $wpdb->prepare().
         $result = $wpdb->get_row($query);
 
         if ( ! $result ) {
@@ -334,6 +336,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
         }
 
         $query = "SELECT * FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains the table name and fragments built with $wpdb->prepare().
         $result = $wpdb->get_row($query);
 
         $result = $this->prepare_item_for_response($result, $request);
@@ -356,6 +359,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $query = "DELETE FROM $this->table WHERE 1=1 $id_q $user_q LIMIT 1";
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query only contains the table name and fragments built with $wpdb->prepare().
         $result = $wpdb->query($query);
 
         return new \WP_REST_Response( $result, 200 );
@@ -430,6 +434,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                 \ob_clean();
             }
             \flush();
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream the log file to the response. WP_Filesystem::get_contents() would load the whole file into memory.
             \readfile($real_file_path);
             exit;
         } else {

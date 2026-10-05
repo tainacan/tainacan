@@ -116,7 +116,7 @@ class REST_Facets_Controller extends REST_Controller {
 				$number = $request['number'];
 			}
 
-			if($request['search']) {
+			if ( isset( $request['search'] ) && is_string( $request['search'] ) && '' !== trim( $request['search'] ) ) {
 				$_search = $request['search'];
 			}
 

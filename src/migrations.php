@@ -52,6 +52,7 @@ class Migrations {
 		  KEY action (action($max_index_length))
 		) $charset_collate;\n";
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Static DDL. It only interpolates the table prefix, the charset collation and a fixed index length.
 		$wpdb->query($query);
 
 	}
@@ -357,9 +358,7 @@ class Migrations {
 	static function update_relationship_metadata_search_option() {
 		global $wpdb;
 
-		$q = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'metadata_type' AND meta_value = 'Tainacan\\\\Metadata_Types\\\\Relationship'";
-
-		$ids = $wpdb->get_col($q);
+		$ids = $wpdb->get_col( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'metadata_type' AND meta_value = 'Tainacan\\\\Metadata_Types\\\\Relationship'" );
 
 		foreach ($ids as $id) {
 			$meta = get_post_meta($id, 'metadata_type_options', true);
@@ -576,8 +575,7 @@ class Migrations {
 			KEY `wp_tainacan_logs__wp_posts_log_migration_ref_IDX` (`_wp_posts_log_migration_ref`) USING BTREE
 		) $charset_collate;\n";
 
-		error_log($query);
-
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Static DDL. It only interpolates the table prefix and the charset collation.
 		$wpdb->query( $query );
 	}
 
