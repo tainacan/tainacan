@@ -93,6 +93,12 @@ classDiagram
     Generic_Process <|-- Bulk_Edit_Process
 ```
 
+## Constants
+
+| Constant                            | Visibility | Type | Value |
+|-------------------------------------|------------|------|-------|
+| `MAX_CONTROL_METADATA_WAIT_RETRIES` | public     | int  | 30    |
+
 ## Properties
 
 ### meta_key
