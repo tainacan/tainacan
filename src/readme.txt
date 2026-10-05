@@ -1,5 +1,5 @@
 === Tainacan ===
-Contributors: alanargomes, andrebenedito, ateneagarcia123, ccaio, clarandreozzi, daltonmartins, eduardohumberto, fabianobn, jacsonp, jessicafpx, leogermani, marinagiolo, omarceloavila, ravipassos, rodrigo0freire, suelanesilva, tainacan, vnmedeiros, weryques, wetah
+Contributors: alanargomes, andrebenedito, ateneagarcia123, ccaio, clarandreozzi, daltonmartins, diegodorgam, eduardohumberto, fabianobn, hudsonarruda, jacsonp, jessicafpx, leogermani, marinagiolo, marvila, omarceloavila, ravipassos, rodrigo0freire, suelanesilva, tainacan, vnmedeiros, weryques, wetah
 Tags: museums, archives, GLAM, collections, repository
 Requires at least: 6.5
 Tested up to: 7.1
