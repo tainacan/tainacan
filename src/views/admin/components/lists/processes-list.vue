@@ -1,33 +1,47 @@
 <template>
-    <div class="table-container">
-        <div
-                v-if="processes.length > 0 && !isLoading"
-                class="processes-table-wrapper">
-            <table class="processes-table">
+    <div
+            v-if="processes.length > 0 && !isLoading"
+            class="table-container">
+        <div class="table-wrapper">
+            <table
+                    id="processes-list-results"
+                    class="tainacan-table is-narrow">
                 <thead>
                     <tr>
-                        <th
-                                class="col-toggle"
-                                :aria-label="$i18n.get('label_view_details')" />
-                        <th class="col-type">
-                            {{ $i18n.get('label_process_type') }}
+                        <th class="status-cell">
+                            <span class="sr-only">
+                                {{ $i18n.get('label_view_details') }}
+                            </span>
                         </th>
-                        <th class="col-status">
-                            {{ $i18n.get('label_status') }}
+                        <th>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_process_type') }}
+                            </div>
                         </th>
-                        <th class="col-progress">
-                            {{ $i18n.get('label_progress') }}
+                        <th>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_status') }}
+                            </div>
                         </th>
-                        <th class="col-created">
-                            {{ $i18n.get('label_queued_on') }}
+                        <th class="column-align-right">
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_progress') }}
+                            </div>
                         </th>
-                        <th class="col-executed">
-                            {{ $i18n.get('label_last_processed_on') }}
+                        <th>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_queued_on') }}
+                            </div>
                         </th>
-                        <th
-                                class="col-actions"
-                                :aria-label="$i18n.get('label_actions')">
-                            {{ $i18n.get('label_actions') }}
+                        <th>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_last_processed_on') }}
+                            </div>
+                        </th>
+                        <th class="actions-header">
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions') }}
+                            </span>
                         </th>
                     </tr>
                 </thead>
@@ -42,7 +56,7 @@
                                 }"
                                 @click="Object.assign( collapses, { [index]: !collapses[index] })">
                             <!-- Expand / collapse arrow -->
-                            <td class="col-toggle">
+                            <td class="status-cell">
                                 <span
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
@@ -53,7 +67,7 @@
                                         }"
                                         class="icon has-text-dark toggle-icon"
                                         tabindex="0"
-                                        aria-role="button"
+                                        role="button"
                                         :aria-label="$i18n.get('label_view_details')"
                                         :aria-expanded="collapses[index] ? 'true' : 'false'"
                                         @click.prevent.stop="Object.assign( collapses, { [index]: !collapses[index] })"
@@ -68,25 +82,26 @@
 
                             <!-- Process Type -->
                             <td
-                                    class="col-type"
-                                    :data-label="$i18n.get('label_process_type')">
-                                <span
+                                    class="column-default-width column-main-content"
+                                    :label="$i18n.get('label_process_type')"
+                                    :aria-label="$i18n.get('label_process_type') + ': ' + (bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process'))">
+                                <p
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
                                             content: bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process'),
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
-                                        }"
-                                        class="process-name">
+                                        }">
                                     {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process') }}
-                                </span>
+                                </p>
                             </td>
 
                             <!-- Status -->
                             <td
-                                    class="col-status"
-                                    :data-label="$i18n.get('label_status')">
+                                    class="column-large-width column-needed-width"
+                                    :label="$i18n.get('label_status')"
+                                    :aria-label="$i18n.get('label_status') + ': ' + getStatusLabel(bgProcess)">
                                 <span
                                         class="tag process-status-tag"
                                         :class="getStatusTagClass(bgProcess)">
@@ -99,33 +114,28 @@
                                 </span>
                             </td>
 
-                            <!-- Progress (percentage only; the status label is shown in the Status column) -->
+                            <!-- Progress: percentage, plus a spinner while the process is running -->
                             <td
-                                    class="col-progress"
-                                    :data-label="$i18n.get('label_progress')">
-                                <div class="progress-cell">
+                                    class="column-small-width column-align-right"
+                                    :label="$i18n.get('label_progress')"
+                                    :aria-label="$i18n.get('label_progress') + ': ' + (bgProcess.progress_value ? bgProcess.progress_value : 0) + '%'">
+                                <span class="progress-cell">
                                     <span
                                             v-if="bgProcess.status === 'running'"
-                                            class="icon has-text-success loading-icon"
+                                            class="progress-spinner"
                                             aria-hidden="true">
-                                        <div class="control has-icons-right is-loading is-clearfix" />
+                                        <i class="tainacan-icon tainacan-icon-updating tainacan-icon-spin" />
                                     </span>
-                                    <progress
-                                            v-if="bgProcess.progress_value !== null && bgProcess.progress_value !== undefined && bgProcess.status !== 'finished' && bgProcess.status !== 'finished-errors' && bgProcess.status !== 'errored' && bgProcess.status !== 'cancelled'"
-                                            class="progress is-small process-bar"
-                                            :value="bgProcess.progress_value ? bgProcess.progress_value : 0"
-                                            max="100">
-                                        {{ bgProcess.progress_value ? bgProcess.progress_value : 0 }}%
-                                    </progress>
                                     <span class="progress-value-text">{{ bgProcess.progress_value ? bgProcess.progress_value : 0 }}%</span>
-                                </div>
+                                </span>
                             </td>
 
                             <!-- Created Date -->
                             <td
-                                    class="col-created"
-                                    :data-label="$i18n.get('label_queued_on')">
-                                <span
+                                    class="table-creation column-default-width"
+                                    :label="$i18n.get('label_queued_on')"
+                                    :aria-label="$i18n.get('label_queued_on') + ': ' + getDate(bgProcess.queued_on)">
+                                <p
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
                                             content: getDate(bgProcess.queued_on),
@@ -134,136 +144,144 @@
                                             placement: 'auto-start'
                                         }">
                                     {{ getDate(bgProcess.queued_on) }}
-                                </span>
+                                </p>
                             </td>
 
                             <!-- Execute Date -->
                             <td
-                                    class="col-executed"
-                                    :data-label="$i18n.get('label_last_processed_on')"
-                                    :class="{ 'has-text-grey-dark': !hasValidDate(bgProcess.processed_last) }">
-                                <span
+                                    class="table-modification column-default-width"
+                                    :label="$i18n.get('label_last_processed_on')"
+                                    :aria-label="$i18n.get('label_last_processed_on') + ': ' + getDate(bgProcess.processed_last)">
+                                <p
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
                                             content: getDate(bgProcess.processed_last),
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
-                                        }">
+                                        }"
+                                        :class="{ 'is-not-processed': !hasValidDate(bgProcess.processed_last) }">
                                     {{ getDate(bgProcess.processed_last) }}
-                                </span>
+                                </p>
                             </td>
 
                             <!-- Actions -->
                             <td
-                                    class="col-actions"
-                                    :data-label="$i18n.get('label_actions')">
+                                    class="actions-cell column-default-width"
+                                    :label="$i18n.get('label_actions')">
                                 <div class="actions-container">
                                     <!-- Stop (running only) -->
-                                    <span
+                                    <a
                                             v-if="bgProcess.status === 'running'"
-                                            v-tooltip="{
-                                                delay: { show: 500, hide: 300 },
-                                                content: $i18n.get('label_stop_process'),
-                                                autoHide: false,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                                placement: 'auto-start'
-                                            }"
-                                            class="icon has-text-dark action-icon"
+                                            :id="'button-stop-' + bgProcess.ID"
+                                            class="button-stop"
+                                            role="button"
                                             tabindex="0"
-                                            aria-role="button"
                                             :aria-label="$i18n.get('label_stop_process')"
                                             @click.prevent.stop="pauseProcess(index)"
                                             @keydown.enter.prevent="pauseProcess(index)"
                                             @keydown.space.prevent="pauseProcess(index)">
-                                        <i
-                                                aria-hidden="true"
-                                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop" />
-                                    </span>
-
-                                    <!-- View log file -->
-                                    <a
-                                            v-if="bgProcess.log"
-                                            v-tooltip="{
-                                                delay: { show: 500, hide: 300 },
-                                                content: $i18n.get('label_log_file'),
-                                                autoHide: false,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                                placement: 'auto-start'
-                                            }"
-                                            class="icon has-text-info action-icon"
-                                            role="button"
-                                            tabindex="0"
-                                            :aria-label="$i18n.get('label_log_file')"
-                                            :href="bgProcess.log">
-                                        <i
-                                                aria-hidden="true"
-                                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
-                                    </a>
-
-                                    <!-- View error log file -->
-                                    <a
-                                            v-if="bgProcess.error_log"
-                                            v-tooltip="{
-                                                delay: { show: 500, hide: 300 },
-                                                content: $i18n.get('label_error_log_file'),
-                                                autoHide: false,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                                placement: 'auto-start'
-                                            }"
-                                            class="icon has-text-danger action-icon"
-                                            role="button"
-                                            tabindex="0"
-                                            :aria-label="$i18n.get('label_error_log_file')"
-                                            :href="bgProcess.error_log">
-                                        <i
-                                                aria-hidden="true"
-                                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
+                                        <span
+                                                v-tooltip="{
+                                                    delay: { show: 500, hide: 300 },
+                                                    content: $i18n.get('label_stop_process'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                    placement: 'auto'
+                                                }"
+                                                class="icon"
+                                                aria-hidden="true">
+                                            <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-stop" />
+                                        </span>
                                     </a>
 
                                     <!-- Delete (available for any process) -->
-                                    <span
-                                            v-tooltip="{
-                                                delay: { show: 500, hide: 300 },
-                                                content: $i18n.get('label_delete_process'),
-                                                autoHide: false,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                                placement: 'auto-start'
-                                            }"
-                                            class="icon has-text-dark action-icon"
+                                    <a
+                                            :id="'button-delete-' + bgProcess.ID"
+                                            class="button-delete"
                                             role="button"
                                             tabindex="0"
                                             :aria-label="$i18n.get('label_delete_process')"
                                             @click.prevent.stop="deleteOneProcess(index)"
                                             @keydown.enter.prevent="deleteOneProcess(index)"
                                             @keydown.space.prevent="deleteOneProcess(index)">
-                                        <i
-                                                aria-hidden="true"
-                                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
-                                    </span>
+                                        <span
+                                                v-tooltip="{
+                                                    delay: { show: 500, hide: 300 },
+                                                    content: $i18n.get('label_delete_process'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                    placement: 'auto'
+                                                }"
+                                                class="icon"
+                                                aria-hidden="true">
+                                            <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
+                                        </span>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
 
-                        <!-- Expandable detail row (Output only; logs live in the Actions column) -->
+                        <!-- Expandable detail row: log files and summary follow the columns above -->
                         <tr
                                 v-if="collapses[index]"
                                 class="process-detail-row">
-                            <td colspan="7">
-                                <div class="process-detail-content">
-                                    <div class="output-card">
-                                        <span class="output-card-label">
-                                            <span
-                                                    aria-hidden="true"
-                                                    class="icon is-small">
-                                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-info" />
-                                            </span>
-                                            {{ $i18n.get('label_output') }}
-                                        </span>
+                            <td
+                                    colspan="2"
+                                    class="process-detail-cell">
+                                <div class="output-card logs-card">
+                                    <span class="output-card-label">
+                                        {{ $i18n.get('label_process_log_files') }}
+                                    </span>
+                                    <div class="output-card-body">
                                         <div
-                                                class="output-card-body"
-                                                v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info')" />
+                                                v-if="bgProcess.log || bgProcess.error_log"
+                                                class="process-log-links">
+                                            <a
+                                                    v-if="bgProcess.log"
+                                                    class="process-log-link"
+                                                    target="_blank"
+                                                    :href="bgProcess.log"
+                                                    @click.stop>
+                                                <span
+                                                        aria-hidden="true"
+                                                        class="icon is-small">
+                                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
+                                                </span>
+                                                {{ $i18n.get('label_log_file') }}
+                                            </a>
+                                            <a
+                                                    v-if="bgProcess.error_log"
+                                                    class="process-log-link is-error"
+                                                    target="_blank"
+                                                    :href="bgProcess.error_log"
+                                                    @click.stop>
+                                                <span
+                                                        aria-hidden="true"
+                                                        class="icon is-small">
+                                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
+                                                </span>
+                                                {{ $i18n.get('label_error_log_file') }}
+                                            </a>
+                                        </div>
+                                        <span
+                                                v-else
+                                                class="has-text-dark is-italic">
+                                            {{ $i18n.get('label_no_log_info') }}
+                                        </span>
                                     </div>
+                                </div>
+                            </td>
+                            <td
+                                    colspan="5"
+                                    class="process-detail-cell">
+                                <div class="output-card">
+                                    <span class="output-card-label">
+                                        {{ $i18n.get('label_process_summary') }}
+                                    </span>
+                                    <div
+                                            class="output-card-body"
+                                            v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_process_summary')" />
                                 </div>
                             </td>
                         </tr>
@@ -271,14 +289,14 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
-        <div v-else-if="isLoading">
-            <section class="section">
-                <div class="content has-text-dark has-text-centered">
-                    <p>{{ $i18n.get('loading_processes') }}</p>
-                </div>
-            </section>
-        </div>
+    <div v-else-if="isLoading">
+        <section class="section">
+            <div class="content has-text-dark has-text-centered">
+                <p>{{ $i18n.get('loading_processes') }}</p>
+            </div>
+        </section>
     </div>
 
 </template>
@@ -515,6 +533,8 @@
 
 <style lang="scss" scoped>
 
+    @use "../../scss/_tables.scss";
+
     @keyframes highlight {
         from {
             background-color: var(--tainacan-blue1);
@@ -524,212 +544,136 @@
         }
     }
 
-    .table-container {
-        padding: 0 var(--tainacan-one-column);
-        position: relative;
-        margin-top: 1rem;
-        margin-bottom: 40px;
-    }
+    .table-container .table-wrapper table.tainacan-table {
+        tbody tr {
+            &.opened-process {
+                background-color: var(--tainacan-item-hover-background-color);
 
-    .processes-table-wrapper {
-        overflow-x: auto;
-    }
+                .actions-cell {
+                    background-color: var(--tainacan-item-heading-hover-background-color);
+                }
 
-    .processes-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.875em;
-
-        thead {
-            tr {
-                border-bottom: 2px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
-
-                th {
-                    text-align: start;
-                    padding: 0.6em 0.75em;
-                    color: var(--tainacan-gray5);
-                    font-weight: 600;
-                    white-space: nowrap;
-
-                    &.col-actions {
-                        text-align: end;
-                    }
+                .actions-container {
+                    background-color: var(--tainacan-item-heading-hover-background-color);
                 }
             }
-        }
 
-        tbody {
-            tr {
-                border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
-                cursor: pointer;
-                transition: background-color 0.15s ease;
+            &.highlighted-process {
+                animation-name: highlight;
+                animation-duration: 1s;
+                animation-iteration-count: 2;
 
-                &:hover {
-                    background-color: var(--tainacan-gray1);
-                }
-
-                &.opened-process {
-                    background-color: var(--tainacan-gray0);
-                }
-
-                &.highlighted-process {
-                    transition: background-color 0.8s;
+                .actions-container {
                     animation-name: highlight;
                     animation-duration: 1s;
                     animation-iteration-count: 2;
                 }
+            }
 
-                &.process-detail-row {
+            &.process-detail-row {
+                cursor: default;
+
+                &:hover,
+                &:focus,
+                &:focus-visible,
+                &:focus-within {
+                    background-color: var(--tainacan-item-background-color) !important;
                     cursor: default;
-                    background-color: var(--tainacan-gray0);
-
-                    &:hover {
-                        background-color: var(--tainacan-gray0);
-                    }
-
-                    td {
-                        padding: 0;
-                    }
                 }
 
-                td {
-                    padding: 0.75em 0.75em;
-                    vertical-align: middle;
-                    color: var(--tainacan-info-color);
+                td.process-detail-cell {
+                    height: auto;
+                    max-height: none;
+                    padding: 0.5em 0.35em 0.85em;
+                    vertical-align: top;
+                    line-height: normal;
 
-                    &.col-toggle {
-                        width: 36px;
-                        text-align: center;
-                        padding: 0.5em;
-
-                        .toggle-icon {
-                            cursor: pointer;
-                            border-radius: var(--tainacan-button-border-radius);
-                            transition: background-color 0.15s ease;
-
-                            &:hover {
-                                background-color: var(--tainacan-gray2);
-                            }
-                        }
-                    }
-
-                    &.col-type {
-                        .process-name {
-                            color: var(--tainacan-black);
-                            font-weight: 500;
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                            display: inline-block;
-                            max-width: 26ch;
-                            vertical-align: middle;
-                        }
-                    }
-
-                    &.col-status {
-                        .process-status-tag {
-                            display: inline-flex;
-                            align-items: center;
-                            gap: 0.35em;
-                            white-space: nowrap;
-
-                            .icon {
-                                font-size: 0.9em;
-                            }
-                        }
-                    }
-
-                    &.col-progress {
-                        .progress-cell {
-                            display: flex;
-                            align-items: center;
-                            gap: 0.5em;
-
-                            .progress-bar {
-                                max-width: 120px;
-                                min-width: 60px;
-                            }
-
-                            .progress-value-text {
-                                font-size: 0.85em;
-                                color: var(--tainacan-gray5);
-                                white-space: nowrap;
-                            }
-                        }
-                    }
-
-                    &.col-created,
-                    &.col-executed {
-                        white-space: nowrap;
-                        color: var(--tainacan-gray5);
-                    }
-
-                    &.col-actions {
-                        text-align: end;
-
-                        .actions-container {
-                            display: inline-flex;
-                            align-items: center;
-                            justify-content: flex-end;
-                            gap: 0.15em;
-
-                            .action-icon {
-                                cursor: pointer;
-                                padding: 0.25em;
-                                border-radius: var(--tainacan-button-border-radius);
-                                transition: background-color 0.15s ease;
-
-                                &:hover {
-                                    background-color: var(--tainacan-gray2);
-                                }
-                            }
-
-                            a.action-icon {
-                                text-decoration: none;
-                            }
-                        }
+                    .output-card {
+                        height: 100%;
                     }
                 }
+            }
+
+            td.status-cell,
+            td:has(.process-status-tag) {
+                line-height: normal;
+            }
+
+            td:has(.progress-cell) {
+                line-height: normal;
+            }
+
+            td.status-cell .toggle-icon {
+                cursor: pointer;
+                border-radius: var(--tainacan-button-border-radius);
+            }
+
+            td.column-default-width > p.is-not-processed {
+                color: var(--tainacan-gray4);
             }
         }
     }
 
-    .process-detail-content {
-        padding: 0.75em 1.25em 1.25em 1.25em;
+    .process-status-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+        white-space: nowrap;
+        height: auto;
+        line-height: 1.75;
+        font-size: 0.75em;
 
+    }
+
+    .progress-cell {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+        white-space: nowrap;
+
+        .progress-spinner {
+            display: inline-flex;
+            font-size: 1em;
+            line-height: 1;
+            color: var(--tainacan-success);
+        }
+
+        .progress-value-text {
+            font-size: 0.75em;
+            line-height: 1;
+        }
+    }
+
+    .process-detail-cell {
         .output-card {
+            width: 100%;
             background: var(--tainacan-white, #fff);
-            border: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
             border-radius: var(--tainacan-button-border-radius, 4px);
             overflow: hidden;
 
             .output-card-label {
-                display: flex;
-                align-items: center;
-                gap: 0.4em;
+                display: block;
                 padding: 0.5em 0.85em;
-                background: var(--tainacan-gray0, #fafafa);
                 border-bottom: 1px solid var(--tainacan-lists-separator-color, var(--tainacan-item-hover-background-color));
                 color: var(--tainacan-gray5);
-                font-size: 0.8em;
+                font-size: 0.75em;
                 font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.03em;
-
-                .icon {
-                    color: var(--tainacan-secondary);
-                }
+                line-height: 1.25;
             }
 
             .output-card-body {
                 padding: 0.85em 1em;
                 color: var(--tainacan-info-color);
-                font-size: 0.9em;
+                font-size: 0.75em;
                 line-height: 1.5;
                 word-break: break-word;
 
                 p {
                     margin-bottom: 0.4em;
+                    font-size: inherit;
+                    line-height: inherit;
+                    white-space: normal;
+                    max-height: none;
 
                     &:last-child {
                         margin-bottom: 0;
@@ -737,61 +681,28 @@
                 }
             }
         }
+
+        .process-log-links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.65em;
+        }
     }
 
-    .loading-icon .control.is-loading::after {
-        position: relative !important;
-        right: 0;
-        top: 0;
-    }
+    .table-container .table-wrapper table.tainacan-table a.process-log-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+        line-height: 1.4;
+        text-decoration: underline !important;
 
-    /* Responsive: stack cells on small screens */
-    @media screen and (max-width: 768px) {
-        .processes-table {
-            thead {
-                display: none;
-            }
-            tbody {
-                tr {
-                    display: block;
-                    margin-bottom: 0.75em;
-                    padding: 0.5em;
+        .icon {
+            color: inherit;
+        }
 
-                    &.process-detail-row {
-                        display: block;
-                        padding: 0;
-                    }
-
-                    td {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 0.4em 0.5em;
-                        text-align: end;
-
-                        &::before {
-                            content: attr(data-label);
-                            font-weight: 600;
-                            color: var(--tainacan-gray5);
-                            text-align: start;
-                            padding-inline-end: 1em;
-                        }
-
-                        /* The toggle column has no data-label; hide its empty prefix on mobile. */
-                        &.col-toggle {
-                            &::before {
-                                content: '';
-                            }
-                        }
-
-                        &.col-actions {
-                            .actions-container {
-                                justify-content: flex-end;
-                            }
-                        }
-                    }
-                }
-            }
+        &.is-error {
+            color: var(--tainacan-danger) !important;
         }
     }
 
