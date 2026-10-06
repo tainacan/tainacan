@@ -30,7 +30,21 @@ class Background_Exporter extends Background_Process {
 		$className = $data['class_name'];
 		if (class_exists($className)) {
 			$object = new $className($data);
-			$runned = $object->run();
+			try {
+				$runned = $object->run( $key );
+			} catch ( \Throwable $throwable ) {
+				$this->write_log( $key, $object->get_log() );
+				$this->write_error_log( $key, $object->get_error_log() );
+
+				$batch->progress_label = $object->get_progress_label();
+				$batch->progress_value = $object->get_progress_value();
+
+				$object->prepare_output_files_for_download( $key );
+				$batch->data = $object->_to_Array( true );
+				$this->update( $key, $batch );
+
+				throw $throwable;
+			}
 			
 			$this->write_log($key, $object->get_log());
 			$this->write_error_log($key, $object->get_error_log());
@@ -39,11 +53,11 @@ class Background_Exporter extends Background_Process {
 			$batch->progress_value = $object->get_progress_value();
 
 			if ( true === $object->get_abort() ) {
-				throw new \Exception( 'Process aborted by Exporter' );
-			}
-
-			if ( false === $runned ) {
 				$object->prepare_output_files_for_download( $key );
+				$batch->data = $object->_to_Array( true );
+				$this->update( $key, $batch );
+
+				throw new \Exception( 'Process aborted by Exporter' );
 			}
 
 			$batch->data = $object->_to_Array( true );
