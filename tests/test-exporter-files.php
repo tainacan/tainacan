@@ -3,6 +3,68 @@
 namespace Tainacan\Tests;
 
 /**
+ * Exporter used to test controlled abortion.
+ */
+class Aborting_Exporter_Test_Double extends \Tainacan\Exporter\Exporter {
+
+	public function process_item( $item, $metadata ) {
+		return false;
+	}
+
+	public function __construct( $attributes = array() ) {
+		parent::__construct( $attributes );
+
+		$this->set_steps(
+			array(
+				array(
+					'name'           => 'Abort exporter',
+					'progress_label' => 'Aborting exporter',
+					'callback'       => 'abort_export',
+					'total'          => 1,
+				),
+			)
+		);
+	}
+
+	public function abort_export() {
+		$this->abort();
+
+		return false;
+	}
+
+}
+
+/**
+ * Exporter used to test an exception during execution.
+ */
+class Throwing_Exporter_Test_Double extends \Tainacan\Exporter\Exporter {
+
+	public function process_item( $item, $metadata ) {
+		return false;
+	}
+
+	public function __construct( $attributes = array() ) {
+		parent::__construct( $attributes );
+
+		$this->set_steps(
+			array(
+				array(
+					'name'           => 'Throw exporter exception',
+					'progress_label' => 'Throwing exporter exception',
+					'callback'       => 'throw_exporter_exception',
+					'total'          => 1,
+				),
+			)
+		);
+	}
+
+	public function throw_exporter_exception() {
+		throw new \Error( 'Test exporter error.' );
+	}
+
+}
+
+/**
  * Tests the exporter files lifecycle service.
  *
  * @package Test_Tainacan
@@ -209,7 +271,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 	 */
 	public function test_prepare_output_files() {
 		$filename = trailingslashit( wp_upload_dir()['basedir'] )
-			. 'tainacan/exporter/issue1140-test.csv';
+			. 'tainacan/exporter/exporter-files-test.csv';
 
 		$output_files = array(
 			array(
@@ -230,7 +292,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 
 		$this->assertCount( 1, $prepared_files );
 		$this->assertSame(
-			'exporter/issue1140-test.csv',
+			'exporter/exporter-files-test.csv',
 			$prepared_files[0]['guid']
 		);
 		$this->assertGreaterThanOrEqual(
@@ -242,7 +304,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 			$prepared_files[0]['expires_at']
 		);
 		$this->assertStringContainsString(
-			'guid=exporter%2Fissue1140-test.csv',
+			'guid=exporter%2Fexporter-files-test.csv',
 			$prepared_files[0]['url']
 		);
 		$this->assertStringContainsString(
@@ -261,7 +323,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 	public function test_prepare_output_files_preserves_existing_expiration() {
 		$expires_at = time() + DAY_IN_SECONDS;
 		$filename   = trailingslashit( wp_upload_dir()['basedir'] )
-			. 'tainacan/exporter/issue1140-existing-expiration.csv';
+			. 'tainacan/exporter/exporter-files-existing-expiration.csv';
 
 		$output_files = array(
 			array(
@@ -297,7 +359,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 	public function test_prepare_output_files_rejects_invalid_process_id() {
 		$output_files = array(
 			array(
-				'filename' => '/tmp/issue1140.csv',
+				'filename' => '/tmp/exporter-files-test.csv',
 			),
 		);
 
@@ -313,7 +375,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 	public function test_prepare_output_files_ignores_unrelated_paths() {
 		$output_files = array(
 			array(
-				'filename' => '/tmp/issue1140.csv',
+				'filename' => '/tmp/exporter-files-test.csv',
 			),
 		);
 
@@ -323,6 +385,100 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 				$output_files,
 				123
 			)
+		);
+	}
+
+	/**
+	 * Provides exporter failure scenarios.
+	 *
+	 * @return array
+	 */
+	public function exporter_failure_provider() {
+		return array(
+			'controlled abort' => array(
+				Aborting_Exporter_Test_Double::class,
+				'Process aborted by Exporter',
+			),
+			'exception during execution' => array(
+				Throwing_Exporter_Test_Double::class,
+				'Test exporter error.',
+			),
+		);
+	}
+
+/**
+ * Tests that files from failed exporters receive expiration metadata.
+ *
+ * @dataProvider exporter_failure_provider
+ *
+ * @param string $exporter_class   Exporter class.
+ * @param string $expected_message Expected exception message.
+ */
+	public function test_failed_exporter_files_receive_expiration(
+		$exporter_class,
+		$expected_message
+	) {
+		$user_id = self::factory()->user->create(
+			array( 'role' => 'administrator' )
+		);
+		wp_set_current_user( $user_id );
+
+		$file = $this->create_exporter_file(
+			'failed-exporter-test.csv'
+		);
+
+		$process_id = $this->create_exporter_process(
+			array( $file ),
+			$user_id
+		);
+
+		$batch = (object) array(
+			'key'            => $process_id,
+			'data'           => array(
+				'class_name'   => $exporter_class,
+				'output_files' => array( $file ),
+				'send_email'   => 1,
+			),
+			'progress_label' => '',
+			'progress_value' => 0,
+			'output'         => '',
+		);
+
+		$sent_emails = 0;
+		$mail_filter = function ( $return ) use ( &$sent_emails ) {
+			$sent_emails++;
+
+			return true;
+		};
+
+		add_filter( 'pre_wp_mail', $mail_filter );
+
+		$caught_throwable = null;
+
+		try {
+			$background_exporter = new \Tainacan\Background_Exporter();
+			$background_exporter->task( $batch );
+		} catch ( \Throwable $throwable ) {
+			$caught_throwable = $throwable;
+		}
+
+		remove_filter( 'pre_wp_mail', $mail_filter );
+
+		$this->assertInstanceOf( \Throwable::class, $caught_throwable );
+		$this->assertSame(
+			$expected_message,
+			$caught_throwable->getMessage()
+		);
+		$this->assertSame( 0, $sent_emails );
+
+		$process_data = $this->get_process_data( $process_id );
+		$prepared_file = $process_data['output_files'][0];
+
+		$this->assertNotEmpty( $prepared_file['expires_at'] );
+		$this->assertGreaterThan( time(), $prepared_file['expires_at'] );
+		$this->assertStringContainsString(
+			'process_id=' . $process_id,
+			$prepared_file['url']
 		);
 	}
 
@@ -345,7 +501,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 
 		$result = file_put_contents(
 			$file_path,
-			'Issue 1140 exporter test file.'
+			'Exporter files test content.'
 		);
 
 		if ( false === $result ) {
@@ -390,7 +546,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 					)
 				),
 				'action'         => 'exporter',
-				'name'           => 'Issue 1140 test exporter',
+				'name'           => 'Exporter files test process',
 				'done'           => 1,
 				'status'         => 'finished',
 				'output'         => $output,
@@ -510,7 +666,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$file               = $this->create_exporter_file(
-			'issue1140-available.csv'
+			'exporter-files-available.csv'
 		);
 		$file['expires_at'] = time() + DAY_IN_SECONDS;
 
@@ -541,7 +697,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$file               = $this->create_exporter_file(
-			'issue1140-expired.csv'
+			'exporter-files-expired.csv'
 		);
 		$file['expires_at'] = time() - 1;
 
@@ -578,7 +734,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		);
 
 		$file               = $this->create_exporter_file(
-			'issue1140-forbidden.csv'
+			'exporter-files-forbidden.csv'
 		);
 		$file['expires_at'] = time() + DAY_IN_SECONDS;
 
@@ -602,6 +758,21 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		$this->assertSame(
 			403,
 			$result->get_error_data()['status']
+		);
+
+		$nonexistent_result = $this->exporter_files->get_process_file(
+			999999999,
+			'exporter/nonexistent.csv'
+		);
+
+		$this->assertWPError( $nonexistent_result );
+		$this->assertSame(
+			'exporter_file_forbidden',
+			$nonexistent_result->get_error_code()
+		);
+		$this->assertSame(
+			403,
+			$nonexistent_result->get_error_data()['status']
 		);
 	}
 
@@ -660,12 +831,12 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$associated_file               = $this->create_exporter_file(
-			'issue1140-associated.csv'
+			'exporter-files-associated.csv'
 		);
 		$associated_file['expires_at'] = time() + DAY_IN_SECONDS;
 
 		$other_file               = $this->create_exporter_file(
-			'issue1140-other-process.csv'
+			'exporter-files-other-process.csv'
 		);
 		$other_file['expires_at'] = time() + DAY_IN_SECONDS;
 
@@ -700,7 +871,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$file               = $this->create_exporter_file(
-			'issue1140-missing.csv'
+			'exporter-files-missing.csv'
 		);
 		$file['expires_at'] = time() + DAY_IN_SECONDS;
 
@@ -737,7 +908,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$file = $this->create_exporter_file(
-			'issue1140-legacy.csv'
+			'exporter-files-legacy.csv'
 		);
 
 		$process_id = $this->create_exporter_process(
@@ -762,12 +933,12 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 	 */
 	public function test_delete_expired_files_removes_only_expired_files() {
 		$expired_file               = $this->create_exporter_file(
-			'issue1140-cleanup-expired.csv'
+			'exporter-files-cleanup-expired.csv'
 		);
 		$expired_file['expires_at'] = time() - 1;
 
 		$available_file               = $this->create_exporter_file(
-			'issue1140-cleanup-available.csv'
+			'exporter-files-cleanup-available.csv'
 		);
 		$available_file['expires_at'] = time() + DAY_IN_SECONDS;
 
@@ -800,7 +971,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 	 */
 	public function test_delete_expired_files_preserves_legacy_files() {
 		$legacy_file = $this->create_exporter_file(
-			'issue1140-cleanup-legacy.csv'
+			'exporter-files-cleanup-legacy.csv'
 		);
 
 		$process_id = $this->create_exporter_process(
@@ -830,13 +1001,13 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$first_file = $this->create_exporter_file(
-			'issue1140-delete-process-first.csv'
+			'exporter-files-delete-process-first.csv'
 		);
 		$second_file = $this->create_exporter_file(
-			'issue1140-delete-process-second.csv'
+			'exporter-files-delete-process-second.csv'
 		);
 		$other_file = $this->create_exporter_file(
-			'issue1140-delete-other-process.csv'
+			'exporter-files-delete-other-process.csv'
 		);
 
 		$process_id = $this->create_exporter_process(
@@ -887,7 +1058,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		);
 
 		$file = $this->create_exporter_file(
-			'issue1140-delete-forbidden.csv'
+			'exporter-files-delete-forbidden.csv'
 		);
 
 		$process_id = $this->create_exporter_process(
@@ -928,7 +1099,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		);
 
 		$file = $this->create_exporter_file(
-			'issue1140-delete-by-administrator.csv'
+			'exporter-files-delete-by-administrator.csv'
 		);
 
 		$process_id = $this->create_exporter_process(
@@ -992,7 +1163,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 	 */
 	public function test_delete_expired_files_marks_missing_file_as_deleted() {
 		$file               = $this->create_exporter_file(
-			'issue1140-cleanup-missing.csv'
+			'exporter-files-cleanup-missing.csv'
 		);
 		$file['expires_at'] = time() - 1;
 
@@ -1053,7 +1224,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$file               = $this->create_exporter_file(
-			'issue1140-response-available.csv'
+			'exporter-files-response-available.csv'
 		);
 		$file['expires_at'] = time() + DAY_IN_SECONDS;
 		$file['url']        = 'https://example.org/old-export-url';
@@ -1103,7 +1274,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		wp_set_current_user( $user_id );
 
 		$file               = $this->create_exporter_file(
-			'issue1140-response-expired.csv'
+			'exporter-files-response-expired.csv'
 		);
 		$file['expires_at'] = time() - 1;
 		$file['url']        = 'https://example.org/expired-export-url';
@@ -1142,7 +1313,7 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 		);
 
 		$file               = $this->create_exporter_file(
-			'issue1140-response-forbidden.csv'
+			'exporter-files-response-forbidden.csv'
 		);
 		$file['expires_at'] = time() + DAY_IN_SECONDS;
 		$file['url']        = 'https://example.org/forbidden-export-url';

@@ -374,6 +374,14 @@ class Exporter_Files {
 			);
 		}
 
+		if ( ! current_user_can( 'manage_tainacan' ) ) {
+			return new \WP_Error(
+				'exporter_file_forbidden',
+				__( 'You are not allowed to access this exporter file.', 'tainacan' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		$table   = $wpdb->prefix . 'tnc_bg_process';
 		$process = $wpdb->get_row(
 			$wpdb->prepare(
@@ -388,14 +396,6 @@ class Exporter_Files {
 				'exporter_process_not_found',
 				__( 'Exporter process not found.', 'tainacan' ),
 				array( 'status' => 404 )
-			);
-		}
-
-		if ( ! current_user_can( 'manage_tainacan' ) ) {
-			return new \WP_Error(
-				'exporter_file_forbidden',
-				__( 'You are not allowed to access this exporter file.', 'tainacan' ),
-				array( 'status' => 403 )
 			);
 		}
 
