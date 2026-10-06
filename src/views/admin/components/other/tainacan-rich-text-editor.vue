@@ -100,7 +100,7 @@ const EDITOR_INIT = {
     plugins: 'link lists code autolink',
     skin: false,
     content_css: false,
-    content_style: `${contentCss}\n${contentUiCss}`,
+    content_style: `${contentCss}\n${contentUiCss}\nbody { font-family: 'Roboto', 'Source Sans', 'Helvetica', sans-serif; font-size: 0.875em; color: #1d1d1d; }\na, a:visited, a:hover, a:focus { color: #187181; }`,
     toolbar: 'bold italic align bullist numlist link unlink code | undo redo',
     link_title: true,
     target_list: false,
@@ -266,12 +266,23 @@ export default {
         padding: 0;
     }
 
+    .tox.tox-tinymce {
+        border-radius: var(--tainacan-input-border-radius, 2px);
+        border: 1px solid var(--tainacan-input-border-color);
+    }
+
     .tox:not(.tox-tinymce-inline) .tox-editor-header {
         padding: 0 6px;
+        box-shadow: none;
+        border-bottom: 1px solid var(--tainacan-input-border-color);
     }
 
     .tox .tox-toolbar {
         justify-content: space-between;
+    }
+
+    .tox .tox-statusbar {
+        border-color: var(--tainacan-input-border-color);
     }
 
     .tox .tox-tbtn {
