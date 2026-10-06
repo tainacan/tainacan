@@ -16,9 +16,8 @@ classDiagram
     direction TB
     class Cli_Garbage_Collector {
         +__invoke(args, assoc_args)
-        -get_orphan_items_query(select)
+        -get_orphan_item_post_types()
         -delete_items(dry_run, deep)
-        -get_orphan_attachments_count()
         -delete_attachments(dry_run, deep)
         -filesize_formatted(size)
         -delete_terms_taxonomies(dry_run, deep)
@@ -72,17 +71,13 @@ public __invoke(mixed $args, mixed $assoc_args): mixed
 
 ***
 
-### get_orphan_items_query
+### get_orphan_item_post_types
+
+Post types of items whose collection no longer exists.
 
 ```php
-private get_orphan_items_query(mixed $select = 'ID'): mixed
+private get_orphan_item_post_types(): string[]
 ```
-
-**Parameters:**
-
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$select` | **mixed** |             |
 
 ***
 
@@ -98,14 +93,6 @@ private delete_items(mixed $dry_run = false, mixed $deep = false): mixed
 |------------|-----------|-------------|
 | `$dry_run` | **mixed** |             |
 | `$deep`    | **mixed** |             |
-
-***
-
-### get_orphan_attachments_count
-
-```php
-private get_orphan_attachments_count(): mixed
-```
 
 ***
 
