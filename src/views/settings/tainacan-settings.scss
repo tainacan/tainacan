@@ -8,11 +8,6 @@
         z-index: 1;
         top: var(--tainacan-settings-heading-top, calc(1.75em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem)));
         margin-top: 2rem;
-
-        &:focus {
-            outline: 2px solid var(--tainacan-secondary, #187181);
-            outline-offset: 2px;
-        }
     }
     .settings-section-description {
         font-size: 0.875em;
@@ -74,7 +69,7 @@
     align-items: start;
 
     @supports (grid-template-columns: subgrid) {
-        @media screen and (min-width: 783px) {
+        @container tainacan-page-container-content (min-width: 783px) {
             .tainacan-settings {
                 display: grid;
                 grid-template-columns: subgrid;
@@ -102,7 +97,7 @@
     }
 
     @supports not (grid-template-columns: subgrid) {
-        @media screen and (min-width: 783px) {
+        @container tainacan-page-container-content (min-width: 783px) {
             .tainacan-settings .form-footer {
                 width: calc(100% + var(--tainacan-settings-toc-column) + var(--tainacan-settings-toc-gap) + 2 * var(--tainacan-page-container-padding-x, var(--tainacan-one-column)));
                 margin-inline-end: calc(-1 * (var(--tainacan-settings-toc-column) + var(--tainacan-settings-toc-gap) + var(--tainacan-page-container-padding-x, var(--tainacan-one-column))));
@@ -163,13 +158,29 @@
     }
 }
 
-@media screen and (max-width: 782px) {
+.tainacan-page-container-content {
+    container-name: tainacan-page-container-content;
+    container-type: inline-size;
+}
+
+@container tainacan-page-container-content (max-width: 782px) {
     .tainacan-settings-layout {
         grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "toc"
+            "form";
+        reading-flow: grid-rows;
+    }
+
+    .tainacan-settings {
+        grid-area: form;
     }
 
     .tainacan-settings-toc {
+        grid-area: toc;
         position: static;
+        top: auto;
+        padding-top: 0;
         max-height: none;
         border-inline-start: 0;
     }
