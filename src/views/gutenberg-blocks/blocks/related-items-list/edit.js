@@ -15,6 +15,74 @@ import tainacanApi from '../../js/axios.js';
 import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 import axios from 'axios';
 
+const ITEMS_LIST_BLOCKS = [
+    'tainacan/dynamic-items-list',
+    'tainacan/carousel-items-list',
+];
+
+function findItemsListBlocks(blocks, found = []) {
+    (blocks || []).forEach((block) => {
+        if (ITEMS_LIST_BLOCKS.includes(block.name))
+            found.push(block);
+
+        if (block.innerBlocks && block.innerBlocks.length)
+            findItemsListBlocks(block.innerBlocks, found);
+    });
+
+    return found;
+}
+
+function selectedItemIds(selectedItems) {
+    return (selectedItems || []).map((item) => (
+        item && typeof item === 'object' ? item.id : item
+    )).filter((id) => id !== undefined && id !== null && id !== '');
+}
+
+function selectedItemsAreIds(selectedItems) {
+    return Array.isArray(selectedItems)
+        && selectedItems.length > 0
+        && selectedItems.every((item) => item === null || typeof item !== 'object');
+}
+
+function sharedItemsListAttributes(attributes) {
+    const shared = {
+        collectionId: attributes.collectionId || '',
+        selectedItems: Array.isArray(attributes.selectedItems) ? attributes.selectedItems : [],
+        loadStrategy: attributes.loadStrategy || 'parent',
+        searchURL: attributes.searchURL || '',
+        maxItemsNumber: attributes.maxItemsNumber,
+        imageSize: attributes.imageSize,
+        showCollectionHeader: attributes.showCollectionHeader,
+        showCollectionLabel: attributes.showCollectionLabel,
+        collectionBackgroundColor: attributes.collectionBackgroundColor,
+        collectionTextColor: attributes.collectionTextColor,
+    };
+
+    return Object.fromEntries(Object.entries(shared).filter(([, value]) => value !== undefined));
+}
+
+function layoutAttributesForDynamicItemsList(attributes, newLayout, newViewMode) {
+    const nextAttributes = {
+        layout: newLayout,
+        tainacanViewMode: newViewMode,
+    };
+
+    if (newLayout === 'tainacan-view-modes') {
+        nextAttributes.loadStrategy = 'selection';
+        nextAttributes.selectedItems = selectedItemIds(attributes.selectedItems);
+    } else if (selectedItemsAreIds(attributes.selectedItems)) {
+        nextAttributes.loadStrategy = 'selection';
+    }
+
+    if ((newLayout === 'grid' || newLayout === 'mosaic') && attributes.showImage === false)
+        nextAttributes.showImage = true;
+
+    if (newLayout === 'list' && attributes.showName === false)
+        nextAttributes.showName = true;
+
+    return nextAttributes;
+}
+
 const placeholderTemplate = [[
     'core/group',
     {},
@@ -52,7 +120,7 @@ const placeholderTemplate = [[
     ]
 ]];
 
-export default function ({ attributes, setAttributes, isSelected }) {
+export default function ({ attributes, setAttributes, isSelected, clientId }) {
     
     let {
         collectionId,
@@ -71,13 +139,15 @@ export default function ({ attributes, setAttributes, isSelected }) {
     let itemRequestSource = undefined;
     const [isCollectionsModalOpen, setIsCollectionsModalOpen] = useState(false);
     const [selectedCollectionNames, setSelectedCollectionNames] = useState([]);
+    const { updateBlockAttributes, replaceBlock } = wp.data.useDispatch('core/block-editor');
+    const registry = wp.data.useRegistry();
   
     // Gets blocks props from hook
     const blockProps = useBlockProps();
 
     useEffect(() => {
         setContent();
-    }, [ itemId, isDynamic, templateMode, itemsListLayout, tainacanViewMode ]);
+    }, [ itemId, isDynamic, templateMode ]);
         
     // Checks if we are in template mode, if so, gets the collection Id from URL.
     useEffect(() => {
@@ -127,25 +197,25 @@ export default function ({ attributes, setAttributes, isSelected }) {
         {
             icon: 'slides',
             title: __( 'Carousel', 'tainacan' ),
-            onClick: () => updateLayout('carousel'),
+            onClick: () => updateLayout('carousel', tainacanViewMode),
             isActive: itemsListLayout === 'carousel',
         },
         {
             icon: 'grid-view',
             title: __( 'Grid View', 'tainacan' ),
-            onClick: () => updateLayout('grid'),
+            onClick: () => updateLayout('grid', tainacanViewMode),
             isActive: itemsListLayout === 'grid',
         },
         {
             icon: 'list-view',
             title: __( 'List View', 'tainacan' ),
-            onClick: () => updateLayout('list'),
+            onClick: () => updateLayout('list', tainacanViewMode),
             isActive: itemsListLayout === 'list',
         },
         {
             icon: 'layout',
             title: __( 'Mosaic View', 'tainacan' ),
-            onClick: () => updateLayout('mosaic'),
+            onClick: () => updateLayout('mosaic', tainacanViewMode),
             isActive: itemsListLayout === 'mosaic',
         }
     ];
@@ -260,11 +330,62 @@ export default function ({ attributes, setAttributes, isSelected }) {
         return innerBlocksTemplate;
     }
 
-    function updateLayout(newLayout) {
-        itemsListLayout = newLayout;
+    function syncInnerItemsListLayout(newLayout, newViewMode) {
+        const itemsListBlocks = findItemsListBlocks(
+            wp.data.select('core/block-editor').getBlocks(clientId)
+        );
 
-        setAttributes({ 
-            itemsListLayout: itemsListLayout
+        itemsListBlocks.forEach((block) => {
+            const blockAttributes = block.attributes || {};
+
+            if (newLayout === 'carousel') {
+                if (block.name === 'tainacan/carousel-items-list')
+                    return;
+
+                replaceBlock(
+                    block.clientId,
+                    wp.blocks.createBlock(
+                        'tainacan/carousel-items-list',
+                        sharedItemsListAttributes(blockAttributes)
+                    )
+                );
+                return;
+            }
+
+            if (block.name === 'tainacan/carousel-items-list') {
+                replaceBlock(
+                    block.clientId,
+                    wp.blocks.createBlock(
+                        'tainacan/dynamic-items-list',
+                        {
+                            ...sharedItemsListAttributes(blockAttributes),
+                            ...layoutAttributesForDynamicItemsList(blockAttributes, newLayout, newViewMode),
+                        }
+                    )
+                );
+                return;
+            }
+
+            if (
+                blockAttributes.layout === newLayout &&
+                (newLayout !== 'tainacan-view-modes' || blockAttributes.tainacanViewMode === newViewMode)
+            )
+                return;
+
+            updateBlockAttributes(
+                block.clientId,
+                layoutAttributesForDynamicItemsList(blockAttributes, newLayout, newViewMode)
+            );
+        });
+    }
+
+    function updateLayout(newLayout, newViewMode) {
+        registry.batch(() => {
+            setAttributes({
+                itemsListLayout: newLayout,
+                tainacanViewMode: newViewMode
+            });
+            syncInnerItemsListLayout(newLayout, newViewMode);
         });
     }
 
@@ -351,10 +472,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                                                 return {
                                                     title: aViewMode[1].label,
                                                     isActive: itemsListLayout === 'tainacan-view-modes' && tainacanViewMode === aViewMode[0],
-                                                    onClick: () => { 
-                                                        setAttributes({ tainacanViewMode: aViewMode[0] })
-                                                        updateLayout('tainacan-view-modes');
-                                                    }
+                                                    onClick: () => updateLayout('tainacan-view-modes', aViewMode[0])
                                                 }
                                             }) 
                                     }
@@ -464,7 +582,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
                                             'core/buttons',
                                             'core/spacer',
                                             'core/group',
-                                            'core/columns'
+                                            'core/columns',
+                                            'core/cover',
+                                            'core/icon',
+                                            'core/image',
+                                            'core/separator',
+                                            'core/spacer',
                                         ]}
                                         template={ relatedItemsTemplate }
                                         templateInsertUpdatesSelection={ true } />

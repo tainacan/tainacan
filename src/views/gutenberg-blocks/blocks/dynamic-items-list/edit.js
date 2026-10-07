@@ -508,7 +508,6 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             showImage: showImage,
             showName: showName
         });
-        setContent();
     }
 
     function applySearchString(event) {
@@ -553,7 +552,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
     useEffect(() => {
         setContent();
-    }, []);
+    }, [ layout, tainacanViewMode ]);
     
     return content == 'preview' ? 
         <div className={className}>
