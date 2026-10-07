@@ -428,16 +428,12 @@
                     .then((newOrder) => {
                         this.order = newOrder;
                     })
-                    .catch(() => {
-                        this.$console.log("Error settings user prefs for taxonomies order")
-                    });
+                    .catch(() => undefined);
                 this.$userPrefs.set('taxonomies_order_by', newOrderBy)
                     .then((newOrderBy) => {
                         this.orderBy = newOrderBy;
                     })
-                    .catch(() => {
-                        this.$console.log("Error settings user prefs for taxonomies orderby")
-                    });
+                    .catch(() => undefined);
                 this.page = 1;
                 this.order = newOrder;
                 this.orderBy = newOrderBy;
@@ -450,9 +446,7 @@
                         .then((newValue) => {
                             this.taxonomiesPerPage = newValue;
                         })
-                        .catch(() => {
-                            this.$console.log("Error settings user prefs for taxonomies per page")
-                        });
+                        .catch(() => undefined);
                     this.page = 1;
                     this.taxonomiesPerPage = value;
                     this.load();

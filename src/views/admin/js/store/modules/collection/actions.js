@@ -122,11 +122,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
                 })
                 .catch((thrown) => {
-                    if (axios.isCancel(thrown)) {
-                        console.log('Request canceled: ', thrown.message);
-                    } else {
+                    if (!axios.isCancel(thrown))
                         reject(thrown);
-                    }
                 }); 
         }),
         source: source
@@ -225,7 +222,6 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
                 resolve({'collections': collections, 'total': res.headers['x-wp-total'] });
             }) 
             .catch(error => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -343,7 +339,7 @@ export const fetchCollectionTaxonomies = ({ commit }, { termParent, termPerPage 
  * Dispatches `collection/fetchCollectionForExposer`.
  * @returns {*} Action result.
  */
-export const fetchCollectionForExposer = ({ commit }, collectionId) => {
+export const fetchCollectionForExposer = ({}, collectionId) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId + '?fetch_only=name,url';
         axios.tainacanApi.get(endpoint)
@@ -360,7 +356,7 @@ export const fetchCollectionForExposer = ({ commit }, collectionId) => {
  * Dispatches `collection/fetchCollectionForItemSubmission`.
  * @returns {*} Action result.
  */
-export const fetchCollectionForItemSubmission = ({ commit }, collectionId) => {
+export const fetchCollectionForItemSubmission = ({}, collectionId) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId + '?fetch_only=name,allows_submission,submission_use_recaptcha,item_enable_metadata_enumeration,metadata_section_order';
         axios.tainacanApi.get(endpoint)
@@ -420,7 +416,7 @@ export const updateCollection = ({ commit }, { collection_id, collection }) => {
  * Dispatches `collection/updateCollectionTaxonomyValues`.
  * @returns {*} Action result.
  */
-export const updateCollectionTaxonomyValues = ({ commit }, { collectionId, taxonomyValues }) => {
+export const updateCollectionTaxonomyValues = ({}, { collectionId, taxonomyValues }) => {
     return new Promise((resolve, reject) => {
         axios.wpApi.patch('/tainacan-collection/' + collectionId, taxonomyValues)
             .then(res => {
@@ -469,10 +465,7 @@ export const setItems = ({ commit }, items ) => {
 export const sendAttachment = ( { commit }, { collection_id, file }) => {
     return new Promise(( resolve, reject ) => {
         axios.wpApi.post('/media/?post=' + collection_id, file, {
-            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
-            onUploadProgress: progressEvent => {
-                console.log(progressEvent.loaded + '/' + progressEvent.total);
-            }
+            headers: { 'Content-Disposition': 'attachment; filename=' + file.name }
         })
             .then( res => {
                 let attachment = res.data;
@@ -547,9 +540,9 @@ export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) =
  * Dispatches `collection/fetchPages`.
  * @returns {*} Action result.
  */
-export const fetchPages = ({ commit }, { search, page } ) => {
+export const fetchPages = ({}, { search, page, cancelToken } ) => {
     return new Promise((resolve, reject) => {
-        axios.wpApi.get('/pages?search=' + search + '&page=' + page)
+        axios.wpApi.get('/pages?search=' + search + '&page=' + page + '&per_page=12&_fields=id,title,link', { cancelToken })
         .then(res => {
             const pages = res.data;
             const totalPages = res.headers['x-wp-total'];
@@ -565,9 +558,9 @@ export const fetchPages = ({ commit }, { search, page } ) => {
  * Dispatches `collection/fetchPage`.
  * @returns {*} Action result.
  */
-export const fetchPage = ({ commit }, pageId ) => {
+export const fetchPage = ({}, pageId ) => {
     return new Promise((resolve, reject) => {
-        axios.wpApi.get('/pages/' + pageId)
+        axios.wpApi.get('/pages/' + pageId + '?_fields=id,title,link')
         .then(res => {
             let page = res.data;
             resolve( page );
@@ -576,42 +569,6 @@ export const fetchPage = ({ commit }, pageId ) => {
             reject( error );
         });
     });
-};
-
-// Fetch Collections for listing repository filters, parent collection selection, importer destiny...
-/**
- * Dispatches `collection/fetchAllCollectionNames`.
- * @returns {*} Action result.
- */
-export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
-
-    let endpoint = '/collections/?context=edit&nopaging=1&fetch_only=name,id';
-
-    if (collectionsIds != undefined && collectionsIds.length > 0) {
-        const postin = { 'postin': collectionsIds };
-        endpoint += '&' + qs.stringify(postin);
-    }
-
-    const source = axios.CancelToken.source();
-
-    return new Object({ 
-        request: new Promise((resolve, reject) => {
-            axios.tainacanApi.get(endpoint, { cancelToken: source.token })
-            .then(res => {
-                const collections = res.data;
-                commit('setCollections', collections);
-                resolve( collections );
-            })
-            .catch((error) => {
-                if (axios.isCancel(error)) {
-                    console.log('Request canceled: ', error.message);
-                } else {
-                    reject(error);
-                }
-            });
-        }),
-        source: source
-    })
 };
 
 // Send Files to Item Bulk Addition

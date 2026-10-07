@@ -5,7 +5,10 @@
         "modules": false
       }
     ],
-    "@babel/react"
-  ],
-  "plugins": ["@babel/plugin-syntax-dynamic-import"]
+    ["@babel/preset-react", {
+      "runtime": "classic",
+      "pragma": "wp.element.createElement",
+      "pragmaFrag": "wp.element.Fragment"
+    }]
+  ]
 }

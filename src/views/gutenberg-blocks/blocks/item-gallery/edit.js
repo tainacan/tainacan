@@ -1,12 +1,12 @@
 const { __ } = wp.i18n;
 
-const { 
+const {
+    Placeholder,
     Button, 
     ButtonGroup,
     __experimentalToggleGroupControl: ToggleGroupControl,
 	__experimentalToggleGroupControlOption: ToggleGroupControlOption,
     BaseControl,
-    Placeholder,
     SelectControl,
     RangeControl,
     ToggleControl,
@@ -24,6 +24,7 @@ import pick from 'lodash/pick';
 
 import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function ({ attributes, setAttributes, isSelected, clientId }) {
     
@@ -37,6 +38,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         hideFileCaptionMain,
         hideFileDescriptionMain,
         hideFileNameThumbnails,
+        hideImageThumbnails,
         hideFileCaptionThumbnails,
         hideFileDescriptionThumbnails,
         hideFileNameLightbox,
@@ -49,15 +51,17 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         thumbnailsCarouselWidth,
         thumbnailsCarouselItemSize,
         showDownloadButtonMain,
+        coverMimeTypesMain,
         lightboxHasLightBackground,
         templateMode,
+        mainImagesSize,
         thumbnailsSize,
-        thumbsHaveFixedHeight
+        thumbsHaveFixedHeight,
+        thumbsLayout
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = useBlockProps();
-    const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
     useEffect(() => {
@@ -148,7 +152,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                         }
                     />
                     <ToggleControl
-                        label={__('Thumbnails carousel', 'tainacan')}
+                        label={__('Thumbnails', 'tainacan')}
                         checked={ layoutElements['thumbnails'] === true }
                         onChange={ (isChecked) => {
                                 let updatedElements = Object.assign({},layoutElements);
@@ -159,6 +163,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                     />
                     <ToggleControl
                         label={__('Open lightbox on click', 'tainacan')}
+                        help={ __('Use Expand to open the large viewer for any media. Images and document covers also open it on click; video, audio and embedded files stay interactive.', 'tainacan') }
                         checked={ openLightboxOnClick }
                         onChange={ ( isChecked ) => {
                                 openLightboxOnClick = isChecked;
@@ -203,6 +208,16 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             min={ 10 }
                             max={ 150 }
                         />
+                        <SelectControl
+                            label={__('Image size', 'tainacan')}
+                            help={ __('WordPress image size used for pictures in the main slider. The lightbox still uses the original file.', 'tainacan') }
+                            value={ mainImagesSize }
+                            options={ imageSizeOptions }
+                            onChange={ ( aMainImagesSize ) => {
+                                mainImagesSize = aMainImagesSize;
+                                setAttributes({ mainImagesSize: mainImagesSize });
+                            }}
+                        />
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
                             checked={ hideFileNameMain }
@@ -239,24 +254,32 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                                 } 
                             }
                         />
+                        <ToggleControl
+                            label={__('Show PDF cover instead of embedded reader', 'tainacan')}
+                            help={ __('The lightbox can still show the PDF reader.', 'tainacan') }
+                            checked={ Array.isArray( coverMimeTypesMain ) && coverMimeTypesMain.includes( 'application/pdf' ) }
+                            onChange={ ( isChecked ) => {
+                                const mimeTypes = Array.isArray( coverMimeTypesMain ) ? [ ...coverMimeTypesMain ] : [];
+                                const hasPdfCover = mimeTypes.includes( 'application/pdf' );
+
+                                if ( isChecked && ! hasPdfCover ) {
+                                    mimeTypes.push( 'application/pdf' );
+                                } else if ( ! isChecked && hasPdfCover ) {
+                                    mimeTypes.splice( mimeTypes.indexOf( 'application/pdf' ), 1 );
+                                }
+
+                                setAttributes({ coverMimeTypesMain: mimeTypes });
+                            } }
+                        />
                     </PanelBody>
                 : null }
                 { layoutElements['thumbnails'] === true ?
                     <PanelBody
-                            title={__('Thumbnails carousel settings', 'tainacan')}
+                            title={__('Thumbnails settings', 'tainacan')}
                             initialOpen={ true }
                         >
-                        <SelectControl
-                                label={__('Image size', 'tainacan')}
-                                value={ thumbnailsSize }
-                                options={ imageSizeOptions }
-                                onChange={ ( aThumbnailsSize ) => { 
-                                    thumbnailsSize = aThumbnailsSize;
-                                    setAttributes({ thumbnailsSize: thumbnailsSize });
-                                }}
-                            />
                         <RangeControl
-                            label={ __('Carousel width (%)', 'tainacan') }
+                            label={ __('Thumbnails area width (%)', 'tainacan') }
                             value={ thumbnailsCarouselWidth }
                             onChange={ ( updatedThumbnailsCarouselWidth ) => {
                                 thumbnailsCarouselWidth = updatedThumbnailsCarouselWidth;
@@ -265,34 +288,121 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                             min={ 10 }
                             max={ 150 }
                         />
-                        <RangeControl
-                            label={ __('Carousel item size (px)', 'tainacan') }
-                            value={ thumbnailsCarouselItemSize }
-                            onChange={ ( updatedThumbnailsCarouselItemSize ) => {
-                                thumbnailsCarouselItemSize = updatedThumbnailsCarouselItemSize;
-                                setAttributes({ thumbnailsCarouselItemSize: updatedThumbnailsCarouselItemSize });
-                            }}
-                            min={ 32 }
-                            max={ 400 }
-                        />
-                        <ToggleControl
-                            label={ __('Thumbnails have fixed height', 'tainacan') }
-                            help={ __( 'If checked, the thumbnails will have fixed the item size height, otherwise they will have fixed the item size width.', 'tainacan' ) }
-                            checked={ thumbsHaveFixedHeight }
-                            onChange={ ( isChecked ) => {
-                                thumbsHaveFixedHeight = isChecked;
-                                setAttributes({ thumbsHaveFixedHeight: thumbsHaveFixedHeight });
-                            }}
-                        />
-                        <ToggleControl
-                            label={__('Hide file name', 'tainacan')}
-                            checked={ hideFileNameThumbnails }
-                            onChange={ ( isChecked ) => {
-                                    hideFileNameThumbnails = isChecked;
-                                    setAttributes({ hideFileNameThumbnails: hideFileNameThumbnails });
-                                } 
+                        <BaseControl
+                                id="thumbnails-layout"
+                                label={ __('Layout', 'tainacan') }
+                                help={ thumbsLayout === 'list'
+                                    ? __( 'List rows show the file name. Slide actions stay on the main slider for now.', 'tainacan' )
+                                    : __( 'Same files as the carousel: images and icons, not live embeds.', 'tainacan' )
+                                }>
+                            { tainacan_blocks.wp_version >= '6.8' ?
+                                <ToggleGroupControl
+                                        __next40pxDefaultSize
+                                        __nextHasNoMarginBottom
+                                        isBlock
+                                        id="thumbnails-layout"
+                                        onChange={ ( aThumbsLayout ) => {
+                                            setAttributes({ thumbsLayout: aThumbsLayout });
+                                        } }
+                                        value={ thumbsLayout || 'carousel' }
+                                >
+                                    <ToggleGroupControlOption
+                                        label={ __('Carousel', 'tainacan') }
+                                        value="carousel"
+                                    />
+                                    <ToggleGroupControlOption
+                                        label={ __('Grid', 'tainacan') }
+                                        value="grid"
+                                    />
+                                    <ToggleGroupControlOption
+                                        label={ __('List', 'tainacan') }
+                                        value="list"
+                                    />
+                                </ToggleGroupControl>
+                                :
+                                <ButtonGroup id="thumbnails-layout">
+                                    <Button
+                                            onClick={ () => {
+                                                const updates = { thumbsLayout: 'carousel' };
+                                                setAttributes( updates );
+                                            } }
+                                            variant={ ( thumbsLayout || 'carousel' ) === 'carousel' ? 'primary' : 'secondary' }>
+                                        { __('Carousel', 'tainacan') }
+                                    </Button>
+                                    <Button
+                                            onClick={ () => {
+                                                setAttributes({ thumbsLayout: 'grid' });
+                                            } }
+                                            variant={ thumbsLayout === 'grid' ? 'primary' : 'secondary' }>
+                                        { __('Grid', 'tainacan') }
+                                    </Button>
+                                    <Button
+                                            onClick={ () => {
+                                                setAttributes({ thumbsLayout: 'list' });
+                                            } }
+                                            variant={ thumbsLayout === 'list' ? 'primary' : 'secondary' }>
+                                        { __('List', 'tainacan') }
+                                    </Button>
+                                </ButtonGroup>
                             }
-                        />
+                        </BaseControl>
+                        { thumbsLayout === 'list' ?
+                            <ToggleControl
+                                label={__('Hide thumbnail image', 'tainacan')}
+                                help={ hideImageThumbnails ? __('Toggle to show the file thumbnail beside the name', 'tainacan') : __('Toggle to hide the file thumbnail and show only the name', 'tainacan') }
+                                checked={ hideImageThumbnails }
+                                onChange={ ( isChecked ) => {
+                                        hideImageThumbnails = isChecked;
+                                        setAttributes({ hideImageThumbnails: hideImageThumbnails });
+                                    } 
+                                }
+                            />
+                        : null }
+                        { thumbsLayout !== 'list' || !hideImageThumbnails ?
+                            <SelectControl
+                                label={__('Image size', 'tainacan')}
+                                value={ thumbnailsSize }
+                                options={ imageSizeOptions }
+                                onChange={ ( aThumbnailsSize ) => { 
+                                    thumbnailsSize = aThumbnailsSize;
+                                    setAttributes({ thumbnailsSize: thumbnailsSize });
+                                }}
+                            />
+                        : null }
+                        { thumbsLayout !== 'list' || !hideImageThumbnails ?
+                            <RangeControl
+                                label={ __('Thumbnail size (px)', 'tainacan') }
+                                value={ thumbnailsCarouselItemSize }
+                                onChange={ ( updatedThumbnailsCarouselItemSize ) => {
+                                    thumbnailsCarouselItemSize = updatedThumbnailsCarouselItemSize;
+                                    setAttributes({ thumbnailsCarouselItemSize: updatedThumbnailsCarouselItemSize });
+                                }}
+                                min={ 32 }
+                                max={ 400 }
+                            />
+                        : null }
+                        { thumbsLayout !== 'list' ?
+                            <>
+                                <ToggleControl
+                                    label={ __('Thumbnails have fixed height', 'tainacan') }
+                                    help={ __( 'If checked, the thumbnails will have fixed the item size height, otherwise they will have fixed the item size width.', 'tainacan' ) }
+                                    checked={ thumbsHaveFixedHeight }
+                                    onChange={ ( isChecked ) => {
+                                        thumbsHaveFixedHeight = isChecked;
+                                        setAttributes({ thumbsHaveFixedHeight: thumbsHaveFixedHeight });
+                                    }}
+                                />
+                                <ToggleControl
+                                    label={__('Hide file name', 'tainacan')}
+                                    checked={ hideFileNameThumbnails }
+                                    onChange={ ( isChecked ) => {
+                                            hideFileNameThumbnails = isChecked;
+                                            setAttributes({ hideFileNameThumbnails: hideFileNameThumbnails });
+                                        } 
+                                    }
+                                />
+                            </>
+                        : null }
                        <ToggleControl
                             label={__('Hide file caption', 'tainacan')}
                             checked={ hideFileCaptionThumbnails }
@@ -427,25 +537,10 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
 
             { !itemId && !templateMode ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                height="24px"
-                                width="24px">
-                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                        </svg>
-                        {__('Select an item to display its media gallery, including Document and Attachments.', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Item Media Gallery', 'tainacan' ) }
+                    instructions={ __( 'Select an item to display its media gallery, including Document and Attachments.', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"

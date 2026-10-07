@@ -121,7 +121,7 @@ class REST_Filters_Controller extends REST_Controller {
 
 		$filter = $body['filter'];
 
-		$received_type = $body['filter_type'];
+		$received_type = ltrim($body['filter_type'], '\\');
 
 		if(empty($received_type)){
 			throw new \InvalidArgumentException('The type can\'t be empty');
@@ -131,9 +131,27 @@ class REST_Filters_Controller extends REST_Controller {
 			$type = ucwords(strtolower($received_type), '_\\');
 		}
 
+		$registered_filter_types = $this->filter_repository->fetch_filter_types();
+		$valid_type = false;
+		foreach ($registered_filter_types as $registered_type) {
+			if ($type === $registered_type || "Tainacan\\Filter_Types\\$type" === $registered_type) {
+				$type = $registered_type;
+				$valid_type = true;
+				break;
+			}
+		}
+
+		if (!$valid_type) {
+			throw new \InvalidArgumentException( 'Invalid filter type.' );
+		}
+
 		$filter_type = new $type();
 
+		$readonly = $this->get_readonly_fields();
 		foreach ($filter as $attribute => $value){
+			if ( in_array($attribute, $readonly, true) ) {
+				continue;
+			}
 			$filter_obj->set($attribute, $value);
 		}
 
@@ -176,6 +194,12 @@ class REST_Filters_Controller extends REST_Controller {
 	public function create_item( $request ) {
 
 		if(!empty($request->get_body())){
+			$body = json_decode($request->get_body(), true);
+			$options_error = $this->validate_filter_type_options_field( $body );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			$filter_obj = $this->prepare_item_for_database($request);
 
 			if ($filter_obj->validate()){
@@ -271,6 +295,11 @@ class REST_Filters_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
+			$options_error = $this->validate_filter_type_options_field( $body );
+			if ( $options_error instanceof \WP_REST_Response ) {
+				return $options_error;
+			}
+
 			$attributes = [];
 
 			foreach ($body as $att => $value){
@@ -375,19 +404,35 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function get_items( $request ) {
 		$args = $this->prepare_filters( $request );
+		// Order is applied after parent queries are merged, so paging each parent is not a page of the list.
+		unset( $args['posts_per_page'], $args['paged'], $args['offset'], $args['nopaging'] );
+		$args['posts_per_page'] = -1;
 
 		if ($request['include_disabled'] === 'true') {
 			$args['include_disabled'] = true;
 		}
 
 		if(!isset($request['collection_id'])) {
-			$args['meta_query'][] = [
+			$repository_args = $args;
+			$repository_args['meta_query'] = ( isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) )
+				? $args['meta_query']
+				: [];
+			$repository_args['meta_query'] = array_merge( [], $repository_args['meta_query'] );
+			$repository_args['meta_query'][] = [
 				'key'     => 'collection_id',
 				'value'   => 'default',
 				'compare' => '='
 			];
 
-			$filters = $this->filter_repository->fetch( $args, 'OBJECT' );
+			$filters = $this->filter_repository->fetch( $repository_args, 'OBJECT' );
+
+			if ( $request->has_param( 'append_from_collections' ) ) {
+				$append_from_collections = $request->get_param( 'append_from_collections' );
+				$collection_ids = ( $append_from_collections === 'all' ) ? [] : (array) $append_from_collections;
+				if ( $append_from_collections === 'all' || ! empty( $collection_ids ) ) {
+					$collection_filters = $this->filter_repository->fetch_by_collections( $args, $collection_ids );
+				}
+			}
 		} else {
 			$collection = $this->collection_repository->fetch($request['collection_id']);
 			$filters = $this->filter_repository->fetch_by_collection($collection, $args);
@@ -403,6 +448,18 @@ class REST_Filters_Controller extends REST_Controller {
 		$response = [];
 		foreach ( $filters as $filter ) {
 			array_push( $response, $this->prepare_item_for_response( $filter, $request ) );
+		}
+
+		if ( isset( $collection_filters ) && is_array( $collection_filters ) ) {
+			foreach ( $collection_filters as $collection_filter ) {
+				foreach ( $collection_filter['filters'] as $filter ) {
+					$item = $this->prepare_item_for_response( $filter, $request );
+					if ( is_array( $item ) ) {
+						$item['collection_name'] = $collection_filter['collection']->get_name();
+						$response[] = $item;
+					}
+				}
+			}
 		}
 
 		return new \WP_REST_Response($response, 200);
@@ -465,6 +522,27 @@ class REST_Filters_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Reject a non-array filter_type_options value on the filter object or nested filter payload.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param mixed $body Decoded request body.
+	 * @return true|\WP_REST_Response
+	 */
+	private function validate_filter_type_options_field( $body ) {
+		$error = $this->validate_array_fields( $body, array( 'filter_type_options' ) );
+		if ( $error instanceof \WP_REST_Response ) {
+			return $error;
+		}
+
+		if ( is_array( $body ) && isset( $body['filter'] ) ) {
+			return $this->validate_array_fields( $body['filter'], array( 'filter_type_options' ) );
+		}
+
+		return true;
 	}
 
 	/**
@@ -543,11 +621,43 @@ class REST_Filters_Controller extends REST_Controller {
 			'type'        => 'string',
 		);
 
+		$query_params['append_from_collections'] = array(
+			'description' => __( 'On the repository filters route, appends filters from these collections. Only filters set to appear in repository level lists are returned. Pass "all" for every collection, or a comma-separated list of collection IDs. Omit the argument to return only repository filters.', 'tainacan' ),
+			'type'        => array( 'string', 'array' ),
+			'sanitize_callback' => function( $value ) {
+				if ( is_string( $value ) ) {
+					$value = trim( $value );
+					if ( $value === 'all' ) {
+						return 'all';
+					}
+					$value = explode( ',', $value );
+				}
+				if ( ! is_array( $value ) ) {
+					return [];
+				}
+
+				$sanitized = [];
+				foreach ( $value as $id ) {
+					if ( $id === 'all' ) {
+						return 'all';
+					}
+					$id = absint( $id );
+					if ( $id > 0 ) {
+						$sanitized[] = $id;
+					}
+				}
+
+				return array_values( array_unique( $sanitized ) );
+			},
+		);
+
 		$query_params = array_merge(
 			$query_params,
 			parent::get_wp_query_params(),
 			parent::get_meta_queries_params()
 		);
+
+		unset( $query_params['perpage'], $query_params['paged'], $query_params['offset'] );
 
 		return $query_params;
 	}

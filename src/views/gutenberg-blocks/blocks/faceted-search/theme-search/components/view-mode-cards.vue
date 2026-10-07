@@ -82,20 +82,19 @@
                             <div 
                                     v-if="!shouldHideItemsThumbnail && item['thumbnail']"
                                     class="card-thumbnail">
-                                <blur-hash-image
+                                <tainacan-progressive-image
                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
                                         :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                        :transition-duration="500"
                                     />
                             </div>
                             
                             <div class="list-metadata media-body">
                                 <!-- Description -->
-                                <p 
+                                <div 
                                         v-tooltip="{
                                             delay: {
                                                 show: 500,
@@ -142,7 +141,12 @@ export default {
     },
     methods: {
         getLimitedDescription(description) {
-            return description.length > this.descriptionMaxCharacter ? description.substring(0, this.descriptionMaxCharacter - 3) + '...' : description;
+            const container = document.createElement('div');
+            container.innerHTML = description;
+            const plainText = (container.textContent || '').replace(/\s+/g, ' ').trim();
+            if (plainText.length <= this.descriptionMaxCharacter)
+                return description;
+            return plainText.substring(0, this.descriptionMaxCharacter - 3) + '...';
         }
     }
 }

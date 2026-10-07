@@ -97,7 +97,7 @@
                             <div 
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-list-thumbnail">
-                                <blur-hash-image
+                                <tainacan-progressive-image
                                         v-if="item.thumbnail != undefined"
                                         class="tainacan-list-item-thumbnail"
                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -106,7 +106,6 @@
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                        :transition-duration="500"
                                     />
                                 <!-- <img 
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
@@ -120,7 +119,7 @@
                                             v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')"
                                             :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
-                                        <p      
+                                        <div      
                                                 class="metadata-value"
                                                 v-html="renderMetadata(item, column)" />
                                     </span>

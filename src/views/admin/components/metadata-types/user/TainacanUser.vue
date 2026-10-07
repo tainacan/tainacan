@@ -1,7 +1,8 @@
 <template>
-    <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
+    <div
+            :id="inputId"
+            :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 v-a11y-autocomplete
                 expanded
                 :disabled="disabled"
@@ -62,6 +63,7 @@ import qs from 'qs';
 export default {
     props: {
         itemMetadatum: Object,
+        inputId: String,
         maxtags: undefined,
         disabled: false,
         allowNew: true,

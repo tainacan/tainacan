@@ -11,7 +11,8 @@ import {
     Button,
     Dropdown,
     Dialog,
-    Checkbox
+    Checkbox,
+    Autocomplete
 } from 'buefy';
 
 import { I18NPlugin } from './wp-i18n-plugin';
@@ -57,15 +58,14 @@ export default (element) => {
             VueRoles.use(Button);
             VueRoles.use(Dropdown);
             VueRoles.use(Checkbox);
+            VueRoles.use(Autocomplete);
             VueRoles.use(Dialog);
             VueRoles.use(A11yDropdownPlugin);
             VueRoles.use(A11yAutocompletePlugin);
             VueRoles.use(A11yTabsPlugin);
             // Changing title of pages
-            router.beforeEach((to, from, next) => {
+            router.beforeEach((to) => {
                 document.title = to.meta.title;
-                if (next() != undefined)
-                    next();
             });
             
             VueRoles.use(router);

@@ -72,8 +72,9 @@ class XLSX_Exporter extends Exporter {
 
 			if ($this->tempFilePath) {
 				if (file_exists($this->filePath)) {
-					unlink($this->filePath);
+					wp_delete_file($this->filePath);
 				}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- Replace the export with the temp workbook on the local disk. WP_Filesystem::move() follows the configured transport, which may not be the disk PhpSpreadsheet just wrote.
 				rename($this->tempFilePath, $this->filePath);
 			}
 		}
@@ -165,37 +166,6 @@ class XLSX_Exporter extends Exporter {
 		$dataLen = count($data);
 		parent::add_log("Retrieved data size: $dataLen");
 		return $data;
-	}
-
-	private function map_item_metadata(\Tainacan\Entities\Item $item) {
-		
-		$mapper = $this->get_current_mapper();
-		$metadata = $item->get_metadata();
-		if (!$mapper) {
-			return $metadata;
-		}
-		$pre = [];
-		foreach ($metadata as $item_metadata) {
-			$metadatum = $item_metadata->get_metadatum();
-			$meta_mappings = $metadatum->get_exposer_mapping();
-			if ( array_key_exists($this->get_mapping_selected(), $meta_mappings) ) {
-				
-				$pre[ $meta_mappings[$this->get_mapping_selected()] ] = $item_metadata;
-			}
-		}
-		
-		// reorder
-		$return = [];
-		foreach ( $mapper->metadata as $meta_slug => $meta ) {
-			if ( array_key_exists($meta_slug, $pre) ) {
-				$return[$meta_slug] = $pre[$meta_slug];
-			} else {
-				$return[$meta_slug] = null;
-			}
-		}
-		
-		return $return;
-		
 	}
 
 	public function process_item($item, $metadata) {
@@ -336,8 +306,8 @@ class XLSX_Exporter extends Exporter {
 		$headerRowContents = [];
 
 		if ($mapper) {
-			foreach ($mapper->metadata as $meta_slug => $meta) {
-				$headerRowContents[] = $meta['field'] ?? $meta_slug;
+			foreach ( $this->get_mapped_metadata_slugs() as $meta_slug ) {
+				$headerRowContents[] = $mapper->metadata[ $meta_slug ]['field'] ?? $meta_slug;
 			}
 		} else {
 			$headerRowContents = ['special_item_id'];

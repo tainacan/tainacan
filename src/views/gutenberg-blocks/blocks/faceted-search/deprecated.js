@@ -213,7 +213,6 @@ export default [
                 defaultViewMode,
                 enabledViewModes,
                 collectionDefaultViewMode,
-                collectionEnabledViewModes,
                 hideDisplayedMetadataButton,
                 hideSortingArea,
                 hideFilters,
@@ -534,7 +533,6 @@ export default [
                 defaultViewMode,
                 enabledViewModes,
                 collectionDefaultViewMode,
-                collectionEnabledViewModes,
                 hideDisplayedMetadataButton,
                 hideSortingArea,
                 hideFilters,
@@ -585,7 +583,6 @@ export default [
             else if (updatedListType === '' && termId && taxonomyId)
                 updatedListType = 'term';
                 
-            console.log('deprecation 1', updatedListType, collectionOrderByMeta)
             // Gets attributes such as style, that are automatically added by the editor hook
             const blockProps = useBlockProps.save();
         
@@ -856,7 +853,6 @@ export default [
                 defaultViewMode,
                 enabledViewModes,
                 collectionDefaultViewMode,
-                collectionEnabledViewModes,
                 hideDisplayedMetadataButton,
                 hideSortingArea,
                 hideFilters,
@@ -906,7 +902,6 @@ export default [
                 updatedListType = 'collection';
             else if (updatedListType === '' && termId && taxonomyId)
                 updatedListType = 'term';
-            console.log('deprecation 2', updatedListType, collectionOrderByMeta)
             return <div 
                     style={{
                         'font-size': baseFontSize + 'px',
@@ -1151,7 +1146,6 @@ export default [
                 defaultViewMode,
                 enabledViewModes,
                 collectionDefaultViewMode,
-                collectionEnabledViewModes,
                 hideDisplayedMetadataButton,
                 hideSortingArea,
                 hideFilters,
@@ -1436,7 +1430,6 @@ export default [
                 defaultViewMode,
                 enabledViewModes,
                 collectionDefaultViewMode,
-                collectionEnabledViewModes,
                 hideDisplayedMetadataButton,
                 hideSortingArea,
                 hideFilters,
@@ -1710,7 +1703,6 @@ export default [
                 defaultViewMode,
                 enabledViewModes,
                 collectionDefaultViewMode,
-                collectionEnabledViewModes,
                 hideDisplayedMetadataButton,
                 hideSortingArea,
                 hideFilters,
@@ -1975,7 +1967,6 @@ export default [
                 defaultViewMode,
                 enabledViewModes,
                 collectionDefaultViewMode,
-                collectionEnabledViewModes,
                 hideDisplayedMetadataButton,
                 hideSortingArea,
                 hideFilters,

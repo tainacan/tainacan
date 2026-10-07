@@ -1,72 +1,61 @@
 @startuml class-diagram
-  class "Term\n<b>Represents a Tainacan Term entity.</b>" as Term {
-    +WP_Term : 
-    #term_id : 
+  class "Metadatum\n<b>Represents a Tainacan Metadatum entity.</b>" as Metadatum {
+    #name : 
+    +enabled_for_collection : 
     +post_type : 
+    #capability_type : string
     #repository : string
-    +__construct(which, taxonomy)
     +__toString()
-    +_toArray()
-    +get_id()
-    +get_term_id()
+    +set_display(display)
+    +get_display()
+    +set_html_formatting(html_formatting)
+    +get_html_formatting()
+    +get_allow_advanced_search()
+    +set_allow_advanced_search(allow_advanced_search)
     +get_name()
+    +get_slug()
+    +get_order()
     +get_parent()
     +get_description()
-    +get_user()
-    +get_taxonomy()
-    +get_header_image_id()
-    +get_cover_page_id()
-    +get_header_image()
-    +get_url()
-    +get_thumbnail()
-    +get_thumbnail_blurhash()
+    +get_description_bellow_name()
+    +get_placeholder()
+    +get_required()
+    +get_multiple()
+    +get_cardinality()
+    +get_collection_key()
+    +get_default_value()
+    +get_metadata_type_object()
+    +get_metadata_type()
+    +get_metadata_type_options()
+    +get_accept_suggestion()
+    +get_exposer_mapping()
+    +get_semantic_uri()
+    +get_metadata_section_id()
     +set_name(value)
+    +set_slug(value)
+    +set_order(value)
     +set_parent(value)
     +set_description(value)
-    +set_user(value)
-    +set_taxonomy(value)
-    +set_header_image_id(value)
-    +set_cover_page_id(value)
+    +set_description_bellow_name(value)
+    +set_placeholder(value)
+    +set_required(value)
+    +set_multiple(value)
+    +set_cardinality(value)
+    +set_collection_key(value)
+    +set_default_value(value)
+    +set_metadata_type(value)
+    +set_accept_suggestion(value)
+    +set_metadata_type_options(value)
+    +set_exposer_mapping(value)
+    +set_semantic_uri(value)
+    +set_metadata_section_id(value)
+    +get_enabled_for_collection()
+    +set_enabled_for_collection(value)
+    +is_multiple()
+    +is_collection_key()
+    +is_required()
+    +is_repository_level()
     +validate()
-    +_toHtml()
-  }
-  class "Entity\n<b>Abstract base class for all Tainacan entities.</b>" as Entity {
-    #repository : Repository
-    -errors : array
-    #post_type : string|false
-    #capability_type : string|false
-    +WP_Post : WP_Post
-    -validated : bool
-    +cap : object
-    +__construct(which)
-    +get_repository()
-    +get_date_i18n(date)
-    +get_mapped_property(prop)
-    #set_mapped_property(prop, value)
-    +set(prop, value)
-    +get(prop)
-    +set_status(value)
-    +validate()
-    +validate_prop(prop)
-    +get_errors()
-    {static} +get_post_type()
-    {static} +get_capability_type()
-    +get_status()
-    +get_db_identifier()
-    +get_id()
-    +add_error(type, message)
-    +reset_errors()
-    +get_validated()
-    #set_validated(value)
-    #set_as_valid()
-    +_toArray()
-    +_toJson()
-    +can_read(user)
-    +can_edit(user)
-    +can_delete(user)
-    +can_publish(user)
-    +get_capabilities()
-    +diff(which)
   }
   class "Metadata_Section\n<b>Represents a Tainacan Metadata Section entity.</b>" as Metadata_Section {
     +post_type : 
@@ -154,63 +143,161 @@
     +get_metadata_sections_as_html(args)
     +get_metadata_section_as_html(metadata_section, args, section_index)
   }
-  class "Metadatum\n<b>Represents a Tainacan Metadatum entity.</b>" as Metadatum {
-    #name : 
-    +enabled_for_collection : 
-    +post_type : 
-    #capability_type : string
+  class "Entity\n<b>Abstract base class for all Tainacan entities.</b>" as Entity {
+    #repository : Repository
+    -errors : array
+    #post_type : string|false
+    #capability_type : string|false
+    +WP_Post : WP_Post
+    -validated : bool
+    +cap : object
+    +__construct(which)
+    +get_repository()
+    +get_date_i18n(date)
+    +get_mapped_property(prop)
+    #set_mapped_property(prop, value)
+    +set(prop, value)
+    +get(prop)
+    +set_status(value)
+    +validate()
+    +validate_prop(prop)
+    +get_errors()
+    {static} +get_post_type()
+    {static} +get_capability_type()
+    +get_status()
+    +get_db_identifier()
+    +get_id()
+    +add_error(type, message)
+    +reset_errors()
+    +get_validated()
+    #set_validated(value)
+    #set_as_valid()
+    +_toArray()
+    +_toJson()
+    +can_read(user)
+    +can_edit(user)
+    +can_delete(user)
+    +can_publish(user)
+    +get_capabilities()
+    +diff(which)
+  }
+  class "Item_Metadata_Entity\n<b>Represents a Tainacan Item Metadata Entity.</b>" as Item_Metadata_Entity {
+    #post_type : 
     #repository : string
-    +__toString()
-    +set_display(display)
-    +get_display()
-    +set_html_formatting(html_formatting)
-    +get_html_formatting()
-    +get_allow_advanced_search()
-    +set_allow_advanced_search(allow_advanced_search)
-    +get_name()
-    +get_slug()
-    +get_order()
-    +get_parent()
-    +get_description()
-    +get_description_bellow_name()
-    +get_placeholder()
-    +get_required()
-    +get_multiple()
-    +get_cardinality()
-    +get_collection_key()
-    +get_default_value()
-    +get_metadata_type_object()
-    +get_metadata_type()
-    +get_metadata_type_options()
-    +get_accept_suggestion()
-    +get_exposer_mapping()
-    +get_semantic_uri()
-    +get_metadata_section_id()
-    +set_name(value)
-    +set_slug(value)
-    +set_order(value)
-    +set_parent(value)
-    +set_description(value)
-    +set_description_bellow_name(value)
-    +set_placeholder(value)
-    +set_required(value)
-    +set_multiple(value)
-    +set_cardinality(value)
-    +set_collection_key(value)
-    +set_default_value(value)
-    +set_metadata_type(value)
-    +set_accept_suggestion(value)
-    +set_metadata_type_options(value)
-    +set_exposer_mapping(value)
-    +set_semantic_uri(value)
-    +set_metadata_section_id(value)
-    +get_enabled_for_collection()
-    +set_enabled_for_collection(value)
+    #item : 
+    +__construct(item, metadatum, meta_id, parent_meta_id)
+    +get_multivalue_prefix()
+    +get_multivalue_suffix()
+    +get_multivalue_separator()
+    +get_value_as_html()
+    +get_value_as_string()
+    +get_value_as_array()
+    +_toArray(formatted_values, cascade)
+    +set_item(item)
+    +set_value(value)
+    +set_metadatum(metadatum)
+    +set_meta_id(meta_id)
+    +set_parent_meta_id(parent_meta_id)
+    +get_item()
+    +get_metadatum()
+    +get_meta_id()
+    +get_parent_meta_id()
+    +get_value()
+    +has_value()
     +is_multiple()
     +is_collection_key()
     +is_required()
-    +is_repository_level()
     +validate()
+  }
+  class "Term\n<b>Represents a Tainacan Term entity.</b>" as Term {
+    +WP_Term : 
+    #term_id : 
+    +post_type : 
+    #repository : string
+    +__construct(which, taxonomy)
+    +__toString()
+    +_toArray()
+    +get_id()
+    +get_term_id()
+    +get_name()
+    +get_parent()
+    +get_description()
+    +get_user()
+    +get_taxonomy()
+    +get_header_image_id()
+    +get_cover_page_id()
+    +get_header_image()
+    +get_url()
+    +get_thumbnail()
+    +get_thumbnail_blurhash()
+    +set_name(value)
+    +set_parent(value)
+    +set_description(value)
+    +set_user(value)
+    +set_taxonomy(value)
+    +set_header_image_id(value)
+    +set_cover_page_id(value)
+    +validate()
+    +_toHtml()
+  }
+  class "Log\n<b>Represents a Tainacan Log entity.</b>" as Log {
+    #title : 
+    +post_type : 
+    #repository : string
+    +__construct(which)
+    +__toString()
+    +_toArray()
+    +get_capabilities()
+    +set_collection_id(collection_id)
+    +get_collection_id()
+    +get_title()
+    +get_user_name()
+    +get_date()
+    +get_slug()
+    +get_description()
+    +get_user_id()
+    +get_old_value()
+    +get_new_value()
+    +set_title(value)
+    +set_description(value)
+    +set_user_id(value)
+    +set_old_value(value)
+    +set_new_value(value)
+    +get_log_diffs()
+    +get_object_type()
+    +set_object_type(value)
+    +get_object_id()
+    +set_object_id(value)
+    +set_item_id(item_id)
+    +get_item_id()
+    +get_action()
+    +set_action(value)
+    +approve()
+  }
+  class "Taxonomy\n<b>Represents a Tainacan Taxonomy entity.</b>" as Taxonomy {
+    #name : 
+    +post_type : string
+    #capability_type : string
+    #repository : string
+    +db_identifier_prefix : string
+    +__toString()
+    +tainacan_register_taxonomy()
+    +get_capabilities()
+    +get_name()
+    +get_description()
+    +get_allow_insert()
+    +get_hierarchical()
+    +get_slug()
+    +get_enabled_post_types()
+    +get_db_identifier()
+    +set_name(value)
+    +set_slug(value)
+    +set_description(value)
+    +set_allow_insert(value)
+    +set_hierarchical(value)
+    +set_enabled_post_types(value)
+    +validate()
+    +term_exists(term_name, parent, return_term)
   }
   class "Collection\n<b>Represents a Tainacan Collection entity.</b>" as Collection {
     #diplay_name : 
@@ -360,93 +447,6 @@
     +set_description_bellow_name(value)
     +validate()
     +set_filter_type_options(value)
-  }
-  class "Log\n<b>Represents a Tainacan Log entity.</b>" as Log {
-    #title : 
-    +post_type : 
-    #repository : string
-    +__construct(which)
-    +__toString()
-    +_toArray()
-    +get_capabilities()
-    +set_collection_id(collection_id)
-    +get_collection_id()
-    +get_title()
-    +get_user_name()
-    +get_date()
-    +get_slug()
-    +get_description()
-    +get_user_id()
-    +get_old_value()
-    +get_new_value()
-    +set_title(value)
-    +set_description(value)
-    +set_user_id(value)
-    +set_old_value(value)
-    +set_new_value(value)
-    +get_log_diffs()
-    +get_object_type()
-    +set_object_type(value)
-    +get_object_id()
-    +set_object_id(value)
-    +set_item_id(item_id)
-    +get_item_id()
-    +get_action()
-    +set_action(value)
-    +approve()
-  }
-  class "Taxonomy\n<b>Represents a Tainacan Taxonomy entity.</b>" as Taxonomy {
-    #name : 
-    +post_type : string
-    #capability_type : string
-    #repository : string
-    +db_identifier_prefix : string
-    +__toString()
-    +tainacan_register_taxonomy()
-    +get_capabilities()
-    +get_name()
-    +get_description()
-    +get_allow_insert()
-    +get_hierarchical()
-    +get_slug()
-    +get_enabled_post_types()
-    +get_db_identifier()
-    +set_name(value)
-    +set_slug(value)
-    +set_description(value)
-    +set_allow_insert(value)
-    +set_hierarchical(value)
-    +set_enabled_post_types(value)
-    +validate()
-    +term_exists(term_name, parent, return_term)
-  }
-  class "Item_Metadata_Entity\n<b>Represents a Tainacan Item Metadata Entity.</b>" as Item_Metadata_Entity {
-    #post_type : 
-    #repository : string
-    #item : 
-    +__construct(item, metadatum, meta_id, parent_meta_id)
-    +get_multivalue_prefix()
-    +get_multivalue_suffix()
-    +get_multivalue_separator()
-    +get_value_as_html()
-    +get_value_as_string()
-    +get_value_as_array()
-    +_toArray(formatted_values, cascade)
-    +set_item(item)
-    +set_value(value)
-    +set_metadatum(metadatum)
-    +set_meta_id(meta_id)
-    +set_parent_meta_id(parent_meta_id)
-    +get_item()
-    +get_metadatum()
-    +get_meta_id()
-    +get_parent_meta_id()
-    +get_value()
-    +has_value()
-    +is_multiple()
-    +is_collection_key()
-    +is_required()
-    +validate()
   }
   Collection ..> Collection
   Collection ..> Metadatum

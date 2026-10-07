@@ -1,7 +1,8 @@
 <template>
-    <div v-if="itemMetadatum">
+    <div
+            v-if="itemMetadatum"
+            :id="inputId">
         <b-input 
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :disabled="disabled"
                 :model-value="localValue"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : '[link](https://url.com)'"
@@ -34,11 +35,11 @@
 </template>
 
 <script>
-
 export default {
     props: {
         itemMetadatum: Object,
         value: [String, Number, Array],
+        inputId: String,
         disabled: false
     },
     emits: [ 'update:value', 'blur' ],

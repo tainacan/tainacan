@@ -8,7 +8,7 @@ const tainacanSanitize = function(htmlString) {
 
 // HTML SANITIZE PLUGIN - Helps sanitizing html string from javascript.
 export const HtmlSanitizerPlugin = {};
-HtmlSanitizerPlugin.install = function (app, options = {}) {
+HtmlSanitizerPlugin.install = function (app) {
     
     app.config.globalProperties.$htmlSanitizer = {
         sanitize(htmlString) {
@@ -32,6 +32,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
                     queue: false
                 });
             } else {
+                // eslint-disable-next-line no-console -- ConsolePlugin is the sanctioned logger.
                 console.log(something);
             }
         },
@@ -44,7 +45,8 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
                     duration: 5000,
                     queue: false
                 });
-            } else { 
+            } else {
+                // eslint-disable-next-line no-console -- ConsolePlugin is the sanctioned logger.
                 console.info(someInfo);
             }
         },
@@ -71,7 +73,7 @@ const i18nGet = function (key) {
 
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
-I18NPlugin.install = function (app, options = {}) {
+I18NPlugin.install = function (app) {
     
     app.config.globalProperties.$i18n = {
         get(key) {
@@ -116,7 +118,7 @@ I18NPlugin.install = function (app, options = {}) {
                 // }
                 // return parsedString;
 
-                const regex = /\%(\d\$)*s/m;
+                const regex = /%(\d\$)*s/m;
                 for (let variable of variables)
                     rawString = rawString.replace(regex, variable);
                 
@@ -144,7 +146,7 @@ I18NPlugin.install = function (app, options = {}) {
 
 // USER PREFERENCES - Used to save key-value information for user settings of plugin
 export const UserPrefsPlugin = {};
-UserPrefsPlugin.install = function (app, options = {}) {
+UserPrefsPlugin.install = function (app) {
 
     app.config.globalProperties.$userPrefs = {
         
@@ -169,40 +171,49 @@ UserPrefsPlugin.install = function (app, options = {}) {
         },
         init() {
             if (tainacan_user.prefs == undefined || tainacan_user.prefs == '') {
-                let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+                this.savedPrefs = JSON.stringify(this.tainacanPrefs);
 
                 if (tainacan_user.nonce) {
-                    axios.wpApi.post('/users/me/', qs.stringify(data))
-                        .then( updatedRes => {
-                            let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
-                            this.tainacanPrefs = prefs;
-                        })
-                        .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
+                    this.flush();
                 }
             } else {
                 this.tainacanPrefs = tainacan_user.prefs ? JSON.parse(tainacan_user.prefs) : {};
+                this.savedPrefs = JSON.stringify(this.tainacanPrefs);
             }
         },
         get(key) {
             return this.tainacanPrefs[key] ? this.tainacanPrefs[key] : undefined;
         },
-        async set(key, value) {
+        set(key, value) {
             this.tainacanPrefs[key] = value;
 
-            let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
+            if (!this.pendingSave) {
+                this.pendingSave = Promise.resolve().then(() => this.flush());
+            }
 
-            if (tainacan_user.nonce) {
-                    try {
-                        const res = await axios.wpApi.post('/users/me/', qs.stringify(data));
-                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                        this.tainacanPrefs[key] = prefs[key];
-                        return prefs[key];
-                    } catch (e) {
-                        console.log("Request to /users/me failed. Maybe you're not logged in.");
-                        return undefined;
-                    }
-            } else {
-                return value;
+            return this.pendingSave;
+        },
+        async flush() {
+            this.pendingSave = null;
+
+            const serialized = JSON.stringify(this.tainacanPrefs);
+            if (!tainacan_user.nonce || serialized === this.savedPrefs)
+                return this.tainacanPrefs;
+
+            const data = {'meta': {'tainacan_prefs': serialized} };
+
+            try {
+                const res = await axios.wpApi.post('/users/me/', qs.stringify(data));
+                const prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                this.savedPrefs = JSON.stringify(prefs);
+                if (JSON.stringify(this.tainacanPrefs) === serialized)
+                    this.tainacanPrefs = prefs;
+                else if (!this.pendingSave)
+                    this.pendingSave = Promise.resolve().then(() => this.flush());
+                return this.tainacanPrefs;
+            } catch {
+                console.warn("Request to /users/me failed. Maybe you're not logged in.");
+                return undefined;
             }
         },
         clean() {
@@ -216,7 +227,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
 
 // ROUTER HELPER PLUGIN - Allows easy access to URL paths for entities
 export const RouterHelperPlugin = {};
-RouterHelperPlugin.install = function (app, options = {}) {
+RouterHelperPlugin.install = function (app) {
     
     app.config.globalProperties.$routerHelper = {
         updatePageTitle(title) {
@@ -394,7 +405,7 @@ RouterHelperPlugin.install = function (app, options = {}) {
         getTaxonomyEditPath(id, isRecent) {
             return isRecent != undefined ? '/taxonomies/' + id + '/edit?recent=true'  : '/taxonomies/' + id + '/edit';
         },
-        getTermEditPath(taxonomyId, termId) {
+        getTermEditPath(taxonomyId) {
             return '/taxonomies/' + taxonomyId + '/edit?tab=terms';
         },
         getImporterEditionPath(importerType) {
@@ -417,7 +428,7 @@ RouterHelperPlugin.install = function (app, options = {}) {
 
 // USER CAPABILITIES PLUGIN - Allows easy checking of user capabilities.
 export const UserCapabilitiesPlugin = {};
-UserCapabilitiesPlugin.install = function (app, options = {}) {
+UserCapabilitiesPlugin.install = function (app) {
     
     app.config.globalProperties.$userCaps = {
         hasCapability(key) {
@@ -431,7 +442,7 @@ const TOTAL_ITEMS_SUM_EXCLUDED_SLUGS = ['trash', 'inherit', 'auto-draft'];
 
 // STATUS ICONS PLUGIN - Sets icon for status option
 export const StatusHelperPlugin = {};
-StatusHelperPlugin.install = function (app, options = {}) {
+StatusHelperPlugin.install = function (app) {
     
     app.config.globalProperties.$statusHelper = {
         statuses: [
@@ -592,7 +603,7 @@ StatusHelperPlugin.install = function (app, options = {}) {
 
 // COMMENTS STATUS PLUGIN - 
 export const CommentsStatusHelperPlugin = {};
-CommentsStatusHelperPlugin.install = function (app, options = {}) {
+CommentsStatusHelperPlugin.install = function (app) {
     
     app.config.globalProperties.$commentsStatusHelper = {
         statuses: [
@@ -607,9 +618,13 @@ CommentsStatusHelperPlugin.install = function (app, options = {}) {
 };
 
 export const AxiosErrorHandlerPlugin = {};
-AxiosErrorHandlerPlugin.install = function (app, options = {}) {
+AxiosErrorHandlerPlugin.install = function (app) {
     
     const tainacanVisualErrorHandler = function({ error, errorMessage, errorMessageDetail }) {
+
+        // Caller will show its own feedback (e.g. form/snackbar for known API errors).
+        if ( error && error.config && error.config.silentError )
+            return;
 
         if (errorMessage) {
             app.config.globalProperties.$buefy.snackbar.open({
@@ -662,7 +677,7 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
 
         let objectOptions = JSON.parse(options);
         for (let key in objectOptions) {
-            if (objectOptions.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(objectOptions, key)) {
                 if (objectOptions[key] === 'true')
                     objectOptions[key] = true;
                 if (objectOptions[key] === 'false' || objectOptions[key] == undefined || !objectOptions[key])
@@ -716,7 +731,7 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
             app.config.globalProperties.$router.removeRoute('CollectionItemCreatePage');
         }
 
-    } catch(e) {
+    } catch {
         app.config.globalProperties.$adminOptions = {};
     }
 };

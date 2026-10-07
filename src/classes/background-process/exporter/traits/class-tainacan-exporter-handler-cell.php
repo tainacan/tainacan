@@ -8,14 +8,14 @@ trait Exporter_Handler_Cell {
 
 	function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
 		// Open a memory "file" for read/write...
-		$fp = fopen('php://temp', 'r+');
+		$fp = fopen('php://temp', 'r+'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- In-memory stream so fputcsv() can format one row. There is no disk file.
 		
 		fputcsv($fp, $input, $delimiter, $enclosure);
 		rewind($fp);
 		//Getting detailed stats to check filesize:
 		$fstats = fstat($fp);
-		$data = fread($fp, $fstats['size']);
-		fclose($fp);
+		$data = fread($fp, $fstats['size']); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Read the formatted row back from the in-memory stream.
+		fclose($fp); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Close the in-memory stream used to format one CSV row.
 		return rtrim($data, "\n");
 	}
 

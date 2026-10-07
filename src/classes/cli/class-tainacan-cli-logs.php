@@ -150,13 +150,20 @@ class Logs_Wp_Posts_Migration {
 			return [ 'deleted' => 0, 'pending' => 0 ];
 		}
 
-		$in_sql = implode( ',', array_map( 'absint', $ids ) );
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$ids          = array_map( 'absint', $ids );
 
 		// 2. Delete postmeta first to avoid orphaned rows.
-		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ($in_sql)" );
+		$wpdb->query( $wpdb->prepare(
+			"DELETE FROM {$wpdb->postmeta} WHERE post_id IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $placeholders is a generated list of %d tokens.
+			$ids
+		) );
 
 		// 3. Delete the wp_posts records.
-		$deleted = $wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID IN ($in_sql)" );
+		$deleted = $wpdb->query( $wpdb->prepare(
+			"DELETE FROM {$wpdb->posts} WHERE ID IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $placeholders is a generated list of %d tokens.
+			$ids
+		) );
 
 		return [ 'deleted' => (int) $deleted, 'pending' => $this->count_purgeable() ];
 	}

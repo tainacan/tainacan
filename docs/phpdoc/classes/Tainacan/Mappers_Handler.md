@@ -19,6 +19,7 @@ classDiagram
         +unregister_mapper(class_name)
         +get_mappers(output)
         +get_mapper(slug)
+        +normalize_mapping_value(mapping, mapper)
         +mappers_i18n(i18n_strings)
         +$get_mapper_from_request(request)
         #map_metadatum(item_arr, mapper)
@@ -145,6 +146,28 @@ public get_mapper(mixed $slug): mixed
 | Parameter | Type      | Description |
 |-----------|-----------|-------------|
 | `$slug`   | **mixed** |             |
+
+***
+
+### normalize_mapping_value
+
+Normalize a metadatum exposer mapping into slug, URI and label.
+
+```php
+public normalize_mapping_value(mixed $mapping, \Tainacan\Mappers\Mapper|null $mapper = null): array{slug: string, uri: string, label: string}|false
+```
+
+Built-in mapper fields are stored as strings (e.g. 'dc:title'). Extra mapper
+fields, allowed when the mapper has allow_extra_metadata, are stored as arrays
+with 'slug', 'uri' and 'label' keys. Callers that treat the mapping as a string
+(array keys, esc_attr, XML element names) must go through this helper.
+
+**Parameters:**
+
+| Parameter  | Type                               | Description                                                        |
+|------------|------------------------------------|--------------------------------------------------------------------|
+| `$mapping` | **mixed**                          | The value stored in exposer_mapping[mapper_slug].                  |
+| `$mapper`  | **\Tainacan\Mappers\Mapper\|null** | Optional mapper used to resolve URI and label for string mappings. |
 
 ***
 

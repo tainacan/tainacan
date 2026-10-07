@@ -10,9 +10,36 @@
 ```mermaid
 classDiagram
     direction TB
+    class Flickr_Importer {
+        #endPoint : mixed
+        #method : mixed
+        #apiKey : mixed
+        #perPage : mixed
+        #format : mixed
+        #apiKeyValue : mixed
+        #steps : mixed
+        -items_repo : mixed
+        +__construct(attributes)
+        +get_source_metadata()
+        +process_item(index, collection_definition)
+        +identify_url(showDetails)
+        +get_source_number_of_items()
+        -get_list_items()
+        -process_item_user_request(items_json, index, collection_definition)
+        -process_item_album_request(items_json, index, collection_definition)
+        -process_item_single_request(items_json, index, collection_definition)
+        -get_item_data(id)
+        +after_inserted_item(inserted_item, collection_index)
+        +save_mapping(collection_id, mapping)
+        +get_mapping(collection_id)
+        +add_collection(collection)
+        -get_image_mime_type(image_path)
+        +options_form()
+    }
     class Importer {
         -id : identifier
         #tmp_file : string
+        #tmp_file_id : int
         #collections : array
         -options : array
         #default_options : array
@@ -43,6 +70,9 @@ classDiagram
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        -resolve_allowed_tmp_file(filepath)
+        +get_tmp_file_id()
+        +set_tmp_file_id(id)
         +get_collections()
         +set_collections(value)
         +get_options()
@@ -55,6 +85,7 @@ classDiagram
         +get_log()
         +get_error_log()
         +add_file(file)
+        +delete_source_file()
         +add_log(message)
         +add_error_log(message)
         +add_collection(collection)
@@ -87,32 +118,6 @@ classDiagram
         +after_inserted_item(insertedItem, collection_index)
         +run()
         +create_new_metadata(metadata_description, collection_id, parent_id)
-    }
-    class Flickr_Importer {
-        #endPoint : mixed
-        #method : mixed
-        #apiKey : mixed
-        #perPage : mixed
-        #format : mixed
-        #apiKeyValue : mixed
-        #steps : mixed
-        -items_repo : mixed
-        +__construct(attributes)
-        +get_source_metadata()
-        +process_item(index, collection_definition)
-        +identify_url(showDetails)
-        +get_source_number_of_items()
-        -get_list_items()
-        -process_item_user_request(items_json, index, collection_definition)
-        -process_item_album_request(items_json, index, collection_definition)
-        -process_item_single_request(items_json, index, collection_definition)
-        -get_item_data(id)
-        +after_inserted_item(inserted_item, collection_index)
-        +save_mapping(collection_id, mapping)
-        +get_mapping(collection_id)
-        +add_collection(collection)
-        -get_image_mime_type(image_path)
-        +options_form()
     }
     Importer <|-- Flickr_Importer
 ```
@@ -607,15 +612,43 @@ public get_tmp_file(): mixed
 
 ### set_tmp_file
 
+Store the importer source file.
+
 ```php
-public set_tmp_file(mixed $filepath): mixed
+public set_tmp_file(mixed $filepath): bool
 ```
+
+The path must be an existing file inside the WordPress uploads directory.
+Absolute paths are accepted only after realpath() confirms that location,
+which is how attachments from media_handle_sideload() are stored.
 
 **Parameters:**
 
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$filepath` | **mixed** |             |
+
+***
+
+### get_tmp_file_id
+
+```php
+public get_tmp_file_id(): mixed
+```
+
+***
+
+### set_tmp_file_id
+
+```php
+public set_tmp_file_id(mixed $id): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$id`     | **mixed** |             |
 
 ***
 
@@ -739,6 +772,16 @@ public add_file(mixed $file): bool
 | Parameter | Type      | Description                    |
 |-----------|-----------|--------------------------------|
 | `$file`   | **mixed** | File to be managed by importer |
+
+***
+
+### delete_source_file
+
+Delete the uploaded source file and its WordPress attachment.
+
+```php
+public delete_source_file(): bool
+```
 
 ***
 

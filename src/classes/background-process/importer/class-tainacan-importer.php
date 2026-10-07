@@ -25,6 +25,12 @@ abstract class Importer {
 	 */
 	protected $tmp_file;
 
+	/**
+	 * WordPress attachment ID of the uploaded source file.
+	 *
+	 * @var int
+	 */
+	protected $tmp_file_id;
 
 	/**
 	 * This array holds the structure that the default step 'process_collections' will handle.
@@ -137,7 +143,8 @@ abstract class Importer {
 		'transients',
 		'options',
 		'collections',
-		'tmp_file'
+		'tmp_file',
+		'tmp_file_id'
 	];
 
 	public function __construct($attributes = array()) {
@@ -249,11 +256,69 @@ abstract class Importer {
 	}
 
 	public function get_tmp_file(){
-		return $this->tmp_file;
+		$path = $this->resolve_allowed_tmp_file( $this->tmp_file );
+		return $path === false ? null : $path;
 	}
 
+	/**
+	 * Store the importer source file.
+	 *
+	 * The path must be an existing file inside the WordPress uploads directory.
+	 * Absolute paths are accepted only after realpath() confirms that location,
+	 * which is how attachments from media_handle_sideload() are stored.
+	 *
+	 * @param mixed $filepath
+	 * @return bool
+	 */
 	public function set_tmp_file($filepath){
-		$this->tmp_file = $filepath;
+		$path = $this->resolve_allowed_tmp_file( $filepath );
+		if ( $path === false ) {
+			return false;
+		}
+
+		$this->tmp_file = $path;
+		return true;
+	}
+
+	/**
+	 * Resolve a source path and confirm it is a file inside the uploads directory.
+	 *
+	 * @param mixed $filepath
+	 * @return string|false Canonical path, or false when the path is not allowed.
+	 */
+	private function resolve_allowed_tmp_file( $filepath ) {
+		if ( ! is_string( $filepath ) || $filepath === '' || strpos( $filepath, "\0" ) !== false ) {
+			return false;
+		}
+
+		$upload_dir = wp_upload_dir();
+		if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) ) {
+			return false;
+		}
+
+		$base_dir = realpath( $upload_dir['basedir'] );
+		$real_file_path = realpath( $filepath );
+
+		if ( $base_dir === false || $real_file_path === false || ! is_file( $real_file_path ) ) {
+			return false;
+		}
+
+		$base_dir = trailingslashit( wp_normalize_path( $base_dir ) );
+		$real_file_path = wp_normalize_path( $real_file_path );
+
+		if ( strpos( $real_file_path, $base_dir ) !== 0 ) {
+			return false;
+		}
+
+		return $real_file_path;
+	}
+
+	public function get_tmp_file_id(){
+		return $this->tmp_file_id;
+	}
+
+	public function set_tmp_file_id($id){
+		$this->tmp_file_id = $id;
 	}
 
 	public function get_collections() {
@@ -326,14 +391,41 @@ abstract class Importer {
 	 */
 	public function add_file( $file ){
 		$new_file = $this->upload_file( $file );
-		if ( is_numeric( $new_file ) ) {
-			$this->tmp_file = get_attached_file( $new_file );
-			return true;
-		} else {
+		if ( ! is_numeric( $new_file ) ) {
 			return false;
 		}
+
+		$attached_file = get_attached_file( $new_file );
+		if ( ! $this->set_tmp_file( $attached_file ) ) {
+			wp_delete_attachment( $new_file, true );
+			return false;
+		}
+
+		$this->tmp_file_id = (int) $new_file;
+		return true;
 	}
 
+	/**
+	 * Delete the uploaded source file and its WordPress attachment.
+	 *
+	 * @return bool
+	 */
+	public function delete_source_file() {
+
+		if ( empty( $this->tmp_file_id ) ) {
+			return false;
+		}
+
+		$deleted = wp_delete_attachment( $this->tmp_file_id, true );
+
+		if ( $deleted ) {
+			$this->tmp_file = null;
+			$this->tmp_file_id = null;
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * log the actions from importer
@@ -342,10 +434,10 @@ abstract class Importer {
 	 * @param $messagelog
 	 */
 	public function add_log($message ) {
-		$this->log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 	public function add_error_log($message ) {
-		$this->error_log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->error_log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function add_collection(array $collection) {
@@ -394,9 +486,10 @@ abstract class Importer {
 	public function fetch_from_remote( $url ){
 		$tmp = wp_remote_get( $url );
 		if( !is_wp_error($tmp) && isset( $tmp['body'] ) ){
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Write the remote body to a local temp file that add_file() then uploads. WP_Filesystem::put_contents() follows the configured transport, which may not be that disk.
 			$file = fopen( $this->get_id().'.txt', 'w' );
-			fwrite( $file, $tmp['body'] );
-			fclose( $file );
+			fwrite( $file, $tmp['body'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Write the remote body to a local temp file that add_file() then uploads. WP_Filesystem::put_contents() follows the configured transport, which may not be that disk.
+			fclose( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Write the remote body to a local temp file that add_file() then uploads. WP_Filesystem::put_contents() follows the configured transport, which may not be that disk.
 			return $this->add_file( $this->get_id().'.txt' );
 		}
 	}

@@ -104,9 +104,7 @@ export default class MetadataModal extends React.Component {
             
                 return otherModalCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     selectCollection(selectedCollectionId) {
@@ -167,9 +165,7 @@ export default class MetadataModal extends React.Component {
                 
                 return someCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     resetCollections() {
@@ -195,7 +191,7 @@ export default class MetadataModal extends React.Component {
     fetchModalMetadata(selectedCollectionId) {
 
         let someModalMetadata = [];
-        let endpoint = selectedCollectionId != 'default' ? '/collection/' + selectedCollectionId + '/metadata/?nopaging=1' : '/metadata/?nopaging=1';
+        let endpoint = selectedCollectionId != 'default' ? '/collection/' + selectedCollectionId + '/metadata/' : '/metadata/';
 
         this.setState({ 
             isLoadingMetadata: true,
@@ -223,9 +219,7 @@ export default class MetadataModal extends React.Component {
             
                 return otherModalMetadata;
             })
-            .catch(error => {
-                console.log('Error trying to fetch metadata: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     selectMetadatum(selectedMetadatum) {

@@ -1,10 +1,9 @@
 <template>
-    <div>
+    <div :id="inputId">
         <div 
                 v-if="!getDisplayAutocomplete"
                 class="control is-clearfix">
             <input  
-                    :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                     v-imask="getMask"
                     class="input"
                     :disabled="disabled"
@@ -24,7 +23,6 @@
         </div>
         <b-autocomplete
                 v-else
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 v-a11y-autocomplete
                 :disabled="disabled"
                 :model-value="localValue"
@@ -34,12 +32,14 @@
                 clearable
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                 check-infinite-scroll
+                open-on-focus
                 :maxlength="getMaxlength"
                 @blur="onBlur"
-                @update:model-value="($event) => { search($event); }"
+                @update:model-value="onAutocompleteValue"
+                @typing="search"
                 @select="onSelect"
                 @infinite-scroll="searchMore"
-                @focus="onMobileSpecialFocus">
+                @focus="onSuggestionFocus">
             <template #header>
                 <span v-if="!isLoadingOptions && options && options.length">
                     {{ $i18n.get('info_metadata_autocomplete_suggestions') }}
@@ -72,6 +72,7 @@
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],
+            inputId: String,
             disabled: false
         },
         emits: [
@@ -126,7 +127,7 @@
         },
         methods: {
             onInput(value) {
-                const inputRef = this.$refs['tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '')];
+                const inputRef = this.$refs[this.inputId];
                 if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
                     return;
 
@@ -140,6 +141,12 @@
                 this.isInputFocused = false;
                 this.$emit('blur');
             },
+            onAutocompleteValue(value) {
+                if (value || !this.localValue)
+                    return;
+
+                this.onInput('');
+            },
             onSelect(option){
                 
                 if (!option)
@@ -150,69 +157,77 @@
 
                 this.onInput(this.label);
             },
+            onSuggestionFocus() {
+                this.onMobileSpecialFocus();
+                this.browseSuggestions();
+            },
+            browseSuggestions() {
+                this.searchQuery = '';
+                this.searchOffset = 0;
+                this.totalFacets = 0;
+                this.shouldAddOptions = false;
+                this.loadSuggestions('');
+            },
             search: _.debounce( function(query) {
+                const text = query || '';
 
-                // String update
-                if (query != this.searchQuery) {
-                    this.searchQuery = query;
-                    this.options = [];
-                    this.searchOffset = 0;
-                }
-                
-                // Updates metadata
-                this.onInput(query);
-                
-                // String cleared
-                if (!query.length) {
-                    this.searchQuery = query;
-                    this.options = [];
-                    this.searchOffset = 0;
-                }
-
-                // No need to load more
-                if (this.searchOffset > 0 && this.options.length >= this.totalFacets)
+                if (text === this.localValue && this.searchQuery === '' && this.options.length)
                     return;
 
-                if (this.searchQuery != '') {
-
-                    // Cancels previous Request
-                    if (this.getOptionsValuesCancel != undefined)
-                        this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-
-                    const promise = this.getValuesPlainText({
-                        metadatumId: this.itemMetadatum.metadatum.id,
-                        search: this.searchQuery,
-                        isRepositoryLevel: this.currentCollectionId == 'default', 
-                        valuesToIgnore: [], 
-                        offset: this.searchOffset,
-                        number: this.searchNumber,
-                        isInCheckboxModal: false,
-                        countItems: false
-                    });
-                    
-                    promise.request
-                        .then( res => {
-                            this.totalFacets = res.headers['x-wp-total'];
-                            this.searchOffset += this.searchNumber;
-                        })
-                        .catch( error => {
-                            if (isCancel(error))
-                                this.$console.log('Request canceled: ' + error.message);
-                            else
-                                this.$console.error( error );
-                        });
-
-                    // Search Request Token for cancelling
-                    this.getOptionsValuesCancel = promise.source;
-                
-                } else {
-                    this.label = '';
-                    this.selected = '';
+                if (text !== this.searchQuery) {
+                    this.searchQuery = text;
+                    this.options = [];
+                    this.searchOffset = 0;
+                    this.totalFacets = 0;
+                    this.shouldAddOptions = false;
                 }
+
+                this.onInput(text);
+
+                if (this.searchOffset > 0 && this.options.length >= Number(this.totalFacets))
+                    return;
+
+                this.loadSuggestions(text);
             }, 500),
+            loadSuggestions(query) {
+                if (this.getOptionsValuesCancel)
+                    this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
+                const promise = this.getValuesPlainText({
+                    metadatumId: this.itemMetadatum.metadatum.id,
+                    search: query,
+                    isRepositoryLevel: this.currentCollectionId == 'default',
+                    valuesToIgnore: [],
+                    offset: this.searchOffset,
+                    number: this.searchNumber,
+                    isInCheckboxModal: false,
+                    countItems: false
+                });
+
+                promise.request
+                    .then( res => {
+                        if (res && res.fromAggregations) {
+                            this.totalFacets = this.options.length;
+                            this.searchOffset = this.options.length;
+                            return;
+                        }
+
+                        this.totalFacets = res.headers['x-wp-total'];
+                        this.searchOffset += this.searchNumber;
+                    })
+                    .catch( error => {
+                        if (!isCancel(error))
+                            this.$console.error( error );
+                    });
+
+                this.getOptionsValuesCancel = promise.source;
+            },
             searchMore: _.debounce(function () {
+                if (this.searchOffset > 0 && this.options.length >= Number(this.totalFacets))
+                    return;
+
                 this.shouldAddOptions = true;
-                this.search(this.searchQuery);
+                this.loadSuggestions(this.searchQuery);
             }, 250),
             onMobileSpecialFocus() {
                 this.isInputFocused = true;

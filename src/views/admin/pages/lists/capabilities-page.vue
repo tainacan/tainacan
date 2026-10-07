@@ -21,7 +21,10 @@
                             open-on-focus
                             :loading="isFetchingRoles"
                             field="name"
-                            icon="magnify" />
+                            icon="magnify"
+                            @focus="roleBrowse = true"
+                            @active="(isOpen) => { if (!isOpen) roleBrowse = false }"
+                            @typing="roleBrowse = false" />
                 </div>
             </b-field>
         </div>
@@ -92,7 +95,8 @@
                 isLoading: false,
                 roles: [],
                 isFetchingRoles: false,
-                filteredRole: ''
+                filteredRole: '',
+                roleBrowse: false
             }
         },
         computed: {
@@ -122,6 +126,7 @@
                 }
             },
             filteredRoles() {
+                const query = this.roleBrowse ? '' : this.filteredRole;
                 if (this.roles && this.roles.length) {
                     return this.roles
                         .filter((option) => {
@@ -129,7 +134,7 @@
                                 return option.name
                                     .toString()
                                     .toLowerCase()
-                                    .indexOf(this.filteredRole.toLowerCase()) >= 0
+                                    .indexOf(query.toLowerCase()) >= 0
                             } else {
                                 return false
                             }

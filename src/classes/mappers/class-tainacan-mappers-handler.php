@@ -121,6 +121,52 @@ class Mappers_Handler {
 
 		return false;
 	}
+
+	/**
+	 * Normalize a metadatum exposer mapping into slug, URI and label.
+	 *
+	 * Built-in mapper fields are stored as strings (e.g. 'dc:title'). Extra mapper
+	 * fields, allowed when the mapper has allow_extra_metadata, are stored as arrays
+	 * with 'slug', 'uri' and 'label' keys. Callers that treat the mapping as a string
+	 * (array keys, esc_attr, XML element names) must go through this helper.
+	 *
+	 * @param mixed               $mapping The value stored in exposer_mapping[mapper_slug].
+	 * @param Mappers\Mapper|null $mapper  Optional mapper used to resolve URI and label for string mappings.
+	 * @return array{slug: string, uri: string, label: string}|false
+	 */
+	public function normalize_mapping_value( $mapping, $mapper = null ) {
+		if ( is_array( $mapping ) ) {
+			$slug = isset( $mapping['slug'] ) ? (string) $mapping['slug'] : '';
+			if ( '' === $slug ) {
+				return false;
+			}
+
+			return [
+				'slug'  => $slug,
+				'uri'   => isset( $mapping['uri'] ) ? (string) $mapping['uri'] : '',
+				'label' => isset( $mapping['label'] ) ? (string) $mapping['label'] : '',
+			];
+		}
+
+		if ( ! is_string( $mapping ) || '' === $mapping ) {
+			return false;
+		}
+
+		$uri   = '';
+		$label = '';
+		if ( $mapper instanceof Mappers\Mapper ) {
+			$uri = $mapper->get_url( $mapping );
+			if ( is_array( $mapper->metadata ) && isset( $mapper->metadata[ $mapping ]['label'] ) ) {
+				$label = $mapper->metadata[ $mapping ]['label'];
+			}
+		}
+
+		return [
+			'slug'  => $mapping,
+			'uri'   => $uri,
+			'label' => $label,
+		];
+	}
 	
 	/**
 	 * Add mappers data to translations
@@ -181,13 +227,11 @@ class Mappers_Handler {
 			) {
 				throw new \Exception('Invalid Mapper Option');
 			}
-			$slug = '';
-			if(is_string($metadatum_mapping[$mapper->slug])) {
-				$slug = $metadatum_mapping[$mapper->slug];
-			} else {
-				$slug = $metadatum_mapping[$mapper->slug]['slug'];
+			$normalized = $this->normalize_mapping_value( $metadatum_mapping[ $mapper->slug ], $mapper );
+			if ( ! $normalized ) {
+				return [];
 			}
-			$ret = [$mapper->prefix.$slug.$mapper->sufix => $item_arr['value']]; //TODO Validate option
+			$ret = [ $mapper->prefix . $normalized['slug'] . $mapper->sufix => $item_arr['value'] ]; //TODO Validate option
 		} elseif($mapper->slug == 'value') {
 			$ret = [$item_arr['metadatum']['name'] => $item_arr['value']];
 		} else {
@@ -318,28 +362,20 @@ class Mappers_Handler {
 			return $item_arr;
 		}
 		
-		$mapper_meta = $mapper->metadata;
 		$mapped_meta = [];
 		
 		foreach ($item_arr['metadata'] as $slug => $meta) {
 			
 			if ( array_key_exists($mapper->slug, $meta['mapping']) ) {
-				$mapped_slug = $meta['mapping'][$mapper->slug]; 
-				
-				// Extra metadata
-				if ( is_array($mapped_slug) ) {
-					$url = $mapped_slug['uri'];
-					$label = $mapped_slug['label'];
-					$mapped_slug = $mapped_slug['slug'];
-				} else {
-					$url = $mapper->get_url( $mapped_slug );
-					$label = $mapper->metadata[$mapped_slug]['label'];
+				$normalized = $this->normalize_mapping_value( $meta['mapping'][ $mapper->slug ], $mapper );
+				if ( ! $normalized ) {
+					continue;
 				}
-				
-				 
+
+				$mapped_slug = $normalized['slug'];
 				$mapped_meta[ $mapped_slug ] = $meta;
-				$mapped_meta[ $mapped_slug ]['semantic_uri'] = $url;
-				$mapped_meta[ $mapped_slug ]['name'] = $label;
+				$mapped_meta[ $mapped_slug ]['semantic_uri'] = $normalized['uri'];
+				$mapped_meta[ $mapped_slug ]['name'] = $normalized['label'];
 				$mapped_meta[ $mapped_slug ]['slug'] = $mapped_slug;
 			}
 			

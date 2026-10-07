@@ -109,7 +109,7 @@ export default (element) => {
 
             /* Registers Extra VueItemSubmission Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
-                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
+                for (let extraVuePluginObject of Object.values(window.tainacan_extra_plugins))
                     VueItemSubmission.use(extraVuePluginObject);
             }
 
@@ -171,22 +171,22 @@ export default (element) => {
             }
 
             /* Metadata */
-            VueItemSubmission.component('tainacan-text', TainacanText);
-            VueItemSubmission.component('tainacan-textarea', TainacanTextarea);
-            VueItemSubmission.component('tainacan-selectbox', TainacanSelectbox);
-            VueItemSubmission.component('tainacan-numeric', TainacanNumeric);
-            VueItemSubmission.component('tainacan-date', TainacanDate);
-            VueItemSubmission.component('tainacan-relationship', TainacanRelationship);
-            VueItemSubmission.component('tainacan-taxonomy', TainacanTaxonomy);
-            VueItemSubmission.component('tainacan-compound', TainacanCompound);
-            VueItemSubmission.component('tainacan-user', TainacanUser);
-            VueItemSubmission.component('tainacan-geocoordinate', TainacanGeoCoordinate);
-            VueItemSubmission.component('tainacan-url', TainacanUrl);
+            VueItemSubmission.component('TainacanText', TainacanText);
+            VueItemSubmission.component('TainacanTextarea', TainacanTextarea);
+            VueItemSubmission.component('TainacanSelectbox', TainacanSelectbox);
+            VueItemSubmission.component('TainacanNumeric', TainacanNumeric);
+            VueItemSubmission.component('TainacanDate', TainacanDate);
+            VueItemSubmission.component('TainacanRelationship', TainacanRelationship);
+            VueItemSubmission.component('TainacanTaxonomy', TainacanTaxonomy);
+            VueItemSubmission.component('TainacanCompound', TainacanCompound);
+            VueItemSubmission.component('TainacanUser', TainacanUser);
+            VueItemSubmission.component('TainacanGeoCoordinate', TainacanGeoCoordinate);
+            VueItemSubmission.component('TainacanUrl', TainacanUrl);
 
             /* Others */
-            VueItemSubmission.component('tainacan-form-item', TainacanFormItem);
-            VueItemSubmission.component('term-creation-panel', TermCreationPanel);
-            VueItemSubmission.component('help-button', HelpButton);
+            VueItemSubmission.component('TainacanFormItem', TainacanFormItem);
+            VueItemSubmission.component('TermCreationPanel', TermCreationPanel);
+            VueItemSubmission.component('HelpButton', HelpButton);
 
             // Global emitter
             const emitter = mitt();

@@ -273,13 +273,12 @@
                             class="grid-item-thumbnail"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 255)"
                                 :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 255)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
                     </a>
 
@@ -455,7 +454,7 @@
                         </div>
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
@@ -464,7 +463,6 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
 
                         <!-- Actions -->
@@ -738,9 +736,9 @@
                             @click.left.stop.prevent="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div
-                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
+                                v-if="!hidesItemsThumbnail"
                                 class="card-thumbnail">
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-masonry-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
@@ -748,14 +746,13 @@
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                    :transition-duration="500"
                                 />
                         </div>
                         
 
                         <div class="list-metadata media-body">
                             <!-- Description -->
-                            <p
+                            <div
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
@@ -1003,7 +1000,7 @@
                                 @click.right="onRightClickItem($event, item)">
                             <div class="list-metadata media-body">
                                 <div class="tainacan-record-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-record-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1012,14 +1009,13 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </div>
                                 <span
                                         v-if="collectionId == undefined && descriptionItemMetadatum && item.description"
                                         class="metadata-type-textarea">
                                     <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                    <p
+                                    <div
                                             class="metadata-value"
                                             v-html="item.description" />
                                 </span>
@@ -1030,14 +1026,14 @@
                                             v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
                                             :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
-                                        <p
+                                        <div
                                                 class="metadata-value"
                                                 v-html="renderMetadata(item.metadata, column)" />
                                     </span>
                                     <span
                                             v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
-                                        <p
+                                        <div
                                                 class="metadata-value"
                                                 v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]" />
                                     </span>
@@ -1192,7 +1188,7 @@
                                             placement: 'auto-start'
                                         }"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
-                                <p
+                                <div
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined &&
                                             column.metadata_type_object.related_mapped_prop == 'description'"
@@ -1207,8 +1203,9 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
+                                        class="metadata-value"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
-                                <p
+                                <div
                                         v-if="item.metadata != undefined &&
                                             column.metadatum !== 'row_thumbnail' &&
                                             column.metadatum !== 'row_actions' &&
@@ -1228,18 +1225,18 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
+                                        class="metadata-value"
                                         v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
 
                                 <span 
                                         v-if="column.metadatum == 'row_thumbnail'"
                                         class="table-thumb">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
                                             :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
                                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </span>
                                 <p
@@ -1594,7 +1591,7 @@
                         <div 
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-list-thumbnail">
-                            <blur-hash-image
+                            <tainacan-progressive-image
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-list-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1603,7 +1600,6 @@
                                     :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                    :transition-duration="500"
                                 />
                         </div>
                         <div class="list-metadata media-body">
@@ -1611,7 +1607,7 @@
                                     v-if="collectionId == undefined && descriptionItemMetadatum && item.description"
                                     class="metadata-type-textarea">
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                <p
+                                <div
                                         class="metadata-value"
                                         v-html="item.description" />
                             </span>
@@ -1622,13 +1618,13 @@
                                         v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
                                         :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
-                                    <p      
+                                    <div      
                                             class="metadata-value"
                                             v-html="renderMetadata(item.metadata, column)" /> 
                                 </span>
                                 <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
-                                    <p
+                                    <div
                                             class="metadata-value"
                                             v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]" />
                                 </span>
@@ -1736,7 +1732,7 @@
                                         }"
                                         v-html="item.title != undefined ? item.title : (`<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div class="tainacan-map-card-thumbnail">
-                                    <blur-hash-image
+                                    <tainacan-progressive-image
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-map-card-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
@@ -1745,7 +1741,6 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                            :transition-duration="500"
                                         />
                                 </div>
                             </div>
@@ -2142,7 +2137,7 @@
                                             @click.right="onRightClickItem($event, item)">
                                         <div class="list-metadata media-body">
                                             <div class="tainacan-record-thumbnail">
-                                                <blur-hash-image
+                                                <tainacan-progressive-image
                                                         v-if="item.thumbnail != undefined"
                                                         class="tainacan-record-item-thumbnail"
                                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -2151,14 +2146,13 @@
                                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                                        :transition-duration="500"
                                                     />
                                             </div>
                                             <span
-                                                    v-if="collectionId == undefined"
+                                                    v-if="collectionId == undefined && descriptionItemMetadatum"
                                                     class="metadata-type-textarea">
                                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                                <p
+                                                <div
                                                         class="metadata-value"
                                                         v-html="item.description != undefined ? item.description : ''" />
                                             </span>
@@ -2173,13 +2167,13 @@
                                                             (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate')"
                                                         :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
-                                                    <p
+                                                    <div
                                                             class="metadata-value"
                                                             v-html="renderMetadata(item.metadata, column)" />
                                                 </span>
                                                 <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
-                                                    <p
+                                                    <div
                                                             class="metadata-value"
                                                             v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]" />
                                                 </span>
@@ -2217,7 +2211,7 @@
                             @click.right="onRightClickItem($event, item)">
 
                         <!-- Thumbnail -->
-                        <blur-hash-image
+                        <tainacan-progressive-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-mosaic-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-large-full', 320)"
@@ -2226,7 +2220,6 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : ''"
-                                :transition-duration="500"
                             />
 
                         <!-- Title -->
@@ -2698,6 +2691,12 @@ export default {
                     this.masonry.layout();
             },
             immediate: true
+        },
+        hidesItemsThumbnail() {
+            if (this.isRepositoryLevel)
+                return tainacan_plugin.repository_hide_items_thumbnail == true;
+
+            return !!(this.collection && this.collection.hide_items_thumbnail_on_lists == 'yes');
         }
     },
     created() {
@@ -3120,7 +3119,15 @@ export default {
         },
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
-            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+            const plainText = this.getDescriptionPlainText(description);
+            if (plainText.length <= maxCharacter)
+                return description;
+            return plainText.substring(0, maxCharacter - 3) + '...';
+        },
+        getDescriptionPlainText(description) {
+            const container = document.createElement('div');
+            container.innerHTML = description;
+            return (container.textContent || '').replace(/\s+/g, ' ').trim();
         },
         onChangeSelectedGeocoordinateMetadatum(id) {
             // Setting default geocoordinate metadatum for map view mode
@@ -3197,12 +3204,6 @@ export default {
     @use "../../scss/_view-mode-records.scss";
     @use "../../scss/_view-mode-list.scss";
     @use "../../scss/_view-mode-map.scss";
-    
-    // Vue Blurhash transtition effect
-    @import url('../../../../../node_modules/another-vue3-blurhash/dist/style.css');
-    :deep(canvas.child) {
-        max-width: 100%;
-    }
 
     .selection-control {
         margin-bottom: 6px;

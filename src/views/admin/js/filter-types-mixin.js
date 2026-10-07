@@ -148,11 +148,8 @@ export const dynamicFilterTypeMixin = {
                                     resolve(res);
                                 })
                                 .catch((thrown) => {
-                                    if (axios.isCancel(thrown)) {
-                                        console.log('Request canceled: ', thrown.message);
-                                    } else {
+                                    if (!axios.isCancel(thrown))
                                         this.isLoadingOptions = false;
-                                    }
                                     reject(thrown);
                                 })
                             }),
@@ -307,10 +304,7 @@ export const dynamicFilterTypeMixin = {
                         url = `/collection/${this.filter.collection_id}/facets/${this.filter.metadatum.metadatum_id}?getSelected=${getSelected}&`;
                 }     
                 
-                if (offset != undefined && number != undefined)
-                    url += `offset=${offset}&number=${number}`;
-                else
-                    url += `nopaging=1`;
+                url += `offset=${offset}&number=${number}`;
 
                 if (search)
                     url += `&search=${search}`;
@@ -336,11 +330,8 @@ export const dynamicFilterTypeMixin = {
                                     resolve(res);
                                 })
                                 .catch((thrown) => {
-                                    if (axios.isCancel(thrown)) {
-                                        console.log('Request canceled: ', thrown.message);
-                                    } else {
+                                    if (!axios.isCancel(thrown))
                                         this.isLoadingOptions = false;
-                                    }
                                     reject(thrown);
                                 })
                             }),

@@ -16,6 +16,21 @@ class Embed {
 	use \Tainacan\Traits\Singleton_Instance;
 
 	/**
+	 * Whether Tainacan's custom video/audio markup should be applied to the
+	 * current autoembed() call.
+	 *
+	 * The wp_embed_handler_video/audio filters are registered once at plugin
+	 * load, but they must only take effect when Tainacan itself is embedding
+	 * media (Tainacan admin item pages, item single pages, the media page and
+	 * the URL metadata type). This flag is toggled by Embed::embed() so the
+	 * override never leaks into unrelated WordPress content.
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	private static $override_active = false;
+
+	/**
 	 * Available aspect ratios for responsive embeds.
 	 *
 	 * @since 0.1.0
@@ -80,16 +95,32 @@ class Embed {
 	 */
 	public function filter_video_embed($video, $attr, $url, $rawattr) {
 		
+		// Only apply Tainacan's video markup while Tainacan is embedding its own content.
+		if ( ! self::$override_active ) {
+			return $video;
+		}
 		
 		$dimensions = '';
 		if ( ! empty( $attr['width'] ) && ! empty( $attr['height'] ) ) {
 			$dimensions .= sprintf( 'width="%d" ', (int) $attr['width'] );
 			//$dimensions .= sprintf( 'height="%d" ', (int) $attr['height'] );
 		}
-		$video = sprintf( '<video controls="" %s src="%s"></video>', $dimensions, esc_url( $url ) );
+		$preload = $this->is_video_preload_none_enabled() ? 'preload="none" ' : '';
+		$video = sprintf( '<video controls="" %s%s src="%s"></video>', $preload, $dimensions, esc_url( $url ) );
 		
 		return $video;
 		
+	}
+
+	/**
+	 * Checks whether Tainacan videos should prevent browser preloading.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool Whether the preload="none" attribute should be rendered.
+	 */
+	private function is_video_preload_none_enabled() {
+		return rest_sanitize_boolean( get_option( 'tainacan_option_enable_video_preload_none', false ) );
 	}
 	
 	/**
@@ -105,6 +136,11 @@ class Embed {
 	 */
 	public function filter_audio_embed($audio, $attr, $url, $rawattr) {
 		
+		// Only apply Tainacan's audio markup while Tainacan is embedding its own content.
+		if ( ! self::$override_active ) {
+			return $audio;
+		}
+		
 		if ( ! empty( $attr['width'] ) ) {
 			$dimensions = sprintf( 'width="%d" ', (int) $attr['width'] );
 		}
@@ -115,6 +151,35 @@ class Embed {
 		
 	}
 	
+	/**
+	 * Runs WordPress autoembed on a URL while applying Tainacan's custom
+	 * video/audio markup.
+	 *
+	 * WordPress processes media URLs in content through the registered embed
+	 * handlers. Tainacan's own markup must only be produced for media that
+	 * Tainacan itself embeds (item documents, attachments, URL metadata and
+	 * the media page), never for unrelated WordPress content. This wrapper
+	 * scopes the override to exactly those calls.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $url The URL to embed.
+	 * @return string The embed HTML, or the original URL when autoembed fails.
+	 */
+	public function embed( $url ) {
+		global $wp_embed;
+
+		$previous_override_active = self::$override_active;
+		self::$override_active = true;
+
+		try {
+			return $wp_embed->autoembed( $url );
+		} finally {
+			self::$override_active = $previous_override_active;
+		}
+
+	}
+
 	/**
 	 * Handles PDF file embedding using iframe.
 	 *

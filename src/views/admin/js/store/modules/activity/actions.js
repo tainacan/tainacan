@@ -159,10 +159,11 @@ export const fetchActivity = ({ commit }, activityId) => {
  * Dispatches `activity/fetchUsers`.
  * @returns {*} Action result.
  */
-export const fetchUsers = ({ commit }, { search, page, exclude }) => {
+export const fetchUsers = ({}, { search, page, exclude, perPage }) => {
     let endpoint = '/users';
     let params = {
-        search: search
+        search: search,
+        per_page: perPage || 12
     };
 
     if (page)
@@ -187,7 +188,7 @@ export const fetchUsers = ({ commit }, { search, page, exclude }) => {
  * Dispatches `activity/fetchUser`.
  * @returns {*} Action result.
  */
-export const fetchUser = ({ commit }, userId) => {
+export const fetchUser = ({}, userId) => {
     return new Promise((resolve, reject) => {
         axios.wpApi.get('/users/' + userId)
             .then(res => {

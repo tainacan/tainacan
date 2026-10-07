@@ -68,10 +68,21 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	 * @return \Tainacan\Entities\Entity The updated entity.
 	 */
 	protected function prepare_item_for_updating($object, $new_values){
+		$readonly = $this->get_readonly_fields();
 		foreach ($new_values as $key => $value) {
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$object->set($key, $value);
 		}
 		return $object;
+	}
+
+	protected function get_readonly_fields() {
+		// author_id is intentionally NOT readonly. Authorship changes are
+		// supported (import flows, user deletion), so the field must remain
+		// writable through the REST API.
+		return [ 'id', 'creation_date', 'modification_date' ];
 	}
 
 	/**
@@ -108,7 +119,6 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'paged'        => 'paged',
 			'postin'       => 'post__in',
 			'relation'     => 'relation',
-			'nopaging'     => 'nopaging',
 			'metatype'     => 'meta_type',
 			'hierarchical' => 'hierarchical',
 			'exclude'      => 'post__not_in',
@@ -162,7 +172,11 @@ abstract class REST_Controller extends \WP_REST_Controller {
 					$args = $this->prepare_meta($mapped, $request, $tax_query, $mapped_v, $args);
 				}
 				else {
-					$args[ $mapped_v ] = $request[ $mapped ];
+					if ( $mapped === 'perpage' && (int) $request[ $mapped ] < 1 ) {
+						$args[ $mapped_v ] = $this->get_minimum_safe_perpage();
+					} else {
+						$args[ $mapped_v ] = $request[ $mapped ];
+					}
 				}
 			}
 		}
@@ -170,6 +184,21 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		$args['perm'] = 'readable';
 		
 		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
+	}
+
+	/**
+	 * Positive page size used when a request asks for a non-positive perpage.
+	 *
+	 * perpage=-1 would otherwise become posts_per_page=-1 and skip the LIMIT.
+	 *
+	 * @return int
+	 */
+	protected function get_minimum_safe_perpage() {
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+
+		$max = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE ) ? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
+
+		return $max > 0 ? $max : 96;
 	}
 
 	public function add_support_to_tax_query_like($args) {
@@ -428,6 +457,17 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'description'        => __( "Maximum number of objects to be returned in result set.", 'tainacan' ),
 			'type'               => 'number',
 			'default'            => 10,
+			'minimum'            => 1,
+			'validate_callback'  => function( $value ) {
+				if ( (int) $value < 1 ) {
+					return new \WP_Error(
+						'rest_invalid_param',
+						__( 'perpage must be a positive number.', 'tainacan' )
+					);
+				}
+
+				return true;
+			},
 		);
 
 		$query_params['paged'] = array(
@@ -690,21 +730,31 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 	}
 
-	function get_permissions_schema() {
-
+	/**
+	 * Returns a schema definition for permission-related object properties.
+	 *
+	 * This helper builds a schema object describing whether the current user
+	 * can edit or delete the object, including the context in which the
+	 * permissions apply. It is used for documenting API endpoints and for
+	 * client-side validation.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array The schema definition.
+	 */
+	protected function get_permissions_schema() {
 		return [
 			'current_user_can_edit' => [
-				'description' => __('Whether current user can edit this object', 'tainacan'),
-				'type' => 'boolean',
-				'context' => 'edit'
+				'description' => __( 'Whether current user can edit this object', 'tainacan' ),
+				'type'        => 'boolean',
+				'context'     => 'edit',
 			],
 			'current_user_can_delete' => [
-				'description' => __('Whether current user can delete this object', 'tainacan'),
-				'type' => 'boolean',
-				'context' => 'edit'
-			]
+				'description' => __( 'Whether current user can delete this object', 'tainacan' ),
+				'type'        => 'boolean',
+				'context'     => 'edit',
+			],
 		];
-
 	}
 
 	function get_base_properties_schema() {
@@ -767,6 +817,147 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			}
 		}
 		return $statuses;
+	}
+
+	/**
+	 * Reject named fields that are present in a decoded JSON body but are not arrays.
+	 *
+	 * JSON bodies read via get_body() bypass REST schema type checks when
+	 * Content-Type is not application/json (for example text/plain).
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param mixed $body   Decoded request body or nested object.
+	 * @param array $fields Field names that must be arrays when present.
+	 * @return true|\WP_REST_Response
+	 */
+	protected function validate_array_fields( $body, $fields ) {
+		if ( ! is_array( $body ) ) {
+			return true;
+		}
+
+		foreach ( $fields as $field ) {
+			if ( array_key_exists( $field, $body ) && ! is_array( $body[ $field ] ) ) {
+				return new \WP_REST_Response([
+					'error_message' => __( 'This value must be an array.', 'tainacan' ),
+					'param'         => $field,
+				], 400);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns a single schema property definition for a field.
+	 *
+	 * The return value is keyed by the field name so it can be safely merged
+	 * into an object schema's `properties` map via `array_merge()`. Each call
+	 * therefore contributes one distinct property instead of overwriting the
+	 * shared `title`/`description`/`type` keys (which previously caused every
+	 * merged property except the last one to be lost).
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string $param_name The name of the parameter.
+	 * @param array  $properties The properties of the parameter.
+	 * @return array A single-entry map of field name => property schema.
+	 */
+	protected function get_param_schema( $param_name, $properties ) {
+		$schema = [
+			'description' => isset( $properties['description'] ) ? $properties['description'] : '',
+			'type'        => isset( $properties['type'] ) ? $properties['type'] : 'string',
+		];
+
+		if ( isset( $properties['enum'] ) ) {
+			$schema['enum'] = $properties['enum'];
+		}
+
+		if ( isset( $properties['default'] ) ) {
+			$schema['default'] = $properties['default'];
+		}
+
+		if ( isset( $properties['items'] ) ) {
+			$schema['items'] = $properties['items'];
+		}
+
+		if ( isset( $properties['properties'] ) ) {
+			$schema['properties'] = $properties['properties'];
+		}
+
+		return [ $param_name => $schema ];
+	}
+
+	/**
+	 * Returns a schema definition for paginated list responses.
+	 *
+	 * This helper builds a schema object describing the structure of paginated
+	 * list responses returned by the API. It includes fields for the total
+	 * number of items, total number of pages, the current page number, the
+	 * number of items per page, and the array of items.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array The schema definition.
+	 */
+	protected function get_paginated_list_schema() {
+		return [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'type'     => 'object',
+			'title'    => $this->rest_base,
+			'tags'     => [ $this->rest_base ],
+			'properties' => [
+				'total' => [
+					'description' => __( 'Total number of items in the result set', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'total_pages' => [
+					'description' => __( 'Total number of pages', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'current_page' => [
+					'description' => __( 'Current page number', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'per_page' => [
+					'description' => __( 'Number of items per page', 'tainacan' ),
+					'type'        => 'integer',
+				],
+				'items' => [
+					'description' => __( 'Array of items on the current page', 'tainacan' ),
+					'type'        => 'array',
+					'items'       => [
+						'type' => 'object',
+					],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Prepares a paginated response with the standard total headers.
+	 *
+	 * Sets X-WP-Total, X-WP-TotalPages, and X-WP-ItemsPerPage. It is designed
+	 * to work with the get_paginated_list_schema() method.
+	 *
+	 * @param array        $data        The data to include in the response.
+	 * @param int          $total       Total number of items.
+	 * @param int          $total_pages Total number of pages.
+	 * @param int          $per_page    Number of items per page.
+	 * @param \WP_REST_Response|null $response Optional. The response object to modify.
+	 *
+	 * @return \WP_REST_Response The paginated response.
+	 *
+	 * @since 1.3.0
+	 */
+	protected function prepare_paginated_response( $data, $total, $total_pages, $per_page, $response = null ) {
+		$response = $response ?: new \WP_REST_Response( $data, 200 );
+
+		$response->header( 'X-WP-Total', (int) $total );
+		$response->header( 'X-WP-TotalPages', (int) $total_pages );
+		$response->header( 'X-WP-ItemsPerPage', (int) $per_page );
+
+		return $response;
 	}
 
 }

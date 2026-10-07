@@ -363,11 +363,11 @@ abstract class Exporter {
 	}
 
 	public function add_log($message ) {
-		$this->log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function add_error_log($message ) {
-		$this->error_log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->error_log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function is_finished() {
@@ -661,36 +661,82 @@ abstract class Exporter {
 	}
 	
 	/**
+	 * Ordered mapper field slugs for the current collection: built-in mapper
+	 * metadata first, then extra fields added through the mapper UI.
+	 *
+	 * @return string[]
+	 */
+	protected function get_mapped_metadata_slugs() {
+		$mapper = $this->get_current_mapper();
+		if ( ! $mapper ) {
+			return [];
+		}
+
+		$slugs = [];
+		if ( is_array( $mapper->metadata ) ) {
+			$slugs = array_keys( $mapper->metadata );
+		}
+
+		$mapper_slug = $this->get_mapping_selected();
+		$collection  = $this->get_current_collection_object();
+		if ( ! $collection || ! $mapper_slug ) {
+			return $slugs;
+		}
+
+		$mappers_handler = \Tainacan\Mappers_Handler::get_instance();
+		foreach ( $collection->get_metadata() as $metadatum ) {
+			$mappings = $metadatum->get_exposer_mapping();
+			if ( ! is_array( $mappings ) || ! array_key_exists( $mapper_slug, $mappings ) ) {
+				continue;
+			}
+
+			$normalized = $mappers_handler->normalize_mapping_value( $mappings[ $mapper_slug ], $mapper );
+			if ( ! $normalized || in_array( $normalized['slug'], $slugs, true ) ) {
+				continue;
+			}
+
+			$slugs[] = $normalized['slug'];
+		}
+
+		return $slugs;
+	}
+
+	/**
 	* Gets an Item as input and return an array of ItemMetadataObjects
 	* If a mapper is selected, the array keys will be the slugs of the metadata 
 	* declared by the mapper, in the same order. 
 	* Note that if one of the metadata is not mapped, this array item will be null 
 	*/
-	private function map_item_metadata(\Tainacan\Entities\Item $item) {
+	protected function map_item_metadata(\Tainacan\Entities\Item $item) {
 		
 		$mapper = $this->get_current_mapper();
 		$metadata = $item->get_metadata();
 		if (!$mapper) {
 			return $metadata;
 		}
+
 		$pre = [];
+		$mapper_slug = $this->get_mapping_selected();
+		$mappers_handler = \Tainacan\Mappers_Handler::get_instance();
+
 		foreach ($metadata as $item_metadata) {
 			$metadatum = $item_metadata->get_metadatum();
 			$meta_mappings = $metadatum->get_exposer_mapping();
-			if ( array_key_exists($this->get_mapping_selected(), $meta_mappings) ) {
-				
-				$pre[ $meta_mappings[$this->get_mapping_selected()] ] = $item_metadata;
+			if ( ! is_array( $meta_mappings ) || ! array_key_exists( $mapper_slug, $meta_mappings ) ) {
+				continue;
 			}
+
+			$normalized = $mappers_handler->normalize_mapping_value( $meta_mappings[ $mapper_slug ], $mapper );
+			if ( ! $normalized ) {
+				continue;
+			}
+
+			$pre[ $normalized['slug'] ] = $item_metadata;
 		}
 		
-		// reorder
 		$return = [];
-		foreach ( $mapper->metadata as $meta_slug => $meta ) {
-			if ( array_key_exists($meta_slug, $pre) ) {
-				$return[$meta_slug] = $pre[$meta_slug];
-			} else {
-				$return[$meta_slug] = null;
-			}
+		foreach ( $this->get_mapped_metadata_slugs() as $meta_slug ) {
+			$return[ $meta_slug ] = array_key_exists( $meta_slug, $pre ) ? $pre[ $meta_slug ] : null;
 		}
 		
 		return $return;
@@ -705,6 +751,7 @@ abstract class Exporter {
 		$file_suffix = "{$exporter_folder}/{$prefix}_{$key}";
 
 		if (!is_dir($upload_dir . $exporter_folder)) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir -- Create the exporter directory on the local uploads disk. WP_Filesystem follows the configured transport, which may not be the disk these files are written to.
 			if (!mkdir($upload_dir . $exporter_folder)) {
 				return false;
 			}
@@ -726,13 +773,14 @@ abstract class Exporter {
 	*/
 	public function append_to_file($key, $data) {
 		if ( array_key_exists ( $key , $this->output_files ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Append one chunk to the local export file. WP_Filesystem::put_contents() would replace the file or load it all.
 			$fp = fopen($this->output_files[$key]['filename'], 'a');
 			if($fp == false) {
 				$file_name = $this->output_files[$key]['filename'];
 				throw new \Exception('Cannot open file ' . esc_html($file_name));
 			}
-			fwrite($fp, $data);
-			fclose($fp);
+			fwrite($fp, $data); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Append one chunk to the local export file. WP_Filesystem::put_contents() would replace the file or load it all.
+			fclose($fp); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Append one chunk to the local export file. WP_Filesystem::put_contents() would replace the file or load it all.
 		} else { // será?
 			$this->add_new_file($key);
 			$this->append_to_file($key, $data);

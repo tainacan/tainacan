@@ -51,6 +51,12 @@
                     content: 'calendar';
                     content: 'calendar' / ''; /* where supported: show icon, expose "" to a11y */
                 }
+                .mdi-menu-down::before {
+                    content: 'arrowdown';
+                    content: 'arrowdown' / ''; /* where supported: show icon, expose "" to a11y */
+                    color: var(--tainacan-secondary);
+                    font-size: 1.2em;
+                }
             }
         }
         &.has-icons-right .icon .mdi-magnify::before {

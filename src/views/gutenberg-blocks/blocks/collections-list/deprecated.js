@@ -90,7 +90,7 @@ export default [
                 "sticky": true
             }
         },
-        "save": function({ attributes, className }) {
+        "save": function({ attributes }) {
             const { content } = attributes;
     
             // Gets attributes such as style, that are automatically added by the editor hook

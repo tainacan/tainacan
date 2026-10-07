@@ -265,6 +265,7 @@ abstract class Pages {
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
+			'api_max_terms_batch'       => defined('TAINACAN_API_MAX_BATCH_TERMS') ? TAINACAN_API_MAX_BATCH_TERMS : 200,
 			'wp_elasticpress'    		=> \Tainacan\Integrations\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
 			'tainacan_use_deprecated_logs' => (
@@ -275,11 +276,17 @@ abstract class Pages {
 				!defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || 
 				false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH
 			),
+			'repository_core_title_display' => get_option( 'tainacan_option_repository_core_title_display', 'yes' ),
+			'repository_core_title_allow_advanced_search' => get_option( 'tainacan_option_repository_core_title_allow_advanced_search', 'yes' ),
+			'repository_core_description_display' => get_option( 'tainacan_option_repository_core_description_display', 'yes' ),
+			'repository_core_description_allow_advanced_search' => get_option( 'tainacan_option_repository_core_description_allow_advanced_search', 'yes' ),
+			'repository_hide_items_thumbnail' => (bool) get_option( 'tainacan_option_repository_hide_items_thumbnail', false ),
 			'tainacan_enable_relationship_metaquery' => ( 
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
 			'tainacan_index_pdf_content' => \Tainacan\Media::is_index_pdf_content_enabled(),
+			'tainacan_enable_image_blurhash' => \Tainacan\Media::is_image_blurhash_enabled(),
 			'document_content_index_max_characters' => \Tainacan\Media::get_document_content_index_max_characters(),
 			'has_permalinks_structure' => get_option('permalink_structure') !== '',
 			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),

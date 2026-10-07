@@ -1,17 +1,87 @@
 const { __ } = wp.i18n;
 
-const { useEffect } = wp.element;
+const { useEffect, useState } = wp.element;
 
-const { Icon, Spinner, Button, Placeholder, ToolbarDropdownMenu, PanelBody, ToggleControl } = wp.components;
+const { Placeholder, Icon, Spinner, Button, ToolbarDropdownMenu, PanelBody, ToggleControl, BaseControl } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { InnerBlocks, BlockControls, useBlockProps, InspectorControls } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import TainacanSingleItemSelectionModal from '../../js/selection/tainacan-single-item-selection-modal.js';
+import CollectionsSelectionModal from '../../js/selection/tainacan-collections-selection-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 import tainacanApi from '../../js/axios.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 import axios from 'axios';
+
+const ITEMS_LIST_BLOCKS = [
+    'tainacan/dynamic-items-list',
+    'tainacan/carousel-items-list',
+];
+
+function findItemsListBlocks(blocks, found = []) {
+    (blocks || []).forEach((block) => {
+        if (ITEMS_LIST_BLOCKS.includes(block.name))
+            found.push(block);
+
+        if (block.innerBlocks && block.innerBlocks.length)
+            findItemsListBlocks(block.innerBlocks, found);
+    });
+
+    return found;
+}
+
+function selectedItemIds(selectedItems) {
+    return (selectedItems || []).map((item) => (
+        item && typeof item === 'object' ? item.id : item
+    )).filter((id) => id !== undefined && id !== null && id !== '');
+}
+
+function selectedItemsAreIds(selectedItems) {
+    return Array.isArray(selectedItems)
+        && selectedItems.length > 0
+        && selectedItems.every((item) => item === null || typeof item !== 'object');
+}
+
+function sharedItemsListAttributes(attributes) {
+    const shared = {
+        collectionId: attributes.collectionId || '',
+        selectedItems: Array.isArray(attributes.selectedItems) ? attributes.selectedItems : [],
+        loadStrategy: attributes.loadStrategy || 'parent',
+        searchURL: attributes.searchURL || '',
+        maxItemsNumber: attributes.maxItemsNumber,
+        imageSize: attributes.imageSize,
+        showCollectionHeader: attributes.showCollectionHeader,
+        showCollectionLabel: attributes.showCollectionLabel,
+        collectionBackgroundColor: attributes.collectionBackgroundColor,
+        collectionTextColor: attributes.collectionTextColor,
+    };
+
+    return Object.fromEntries(Object.entries(shared).filter(([, value]) => value !== undefined));
+}
+
+function layoutAttributesForDynamicItemsList(attributes, newLayout, newViewMode) {
+    const nextAttributes = {
+        layout: newLayout,
+        tainacanViewMode: newViewMode,
+    };
+
+    if (newLayout === 'tainacan-view-modes') {
+        nextAttributes.loadStrategy = 'selection';
+        nextAttributes.selectedItems = selectedItemIds(attributes.selectedItems);
+    } else if (selectedItemsAreIds(attributes.selectedItems)) {
+        nextAttributes.loadStrategy = 'selection';
+    }
+
+    if ((newLayout === 'grid' || newLayout === 'mosaic') && attributes.showImage === false)
+        nextAttributes.showImage = true;
+
+    if (newLayout === 'list' && attributes.showName === false)
+        nextAttributes.showName = true;
+
+    return nextAttributes;
+}
 
 const placeholderTemplate = [[
     'core/group',
@@ -50,7 +120,7 @@ const placeholderTemplate = [[
     ]
 ]];
 
-export default function ({ attributes, setAttributes, isSelected }) {
+export default function ({ attributes, setAttributes, isSelected, clientId }) {
     
     let {
         collectionId,
@@ -62,17 +132,22 @@ export default function ({ attributes, setAttributes, isSelected }) {
         itemsListLayout,
         tainacanViewMode,
         templateMode,
-        isDynamic
+        isDynamic,
+        relatedCollectionIds
     } = attributes;
 
     let itemRequestSource = undefined;
+    const [isCollectionsModalOpen, setIsCollectionsModalOpen] = useState(false);
+    const [selectedCollectionNames, setSelectedCollectionNames] = useState([]);
+    const { updateBlockAttributes, replaceBlock } = wp.data.useDispatch('core/block-editor');
+    const registry = wp.data.useRegistry();
   
     // Gets blocks props from hook
     const blockProps = useBlockProps();
 
     useEffect(() => {
         setContent();
-    }, [ itemId, isDynamic, templateMode, itemsListLayout, tainacanViewMode ]);
+    }, [ itemId, isDynamic, templateMode ]);
         
     // Checks if we are in template mode, if so, gets the collection Id from URL.
     useEffect(() => {
@@ -91,31 +166,56 @@ export default function ({ attributes, setAttributes, isSelected }) {
         setAttributes({
             relatedItemsTemplate: getRelatedItemsTemplates(relatedItems)
         })
-    }, [ relatedItems, itemsListLayout, tainacanViewMode ]);
+    }, [ relatedItems, itemsListLayout, tainacanViewMode, relatedCollectionIds ]);
+
+    useEffect(() => {
+        if ( !relatedCollectionIds || !relatedCollectionIds.length ) {
+            setSelectedCollectionNames([]);
+            return;
+        }
+
+        let source = axios.CancelToken.source();
+        const params = new URLSearchParams();
+        params.set('orderby', 'title');
+        params.set('order', 'asc');
+        params.set('perpage', String(relatedCollectionIds.length));
+        relatedCollectionIds.forEach((id) => params.append('postin[]', id));
+
+        tainacanApi.get('/collections/?' + params.toString(), { cancelToken: source.token })
+            .then((response) => {
+                setSelectedCollectionNames((response.data || []).map((collection) => ({
+                    id: String(collection.id),
+                    name: collection.name
+                })));
+            })
+            .catch(() => undefined);
+
+        return () => source.cancel('Selected collections request canceled.');
+    }, [ relatedCollectionIds ]);
 
     const layoutControls = [
         {
             icon: 'slides',
             title: __( 'Carousel', 'tainacan' ),
-            onClick: () => updateLayout('carousel'),
+            onClick: () => updateLayout('carousel', tainacanViewMode),
             isActive: itemsListLayout === 'carousel',
         },
         {
             icon: 'grid-view',
             title: __( 'Grid View', 'tainacan' ),
-            onClick: () => updateLayout('grid'),
+            onClick: () => updateLayout('grid', tainacanViewMode),
             isActive: itemsListLayout === 'grid',
         },
         {
             icon: 'list-view',
             title: __( 'List View', 'tainacan' ),
-            onClick: () => updateLayout('list'),
+            onClick: () => updateLayout('list', tainacanViewMode),
             isActive: itemsListLayout === 'list',
         },
         {
             icon: 'layout',
             title: __( 'Mosaic View', 'tainacan' ),
-            onClick: () => updateLayout('mosaic'),
+            onClick: () => updateLayout('mosaic', tainacanViewMode),
             isActive: itemsListLayout === 'mosaic',
         }
     ];
@@ -149,10 +249,19 @@ export default function ({ attributes, setAttributes, isSelected }) {
         } );
     }
 
+    function visibleRelatedItems(itemsRelatedToThis) {
+        const allowedIds = (relatedCollectionIds || []).map((id) => String(id));
+
+        if ( !allowedIds.length )
+            return itemsRelatedToThis;
+
+        return itemsRelatedToThis.filter((collection) => allowedIds.includes(String(collection.collection_id)));
+    }
+
     function getRelatedItemsTemplates(itemsRelatedToThis) {
         let innerBlocksTemplate = [];
         
-        itemsRelatedToThis.forEach((collection) => {
+        visibleRelatedItems(itemsRelatedToThis).forEach((collection) => {
 
             let innerItemsList = itemsListLayout !== 'carousel' ?
                 [
@@ -221,13 +330,70 @@ export default function ({ attributes, setAttributes, isSelected }) {
         return innerBlocksTemplate;
     }
 
-    function updateLayout(newLayout) {
-        itemsListLayout = newLayout;
+    function syncInnerItemsListLayout(newLayout, newViewMode) {
+        const itemsListBlocks = findItemsListBlocks(
+            wp.data.select('core/block-editor').getBlocks(clientId)
+        );
 
-        setAttributes({ 
-            itemsListLayout: itemsListLayout
+        itemsListBlocks.forEach((block) => {
+            const blockAttributes = block.attributes || {};
+
+            if (newLayout === 'carousel') {
+                if (block.name === 'tainacan/carousel-items-list')
+                    return;
+
+                replaceBlock(
+                    block.clientId,
+                    wp.blocks.createBlock(
+                        'tainacan/carousel-items-list',
+                        sharedItemsListAttributes(blockAttributes)
+                    )
+                );
+                return;
+            }
+
+            if (block.name === 'tainacan/carousel-items-list') {
+                replaceBlock(
+                    block.clientId,
+                    wp.blocks.createBlock(
+                        'tainacan/dynamic-items-list',
+                        {
+                            ...sharedItemsListAttributes(blockAttributes),
+                            ...layoutAttributesForDynamicItemsList(blockAttributes, newLayout, newViewMode),
+                        }
+                    )
+                );
+                return;
+            }
+
+            if (
+                blockAttributes.layout === newLayout &&
+                (newLayout !== 'tainacan-view-modes' || blockAttributes.tainacanViewMode === newViewMode)
+            )
+                return;
+
+            updateBlockAttributes(
+                block.clientId,
+                layoutAttributesForDynamicItemsList(blockAttributes, newLayout, newViewMode)
+            );
         });
     }
+
+    function updateLayout(newLayout, newViewMode) {
+        registry.batch(() => {
+            setAttributes({
+                itemsListLayout: newLayout,
+                tainacanViewMode: newViewMode
+            });
+            syncInnerItemsListLayout(newLayout, newViewMode);
+        });
+    }
+
+    const relatedCollectionsLabel = (relatedCollectionIds || []).length
+        ? ( selectedCollectionNames.length
+            ? selectedCollectionNames.map((collection) => collection.name).join(', ')
+            : relatedCollectionIds.join(', ') )
+        : __('All related collections.', 'tainacan');
     
     return (
         <div { ...blockProps }>
@@ -247,7 +413,48 @@ export default function ({ attributes, setAttributes, isSelected }) {
                         }
                     />
                 </PanelBody>
+                <PanelBody
+                    title={ __('Related collections', 'tainacan') }
+                    initialOpen={ true }
+                >
+                    <BaseControl
+                        id="related-collections-selection"
+                        label={ __('Showing relations from:', 'tainacan') }
+                    >
+                        <span style={{ fontWeight: 'bold', top: '-3px', position: 'relative' }}>&nbsp;{ relatedCollectionsLabel }</span>
+                        <br />
+                        <Button
+                            style={{ margin: '6px auto 16px auto', display: 'block' }}
+                            id="related-collections-selection"
+                            isSecondary
+                            onClick={ () => setIsCollectionsModalOpen(true) }>
+                            { __('Select collections', 'tainacan') }
+                        </Button>
+                    </BaseControl>
+                </PanelBody>
             </InspectorControls>
+
+            { isCollectionsModalOpen ?
+                <CollectionsSelectionModal
+                    modalTitle={ __('Select collections to display relations from', 'tainacan') }
+                    selectedCollectionsObject={ (relatedCollectionIds || []).map((id) => {
+                        const known = selectedCollectionNames.find((collection) => String(collection.id) === String(id));
+                        return known || { id: String(id), name: String(id) };
+                    }) }
+                    onApplySelection={ (selection) => {
+                        setAttributes({
+                            relatedCollectionIds: selection.map((collection) => String(collection.id).replace(/^collection-id-/, ''))
+                        });
+                        setSelectedCollectionNames(selection.map((collection) => ({
+                            id: String(collection.id).replace(/^collection-id-/, ''),
+                            name: collection.name
+                        })));
+                        setIsCollectionsModalOpen(false);
+                    }}
+                    onCancelSelection={ () => setIsCollectionsModalOpen(false) }
+                />
+                : null
+            }
 
             { isSelected ? 
                 ( 
@@ -265,10 +472,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
                                                 return {
                                                     title: aViewMode[1].label,
                                                     isActive: itemsListLayout === 'tainacan-view-modes' && tainacanViewMode === aViewMode[0],
-                                                    onClick: () => { 
-                                                        setAttributes({ tainacanViewMode: aViewMode[0] })
-                                                        updateLayout('tainacan-view-modes');
-                                                    }
+                                                    onClick: () => updateLayout('tainacan-view-modes', aViewMode[0])
                                                 }
                                             }) 
                                     }
@@ -306,25 +510,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
             }
             { !templateMode && !relatedItems.length && !isLoading ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 -2 12 16"
-                                height="24px"
-                                width="24px">
-                            <path d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>
-                        </svg>
-                        {__('Select an item to create a set of lists with items related to it via relationship metadata.', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Related Items List', 'tainacan' ) }
+                    instructions={ __( 'Select an item to create a set of lists with items related to it via relationship metadata.', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"
@@ -337,21 +526,32 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
             { !templateMode && !isLoading && itemId && relatedItems.reduce((total, relation) => total + Number(relation.total_items), 0) <= 0 ?
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>{ __('The selected item does not contain other items related to it.', 'tainacan') }</p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Related Items List', 'tainacan' ) }
+                    instructions={ __( 'The selected item does not contain other items related to it.', 'tainacan' ) }
+                >
                      <Button
                         isPrimary
                         type="button"
                         onClick={ () => openSingleItemModal() }>
                         {__('Select another Item', 'tainacan')}
+                    </Button>
+                </Placeholder>
+                :
+                null
+            }
+
+            { !templateMode && !isLoading && itemId && relatedItems.reduce((total, relation) => total + Number(relation.total_items), 0) > 0 && visibleRelatedItems(relatedItems).reduce((total, relation) => total + Number(relation.total_items), 0) <= 0 ?
+                <Placeholder
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Related Items List', 'tainacan' ) }
+                    instructions={ __( 'None of the related items belong to the selected collections.', 'tainacan' ) }
+                >
+                    <Button
+                        isPrimary
+                        type="button"
+                        onClick={ () => setAttributes({ relatedCollectionIds: [] }) }>
+                        {__('Show all related collections', 'tainacan')}
                     </Button>
                 </Placeholder>
                 :
@@ -367,11 +567,16 @@ export default function ({ attributes, setAttributes, isSelected }) {
                         <div className={ 'related-items-edit-container' }>
                         {
                             ( isDynamic ? 
-                                <ServerSideRender
-                                    block="tainacan/related-items-list"
-                                    attributes={ attributes }
-                                    httpMethod={ 'POST' }
-                                />
+                                <>
+                                    <div className="preview-warning">
+                                        { __('Warning: item lists are not rendered in the editor. Preview or publish the post to see them.', 'tainacan') }
+                                    </div>
+                                    <ServerSideRender
+                                        block="tainacan/related-items-list"
+                                        attributes={ attributes }
+                                        httpMethod={ 'POST' }
+                                    />
+                                </>
                                 :
                                 <InnerBlocks
                                         allowedBlocks={[ 
@@ -382,7 +587,12 @@ export default function ({ attributes, setAttributes, isSelected }) {
                                             'core/buttons',
                                             'core/spacer',
                                             'core/group',
-                                            'core/columns'
+                                            'core/columns',
+                                            'core/cover',
+                                            'core/icon',
+                                            'core/image',
+                                            'core/separator',
+                                            'core/spacer',
                                         ]}
                                         template={ relatedItemsTemplate }
                                         templateInsertUpdatesSelection={ true } />

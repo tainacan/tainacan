@@ -1,6 +1,6 @@
-const { __, sprintf } = wp.i18n;
+const { __ } = wp.i18n;
 
-const { Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { Placeholder, Icon, ToolbarDropdownMenu, ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { createInterpolateElement, useEffect } = wp.element;
 
@@ -16,6 +16,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function({ attributes, setAttributes, isSelected, clientId }) {
     let {
@@ -206,12 +207,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 // Initializes some variables
                 mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
                 mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
-                mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumnsRows) : 3;
+                mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
                 mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
                 mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
-                sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+                sampleBackgroundImage = selectedItems && selectedItems[0] && selectedItems[0] ? getItemThumbnail(selectedItems[0], 'tainacan-medium') : ''; 
 
-                const mosaicGroups = mosaicPartition(response.data.items);
+                const mosaicGroups = mosaicPartition(selectedItems);
                 for (let mosaicGroup of mosaicGroups)
                     items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
 
@@ -467,16 +468,12 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
     }
 
     function removeItemOfId(itemId) {
-        
-        let existingItemIndex = -1;
 
         let existingSelectedItemIndex = selectedItems.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
         if (existingSelectedItemIndex >= 0)
             selectedItems.splice(existingSelectedItemIndex, 1);
 
         if (layout == 'mosaic') {
-            existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
-
             setAttributes({ 
                 selectedItems: selectedItems,
                 content: <div></div> 
@@ -484,7 +481,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             // In the case of the mosaic layout, we need to re-render as the items array is organized in groups.
             setContent();
         } else {
-            existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
+            let existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
 
             if (existingItemIndex >= 0)
                 items.splice(existingItemIndex, 1);
@@ -511,7 +508,6 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             showImage: showImage,
             showName: showName
         });
-        setContent();
     }
 
     function applySearchString(event) {
@@ -556,7 +552,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
     useEffect(() => {
         setContent();
-    }, []);
+    }, [ layout, tainacanViewMode ]);
     
     return content == 'preview' ? 
         <div className={className}>
@@ -1098,42 +1094,26 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             
             { !items.length && !isLoading ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                    <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            height="24px"
-                            width="24px">
-                        <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                    </svg>
-                        {__('Dynamically list items from a Tainacan items search', 'tainacan')}
-                    </p>
-                    { 
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Collection\'s Items List', 'tainacan' ) }
+                    instructions={ __( 'Dynamically list items from a Tainacan items search', 'tainacan' ) }
+                >
+                    {
                         loadStrategy != 'parent' ?
-                            <div>
+                            <>
                                 <Button
                                     isPrimary
                                     type="button"
                                     onClick={ () => openTainacanMultipleItemSelectionModal('selection') }>
                                     {__('Select Items', 'tainacan')}
-                                </Button> 
-                                <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                                </Button>
                                 <Button
-                                    isPrimary
+                                    isSecondary
                                     type="button"
                                     onClick={ () => openTainacanMultipleItemSelectionModal('search') }>
                                     {__('Configure a search', 'tainacan')}
                                 </Button>
-                            </div>
+                            </>
                         : null
                     }
                 </Placeholder>

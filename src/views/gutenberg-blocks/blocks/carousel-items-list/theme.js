@@ -1,7 +1,7 @@
 import { createApp, h } from 'vue';
 import CarouselItemsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
-import VueBlurHash from 'another-vue3-blurhash';
+import TainacanProgressiveImage from '../../../admin/components/other/tainacan-progressive-image.vue';
 import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 export default (element) => {
@@ -21,6 +21,9 @@ export default (element) => {
             blocks.forEach((block) => {
 
                 const VueCarouselItemsList = createApp({
+                    mounted() {
+                        block.classList.add('has-mounted');
+                    },
                     render() {
                         return h(CarouselItemsListTheme, {
                             blockId: block.id,
@@ -47,14 +50,11 @@ export default (element) => {
                             tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
                             variableItemsWidth: getDataAttribute(block, 'variable-items-width', false) == 'true',
                         });
-                    },
-                    mounted() {
-                        block.classList.add('has-mounted');
                     }
                 });
 
                 VueCarouselItemsList.use(ThumbnailHelperPlugin);
-                VueCarouselItemsList.use(VueBlurHash);
+                VueCarouselItemsList.component('TainacanProgressiveImage', TainacanProgressiveImage);
 
                 VueCarouselItemsList.mount('#' + block.id);
             });

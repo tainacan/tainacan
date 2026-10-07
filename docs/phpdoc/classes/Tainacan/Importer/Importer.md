@@ -13,6 +13,7 @@ classDiagram
     class Importer {
         -id : identifier
         #tmp_file : string
+        #tmp_file_id : int
         #collections : array
         -options : array
         #default_options : array
@@ -43,6 +44,9 @@ classDiagram
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        -resolve_allowed_tmp_file(filepath)
+        +get_tmp_file_id()
+        +set_tmp_file_id(id)
         +get_collections()
         +set_collections(value)
         +get_options()
@@ -55,6 +59,7 @@ classDiagram
         +get_log()
         +get_error_log()
         +add_file(file)
+        +delete_source_file()
         +add_log(message)
         +add_error_log(message)
         +add_collection(collection)
@@ -111,6 +116,16 @@ The path to the temporary file created when user uploads a file
 
 ```php
 protected string $tmp_file
+```
+
+***
+
+### tmp_file_id
+
+WordPress attachment ID of the uploaded source file.
+
+```php
+protected int $tmp_file_id
 ```
 
 ***
@@ -446,8 +461,30 @@ public get_tmp_file(): mixed
 
 ### set_tmp_file
 
+Store the importer source file.
+
 ```php
-public set_tmp_file(mixed $filepath): mixed
+public set_tmp_file(mixed $filepath): bool
+```
+
+The path must be an existing file inside the WordPress uploads directory.
+Absolute paths are accepted only after realpath() confirms that location,
+which is how attachments from media_handle_sideload() are stored.
+
+**Parameters:**
+
+| Parameter   | Type      | Description |
+|-------------|-----------|-------------|
+| `$filepath` | **mixed** |             |
+
+***
+
+### resolve_allowed_tmp_file
+
+Resolve a source path and confirm it is a file inside the uploads directory.
+
+```php
+private resolve_allowed_tmp_file(mixed $filepath): string|false
 ```
 
 **Parameters:**
@@ -455,6 +492,32 @@ public set_tmp_file(mixed $filepath): mixed
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$filepath` | **mixed** |             |
+
+**Return Value:**
+
+Canonical path, or false when the path is not allowed.
+
+***
+
+### get_tmp_file_id
+
+```php
+public get_tmp_file_id(): mixed
+```
+
+***
+
+### set_tmp_file_id
+
+```php
+public set_tmp_file_id(mixed $id): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$id`     | **mixed** |             |
 
 ***
 
@@ -600,6 +663,16 @@ public add_file(mixed $file): bool
 | Parameter | Type      | Description                    |
 |-----------|-----------|--------------------------------|
 | `$file`   | **mixed** | File to be managed by importer |
+
+***
+
+### delete_source_file
+
+Delete the uploaded source file and its WordPress attachment.
+
+```php
+public delete_source_file(): bool
+```
 
 ***
 

@@ -628,9 +628,9 @@ class Item extends Entity {
 	 *     @type string      $after_title               String to be added after each metadata title
 	 *                                                  Default '</h3>'
 	 *     @type string      $before_value              String to be added before each metadata value
-	 *                                                  Default '<p>'
+	 *                                                  Default '<div class="metadata-value">'
 	 *     @type string      $after_value               String to be added after each metadata value
-	 *                                                  Default '</p>'
+	 *                                                  Default '</div>'
 	 * }
 	 *
 	 * @return string        The HTML output
@@ -656,8 +656,8 @@ class Item extends Entity {
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
-			'before_value' 			=> '<p>',
-			'after_value' 			=> '</p>',
+			'before_value' 			=> '<div class="metadata-value">',
+			'after_value' 			=> '</div>',
 			'metadatum_index'		=> null
 		);
 		$args = wp_parse_args($args, $defaults);
@@ -802,9 +802,9 @@ class Item extends Entity {
 	 *     @type string      $after_title               String to be added after each metadata title
 	 *                                                  Default '</h3>'
 	 *     @type string      $before_value              String to be added before each metadata value
-	 *                                                  Default '<p>'
+	 *                                                  Default '<div class="metadata-value">'
 	 *     @type string      $after_value               String to be added after each metadata value
-	 *                                                  Default '</p>'
+	 *                                                  Default '</div>'
 	 * }
 	 * @param int			 $section_index				The Metadatum index, if passed from an array
 	 *
@@ -822,8 +822,8 @@ class Item extends Entity {
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
-			'before_value' 			=> '<p>',
-			'after_value' 			=> '</p>'
+			'before_value' 			=> '<div class="metadata-value">',
+			'after_value' 			=> '</div>',
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -915,8 +915,8 @@ class Item extends Entity {
 		$output = '';
 		
 		if ( $type == 'url' ) {
-			global $wp_embed;
-			$_embed = $wp_embed->autoembed($this->get_document());
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$_embed = $tainacan_embed->embed( $this->get_document() );
 			$url = $this->get_document();
 
 			if ( esc_url($_embed) == esc_url($url) ) {
@@ -942,7 +942,6 @@ class Item extends Entity {
 					$_embed = sprintf('<a href="%s" target="blank">%s</a>', $url, $url);
 				}
 			} else {
-				$tainacan_embed = \Tainacan\Embed::get_instance();
 				$_embed = $tainacan_embed->add_responsive_wrapper($_embed);
 			}
 			$output = $_embed;
@@ -972,16 +971,14 @@ class Item extends Entity {
 			
 		} else {
 
-			global $wp_embed;
-
 			$url = wp_get_attachment_url($attachment);
 
-			$embed = $wp_embed->autoembed($url);
+			$tainacan_embed = \Tainacan\Embed::get_instance();
+			$embed = $tainacan_embed->embed( $url );
 
 			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 			} else {
-				$tainacan_embed = \Tainacan\Embed::get_instance();
 				$embed = $tainacan_embed->add_responsive_wrapper($embed);
 				$output .= $embed;
 			}
@@ -1368,16 +1365,15 @@ class Item extends Entity {
 			$before_metadata_list = str_replace('$id', $section_id, $before_metadata_list);
 			$before_metadata_list = str_replace('$slug', $section_slug, $before_metadata_list);
 
-			// Let theme authors tweak the metadata list wrapper
-			$before_description = isset($args['before_description']) ? $args['before_description'] : '';
-			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_description, $metadata_section );
-			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_description, $metadata_section );
+			// Themes append to this opener, so added markup stays inside the list.
+			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_metadata_list, $metadata_section );
+			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_metadata_list, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
-				$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_description, $metadata_section );	
+				$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_metadata_list, $metadata_section );	
 			}
 
 			// Renders the section metadata list wrapper
-			$return .= $before_metadata_list . $before_description;
+			$return .= $before_metadata_list;
 
 			// Renders the section metadata list, using Items' get_metadata_as_html()
 			// Note that this is already escaped in the calling function
@@ -1403,19 +1399,17 @@ class Item extends Entity {
 			} else {
 				$return .= $args['empty_metadata_list_message'];
 			}
-			// Gets the wrapper closer
+			// Gets the wrapper closer. Callbacks prepend to this string to insert markup
+			// before the list is closed.
 			$after_metadata_list = $args['after_metadata_list'];
-
-			// Let theme authors tweak the metadata list closer
-			$after_description = isset($args['after_description']) ? $args['after_description'] : '';
-			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_description, $metadata_section );
-			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_description, $metadata_section );
+			$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_metadata_list, $metadata_section );
+			$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_metadata_list, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
-				$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_description, $metadata_section );	
+				$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_metadata_list, $metadata_section );	
 			}
 			
 			// Renders the section metadata list wrapper
-			$return .= $after_description . $after_metadata_list;
+			$return .= $after_metadata_list;
 
 			// Gets the wrapper closer
 			$after = $args['after'];

@@ -105,6 +105,8 @@
                                                 'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
                                             }">
                                         <input
+                                                :id="getOptionInputId('search-' + (checkboxListOffset + key))"
+                                                :name="optionGroupName"
                                                 :disabled="!isOptionSelected(option.id ? option.id : option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
                                                 :checked="isOptionSelected(option.id ? option.id : option.value)"
                                                 :value="option.id ? getOptionValue(option.id) : getOptionValue(option.value)"
@@ -191,6 +193,8 @@
                                             'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
                                         }">
                                     <input 
+                                            :id="getOptionInputId('list-' + (checkboxListOffset + key))"
+                                            :name="optionGroupName"
                                             :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
                                             :checked="isOptionSelected(option.value)"
                                             :value="getOptionValue(option.value)"
@@ -253,66 +257,70 @@
                                 {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                             </p>
                             <ul v-if="finderColumn.children.length">
-                                <b-field
+                                <li
                                         v-for="(option, index) in finderColumn.children"
-                                        :id="`${key}.${index}-tainacan-li-checkbox-model`"
-                                        :ref="`${key}.${index}-tainacan-li-checkbox-model`"
-                                        :key="index"
-                                        :addons="false"
-                                        class="tainacan-li-checkbox-modal">
-                                    <label 
-                                            :class="{
-                                                'b-checkbox checkbox': isCheckbox,
-                                                'b-radio radio': !isCheckbox, 
-                                                'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
-                                            }" 
-                                            @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
-                                        <input 
-                                                :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
-                                                :checked="isOptionSelected(option.value)"
-                                                :value="getOptionValue(option.value)"
-                                                :type="isCheckbox ? 'checkbox' : 'radio'"
-                                                @input="updateLocalSelection($event.target.value)"> 
-                                        <span class="check" /> 
-                                        <span class="control-label">
+                                        :key="index">
+                                    <b-field
+                                            :id="`${key}.${index}-tainacan-li-checkbox-model`"
+                                            :ref="`${key}.${index}-tainacan-li-checkbox-model`"
+                                            :addons="false"
+                                            class="tainacan-li-checkbox-modal">
+                                        <label 
+                                                :class="{
+                                                    'b-checkbox checkbox': isCheckbox,
+                                                    'b-radio radio': !isCheckbox, 
+                                                    'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                                }" 
+                                                @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
+                                            <input 
+                                                    :id="getOptionInputId(key + '-' + index)"
+                                                    :name="optionGroupName"
+                                                    :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                                    :checked="isOptionSelected(option.value)"
+                                                    :value="getOptionValue(option.value)"
+                                                    :type="isCheckbox ? 'checkbox' : 'radio'"
+                                                    @input="updateLocalSelection($event.target.value)"> 
+                                            <span class="check" /> 
+                                            <span class="control-label">
+                                                <span 
+                                                        v-tooltip="{
+                                                            content: option.description,
+                                                            autoHide: true,
+                                                            html: true,
+                                                            placement: 'auto-start',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                                        }"
+                                                        class="checkbox-label-text">{{ option.label }}</span>
+                                            </span>
+                                        </label>
+                                        <a
+                                                v-if="option.total_children > 0"
+                                                :tabindex="0"
+                                                role="button"
+                                                @click="getOptionChildren(option, key, index)"
+                                                @keydown.enter.prevent="getOptionChildren(option, key, index)"
+                                                @keydown.space.prevent="getOptionChildren(option, key, index)">
                                             <span 
+                                                    v-if="finderColumns.length <= 1 "
+                                                    class="is-hidden-mobile">
+                                                {{ option.total_children + ' ' + $i18n.get('label_children_terms') }}
+                                            </span>
+                                            <span 
+                                                    v-else 
                                                     v-tooltip="{
-                                                        content: option.description,
-                                                        autoHide: true,
-                                                        html: true,
-                                                        placement: 'auto-start',
+                                                        content: option.total_children + ' ' + $i18n.get('label_children_terms'),
+                                                        autoHide: false,
                                                         popperClass: ['tainacan-tooltip', 'tooltip']
-                                                    }"
-                                                    class="checkbox-label-text">{{ option.label }}</span>
-                                        </span>
-                                    </label>
-                                    <a
-                                            v-if="option.total_children > 0"
-                                            :tabindex="0"
-                                            role="button"
-                                            @click="getOptionChildren(option, key, index)"
-                                            @keydown.enter.prevent="getOptionChildren(option, key, index)"
-                                            @keydown.space.prevent="getOptionChildren(option, key, index)">
-                                        <span 
-                                                v-if="finderColumns.length <= 1 "
-                                                class="is-hidden-mobile">
-                                            {{ option.total_children + ' ' + $i18n.get('label_children_terms') }}
-                                        </span>
-                                        <span 
-                                                v-else 
-                                                v-tooltip="{
-                                                    content: option.total_children + ' ' + $i18n.get('label_children_terms'),
-                                                    autoHide: false,
-                                                    popperClass: ['tainacan-tooltip', 'tooltip']
-                                                }">
-                                            {{ option.total_children }}
-                                            <span class="sr-only">{{ $i18n.get('label_children_terms') }}</span>
-                                        </span>
-                                        <span class="icon is-pulled-right">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored" />
-                                        </span>
-                                    </a>
-                                </b-field>
+                                                    }">
+                                                {{ option.total_children }}
+                                                <span class="sr-only">{{ $i18n.get('label_children_terms') }}</span>
+                                            </span>
+                                            <span class="icon is-pulled-right">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright tainacan-icon-is-rtl-mirrored" />
+                                            </span>
+                                        </a>
+                                    </b-field>
+                                </li>
                                 <li v-if="finderColumn.children.length">
                                     <button
                                             v-if="shouldShowMoreButton(key)"
@@ -413,6 +421,7 @@
         name: 'CheckboxRadioMetadataInput',
         mixins: [ dynamicFilterTypeMixin ],
         props: {
+            inputId: String,
             parent: Number,
             taxonomyId: Number,
             taxonomy: String,
@@ -468,6 +477,9 @@
             }
         },
         computed: {
+            optionGroupName() {
+                return this.isCheckbox ? undefined : this.inputId;
+            },
             shouldShowTabs() {
                 return !(this.shouldBeginWithListExpanded && !this.hasToDisplaySearchBar);
             },
@@ -534,6 +546,12 @@
                 this.getOptionsValuesCancel.cancel('Get options request canceled.');
         },
         methods: {
+            getOptionInputId(optionKey) {
+                if (!this.inputId)
+                    return undefined;
+
+                return this.inputId + '-option-' + optionKey;
+            },
             setActiveTab(index) {
                 this.activeTab = index;
                 this.fetchSelectedLabels();
@@ -574,8 +592,8 @@
 
                                 this.isSelectedTermsLoading = false;
                             })
-                            .catch((error) => {
-                                this.$console.log(error);
+                            .catch(() => {
+                                
                                 this.isSelectedTermsLoading = false;
                             });
                     }
@@ -596,8 +614,8 @@
 
                             this.isSelectedTermsLoading = false;
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
+                        .catch(() => {
+                            
                             this.isSelectedTermsLoading = false;
                         });
                 }
@@ -692,9 +710,7 @@
                         this.hasToDisplaySearchBar = !this.isSearching && (this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1);
                     })
                     .catch(error => {
-                        if (isCancel(error))
-                            this.$console.log('Request canceled: ' + error.message);
-                        else
+                        if (!isCancel(error))
                             this.$console.error( error );
                     })
 
@@ -727,9 +743,7 @@
                                 this.noMoreSearchPage = res.headers['x-wp-total'] <= this.checkboxListOffset + this.searchResults.length;
 
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                 } else {
                     this.isLoadingSearch = true;
 
@@ -925,8 +939,8 @@
                             }
                         }
                     })
-                    .catch(error => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
 
                         this.isColumnLoading = false;
                     });
@@ -963,8 +977,8 @@
                             });
                             this.isColumnLoading = false;
                         })
-                        .catch(error => {
-                            this.$console.log(error);
+                        .catch(() => {
+                            
 
                             this.isColumnLoading = false;
                         });

@@ -141,7 +141,11 @@ class REST_Terms_Controller extends REST_Controller {
 		$attributes = $to_prepare[0];
 		$taxonomy = $to_prepare[1];
 
+		$readonly = $this->get_readonly_fields();
 		foreach ($attributes as $attribute => $value){
+			if ( in_array($attribute, $readonly, true) ) {
+				continue;
+			}
 			$this->term->set($attribute, $value);
 		}
 
@@ -158,17 +162,39 @@ class REST_Terms_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if( is_array($body) ){
+			if ( count($body) > TAINACAN_API_MAX_BATCH_TERMS ) {
+				$message = sprintf(
+					/* translators: %d: maximum number of terms allowed in one batch. */
+					__('Batch size exceeds the maximum allowed (%d).', 'tainacan'),
+					TAINACAN_API_MAX_BATCH_TERMS
+				);
+				// Same shape as per-term validation errors returned below (array of objects).
+				return new \WP_REST_Response([
+					[
+						'error_message' => $message,
+						'errors'        => [
+							[ 'name' => $message ],
+						],
+						'term_name'     => '',
+					],
+				], 400);
+			}
+
 			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 			$taxonomy_db_identifier = $taxonomy->get_db_identifier();
 			$terms_errors = [];
 			$to_insert_terms = [];
 			$new_terms = [];
 
+			$readonly = $this->get_readonly_fields();
 			foreach($body as $item) {
 				$term = new Entities\Term();
 				$term->set_taxonomy($taxonomy_db_identifier);
 
 				foreach ($item as $attribute => $value){
+					if ( in_array($attribute, $readonly, true) ) {
+						continue;
+					}
 					$term->set($attribute, $value);
 				}
 
@@ -274,6 +300,19 @@ class REST_Terms_Controller extends REST_Controller {
 		$args = $this->prepare_filters($request);
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
+
+		if ( is_array($terms) && count($terms) > TAINACAN_API_MAX_BATCH_TERMS ) {
+			return new \WP_Error(
+				'rest_too_many_terms',
+				sprintf(
+					/* translators: %d: maximum number of terms allowed in one batch. */
+					__('Batch size exceeds the maximum allowed (%d).', 'tainacan'),
+					TAINACAN_API_MAX_BATCH_TERMS
+				),
+				array( 'status' => 400 )
+			);
+		}
+
 		foreach ($terms as $term) {
 			if (!$term instanceof Entities\Term || !$term->can_delete()) {
 				return false ;
@@ -367,6 +406,19 @@ class REST_Terms_Controller extends REST_Controller {
 		$args = $this->prepare_filters($request);
 
 		$terms = $this->terms_repository->fetch($args, $taxonomy);
+
+		if ( is_array($terms) && count($terms) > TAINACAN_API_MAX_BATCH_TERMS ) {
+			return new \WP_Error(
+				'rest_too_many_terms',
+				sprintf(
+					/* translators: %d: maximum number of terms allowed in one batch. */
+					__('Batch size exceeds the maximum allowed (%d).', 'tainacan'),
+					TAINACAN_API_MAX_BATCH_TERMS
+				),
+				array( 'status' => 400 )
+			);
+		}
+
 		foreach ($terms as $term) {
 			if (!$term instanceof Entities\Term || !$term->can_edit()) {
 				return false ;
