@@ -606,11 +606,12 @@
         <!-- SIDEBAR WITH FILTERS -->
         <b-modal
                 id="filters-modal"
-                ref="filters-modal"     
-                v-model="isFiltersModalActive"       
+                ref="filters-modal"
+                v-model="isFiltersModalActive"
                 :width="736"
                 :tabindex="isMobileScreen ? -1 : 0"
                 animation="slide-menu"
+                :auto-focus="false"
                 :trap-focus="isMobileScreen"
                 :aria-modal="isMobileScreen"
                 :role="isMobileScreen ? 'dialog' : ''"
@@ -1086,7 +1087,7 @@
                 if (this.isFiltersModalActive) {
                     setTimeout(() => {
                         if (this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
-                            this.$refs['filters-modal'].focus();
+                            this.$refs['filters-modal'].focus({ preventScroll: true });
                     }, 800);
                 }
             },
