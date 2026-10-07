@@ -567,11 +567,16 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                         <div className={ 'related-items-edit-container' }>
                         {
                             ( isDynamic ? 
-                                <ServerSideRender
-                                    block="tainacan/related-items-list"
-                                    attributes={ attributes }
-                                    httpMethod={ 'POST' }
-                                />
+                                <>
+                                    <div className="preview-warning">
+                                        { __('Warning: item lists are not rendered in the editor. Preview or publish the post to see them.', 'tainacan') }
+                                    </div>
+                                    <ServerSideRender
+                                        block="tainacan/related-items-list"
+                                        attributes={ attributes }
+                                        httpMethod={ 'POST' }
+                                    />
+                                </>
                                 :
                                 <InnerBlocks
                                         allowedBlocks={[ 
