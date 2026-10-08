@@ -60,6 +60,8 @@
 						label: command.label,
 						icon: tainacanIcon,
 						context: 'tainacan',
+						// Leave category unset so it stays "action". "view" replaces this icon with the palette arrow.
+						// category: 'view',
 						callback: (args) => {
 							const close = args && args.close ? args.close : null;
 							window.location.href = command.url;
