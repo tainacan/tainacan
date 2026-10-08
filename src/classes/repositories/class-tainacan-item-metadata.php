@@ -155,7 +155,10 @@ class Item_Metadata extends Repository {
 	}
 
 	protected function sanitize_item_metadata_value( Entities\Item_Metadata_Entity $item_metadata, $value ) {
-		return $this->sanitize_value( $value, $item_metadata->get_metadatum()->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Core_Title );
+		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+		$keep_links = $metadata_type && $metadata_type->allows_links();
+
+		return $this->sanitize_value( $value, ! $keep_links );
 	}
 
 	/**

@@ -40,6 +40,8 @@ An editor containing only an empty paragraph is stored as an empty value. That k
 
 ## Conditional link sanitization for developers
 
-`Repository::sanitize_value($content, $remove_links = false)` and `REST_Controller::sanitize_value($value, $remove_links = false)` use WordPress's allowed post HTML. Safe anchor tags are preserved by default. Pass `true` when the value represents a title or another field that must exclude anchors. The option removes the anchor tag, not its visible text; it does not strip all HTML or turn a plain input into a rich text editor.
+`Repository::sanitize_value($content, $remove_links = true)` and `REST_Controller::sanitize_value($value, $remove_links = true)` use WordPress's allowed post HTML and remove anchor tags by default. The option removes the anchor tag, not its visible text. Pass `false` for a field the rich text editor can save.
 
-Title persistence paths explicitly request link removal, including the Core Title metadata mirror. REST title/name filters and queries targeting Core Title or taxonomy term names apply the same policy to their criteria. Queries for other metadata preserve safe anchors so their criteria can match stored HTML. This change does not migrate previously saved values or restore links removed by earlier saves. Plain-text representations such as `value_as_string` and excerpts continue to strip HTML tags.
+`Metadata_Type::allows_links()` returns `false`. Textarea and Core Description return `true`, and saving or querying item metadata follows that answer. Entity descriptions are `post_content` and use `sanitize_rich_text_value()`, which keeps anchors. A text document does the same. Titles, names, Core Title, term names, and every other stored string still lose anchors.
+
+REST `title` and `name` filters remove anchors before matching. A `metaquery` keeps them only when the targeted metadata type allows links. Other query clauses remove them. This change does not migrate previously saved values or restore links removed by earlier saves. Plain-text representations such as `value_as_string` and excerpts continue to strip HTML tags.

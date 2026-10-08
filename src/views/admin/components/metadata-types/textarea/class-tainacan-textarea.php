@@ -34,6 +34,13 @@ class Textarea extends Metadata_Type {
 	/**
 	 * @inheritdoc
 	 */
+	public function allows_links() {
+		return true;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function get_form_labels(){
 		return [
 			'maxlength' => [

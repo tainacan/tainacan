@@ -268,7 +268,8 @@ abstract class Repository {
 
 				return $diffs;
 			} else {
-				update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ) ) );
+				$remove_links = ! ( $prop === 'document' && $obj instanceof Entities\Item && $obj->get_document_type() === 'text' );
+				update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ), $remove_links ) );
 			}
 
 		} elseif ( $map[ $prop ]['map'] == 'meta_multi' ) {
@@ -299,12 +300,13 @@ abstract class Repository {
 		return $diffs;
 	}
 
-	function maybe_add_slashes( $value ) {
+	function maybe_add_slashes( $value, $remove_links = true ) {
 		if ( is_string( $value ) ) {
+			$sanitized = $this->sanitize_value( $value, $remove_links );
 			if( strpos( $value, '\\' ) !== false ) {
-				return wp_slash( $this->sanitize_value($value) );
+				return wp_slash( $sanitized );
 			}
-			return $this->sanitize_value($value);
+			return $sanitized;
 		}
 		return $value;
 	}
@@ -1015,7 +1017,7 @@ abstract class Repository {
 	 * @param bool $remove_links Whether anchor tags must be removed.
 	 * @return mixed
 	 */
-	protected function sanitize_value($content, $remove_links = false) {
+	protected function sanitize_value($content, $remove_links = true) {
 		if( $content == null ) {
 			return '';
 		}

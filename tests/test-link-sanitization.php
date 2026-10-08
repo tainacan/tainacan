@@ -33,7 +33,7 @@ class Link_Sanitization extends TAINACAN_UnitApiTestCase {
 		return $this->server->dispatch( $request );
 	}
 
-	public function test_non_title_metadata_preserves_safe_links_and_removes_executable_markup() {
+	public function test_textarea_preserves_safe_links_and_text_metadata_removes_them() {
 		foreach ( [ 'Textarea', 'Text' ] as $type ) {
 			foreach ( [ 'no', 'yes' ] as $multiple ) {
 				$field = $this->field( $type, $multiple );
@@ -41,7 +41,12 @@ class Link_Sanitization extends TAINACAN_UnitApiTestCase {
 				$this->assertSame( 200, $this->put( $field, $multiple === 'yes' ? [ $input, '0' ] : $input )->get_status() );
 				$values = get_post_meta( $this->link_item->get_id(), $field->get_id(), $multiple !== 'yes' );
 				$value = $multiple === 'yes' ? $values[0] : $values;
-				$this->assertStringContainsString( $this->link, $value );
+				if ( $type === 'Textarea' ) {
+					$this->assertStringContainsString( $this->link, $value );
+				} else {
+					$this->assertStringNotContainsString( '<a', $value );
+					$this->assertStringContainsString( 'Linked', $value );
+				}
 				foreach ( [ '<script', 'javascript:', 'onclick' ] as $unsafe ) {
 					$this->assertStringNotContainsString( $unsafe, $value );
 				}
@@ -60,7 +65,7 @@ class Link_Sanitization extends TAINACAN_UnitApiTestCase {
 		$field->set_placeholder( $this->link );
 		$this->assertTrue( $field->validate() );
 		$saved_field = Repositories\Metadata::get_instance()->insert( $field );
-		$this->assertSame( $this->link, $saved_field->get_placeholder() );
+		$this->assertSame( 'Linked', $saved_field->get_placeholder() );
 	}
 
 	public function test_entity_titles_remove_links_but_descriptions_keep_them() {
@@ -78,7 +83,7 @@ class Link_Sanitization extends TAINACAN_UnitApiTestCase {
 			$this->assertNotEmpty( $entity->get_id(), $type );
 			if ( $type === 'log' ) $entity = Repositories\Logs::get_instance()->fetch( $entity->get_id() );
 			$this->assertSame( 'Linked', $entity->get( $property ), $type );
-			$this->assertSame( $this->link, $entity->get_description(), $type );
+			$this->assertSame( $type === 'log' ? 'Linked' : $this->link, $entity->get_description(), $type );
 		}
 	}
 
@@ -123,9 +128,9 @@ class Link_Sanitization extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( 'Updated', Repositories\Terms::get_instance()->insert( $term )->get_name() );
 	}
 
-	public function test_rest_taxonomy_query_sanitizes_names_but_preserves_other_safe_values() {
+	public function test_rest_taxonomy_query_removes_links_from_query_values() {
 		$taxonomy = $this->tainacan_entity_factory->create_entity( 'taxonomy', [ 'name' => 'Queries', 'status' => 'publish' ], true );
-		foreach ( [ 'name' => 'Linked', 'slug' => $this->link ] as $field => $expected ) {
+		foreach ( [ 'name' => 'Linked', 'slug' => 'Linked' ] as $field => $expected ) {
 			foreach ( [ $this->link, [ $this->link ] ] as $input ) {
 				$captured = null;
 				$capture = function ( $args ) use ( &$captured ) { $captured = $args; return $args; };

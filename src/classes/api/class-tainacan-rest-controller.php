@@ -259,13 +259,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Sanitize query values as post HTML, optionally removing anchor tags.
+	 * Sanitize query values as post HTML. Anchor tags are removed unless the field stores rich text.
 	 *
 	 * @param mixed $value Value to sanitize.
 	 * @param bool $remove_links Whether anchor tags must be removed.
 	 * @return mixed
 	 */
-	protected function sanitize_value($value, $remove_links = false) {
+	protected function sanitize_value($value, $remove_links = true) {
 		if (is_numeric($value) || empty($value) ) {
 			return $value;
 		}
@@ -279,18 +279,18 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Select link removal from the actual field represented by a query clause.
+	 * Keep anchors in a query value only when the targeted metadata type allows them.
 	 *
 	 * @param string $mapped Query parameter name.
 	 * @param array $clause Query clause.
 	 * @return \Closure
 	 */
 	private function get_query_value_sanitizer( $mapped, $clause ) {
-		$remove_links = $mapped === 'taxquery' && isset( $clause['metadatum'] ) && $clause['metadatum'] === 'name';
+		$remove_links = true;
 		if ( $mapped === 'metaquery' && isset( $clause['key'] ) && is_numeric( $clause['key'] ) ) {
 			$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch( (int) $clause['key'] );
-			$remove_links = $metadatum instanceof \Tainacan\Entities\Metadatum &&
-				$metadatum->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Core_Title;
+			$metadata_type = $metadatum instanceof \Tainacan\Entities\Metadatum ? $metadatum->get_metadata_type_object() : null;
+			$remove_links = ! ( $metadata_type && $metadata_type->allows_links() );
 		}
 		return function ( $value ) use ( $remove_links ) {
 			return $this->sanitize_value( $value, $remove_links );

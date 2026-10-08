@@ -150,7 +150,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 		$item_metadata->set_value($this->link);
 		$item_metadata->validate();
 		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
-		$this->assertEquals($item_metadata->get_value(), '<a href="www.tainacan.org">link</a>');
+		$this->assertEquals($item_metadata->get_value(), 'link');
 
 		$item_metadata->set_value($this->css);
 		$item_metadata->validate();
@@ -191,7 +191,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 		$this->assertSame( 'Description ' . $link, $collection->get_description() );
 	}
 
-	public function test_preserves_links_for_non_title_metadata() {
+	public function test_text_metadata_removes_links_and_core_description_keeps_them() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$link = '<a href="https://tainacan.org">Tainacan</a>';
@@ -220,7 +220,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
 		$plain_text_value->validate();
 		$plain_text_value = $Tainacan_Item_Metadata->insert( $plain_text_value );
 
-		$this->assertSame( $link, $plain_text_value->get_value() );
+		$this->assertSame( 'Tainacan', $plain_text_value->get_value() );
 
 		$core_description_value = new \Tainacan\Entities\Item_Metadata_Entity( $item, $collection->get_core_description_metadatum() );
 		$core_description_value->set_value( $link );
