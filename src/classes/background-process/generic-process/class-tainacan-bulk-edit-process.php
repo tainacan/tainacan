@@ -143,19 +143,53 @@ class Bulk_Edit_Process extends Generic_Process {
 		return delete_post_meta( $item->get_id(), $this->meta_key, $this->get_group_id());
 	}
 
+	/**
+	 * Maximum number of times the process will wait for another process to
+	 * finish creating the control metadata before aborting to prevent an
+	 * infinite loop (see issue #1008).
+	 *
+	 * @var int
+	 */
+	const MAX_CONTROL_METADATA_WAIT_RETRIES = 30;
+
 	public function add_control_metadata() {
 		$params = $this->get_options();
 
-		if( !isset($params['control_metadata']) ) {
+		// Guard against null/empty params which can happen if the option was
+		// deleted by a cache plugin or DB cleanup (root cause of issue #1008).
+		if ( !is_array($params) ) {
+			$params = [];
+		}
+
+		if( !isset($params['control_metadata']) || empty($params['control_metadata']) ) {
 			$params['control_metadata'] = $this->get_id();
+			$params['control_metadata_wait_retries'] = 0;
 			$this->save_options($params);
 		} elseif ($params['control_metadata'] === true) {
 			$this->add_log( __('Bulk edit control metadata has already been created', 'tainacan') );
 			return false;
 		} elseif( is_numeric($params['control_metadata']) && $params['control_metadata'] != $this->get_id() ) {
-			/* translators: %d is the ID of the process that is creating the control metadata */
-			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
-			return true;
+			// Another process is creating the control metadata. Wait for it, but
+			// only up to MAX_CONTROL_METADATA_WAIT_RETRIES iterations to prevent
+			// an infinite loop if that other process has died or its data was lost.
+			$retries = isset($params['control_metadata_wait_retries']) ? (int)$params['control_metadata_wait_retries'] : 0;
+			$retries++;
+			$params['control_metadata_wait_retries'] = $retries;
+			$this->save_options($params);
+
+			if ( $retries > self::MAX_CONTROL_METADATA_WAIT_RETRIES ) {
+				$this->add_error_log( sprintf(
+					/* translators: %d is the number of retries exceeded */
+					__( 'Bulk edit process aborted after %d retries waiting for control metadata creation by another process.', 'tainacan' ),
+					self::MAX_CONTROL_METADATA_WAIT_RETRIES
+				) );
+				$this->abort();
+				return false;
+			}
+
+			/* translators: 1: ID of the process that is creating the control metadata, 2: current attempt number, 3: maximum number of attempts */
+			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%1$d" (attempt %2$d/%3$d)', 'tainacan' ), $params['control_metadata'], $retries, self::MAX_CONTROL_METADATA_WAIT_RETRIES ) );
+			return 0;
 		}
 
 		if (isset($params['query']) && is_array($params['query'])) {
@@ -229,7 +263,15 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function bulk_list_get_item($count) {
 		global $wpdb;
-		$results = $wpdb->get_results( "select post_id, meta_key from $wpdb->postmeta where meta_key = '{$this->meta_key}' AND meta_value = '" . $this->get_group_id() . "' ORDER BY post_id DESC LIMIT $count, 1", ARRAY_A );
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT post_id, meta_key FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id DESC LIMIT %d, 1",
+				$this->meta_key,
+				$this->get_group_id(),
+				$count
+			),
+			ARRAY_A
+		);
 		foreach($results as $meta) {
 			$item = $this->items_repository->fetch((int)$meta['post_id'], [], 'OBJECT');
 			if($item instanceof \Tainacan\Entities\Item) {
@@ -366,58 +408,38 @@ class Bulk_Edit_Process extends Generic_Process {
 	private function copy_value(\Tainacan\Entities\Item $item) {
 		$metadatum_id_to = $this->bulk_edit_data['metadatum_id_to'];
 		$metadatum = $this->metadatum_repository->fetch($metadatum_id_to);
+		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
+
 		$metadatum_id_from = $this->bulk_edit_data['metadatum_id_from'];
 
-		if ( ! $metadatum instanceof Entities\Metadatum || $metadatum_id_from == $metadatum_id_to ) {
-			$this->add_error_log( __( 'Invalid source or destination metadata for copying values', 'tainacan' ) );
-			return false;
-		}
-
-		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
 		if ($metadatum_id_from == 'created_by' && $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User') {
 			$item_metadata->set_value( $metadatum->is_multiple() ? [$item->get_author_id()] : $item->get_author_id() );
 			return $this->save_item_metadata($item_metadata, $item);
-		}
+		} else {
+			$metadatum_from = $this->metadatum_repository->fetch($metadatum_id_from);
+			if ( $metadatum_from->get_metadata_type() == $metadatum->get_metadata_type() &&
+						( $metadatum_from->is_multiple() == false || $metadatum_from->is_multiple() == $metadatum->is_multiple() ) ) {
+				$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
 
-		$metadatum_from = $this->metadatum_repository->fetch($metadatum_id_from);
-		if ( ! $metadatum_from instanceof Entities\Metadatum ) {
-			$this->add_error_log( __( 'Invalid source or destination metadata for copying values', 'tainacan' ) );
-			return false;
-		}
-		if ( ! $this->can_copy_metadata_value( $metadatum_from, $metadatum ) ) {
-			$this->add_error_log( __( 'Not possible to copy values between incompatible metadata', 'tainacan' ) );
-			return false;
-		}
-
-		$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
-		$value = $item_metadata_from->get_value();
-		if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
-			if ( $metadatum_from->is_multiple() ) {
-				$temp = [];
-				foreach ( $value as $term ) {
-					$temp[] = $term->get_name();
+				$value = $item_metadata_from->get_value();
+				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
+					if ( $metadatum_from->is_multiple() ) {
+						$temp = [];
+						foreach ( $value as $term ) {
+							$temp[] = $term->get_name();
+						}
+						$value = $temp;
+					} elseif ( $value instanceof \Tainacan\Entities\Term ) {
+						$value = $value->get_name();
+					}
 				}
-				$value = $temp;
-			} elseif ( $value instanceof Entities\Term ) {
-				$value = $value->get_name();
+				$item_metadata->set_value($value);
+				return $this->save_item_metadata($item_metadata, $item);
 			}
 		}
-		$item_metadata->set_value($value);
-		return $this->save_item_metadata($item_metadata, $item);
-	}
 
-	/**
-	 * Check whether two metadata definitions can exchange values.
-	 *
-	 * @param Entities\Metadatum $source Source metadata definition.
-	 * @param Entities\Metadatum $destination Destination metadata definition.
-	 * @return bool Whether the metadata values can be copied.
-	 */
-	private function can_copy_metadata_value( Entities\Metadatum $source, Entities\Metadatum $destination ) {
-		if ( $source->is_multiple() && ! $destination->is_multiple() ) {
-			return false;
-		}
-		return $source->get_metadata_type() === $destination->get_metadata_type();
+		$this->add_error_log( __('Not possible to copy metadata values of different types', 'tainacan') );
+		return false;
 	}
 
 	private function remove_value(\Tainacan\Entities\Item $item) {

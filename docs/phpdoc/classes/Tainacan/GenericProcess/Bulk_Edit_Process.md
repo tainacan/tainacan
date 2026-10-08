@@ -41,8 +41,6 @@ classDiagram
         -get_parent_meta_id(item, metadatum)
         -add_value(item)
         -copy_value(item)
-        -can_copy_metadata_value(source, destination, item)
-        -convert_metadata_value_for_copy(value, source, destination)
         -remove_value(item)
         -replace_value(item)
         -trash_items(item)
@@ -94,6 +92,12 @@ classDiagram
     }
     Generic_Process <|-- Bulk_Edit_Process
 ```
+
+## Constants
+
+| Constant                            | Visibility | Type | Value |
+|-------------------------------------|------------|------|-------|
+| `MAX_CONTROL_METADATA_WAIT_RETRIES` | public     | int  | 30    |
 
 ## Properties
 
@@ -416,27 +420,6 @@ private copy_value(\Tainacan\Entities\Item $item): mixed
 | Parameter | Type                        | Description |
 |-----------|-----------------------------|-------------|
 | `$item`   | **\Tainacan\Entities\Item** |             |
-
-***
-
-### can_copy_metadata_value
-
-Check whether two metadata definitions can exchange values.
-
-```php
-private can_copy_metadata_value(\Tainacan\Entities\Metadatum $source, \Tainacan\Entities\Metadatum $destination): bool
-```
-
-**Parameters:**
-
-| Parameter      | Type                             | Description                      |
-|----------------|----------------------------------|----------------------------------|
-| `$source`      | **\Tainacan\Entities\Metadatum** | Source metadata definition.      |
-| `$destination` | **\Tainacan\Entities\Metadatum** | Destination metadata definition. |
-
-**Return Value:**
-
-Whether the metadata values can be copied.
 
 ***
 

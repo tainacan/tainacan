@@ -221,7 +221,6 @@
                                             :loading="metadataIsLoading"
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatumIdCopyFrom }"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom || metadataIsLoading"
-                                            :model-value="bulkEditionProcedures[criterion].metadatumIdCopyFrom"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                             @update:model-value="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
@@ -361,7 +360,8 @@
                 </p>
                 <p class="control">
                     <button
-                            :disabled="dones.every((item) => item === true) === false"
+                            :disabled="dones.every((item) => item === true) === false || isApplying"
+                            :class="{ 'is-loading': isApplying }"
                             class="button is-success"
                             type="button"
                             @click="onFinish">
@@ -425,6 +425,7 @@
                 },
                 groupId: null,
                 dones: [false],
+                isApplying: false,
                 metadataIsLoading: false,
                 metadataSearchCancel: undefined,
                 selectedUserId: '',
@@ -577,44 +578,56 @@
 
                 return requiresNewValue && !hasNewValue;
             },
+            /**
+             * Queues a bulk edit criterion locally WITHOUT dispatching it to the API.
+             * The actual bulk edit is only submitted when the user clicks "Apply to N items".
+             */
             executeBulkEditionProcedure(criterion){
+                this.finalizeProcedure(criterion);
+            },
+            /**
+             * Dispatches a single queued criterion to the bulk edit API.
+             * Called sequentially from onFinish() when the user clicks "Apply".
+             * Returns a Promise that resolves once the API call completes.
+             */
+            dispatchBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
                 
                 if (procedure.action === this.editionActions.redefine) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
-                    if (procedure.metadatum.id === 'status'){ 
+                    if (procedure.metadatum.id === 'status'){
 
-                        this.setStatusInBulk({
+                        return this.setStatusInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
                             bodyParams: { value: procedure.newValue }
                         }).then(() => {
-                            this.finalizeProcedure(criterion);
+                            Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                         });
 
                     } else if (procedure.metadatum.id === 'author_id') {
 
-                        this.setAuthorIdInBulk({
+                        return this.setAuthorIdInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
                             bodyParams: { value: procedure.newValue }
                         }).then(() => {
-                            this.finalizeProcedure(criterion);
+                            Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                         });
 
                     } else if (procedure.metadatum.id === 'comments') {
 
-                        this.setCommentStatusInBulk({
+                        return this.setCommentStatusInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
                             bodyParams: { value: procedure.newValue }
                         }).then(() => {
-                            this.finalizeProcedure(criterion);
+                            Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                         });
                         
                     } else {
-                        this.setValueInBulk({
+                        return this.setValueInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
                             bodyParams: {
@@ -622,14 +635,14 @@
                                 value: procedure.newValue
                             }
                         }).then(() => {
-                            this.finalizeProcedure(criterion);
+                            Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                         });
                     }
                     
                 } else if (procedure.action === this.editionActions.add) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
-                    this.addValueInBulk({
+                    return this.addValueInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
@@ -637,12 +650,12 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.finalizeProcedure(criterion);
+                        Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                     });
                 } else if (procedure.action === this.editionActions.replace) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
-                    this.replaceValueInBulk({
+                    return this.replaceValueInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
@@ -651,12 +664,12 @@
                             new_value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.finalizeProcedure(criterion);
+                        Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                     });
                 } else if (procedure.action === this.editionActions.remove) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
-                    this.removeValueInBulk({
+                    return this.removeValueInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
@@ -664,24 +677,24 @@
                             value: procedure.newValue,
                         }
                     }).then(() => {
-                        this.finalizeProcedure(criterion);
+                        Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                     });
                 } else if (procedure.action === this.editionActions.clear) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
-                    this.clearValuesInBulk({
+                    return this.clearValuesInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
                             metadatum_id: procedure.metadatum.id
                         }
                     }).then(() => {
-                        this.finalizeProcedure(criterion);
+                        Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                     });
                 } else if (procedure.action === this.editionActions.copy) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
-                    this.copyValuesInBulk({
+                    return this.copyValuesInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
@@ -689,9 +702,11 @@
                             metadatum_id_from: procedure.metadatumIdCopyFrom,
                         }
                     }).then(() => {
-                        this.finalizeProcedure(criterion);
+                        Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
                     });
                 }
+
+                return Promise.resolve();
             },
             addEditionCriterion() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
@@ -729,18 +744,6 @@
                     this.dones.splice(criterionIndex, 1)
                 }
             },
-            canCopyMetadataValue(source, destination) {
-                if (!source || !destination || source.id == destination.id)
-                    return false;
-                if (source.id === 'created_by')
-                    return destination.parent <= 0 && destination.metadata_type_object?.component === 'tainacan-user';
-                if (!source.metadata_type || !destination.metadata_type || (source.multiple === 'yes' && destination.multiple !== 'yes'))
-                    return false;
-                if (source.metadata_type === destination.metadata_type)
-                    return true;
-
-                return false;
-            },
             getValidEditionActions(metadatum) {
                 let validEditionActions = JSON.parse(JSON.stringify(this.editionActions));
                 
@@ -758,11 +761,21 @@
                         continue;
                     }
 
-                    // Offer copy only when a selectable source exists, including created_by for User.
+                    // For allowing copy, we also need to check more details of the metadata
+                    // We only offer copy when there is another metadataum of same type, that is not a child component;
+                    // The exception are User metadatum, as we can also copy values from created_by
                     if (actionKey == 'copy' && metadatum.metadata_type_object) {
-                        const hasSource = this.metadata.some(source => source.parent <= 0 && this.canCopyMetadataValue(source, metadatum));
-                        if ((!hasSource && !this.canCopyMetadataValue({ id: 'created_by' }, metadatum)) || metadatum.parent > 0)
+                        const otherMetadatumOfSameTypeIndex = this.metadata.findIndex(otherMetadatum => {
+                            return (
+                                otherMetadatum.id != metadatum.id && 
+                                otherMetadatum.metadata_type_object.component == metadatum.metadata_type_object.component &&
+                                otherMetadatum.parent <= 0
+                            );
+                        });
+                        
+                        if ((otherMetadatumOfSameTypeIndex < 0 && metadatum.metadata_type_object.component != 'tainacan-user') || metadatum.parent > 0) {
                             delete validEditionActions[actionKey];
+                        }
                     }
                 }
                 
@@ -776,7 +789,13 @@
                     
                     const selectedMetadatum = this.bulkEditionProcedures[criterion].metadatum;
                     if (selectedMetadatum.metadata_type_object && selectedMetadatum.metadata_type) {
-                        return this.metadata.filter(source => this.canCopyMetadataValue(source, selectedMetadatum));
+                        return JSON.parse(JSON.stringify(this.metadata)).filter((metadatum) => {
+                            return (
+                                metadatum.id != selectedMetadatum.id &&
+                                metadatum.metadata_type == selectedMetadatum.metadata_type &&
+                                (selectedMetadatum.multiple == 'yes' || (metadatum.multiple != 'yes' && selectedMetadatum.multiple != 'yes'))
+                            )
+                        });
                     }
                 }
 
@@ -787,15 +806,6 @@
                     value = value[0];
 
                 Object.assign( this.bulkEditionProcedures[criterion], { [`${key}`]: value });
-
-                if (key === 'metadatum' || key === 'action') {
-                    const procedure = this.bulkEditionProcedures[criterion];
-                    const source = procedure.metadatumIdCopyFrom === 'created_by'
-                        ? { id: 'created_by' }
-                        : this.metadata.find(metadatum => metadatum.id == procedure.metadatumIdCopyFrom);
-                    if (procedure.action !== this.editionActions.copy || !this.canCopyMetadataValue(source, procedure.metadatum))
-                        procedure.metadatumIdCopyFrom = undefined;
-                }
 
                 // Presets the action in case the selected metadatum only offers one possible option
                 if (
@@ -885,17 +895,49 @@
                 this.fetchUsersForAuthor(this.usersSearch)
             }, 250),
             onFinish() {
-                this.$buefy.snackbar.open({
-                    message: this.$i18n.get('info_bulk_edit_process_added'),
-                    type: 'is-primary',
-                    duration: 4000,
-                    actionText: this.$i18n.get('label_view_processes'),
-                    onAction: () => {
-                        this.$router.push(this.$routerHelper.getProcessesPath());
-                    }
+                // Only dispatch the bulk edit processes to the API when the user
+                // explicitly clicks "Apply to N items". Until then, criteria are
+                // only queued locally via executeBulkEditionProcedure().
+                if (this.isApplying)
+                    return;
+
+                this.isApplying = true;
+
+                // Collect every criterion that has been queued (isDone === true)
+                // and dispatch them to the API sequentially, preserving order.
+                const queuedCriteria = this.editionCriteria.filter((criterion) => {
+                    return this.bulkEditionProcedures[criterion]
+                        && this.bulkEditionProcedures[criterion].isDone;
                 });
-                this.$eventBusSearch.loadItems();
-                this.closeModal();
+
+                const dispatchSequentially = (index) => {
+                    if (index >= queuedCriteria.length) {
+                        // All procedures dispatched — notify and close.
+                        this.isApplying = false;
+
+                        this.$buefy.snackbar.open({
+                            message: this.$i18n.get('info_bulk_edit_process_added'),
+                            type: 'is-primary',
+                            duration: 4000,
+                            actionText: this.$i18n.get('label_view_processes'),
+                            onAction: () => {
+                                this.$router.push(this.$routerHelper.getProcessesPath());
+                            }
+                        });
+                        this.$eventBusSearch.loadItems();
+                        this.closeModal();
+                        return;
+                    }
+
+                    this.dispatchBulkEditionProcedure(queuedCriteria[index])
+                        .then(() => dispatchSequentially(index + 1))
+                        .catch(() => {
+                            this.isApplying = false;
+                            this.$console.error('Error dispatching bulk edit procedure: ' + queuedCriteria[index]);
+                        });
+                };
+
+                dispatchSequentially(0);
             }
         }
     }
