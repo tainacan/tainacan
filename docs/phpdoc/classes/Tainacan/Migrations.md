@@ -204,3 +204,21 @@ Each column corresponds to a field in the Log entity map:
 
 * This method is **static**.
 ***
+
+### alter_table_tnc_bg_process_add_retry_columns
+
+Adds retry tracking columns and a status index to the background
+process table.
+
+```php
+public static alter_table_tnc_bg_process_add_retry_columns(): mixed
+```
+
+The retry mechanism (see Background_Process::maybe_handle()) relies on
+the `retry_count` and `max_retries` columns, and the watchdog uses the
+`status` column to detect stale processes. This migration ensures both
+columns and the index exist for installations created before the retry
+feature was introduced.
+
+* This method is **static**.
+***

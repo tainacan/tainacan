@@ -765,8 +765,7 @@ class Elastic_Press_lte4 {
 					$temp = explode('.', $term['key']);
 					$term_id = intval( $temp[count($temp)-2] );
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
-					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
-					$total_children = $wpdb->get_var($count_query);
+					$total_children = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id ) );
 					$fct = [
 						"type" 						=> "Taxonomy",
 						"value" 					=> $term_id,
@@ -857,8 +856,7 @@ class Elastic_Press_lte4 {
 					if ($term_id === 0) continue;
 
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
-					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
-					$total_children = $wpdb->get_var($count_query);
+					$total_children = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id ) );
 
 					$fct = [
 						"type" 						=> "Taxonomy",

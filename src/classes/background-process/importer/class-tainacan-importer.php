@@ -434,10 +434,10 @@ abstract class Importer {
 	 * @param $messagelog
 	 */
 	public function add_log($message ) {
-		$this->log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 	public function add_error_log($message ) {
-		$this->error_log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+		$this->error_log[] = ['datetime' => gmdate("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function add_collection(array $collection) {
@@ -486,9 +486,10 @@ abstract class Importer {
 	public function fetch_from_remote( $url ){
 		$tmp = wp_remote_get( $url );
 		if( !is_wp_error($tmp) && isset( $tmp['body'] ) ){
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Write the remote body to a local temp file that add_file() then uploads. WP_Filesystem::put_contents() follows the configured transport, which may not be that disk.
 			$file = fopen( $this->get_id().'.txt', 'w' );
-			fwrite( $file, $tmp['body'] );
-			fclose( $file );
+			fwrite( $file, $tmp['body'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Write the remote body to a local temp file that add_file() then uploads. WP_Filesystem::put_contents() follows the configured transport, which may not be that disk.
+			fclose( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Write the remote body to a local temp file that add_file() then uploads. WP_Filesystem::put_contents() follows the configured transport, which may not be that disk.
 			return $this->add_file( $this->get_id().'.txt' );
 		}
 	}

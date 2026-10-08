@@ -234,7 +234,7 @@ class Logs extends Repository {
 
 		// Fetch single record by ID.
 		if ( is_numeric( $args ) ) {
-			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE ID = %d", (int) $args ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE ID = %d", (int) $args ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $table comes from get_table_name().
 			return $row ? $this->row_to_entity( $row ) : [];
 		}
 
@@ -267,10 +267,12 @@ class Logs extends Repository {
 		$sql = "SELECT * FROM $table $where_sql ORDER BY `$orderby` $order $limit_sql";
 
 		if ( $params ) {
-			$sql = $wpdb->prepare( $sql, ...$params );
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $where_sql holds placeholders from build_where(). The table name, order and limit are whitelisted or cast before interpolation.
+			$rows = $wpdb->get_results( $wpdb->prepare( $sql, ...$params ) );
+		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No filter values. The table name, order and limit are whitelisted or cast before interpolation.
+			$rows = $wpdb->get_results( $sql );
 		}
-
-		$rows = $wpdb->get_results( $sql );
 
 		return array_map( [ $this, 'row_to_entity' ], $rows ?: [] );
 	}
@@ -299,14 +301,15 @@ class Logs extends Repository {
 
 		[ $where_sql, $params ] = $this->build_where( $args );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$sql = "SELECT COUNT(*) FROM $table $where_sql";
 
 		if ( $params ) {
-			$sql = $wpdb->prepare( $sql, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $where_sql holds placeholders from build_where(). $table comes from get_table_name().
+			return (int) $wpdb->get_var( $wpdb->prepare( $sql, ...$params ) );
 		}
 
-		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No filter values. $table comes from get_table_name().
+		return (int) $wpdb->get_var( $sql );
 	}
 
 	/**

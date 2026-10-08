@@ -52,6 +52,7 @@ class Migrations {
 		  KEY action (action($max_index_length))
 		) $charset_collate;\n";
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Static DDL. It only interpolates the table prefix, the charset collation and a fixed index length.
 		$wpdb->query($query);
 
 	}
@@ -357,9 +358,7 @@ class Migrations {
 	static function update_relationship_metadata_search_option() {
 		global $wpdb;
 
-		$q = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'metadata_type' AND meta_value = 'Tainacan\\\\Metadata_Types\\\\Relationship'";
-
-		$ids = $wpdb->get_col($q);
+		$ids = $wpdb->get_col( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'metadata_type' AND meta_value = 'Tainacan\\\\Metadata_Types\\\\Relationship'" );
 
 		foreach ($ids as $id) {
 			$meta = get_post_meta($id, 'metadata_type_options', true);
@@ -576,6 +575,63 @@ class Migrations {
 			KEY `wp_tainacan_logs__wp_posts_log_migration_ref_IDX` (`_wp_posts_log_migration_ref`) USING BTREE
 		) $charset_collate;\n";
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Static DDL. It only interpolates the table prefix and the charset collation.
 		$wpdb->query( $query );
+	}
+
+	/**
+		* Adds retry tracking columns and a status index to the background
+		* process table.
+		*
+		* The retry mechanism (see Background_Process::maybe_handle()) relies on
+		* the `retry_count` and `max_retries` columns, and the watchdog uses the
+		* `status` column to detect stale processes. This migration ensures both
+		* columns and the index exist for installations created before the retry
+		* feature was introduced.
+		*
+		* @since 1.2.1
+		*/
+	static function alter_table_tnc_bg_process_add_retry_columns() {
+		global $wpdb;
+
+		$table_name    = $wpdb->prefix . 'tnc_bg_process';
+		$database_name = DB_NAME;
+
+		// Add retry_count column if it does not exist.
+		$column_exists = $wpdb->get_results(
+			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'retry_count' AND table_schema = '$database_name'"
+		);
+
+		if ( empty( $column_exists ) ) {
+			$wpdb->query(
+				"ALTER TABLE $table_name ADD retry_count int unsigned NOT NULL default 0"
+			);
+		}
+
+		// Add max_retries column if it does not exist.
+		$column_exists = $wpdb->get_results(
+			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'max_retries' AND table_schema = '$database_name'"
+		);
+
+		if ( empty( $column_exists ) ) {
+			$wpdb->query(
+				"ALTER TABLE $table_name ADD max_retries int unsigned NOT NULL default 3"
+			);
+		}
+
+		// Add an index on the status column to speed up watchdog queries.
+		$index_exists = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema = %s AND table_name = %s AND index_name = 'status'",
+				$database_name,
+				$table_name
+			)
+		);
+
+		if ( empty( $index_exists ) ) {
+			$wpdb->query(
+				"ALTER TABLE $table_name ADD INDEX status (status)"
+			);
+		}
 	}
 }

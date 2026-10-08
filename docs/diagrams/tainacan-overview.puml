@@ -593,6 +593,7 @@
       #prefix : string
       #action : string
       #name : string
+      #default_max_retries : int
       +__construct()
       +get_id()
       +get_name()
@@ -621,6 +622,8 @@
       #cron_interval_identifier : mixed
       #cron_hook_check_identifier : string
       #process_lock_in_time : string
+      #is_cron_dispatch : bool
+      #stale_process_timeout : int
       #queue_lock_time : string
       #cron_interval : string
       +__construct()
@@ -644,6 +647,8 @@
       +schedule_cron_healthcheck(schedules)
       +handle_cron_healthcheck()
       +handle_cron_healthcheck_check()
+      #detect_and_cleanup_stale_processes()
+      +record_heartbeat()
       #schedule_event()
       #clear_scheduled_event()
       +cancel_process()
@@ -2104,9 +2109,8 @@
     }
     class "Cli_Garbage_Collector\n<b>Handles WP-CLI commands for Tainacan garbage collection operations.</b>" as cli_Cli_Garbage_Collector {
       +__invoke(args, assoc_args)
-      -get_orphan_items_query(select)
+      -get_orphan_item_post_types()
       -delete_items(dry_run, deep)
-      -get_orphan_attachments_count()
       -delete_attachments(dry_run, deep)
       -filesize_formatted(size)
       -delete_terms_taxonomies(dry_run, deep)

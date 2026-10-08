@@ -225,10 +225,18 @@ class Item_Metadata extends Repository {
 			}
 
 			global $wpdb;
-			$meta_ids = implode(',', $current_value);
-			$query = $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_ID IN ($meta_ids)", $item_metadata->get_item()->get_id() );
-
-			$rows = $wpdb->get_results($query, ARRAY_A );
+			$meta_ids = wp_parse_id_list( $current_value );
+			if ( empty( $meta_ids ) ) {
+				return null;
+			}
+			$placeholders = implode( ',', array_fill( 0, count( $meta_ids ), '%d' ) );
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_ID IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is a generated list of %d tokens.
+					array_merge( array( $item_metadata->get_item()->get_id() ), $meta_ids )
+				),
+				ARRAY_A
+			);
 
 			if ( is_array( $rows ) ) {
 				$upclean_values = array_map(function($row) {

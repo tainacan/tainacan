@@ -669,7 +669,7 @@
                                                 :title="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')" 
                                                 :message="$i18n.getHelperMessage('collections', 'submission_use_recaptcha')" />
                                         <p 
-                                                v-if="form.submission_use_recaptcha == 'yes'" 
+                                                v-if="form.submission_use_recaptcha == 'yes' && $userCaps.hasCapability('manage_tainacan')" 
                                                 v-html="$i18n.getWithVariables('info_recaptcha_link_%s', [ reCAPTCHASettingsPagePath ])" />        
                                     </b-field>
                                     
@@ -1219,7 +1219,7 @@ export default {
             viewModesList: [],
             fromImporter: '',
             repositoryEnabledViewModes: tainacan_plugin.enabled_view_modes,
-            reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + '?page=tainacan_item_submission',
+            reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + '?page=tainacan_settings#tainacan-settings-section-tainacan_item_submission_recaptcha_id',
             newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
             entityName: 'collection',

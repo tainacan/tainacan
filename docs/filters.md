@@ -31,7 +31,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'>'` |  | 
 
-Source: [class-tainacan-elastic-press-lte4.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press-lte4.php), [line 837](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press-lte4.php#L837-L837)
+Source: [class-tainacan-elastic-press-lte4.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press-lte4.php), [line 836](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press-lte4.php#L836-L836)
 
 ---------------------------------
 <br>
@@ -69,7 +69,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'>'` |  | 
 
-Source: [class-tainacan-elastic-press.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php), [line 1121](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php#L1121-L1121)
+Source: [class-tainacan-elastic-press.php](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php), [line 1122](https://github.com/tainacan/tainacan/blob/master/src/classes/integrations/class-tainacan-elastic-press.php#L1122-L1122)
 
 ---------------------------------
 <br>
@@ -1007,7 +1007,7 @@ Argument | Type | Description
 `$value` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 73](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L73-L92)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 76](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L76-L95)
 
 ---------------------------------
 <br>
@@ -1023,7 +1023,7 @@ Argument | Type | Description
 `$value` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 95](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L95-L114)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 98](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L98-L117)
 
 ---------------------------------
 <br>
@@ -1039,7 +1039,7 @@ Argument | Type | Description
 `$value` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 117](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L117-L136)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 120](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L120-L139)
 
 ---------------------------------
 <br>
@@ -1054,7 +1054,7 @@ Argument | Type | Description
 `$return` | `string` | the item metadatum value HTML string
 `$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 196](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L196-L204)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 199](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L199-L207)
 
 ---------------------------------
 <br>
@@ -1069,7 +1069,7 @@ Argument | Type | Description
 `wp_strip_all_tags($this->get_value_as_html())` |  | 
 `$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 223](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L223-L231)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 226](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L226-L234)
 
 ---------------------------------
 <br>
@@ -1084,7 +1084,7 @@ Argument | Type | Description
 `$as_array` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 313](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L313-L341)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 316](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L316-L344)
 
 ---------------------------------
 <br>
@@ -1096,7 +1096,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$validation_statuses` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 515](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L515-L515)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 518](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L518-L518)
 
 ---------------------------------
 <br>
@@ -1475,7 +1475,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$lock_duration` |  | 
 
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 266](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L266-L278)
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 295](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L295-L307)
 
 ---------------------------------
 <br>
@@ -1492,7 +1492,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$return` |  | 
 
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 386](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L386-L403)
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 415](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L415-L432)
 
 ---------------------------------
 <br>
@@ -1504,7 +1504,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `20` |  | 
 
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 436](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L436-L436)
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 465](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L465-L465)
 
 ---------------------------------
 <br>
@@ -1521,7 +1521,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$return` |  | 
 
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 427](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L427-L443)
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 456](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L456-L472)
 
 ---------------------------------
 <br>
@@ -1535,7 +1535,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `5` |  | 
 
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L457-L465)
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 486](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L486-L494)
 
 ---------------------------------
 <br>
@@ -1549,7 +1549,50 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$this->cron_interval` |  | 
 
-Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L457-L468)
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 486](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L486-L497)
+
+---------------------------------
+<br>
+
+## `{$this->identifier}_stale_process_timeout` <!-- {docsify-ignore} -->
+
+*Detect and clean up stale processes.*
+
+A stale process is one whose status is 'running' in the database but
+whose processed_last timestamp has not been updated within the
+$stale_process_timeout window. This typically happens when a PHP
+process was killed by the server, hit a fatal error not caught by
+the shutdown handler, or the server crashed.
+
+This watchdog marks stale processes as 'errored' and releases the lock
+so that the cron healthcheck can re-dispatch queued work.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`$this->stale_process_timeout` |  | 
+
+**Changelog**
+
+Version | Description
+------- | -----------
+`1.4.0` | 
+
+Source: [class-tainacan-background-process-base.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php), [line 580](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-background-process-base.php#L580-L603)
+
+---------------------------------
+<br>
+
+## `tainacan_background_process_query_url` <!-- {docsify-ignore} -->
+
+*Filters the query URL used to dispatch background processes.*
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`admin_url('admin-ajax.php')` |  | 
+
+Source: [class-tainacan-async-request.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php), [line 142](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php#L142-L147)
 
 ---------------------------------
 <br>
@@ -1561,7 +1604,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `false` |  | 
 
-Source: [class-tainacan-async-request.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php), [line 136](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php#L136-L136)
+Source: [class-tainacan-async-request.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php), [line 188](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/class-tainacan-async-request.php#L188-L188)
 
 ---------------------------------
 <br>
@@ -1627,7 +1670,7 @@ Argument | Type | Description
 `null` |  | 
 `$filepath` | `string` | The pdf filepath in the server
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 525](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L525-L532)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 528](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L528-L535)
 
 ---------------------------------
 <br>
@@ -1643,7 +1686,7 @@ Argument | Type | Description
 `$file` | `string` | Absolute path to the PDF file.
 `$item_id` | `int\|null` | Optional item ID for filters.
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 645](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L645-L663)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 648](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L648-L666)
 
 ---------------------------------
 <br>
@@ -1666,7 +1709,7 @@ Version | Description
 ------- | -----------
 `0.1.0` | 
 
-Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L895)
+Source: [class-tainacan-media.php](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php), [line 7](https://github.com/tainacan/tainacan/blob/master/src/classes/media-helper/class-tainacan-media.php#L7-L898)
 
 ---------------------------------
 <br>
@@ -3283,7 +3326,7 @@ Argument | Type | Description
 `[]` |  | 
 `$request` |  | 
 
-Source: [class-tainacan-rest-terms-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php), [line 601](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php#L601-L608)
+Source: [class-tainacan-rest-terms-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php), [line 613](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-terms-controller.php#L613-L620)
 
 ---------------------------------
 <br>
@@ -3510,7 +3553,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `!$search_each_word_by_default` |  | 
 
-Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1704](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1704-L1714)
+Source: [class-tainacan-rest-items-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php), [line 1711](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-items-controller.php#L1711-L1721)
 
 ---------------------------------
 <br>
@@ -3885,7 +3928,7 @@ Argument | Type | Description
 `$args` | `array` | Same filtering keys supported by fetch().
 `'logs'` |  | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 278](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L278-L298)
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 280](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L280-L300)
 
 ---------------------------------
 <br>
@@ -3901,7 +3944,7 @@ Argument | Type | Description
 `$unsaved` | `\Tainacan\Entities\Entity` | The new entity that is going to be saved
 `$old` |  | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 673](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L673-L741)
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 676](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L676-L744)
 
 ---------------------------------
 <br>
@@ -3926,7 +3969,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 20](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L20-L768)
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 20](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L20-L771)
 
 ---------------------------------
 <br>
@@ -4060,7 +4103,7 @@ Argument | Type | Description
 `$args` | `array` | WP_Query args \|\| int $args the log id
 `'logs'` |  | 
 
-Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 185](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L185-L225)
+Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 185](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L185-L224)
 
 ---------------------------------
 <br>
@@ -4076,7 +4119,7 @@ Argument | Type | Description
 `$unsaved` | `\Tainacan\Entities\Entity` | The new entity that is going to be saved
 `$old` |  | 
 
-Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 382](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L382-L449)
+Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 381](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L381-L448)
 
 ---------------------------------
 <br>
@@ -4096,7 +4139,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L10-L476)
+Source: [class-tainacan-logs-deprecated.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php), [line 10](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs-deprecated.php#L10-L475)
 
 ---------------------------------
 <br>
@@ -4421,7 +4464,7 @@ Argument | Type | Description
 `$metadatum` |  | 
 `$args` | `array\|string` | {<br>    Optional. Array or string of arguments.<br><br>	@type mixed		 $collection_id				The collection ID you want to consider or null for all collections. If a collectoin is set<br>												then only values applied to items in this collection will be returned<br><br>    @type int		 $number					The number of values to return (for pagination). Default empty (unlimited)<br><br>    @type int		 $offset					The offset (for pagination). Default 0<br><br>    @type array\|bool $items_filter				Array in the same format used in @see \Tainacan\Repositories\Items::fetch(). It will filter the results to only return values used in the items inside this criteria. If false, it will return all values, even unused ones. Defatul [] (all items)<br><br>    @type array		 $include					Array if ids to be included in the result. Default [] (nothing)<br><br>    @type array		 $search					String to search. It will only return values that has this string. Default '' (nothing)<br><br>    @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0<br><br>    @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false<br><br>    @type string   	 $last_term					The last term returned when using a elasticsearch for calculates the facet.<br><br>}
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1164](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1164-L1255)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1170](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1170-L1261)
 
 ---------------------------------
 <br>
@@ -4433,7 +4476,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'>'` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1409](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1409-L1409)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1434](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1434-L1434)
 
 ---------------------------------
 <br>
@@ -4452,7 +4495,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$name` |  | 
 
-Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1164](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1164-L1508)
+Source: [class-tainacan-metadata.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php), [line 1170](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-metadata.php#L1170-L1544)
 
 ---------------------------------
 <br>
@@ -5429,7 +5472,7 @@ Argument | Type | Description
     'finish' => __('Finish', 'tainacan'),
     'select_to_create' => __('select to create', 'tainacan'),
     'new_bulk_edit_criterion' => __('New bulk edit criterion', 'tainacan'),
-    'add_bulk_edit_criterion_to_process_queue' => __('Add bulk edit criterion to the process queue', 'tainacan'),
+    'add_bulk_edit_criterion_to_process_queue' => __('Add bulk edit criterion to the queue', 'tainacan'),
     'undo' => __('Undo', 'tainacan'),
     'delete' => __('Delete', 'tainacan'),
     'skip' => __('Skip', 'tainacan'),
@@ -5783,6 +5826,10 @@ Argument | Type | Description
     'label_stop_process' => __('Stop process', 'tainacan'),
     'label_delete_process' => __('Delete process', 'tainacan'),
     'label_process_failed' => __('Process failed', 'tainacan'),
+    'label_process_running' => __('Process running', 'tainacan'),
+    'label_process_type' => __('Process type', 'tainacan'),
+    'label_view_details' => __('View details', 'tainacan'),
+    'label_logs' => __('Logs', 'tainacan'),
     'label_max_options_to_show' => __('Max options to show', 'tainacan'),
     'label_unnamed_process' => __('Unnamed process', 'tainacan'),
     'loading_processes' => __('Loading processes', 'tainacan'),
@@ -5854,6 +5901,10 @@ Argument | Type | Description
     'label_term_page_on_website' => __('Term page on website', 'tainacan'),
     'label_copy_link_url' => __('Copy link URL', 'tainacan'),
     'label_open_externally' => __('Open externally', 'tainacan'),
+    'label_no_log_info' => __('No log file', 'tainacan'),
+    'label_process_log_files' => __('Log files', 'tainacan'),
+    'label_process_summary' => __('Summary', 'tainacan'),
+    'label_no_process_summary' => __('No process summary yet', 'tainacan'),
     'label_no_output_info' => __('No output info', 'tainacan'),
     'label_output' => __('Output', 'tainacan'),
     'label_no_mapping' => __('No mapping', 'tainacan'),
@@ -6395,6 +6446,7 @@ Argument | Type | Description
     'info_unfinished_processes' => __('unfinished processes', 'tainacan'),
     'info_no_process' => __('There are no processes executing.', 'tainacan'),
     'info_unknown_date' => __('Unknown date.', 'tainacan'),
+    'info_not_processed_yet' => __('Not processed yet.', 'tainacan'),
     'info_there_are_no_metadata_to_search' => __('There are no metadata to search', 'tainacan'),
     'info_there_are_no_metadata_in_repository_level' => __('There are no metadata in repository level', 'tainacan'),
     'info_import_collection' => __('Import from external sources.', 'tainacan'),
@@ -6638,7 +6690,7 @@ Argument | Type | Description
     'error_thumbnail_alt_ai_failed_detail' => __('Could not generate alternative text. You can try again or enter it manually.', 'tainacan'),
 ]` |  | 
 
-Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1321)
+Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1330)
 
 ---------------------------------
 <br>

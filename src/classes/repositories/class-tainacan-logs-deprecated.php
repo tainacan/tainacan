@@ -199,7 +199,6 @@ class Logs extends Repository {
 	 * @return \WP_Query|Array an instance of wp query OR array of entities;
 	 */
 	public function fetch( $args = [], $output = null ) {
-		error_log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
 		if ( is_numeric( $args ) ) {
 
 			$existing_post = get_post( $args );
