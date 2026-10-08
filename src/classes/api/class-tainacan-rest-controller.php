@@ -176,7 +176,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 						$args[ $mapped_v ] = $this->get_minimum_safe_perpage();
 					} else {
 						$args[ $mapped_v ] = in_array( $mapped, [ 'title', 'name' ], true )
-							? $this->sanitize_value( $request[ $mapped ], true )
+							? $this->sanitize_value( $request[ $mapped ] )
 							: $request[ $mapped ];
 					}
 				}

@@ -193,7 +193,7 @@ class Item_Metadata extends Repository {
 						$insert[] = $exists->term_id;
 					} else {
 						$create_term = new Entities\Term();
-						$new_term = $this->sanitize_value($new_term, true);
+						$new_term = $this->sanitize_value($new_term);
 						$create_term->set_name($new_term);
 						$create_term->set_taxonomy( $taxonomy->get_db_identifier() );
 						if ($create_term->validate()) { // Item_Metadata Entity was validated before, so this should be fine

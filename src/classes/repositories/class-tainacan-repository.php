@@ -191,10 +191,10 @@ abstract class Repository {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
-		$sanitized_title = $this->sanitize_value($obj->get('name'), true);
+		$sanitized_title = $this->sanitize_value($obj->get('name'));
 		$sanitized_desc = $this->sanitize_rich_text_value($obj->get('description'));
 		if ( $obj instanceof Entities\Item ) {
-			$sanitized_title = $this->sanitize_value($obj->get('title'), true);
+			$sanitized_title = $this->sanitize_value($obj->get('title'));
 
 			// get collection to determine post type
 			$collection = $obj->get_collection();
@@ -213,7 +213,7 @@ abstract class Repository {
 			$obj->WP_Post->post_title = $sanitized_title;
 			$obj->WP_Post->post_content = $sanitized_desc;
 		} else {
-			$obj->WP_Post->post_title = $this->sanitize_value($obj->WP_Post->post_title, true);
+			$obj->WP_Post->post_title = $this->sanitize_value($obj->WP_Post->post_title);
 			$obj->WP_Post->post_content = $this->sanitize_rich_text_value($obj->WP_Post->post_content);
 		}
 		
