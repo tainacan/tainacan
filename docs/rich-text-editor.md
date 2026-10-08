@@ -1,6 +1,6 @@
 # Rich text editor
 
-Tainacan uses the standard textarea by default. Administrators can allow the rich text editor in **Settings → Search and performance → Rich text editor**.
+Tainacan uses the standard textarea by default. Administrators can allow the rich text editor in **Settings → Text editing → Rich text editor**. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.
 
 Host managers can lock this choice by defining the following constant in `wp-config.php`, before the line that loads WordPress:
 

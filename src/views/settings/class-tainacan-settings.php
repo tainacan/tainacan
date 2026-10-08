@@ -206,12 +206,22 @@ class Settings extends Pages {
 			'default' => false
 		) );
 
+		/**
+		 * Text editing -----------------------------------------------------
+		 */
+		add_settings_section(
+			'tainacan_settings_text_editing',
+			__( 'Text editing', 'tainacan' ),
+			array( $this, 'text_editing_section_description' ),
+			'tainacan_settings'
+		);
+
 		$this->create_tainacan_setting( array(
 			'id' => 'allow_rich_text_editor',
-			'section' => 'tainacan_settings_search_and_performance',
+			'section' => 'tainacan_settings_text_editing',
 			'title' => __( 'Rich text editor', 'tainacan' ),
 			'label' => __( 'Allow the rich text editor in text inputs', 'tainacan' ),
-			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata.', 'tainacan' ),
+			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'input_disabled' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ),
@@ -783,6 +793,14 @@ class Settings extends Pages {
 	?>
 		<p class="settings-section-description">
 			<?php esc_html_e('Options that may impact on your servers response. Some may be disabled by your server settings. Use with caution!', 'tainacan');?>
+		</p>
+	<?php
+	}
+
+	public function text_editing_section_description() {
+	?>
+		<p class="settings-section-description">
+			<?php esc_html_e( 'Controls the rich text editor in Tainacan admin text fields.', 'tainacan' ); ?>
 		</p>
 	<?php
 	}

@@ -17,14 +17,14 @@ class Settings extends TAINACAN_UnitTestCase {
 		}
 	}
 
-	public function test_rich_text_editor_setting_is_registered_in_search_and_performance() {
+	public function test_rich_text_editor_setting_is_registered_in_text_editing() {
 		global $wp_settings_fields;
 
 		\Tainacan\Settings::get_instance()->settings_init();
-		$field = $wp_settings_fields['tainacan_settings']['tainacan_settings_search_and_performance']['tainacan_option_allow_rich_text_editor'];
+		$field = $wp_settings_fields['tainacan_settings']['tainacan_settings_text_editing']['tainacan_option_allow_rich_text_editor'];
 
 		$this->assertSame( 'Rich text editor', $field['title'] );
-		$this->assertSame( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata.', $field['args']['description'] );
+		$this->assertSame( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', $field['args']['description'] );
 		$this->assertFalse( $field['args']['input_disabled'] );
 		$this->assertFalse( $field['args']['default'] );
 		$this->assertNull( $field['args']['forced_value'] );
@@ -42,7 +42,7 @@ class Settings extends TAINACAN_UnitTestCase {
 
 			$settings = \Tainacan\Settings::get_instance();
 			$settings->settings_init();
-			$field = $GLOBALS['wp_settings_fields']['tainacan_settings']['tainacan_settings_search_and_performance']['tainacan_option_allow_rich_text_editor'];
+			$field = $GLOBALS['wp_settings_fields']['tainacan_settings']['tainacan_settings_text_editing']['tainacan_option_allow_rich_text_editor'];
 
 			$this->assertFalse( $settings->get_admin_js_localization_params()['tainacan_allow_rich_text_editor'] );
 			$this->assertTrue( $field['args']['input_disabled'] );
