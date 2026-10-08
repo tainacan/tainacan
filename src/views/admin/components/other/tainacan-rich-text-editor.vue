@@ -47,7 +47,6 @@ import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
 
 let nextKeyboardHintId = 0;
 const pendingRichTextEditorDialogMatchers = new Set();
-const pendingRichTextEditorMenuMarkers = new Set();
 let richTextEditorAuxObserver;
 
 function processPendingRichTextEditorAux() {
@@ -65,16 +64,6 @@ function processPendingRichTextEditorAux() {
         }
     }
 
-    if (pendingRichTextEditorMenuMarkers.size) {
-        const menus = document.querySelectorAll('.tox-menu');
-        const menu = menus[menus.length - 1];
-
-        if (menu && menu.getClientRects().length) {
-            menu.classList.add('tainacan-rich-text-editor-menu');
-            pendingRichTextEditorMenuMarkers.clear();
-        }
-    }
-
     stopRichTextEditorAuxObserverWhenIdle();
 }
 
@@ -88,7 +77,7 @@ function ensureRichTextEditorAuxObserver() {
 }
 
 function stopRichTextEditorAuxObserverWhenIdle() {
-    if (!richTextEditorAuxObserver || pendingRichTextEditorDialogMatchers.size || pendingRichTextEditorMenuMarkers.size)
+    if (!richTextEditorAuxObserver || pendingRichTextEditorDialogMatchers.size)
         return;
 
     richTextEditorAuxObserver.disconnect();
@@ -101,7 +90,7 @@ const EDITOR_INIT = {
     skin: false,
     content_css: false,
     content_style: `${contentCss}\n${contentUiCss}\nbody { font-family: 'Roboto', 'Source Sans', 'Helvetica', sans-serif; font-size: 0.875em; color: #1d1d1d; }\na, a:visited, a:hover, a:focus { color: #187181; }`,
-    toolbar: 'bold italic align bullist numlist link unlink code | undo redo',
+    toolbar: 'bold italic bullist numlist link unlink code | undo redo',
     link_title: true,
     target_list: false,
     rel_list: false,
@@ -114,7 +103,6 @@ const EDITOR_INIT = {
     entity_encoding: 'raw',
     setup(editor) {
         let richTextEditorDialogMatcher;
-        let richTextEditorMenuMarker;
 
         const waitForRichTextEditorDialog = (matcher) => {
             if (richTextEditorDialogMatcher)
@@ -124,21 +112,6 @@ const EDITOR_INIT = {
             pendingRichTextEditorDialogMatchers.add(matcher);
             ensureRichTextEditorAuxObserver();
         };
-        const onToolbarClick = (event) => {
-            const button = event.target.closest('button');
-
-            if (button?.dataset.mceName === 'align') {
-                if (richTextEditorMenuMarker)
-                    pendingRichTextEditorMenuMarkers.delete(richTextEditorMenuMarker);
-
-                richTextEditorMenuMarker = {};
-                pendingRichTextEditorMenuMarkers.add(richTextEditorMenuMarker);
-                ensureRichTextEditorAuxObserver();
-            }
-        };
-        editor.on('init', () => {
-            editor.getContainer().addEventListener('click', onToolbarClick);
-        });
         editor.on('BeforeExecCommand', (event) => {
             if (event.command === 'mceLink') {
                 waitForRichTextEditorDialog((dialog) => dialog.querySelector('input[type="url"]') && dialog.querySelector('input[data-mce-name="text"]'));
@@ -151,10 +124,7 @@ const EDITOR_INIT = {
         editor.on('remove', () => {
             if (richTextEditorDialogMatcher)
                 pendingRichTextEditorDialogMatchers.delete(richTextEditorDialogMatcher);
-            if (richTextEditorMenuMarker)
-                pendingRichTextEditorMenuMarkers.delete(richTextEditorMenuMarker);
             stopRichTextEditorAuxObserverWhenIdle();
-            editor.getContainer().removeEventListener('click', onToolbarClick);
         });
     }
 };
@@ -338,10 +308,6 @@ export default {
 }
 
 .tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-rich-text-editor-dialog) {
-    z-index: 10000000;
-}
-
-.tox.tox-silver-sink.tox-tinymce-aux:has(.tainacan-rich-text-editor-menu) {
     z-index: 10000000;
 }
 
