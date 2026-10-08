@@ -42,6 +42,6 @@ When the item form sends a value from the rich text editor, markup with no visib
 
 `Repository::sanitize_value($content, $remove_links = true)` and `REST_Controller::sanitize_value($value, $remove_links = true)` use WordPress's allowed post HTML and remove anchor tags by default. The option removes the anchor tag, not its visible text. Pass `false` for a field the rich text editor can save.
 
-`Metadata_Type::allows_links()` returns `false`. Textarea and Core Description return `true`, and saving or querying item metadata follows that answer. Entity descriptions are `post_content` and use `sanitize_rich_text_value()`, which keeps anchors. A text document does the same. Titles, names, Core Title, term names, and every other stored string still lose anchors.
+`Metadata_Type::allows_links()` returns `false`. Textarea and Core Description return `true`, and saving or querying item metadata follows that answer. Entity descriptions are `post_content` and are sanitized with `$remove_links` set to `false`, so anchors stay. A text document does the same. Titles, names, Core Title, term names, and every other stored string still lose anchors.
 
 REST `title` and `name` filters remove anchors before matching. A `metaquery` keeps them only when the targeted metadata type allows links. Other query clauses remove them. This change does not migrate previously saved values or restore links removed by earlier saves. Plain-text representations such as `value_as_string` and excerpts continue to strip HTML tags.
