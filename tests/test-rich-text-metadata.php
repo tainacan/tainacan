@@ -102,16 +102,9 @@ class Textarea_Rich_Text_Option extends TAINACAN_UnitApiTestCase {
 		$this->assertStringContainsString( '<p>Second <em>part</em></p>', $data['value_as_html'] );
 	}
 
-	public function test_visually_empty_editor_markup_does_not_fill_required_metadata() {
+	public function test_empty_paragraph_markup_is_stored_as_sent() {
 		[ $item, $metadatum ] = $this->create_item_and_metadatum( [ 'required' => 'yes' ] );
-		$this->assertSame( 400, $this->put_value( $item, $metadatum, '<p><br></p>' )->get_status() );
-		$this->assertFalse( metadata_exists( 'post', $item->get_id(), $metadatum->get_id() ) );
-	}
-
-	public function test_visually_empty_editor_markup_clears_optional_metadata() {
-		[ $item, $metadatum ] = $this->create_item_and_metadatum();
-		$this->assertSame( 200, $this->put_value( $item, $metadatum, '<p>Filled</p>' )->get_status() );
 		$this->assertSame( 200, $this->put_value( $item, $metadatum, '<p><br></p>' )->get_status() );
-		$this->assertFalse( metadata_exists( 'post', $item->get_id(), $metadatum->get_id() ) );
+		$this->assertSame( '<p><br></p>', get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
 	}
 }

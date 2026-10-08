@@ -48,6 +48,23 @@
             .join('\n');
     }
 
+    function editorValueForSave(value) {
+        if (value === null || value === undefined || value === '')
+            return '';
+
+        const html = String(value);
+        if (/<(?:img|video|audio|iframe|embed|object|svg|hr)\b/i.test(html))
+            return value;
+
+        const visibleText = html
+            .replace(/<[^>]*>/g, '')
+            .replace(/&nbsp;|&#160;|&#xa0;/gi, ' ')
+            .replace(/\u00a0/g, ' ')
+            .replace(/\s+/g, '');
+
+        return visibleText === '' ? '' : value;
+    }
+
     function valueForRichTextEditor(value) {
         if (value === null || value === undefined || value === '')
             return '';
@@ -116,7 +133,9 @@
                 clearTimeout(this.pendingTimer);
                 this.pendingTimer = null;
                 if (this.pendingValue !== null) {
-                    this.$emit('update:value', this.pendingValue);
+                    const value = this.shouldUseRichTextEditor ? editorValueForSave(this.pendingValue) : this.pendingValue;
+                    this.localValue = value;
+                    this.$emit('update:value', value);
                     this.pendingValue = null;
                 }
             },

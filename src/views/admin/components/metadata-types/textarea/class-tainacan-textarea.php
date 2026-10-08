@@ -54,24 +54,6 @@ class Textarea extends Metadata_Type {
 		];
 	}
 
-	/**
-	 * Treat an editor value with no visible content as empty.
-	 */
-	public static function normalize_value( $value ) {
-		if ( is_array( $value ) ) {
-			return array_map( [ __CLASS__, 'normalize_value' ], $value );
-		}
-		if ( ! is_string( $value ) || $value === '' ) {
-			return $value;
-		}
-		$text = html_entity_decode( wp_strip_all_tags( $value ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-		$visible_text = preg_replace( '/[\s\x{00A0}]+/u', '', $text );
-		if ( $visible_text === '' && ! preg_match( '/<(?:img|video|audio|iframe|embed|object|svg|hr)\b/i', $value ) ) {
-			return '';
-		}
-		return $value;
-	}
-	
 	public function get_multivalue_prefix() {
 		return '<div class="metadata-value">';
 	}

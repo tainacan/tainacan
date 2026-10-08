@@ -36,7 +36,7 @@ Textarea and Core Description use a plain textarea by default. To edit either wi
 
 The first time a stored value opens in TinyMCE, the admin screen prepares paragraphs and links in the browser when the string has no `<p>`, `<ul>`, or `<ol>` tag. Opening or canceling the editor does not change the stored value. The next save stores the HTML the editor produced. A later open sees those tags and loads `value` as it is stored. A list-only value is treated as already converted, because TinyMCE can save a list without a paragraph.
 
-An editor containing only an empty paragraph is stored as an empty value. That keeps required-field validation and optional-value removal working for Textarea and Core Description when the option is on. Bulk editing uses the same item form component, so a Textarea with the option on shows the editor there as well. Copying values stays limited to metadata of the same type and does not convert paragraphs or links during the copy.
+When the item form sends a value from the rich text editor, markup with no visible text and no media is sent as an empty value. A value sent through the API, including `<p><br></p>`, is stored as received. Bulk editing uses the same item form component, so a Textarea with the option on shows the editor there as well. Copying values stays limited to metadata of the same type and does not convert paragraphs or links during the copy.
 
 ## Conditional link sanitization for developers
 
