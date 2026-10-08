@@ -79,10 +79,16 @@
 		scroller.addEventListener('scroll', setActive, { passive: true });
 		setActive();
 
-		if (window.location.hash) {
+		function scrollToCurrentHash() {
+			if (!window.location.hash)
+				return;
+
 			var target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
 			if (target)
 				scrollToHeading(target);
 		}
+
+		window.addEventListener('hashchange', scrollToCurrentHash);
+		scrollToCurrentHash();
 	});
 }());
