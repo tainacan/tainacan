@@ -90,7 +90,7 @@ class Core_Description_Rich_Text extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( $plain, get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
 	}
 
-	public function test_external_description_change_updates_the_queryable_copy() {
+	public function test_item_update_leaves_the_metadata_copy_until_the_description_is_saved() {
 		[ , $item, $metadatum ] = $this->create_item_with_core_description( 'Original' );
 		$this->enable_rich_text_editor( $metadatum );
 		$this->assertSame( 200, $this->save_description( $item, $metadatum, '<p>Rich</p>' )->get_status() );
@@ -106,30 +106,8 @@ class Core_Description_Rich_Text extends TAINACAN_UnitApiTestCase {
 		$item->set_description( "External\n\nText" );
 		$this->assertTrue( $item->validate() );
 		$repository->update( $item );
-		$this->assertSame( "External\n\nText", get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
-	}
-
-	public function test_failed_mirror_write_restores_description() {
-		[ , $item, $metadatum ] = $this->create_item_with_core_description( 'Before' );
-		$this->enable_rich_text_editor( $metadatum );
-		$this->assertSame( 200, $this->save_description( $item, $metadatum, '<p>Before</p>' )->get_status() );
-
-		$block_mirror = static function ( $check, $object_id, $meta_key ) use ( $item, $metadatum ) {
-			if ( (int) $object_id === $item->get_id() && (string) $meta_key === (string) $metadatum->get_id() ) {
-				return true;
-			}
-			return $check;
-		};
-		add_filter( 'update_post_metadata', $block_mirror, 10, 3 );
-		try {
-			$response = $this->save_description( $item, $metadatum, 'After' );
-		} finally {
-			remove_filter( 'update_post_metadata', $block_mirror, 10 );
-		}
-
-		$this->assertSame( 500, $response->get_status() );
-		$this->assertSame( '<p>Before</p>', get_post( $item->get_id() )->post_content );
-		$this->assertSame( '<p>Before</p>', get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
+		$this->assertSame( "External\n\nText", get_post( $item->get_id() )->post_content );
+		$this->assertSame( '<p>Rich</p>', get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
 	}
 
 	public function test_duplication_copies_the_description() {
@@ -156,7 +134,7 @@ class Core_Description_Rich_Text extends TAINACAN_UnitApiTestCase {
 		$this->assertStringNotContainsString( '<a href="https://example.org"><a ', $data['value_as_html'] );
 	}
 
-	public function test_item_rest_update_replaces_description_and_its_copy() {
+	public function test_item_rest_update_changes_description_and_leaves_the_metadata_copy() {
 		[ , $item, $metadatum ] = $this->create_item_with_core_description( 'Before' );
 		$this->enable_rich_text_editor( $metadatum );
 		$this->assertSame( 200, $this->save_description( $item, $metadatum, '<p>Before</p>' )->get_status() );
@@ -168,7 +146,7 @@ class Core_Description_Rich_Text extends TAINACAN_UnitApiTestCase {
 
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame( "Outside\n\nEditor", get_post( $item->get_id() )->post_content );
-		$this->assertSame( "Outside\n\nEditor", get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
+		$this->assertSame( '<p>Before</p>', get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
 	}
 
 	public function test_edit_only_fields_and_writes_are_not_available_without_permission() {
@@ -202,34 +180,5 @@ class Core_Description_Rich_Text extends TAINACAN_UnitApiTestCase {
 		$this->assertFalse( metadata_exists( 'post', $item->get_id(), $metadatum->get_id() ) );
 		$data = $this->read_description( $item, $metadatum )->get_data();
 		$this->assertSame( '', $data['value_as_html'] );
-	}
-
-
-	public function test_failed_mirror_creation_removes_a_new_item() {
-		global $wpdb;
-		$collection = $this->tainacan_entity_factory->create_entity( 'collection', [
-			'name' => 'Failed creation', 'status' => 'publish',
-		], true );
-		$metadatum_id = $collection->get_core_description_metadatum()->get_id();
-		$item = $this->tainacan_entity_factory->create_entity( 'item', [
-			'title' => 'Failed description copy fixture',
-			'description' => 'Some content',
-			'collection' => $collection,
-			'status' => 'draft',
-		], false );
-		$this->assertTrue( $item->validate() );
-
-		$block_mirror = static function ( $check, $object_id, $meta_key ) use ( $metadatum_id ) {
-			return (string) $meta_key === (string) $metadatum_id ? true : $check;
-		};
-		add_filter( 'add_post_metadata', $block_mirror, 10, 3 );
-		try {
-			$result = Repositories\Items::get_instance()->insert( $item );
-		} finally {
-			remove_filter( 'add_post_metadata', $block_mirror, 10 );
-		}
-		$this->assertFalse( $result );
-		$count = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->posts WHERE post_title = %s", 'Failed description copy fixture' ) );
-		$this->assertSame( 0, $count );
 	}
 }

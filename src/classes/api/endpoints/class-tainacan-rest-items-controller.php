@@ -1033,11 +1033,6 @@ class REST_Items_Controller extends REST_Controller {
 
 				if($prepared_item->validate()){
 					$updated_item = $this->items_repository->update($prepared_item);
-					if ( ! $updated_item instanceof Entities\Item ) {
-						return new \WP_REST_Response( [
-							'error_message' => __( 'Could not save the item.', 'tainacan' ),
-						], 500 );
-					}
 
 					do_action('tainacan-api-item-updated', $updated_item, $attributes);
 

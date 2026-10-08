@@ -249,7 +249,6 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 			$item  = $this->item_repository->fetch($item_id);
 			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
-			$is_core_description = $metadatum->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Core_Description;
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id);
 
@@ -258,14 +257,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 			if ($item_metadata->validate()) {
 				if($item->can_edit()) {
-					try {
-						$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
-					} catch ( \Throwable $error ) {
-						if ( ! $is_core_description ) {
-							throw $error;
-						}
-						return new \WP_REST_Response( [ 'error_message' => __( 'Could not save the item description.', 'tainacan' ) ], 500 );
-					}
+					$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
 
 					$prepared_item =  $this->prepare_item_for_response($updated_item_metadata, $request);
 					$prepared_item['metadatum']['metadata_type_object'] = $updated_item_metadata->get_metadatum()->get_metadata_type_object()->_toArray();
