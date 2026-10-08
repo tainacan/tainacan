@@ -103,6 +103,16 @@
                             {{ $i18n.get('label_yes') }}
                         </b-checkbox>
                     </b-field>
+                    <p
+                            v-if="exporterFilesExpirationNotice"
+                            class="help exporter-files-expiration-notice">
+                        <span
+                                aria-hidden="true"
+                                class="icon has-text-warning">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle" />
+                        </span>
+                        <span>{{ exporterFilesExpirationNotice }}</span>
+                    </p>
                 </div>
             </div>
             <div class="columns is-mobile is-multiline">
@@ -159,7 +169,11 @@
                 runButtonLoading: false,
                 exporterSession: {},
                 formErrorMessage: '',
-                isLoading: false
+                isLoading: false,
+                exporterFilesExpirationNotice:
+                    typeof tainacan_plugin !== 'undefined'
+                        ? tainacan_plugin.exporter_files_expiration_notice
+                        : ''
             }
         },
         watch: {

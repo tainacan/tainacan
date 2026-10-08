@@ -241,6 +241,20 @@ abstract class Pages {
 
 		$tainacan_admin_i18n['entities_labels'] = $entities_labels;
 
+		$exporter_files_expiration_days = \Tainacan\Exporter_Files::get_instance()
+			->get_expiration_days();
+
+		$exporter_files_expiration_notice = sprintf(
+			/* translators: %s is the number of days an exported file remains available. */
+			_n(
+				'The generated export file will remain available for download for %s day after the export finishes.',
+				'The generated export file will remain available for download for %s days after the export finishes.',
+				$exporter_files_expiration_days,
+				'tainacan'
+			),
+			number_format_i18n( $exporter_files_expiration_days )
+		);
+
 		$settings = [
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
@@ -291,6 +305,8 @@ abstract class Pages {
 			'has_permalinks_structure' => get_option('permalink_structure') !== '',
 			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),
 			'default_search_sentence'  => \Tainacan\Theme_Helper::get_instance()->get_default_search_sentence(),
+			'exporter_files_expiration_days'   => $exporter_files_expiration_days,
+			'exporter_files_expiration_notice' => $exporter_files_expiration_notice,
 		];
 		
 		$maps = [
