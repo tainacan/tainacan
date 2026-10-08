@@ -382,7 +382,6 @@
         components:{
             TainacanText: defineAsyncComponent(() => import('../metadata-types/text/TainacanText.vue')),
             TainacanTextarea: defineAsyncComponent(() => import('../metadata-types/textarea/TainacanTextarea.vue')),
-            TainacanRichText: defineAsyncComponent(() => import('../metadata-types/rich-text/TainacanRichText.vue')),
             TainacanSelectbox: defineAsyncComponent(() => import('../metadata-types/selectbox/TainacanSelectbox.vue')),
             TainacanNumeric: defineAsyncComponent(() => import('../metadata-types/numeric/TainacanNumeric.vue')),
             TainacanDate: defineAsyncComponent(() => import('../metadata-types/date/TainacanDate.vue')),
@@ -740,9 +739,7 @@
                 if (source.metadata_type === destination.metadata_type)
                     return true;
 
-                const types = ['Tainacan\\Metadata_Types\\Textarea', 'Tainacan\\Metadata_Types\\Rich_Text'];
-                return types.includes(source.metadata_type) && types.includes(destination.metadata_type)
-                    && source.parent <= 0 && destination.parent <= 0;
+                return false;
             },
             getValidEditionActions(metadatum) {
                 let validEditionActions = JSON.parse(JSON.stringify(this.editionActions));

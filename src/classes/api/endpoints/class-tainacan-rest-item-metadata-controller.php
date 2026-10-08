@@ -141,13 +141,6 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$item_arr = $item->_toArray(true, true);
-		if ( $item instanceof Entities\Item_Metadata_Entity &&
-			$item->get_metadatum()->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Core_Description &&
-			$item->get_item()->can_edit() &&
-			( $request['context'] === 'edit' || $request->get_method() !== 'GET' ) ) {
-			$item_arr['saved_with_rich_text_editor'] = Repositories\Items::get_instance()->is_core_description_saved_with_rich_text_editor( $item->get_item() );
-			$item_arr['value_for_rich_text_editor'] = $item->get_metadatum()->get_metadata_type_object()->get_value_for_rich_text_editor( $item );
-		}
 
 		if ($request['context'] === 'edit') {
 			// Item metadata permissions are checked against the owning item, not a post ID on the metadata entity.
@@ -257,20 +250,6 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$item  = $this->item_repository->fetch($item_id);
 			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
 			$is_core_description = $metadatum->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Core_Description;
-			$has_editor_mode = array_key_exists( 'edited_with_rich_text_editor', $body );
-			if ( $has_editor_mode && ( ! $is_core_description || ! is_bool( $body['edited_with_rich_text_editor'] ) ) ) {
-				return new \WP_REST_Response( [ 'error_message' => __( 'Invalid rich text editor mode for this metadatum.', 'tainacan' ) ], 400 );
-			}
-			$edited_with_rich_text_editor = $has_editor_mode && $body['edited_with_rich_text_editor'];
-			if ( $edited_with_rich_text_editor ) {
-				$global_enabled = defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' )
-					? true === TAINACAN_ALLOW_RICH_TEXT_EDITOR
-					: (bool) get_option( 'tainacan_option_allow_rich_text_editor', false );
-				$options = $metadatum->get_metadata_type_options();
-				if ( ! $global_enabled || ! isset( $options['use_rich_text_editor'] ) || $options['use_rich_text_editor'] !== 'yes' ) {
-					return new \WP_REST_Response( [ 'error_message' => __( 'The rich text editor setting changed. Reload the item and try again.', 'tainacan' ) ], 409 );
-				}
-			}
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id);
 
@@ -280,7 +259,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			if ($item_metadata->validate()) {
 				if($item->can_edit()) {
 					try {
-						$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata, $edited_with_rich_text_editor );
+						$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
 					} catch ( \Throwable $error ) {
 						if ( ! $is_core_description ) {
 							throw $error;
@@ -376,10 +355,6 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				'type'        => ['array', 'string', 'object', 'integer'],
 				'items'       => ['type' => ['string', 'integer'] ],
 				'description' => __('The parent meta ID for the item metadata children group', 'tainacan')
-			];
-			$endpoint_args['edited_with_rich_text_editor'] = [
-				'type' => 'boolean',
-				'description' => __( 'Whether the Core Description value was edited with the rich text editor.', 'tainacan' ),
 			];
 		} elseif ($method === \WP_REST_Server::DELETABLE) {
 			$endpoint_args['metadatum_id'] = [
@@ -502,16 +477,6 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				'value_as_html' => array(
 					'type' => 'string',
 					'description' => __( 'Value as HTML', 'tainacan' ),
-				),
-				'saved_with_rich_text_editor' => array(
-					'type' => 'boolean',
-					'context' => [ 'edit' ],
-					'description' => __( 'Whether the item Core Description was last saved with the rich text editor.', 'tainacan' ),
-				),
-				'value_for_rich_text_editor' => array(
-					'type' => 'string',
-					'context' => [ 'edit' ],
-					'description' => __( 'The Core Description value prepared for the rich text editor without saving it.', 'tainacan' ),
 				),
 				'parent_meta_id' => array(
 					'type' => 'string',

@@ -2004,77 +2004,27 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	}
 
 	/** @group bulkedit-copy */
-	function test_copy_textarea_to_rich_text_formats_each_selected_item() {
+	function test_copy_between_textareas_keeps_the_stored_value() {
 		$source = $this->create_copy_metadatum('Textarea');
-		$destination = $this->create_copy_metadatum('Rich_Text');
+		$destination = $this->create_copy_metadatum('Textarea');
 		$values = ["First paragraph\n\nhttps://example.org", "Second item\nAnother line", 'Outside group'];
 		foreach ($values as $index => $value) {
 			$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[$index]);
 			$this->store_copy_value($item, $source, $value);
-			$this->store_copy_value($item, $destination, '<p>Previous destination</p>');
+			$this->store_copy_value($item, $destination, 'Previous destination');
 		}
 		$this->copy_metadata_values($source, $destination, array_slice($this->items_ids, 0, 2));
 		foreach (array_slice($values, 0, 2) as $index => $value) {
-			$this->assertSame(trim(wpautop(make_clickable($value))), $this->read_copy_value($this->items_ids[$index], $destination));
+			$this->assertSame($value, $this->read_copy_value($this->items_ids[$index], $destination));
 			$this->assertSame($value, $this->read_copy_value($this->items_ids[$index], $source));
 		}
-		$this->assertStringContainsString('<p>First paragraph</p>', $this->read_copy_value($this->items_ids[0], $destination));
-		$this->assertStringContainsString('<a href="https://example.org"', $this->read_copy_value($this->items_ids[0], $destination));
-		$this->assertSame('<p>Previous destination</p>', $this->read_copy_value($this->items_ids[2], $destination));
-		$this->copy_metadata_values($source, $destination, array_slice($this->items_ids, 0, 2));
-		$this->assertSame(trim(wpautop(make_clickable($values[0]))), $this->read_copy_value($this->items_ids[0], $destination));
-	}
-	/** @group bulkedit-copy */
-	function test_copy_rich_text_to_textarea_preserves_safe_html_and_queries() {
-		$source = $this->create_copy_metadatum('Rich_Text');
-		$destination = $this->create_copy_metadatum('Textarea');
-		$html = '<p><strong>First</strong> <a href="https://example.org">link</a></p><ul><li><em>Second</em></li></ul>';
-		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		$this->store_copy_value($item, $source, $html);
-		$this->store_copy_value($item, $destination, 'Previous');
-		foreach ([false, true] as $enabled) {
-			update_option('tainacan_option_allow_rich_text_editor', $enabled);
-			$this->copy_metadata_values($source, $destination);
-			$this->assertSame($html, $this->read_copy_value($item->get_id(), $destination));
-			$this->assertSame($html, $this->read_copy_value($item->get_id(), $source));
-		}
-		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $item->get_id() . '/metadata/' . $destination->get_id());
-		$response = $this->server->dispatch($request);
-		$this->assertSame(200, $response->get_status());
-		$this->assertSame($html, $response->get_data()['value']);
-		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection->get_id() . '/items');
-		$request->set_param('metaquery', [['key' => $destination->get_id(), 'value' => $html]]);
-		$response = $this->server->dispatch($request);
-		$this->assertSame(200, $response->get_status());
-		$this->assertSame([$item->get_id()], array_column($response->get_data()['items'], 'id'));
-	}
-
-	/** @group bulkedit-copy */
-	function test_copy_textarea_rich_text_adapts_single_and_multiple_values() {
-		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		foreach ([['Textarea', 'Rich_Text'], ['Rich_Text', 'Textarea']] as [$from, $to]) {
-			foreach ([false, true] as $multiple) {
-				$source = $this->create_copy_metadatum($from, $multiple);
-				$destination = $this->create_copy_metadatum($to, true);
-				$values = $from === 'Textarea' ? ['0', "Another\n\nhttps://example.org"] : ['<p>0</p>', '<p><a href="https://example.org">Second</a></p>'];
-				$this->store_copy_value($item, $source, $multiple ? $values : $values[0]);
-				$this->store_copy_value($item, $destination, ['Previous', 'Replaced']);
-				$this->copy_metadata_values($source, $destination);
-				$expected = array_slice($values, 0, $multiple ? 2 : 1);
-				if ($from === 'Textarea') {
-					$expected = array_map(static function($value) { return trim(wpautop(make_clickable($value))); }, $expected);
-				}
-				$this->assertSame($expected, $this->read_copy_value($item->get_id(), $destination));
-				$this->assertSame($expected, get_post_meta($item->get_id(), $destination->get_id(), false));
-				$this->assertSame($multiple ? $values : $values[0], $this->read_copy_value($item->get_id(), $source));
-			}
-		}
+		$this->assertSame('Previous destination', $this->read_copy_value($this->items_ids[2], $destination));
 	}
 
 	/** @group bulkedit-copy */
 	function test_copy_rejects_multiple_to_single_and_other_types_without_writes() {
 		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		foreach ([['Textarea', 'Rich_Text', true], ['Rich_Text', 'Textarea', true], ['Text', 'Rich_Text', false], ['Core_Description', 'Rich_Text', false]] as [$from, $to, $multiple]) {
+		foreach ([['Textarea', 'Textarea', true], ['Text', 'Textarea', false], ['Core_Description', 'Textarea', false]] as [$from, $to, $multiple]) {
 			$source = $from === 'Core_Description' ? $this->collection->get_core_description_metadatum() : $this->create_copy_metadatum($from, $multiple);
 			$destination = $this->create_copy_metadatum($to);
 			$this->store_copy_value($item, $source, $multiple ? ['One', 'Two'] : 'Source');
@@ -2090,7 +2040,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	/** @group bulkedit-copy */
 	function test_copy_rejects_missing_ids_and_self_copy_without_fatal_errors() {
 		$source = $this->create_copy_metadatum('Textarea');
-		$destination = $this->create_copy_metadatum('Rich_Text');
+		$destination = $this->create_copy_metadatum('Textarea');
 		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
 		$this->store_copy_value($item, $source, 'Source');
 		$this->store_copy_value($item, $destination, 'Previous');
@@ -2103,108 +2053,57 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	}
 
 	/** @group bulkedit-copy */
-	function test_copy_rejects_foreign_collection_and_compound_children() {
-		$foreign = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'Foreign', 'status' => 'publish'], true);
-		$source = $this->create_copy_metadatum('Textarea');
-		$destination = $this->create_copy_metadatum('Rich_Text');
-		$foreign_source = $this->create_copy_metadatum('Textarea', false, ['collection' => $foreign]);
-		$foreign_destination = $this->create_copy_metadatum('Rich_Text', false, ['collection' => $foreign]);
-		$compound = $this->create_copy_metadatum('Compound', true);
-		$child_source = $this->create_copy_metadatum('Textarea', false, ['parent' => $compound->get_id()]);
-		$child_destination = $this->create_copy_metadatum('Rich_Text', false, ['parent' => $compound->get_id()]);
-		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		$this->store_copy_value($item, $source, 'Source');
-		$this->store_copy_value($item, $destination, 'Previous');
-		foreach ([[$foreign_source, $destination], [$source, $foreign_destination], [$child_source, $destination], [$source, $child_destination]] as [$from, $to]) {
-			$before = get_post_meta($item->get_id(), $to->get_id(), false);
-			$process = $this->copy_metadata_values($from, $to);
-			$this->assertNotEmpty($process->get_error_log());
-			$this->assertSame($before, get_post_meta($item->get_id(), $to->get_id(), false));
-			$this->assertSame('Previous', $this->read_copy_value($item->get_id(), $destination));
-		}
-	}
-
-	/** @group bulkedit-copy */
-	function test_copy_accepts_repository_and_parent_collection_metadata() {
-		$parent = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'Parent', 'status' => 'publish'], true);
-		$this->collection->set_parent($parent->get_id());
-		\Tainacan\Repositories\Collections::get_instance()->update($this->collection);
-		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		foreach ([$parent, null] as $collection) {
-			$source = $this->create_copy_metadatum('Textarea', false, $collection ? ['collection' => $collection] : ['collection_id' => 'default']);
-			$destination = $this->create_copy_metadatum('Rich_Text');
-			$this->store_copy_value($item, $source, 'Inherited');
-			$this->copy_metadata_values($source, $destination);
-			$this->assertSame('<p>Inherited</p>', $this->read_copy_value($item->get_id(), $destination));
-		}
-	}
-
-	/** @group bulkedit-copy */
 	function test_copy_empty_values_validates_destination_and_preserves_zero() {
 		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		foreach ([['Textarea', 'Rich_Text'], ['Rich_Text', 'Textarea']] as [$from, $to]) {
-			foreach ([false, true] as $multiple) {
-				$source = $this->create_copy_metadatum($from, $multiple);
-				$optional = $this->create_copy_metadatum($to, $multiple);
-				$required = $this->create_copy_metadatum($to, $multiple, ['required' => 'yes']);
-				foreach ([$optional, $required] as $destination) {
-					$this->store_copy_value($item, $destination, $multiple ? ['Previous'] : 'Previous');
-					$process = $this->copy_metadata_values($source, $destination);
-					if ($destination->is_required()) {
-						$this->assertNotEmpty($process->get_error_log());
-						$this->assertSame($multiple ? ['Previous'] : 'Previous', $this->read_copy_value($item->get_id(), $destination));
-					} else {
-						$this->assertFalse(metadata_exists('post', $item->get_id(), $destination->get_id()));
-					}
+		foreach ([false, true] as $multiple) {
+			$source = $this->create_copy_metadatum('Textarea', $multiple);
+			$optional = $this->create_copy_metadatum('Textarea', $multiple);
+			$required = $this->create_copy_metadatum('Textarea', $multiple, ['required' => 'yes']);
+			foreach ([$optional, $required] as $destination) {
+				$this->store_copy_value($item, $destination, $multiple ? ['Previous'] : 'Previous');
+				$process = $this->copy_metadata_values($source, $destination);
+				if ($destination->is_required()) {
+					$this->assertNotEmpty($process->get_error_log());
+					$this->assertSame($multiple ? ['Previous'] : 'Previous', $this->read_copy_value($item->get_id(), $destination));
+				} else {
+					$this->assertFalse(metadata_exists('post', $item->get_id(), $destination->get_id()));
 				}
 			}
 		}
 		$source = $this->create_copy_metadatum('Textarea');
-		$destination = $this->create_copy_metadatum('Rich_Text');
-		foreach (['0' => '<p>0</p>', '   ' => '', '<p><br></p>' => ''] as $input => $expected) {
-			$this->store_copy_value($item, $source, (string) $input);
-			$this->copy_metadata_values($source, $destination);
-			$this->assertSame($expected, $this->read_copy_value($item->get_id(), $destination));
-		}
+		$destination = $this->create_copy_metadatum('Textarea');
+		$this->store_copy_value($item, $source, '0');
+		$this->copy_metadata_values($source, $destination);
+		$this->assertSame('0', $this->read_copy_value($item->get_id(), $destination));
 	}
 
 	/** @group bulkedit-copy */
 	function test_copy_safe_links_and_unsafe_historical_values_use_destination_sanitization() {
 		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		foreach ([['Textarea', 'Rich_Text'], ['Rich_Text', 'Textarea']] as [$from, $to]) {
-			$source = $this->create_copy_metadatum($from);
-			$destination = $this->create_copy_metadatum($to);
-			// Explicit historical fixture bypasses write sanitization to exercise destination protection.
-			$value = '<p onclick="alert(1)">Safe <a href="https://example.org">existing</a></p><script>alert(1)</script><a href="javascript:alert(1)">Bad</a>' . "\n\nhttps://example.net contact@example.org";
-			update_post_meta($item->get_id(), $source->get_id(), $value);
-			$this->copy_metadata_values($source, $destination);
-			$saved = $this->read_copy_value($item->get_id(), $destination);
-			$this->assertStringNotContainsString('onclick', $saved);
-			$this->assertStringNotContainsString('<script', $saved);
-			$this->assertStringNotContainsString('javascript:', $saved);
-			$this->assertStringContainsString('<a href="https://example.org">existing</a>', $saved);
-			$this->assertSame($value, $this->read_copy_value($item->get_id(), $source));
-			if ($from === 'Textarea') {
-				$this->assertSame(1, substr_count($saved, 'href="https://example.org"'));
-				$this->assertStringContainsString('href="https://example.net"', $saved);
-				$this->assertStringContainsString('href="mailto:contact@example.org"', $saved);
-			} else {
-				$this->assertStringNotContainsString('href="https://example.net"', $saved);
-			}
-		}
+		$source = $this->create_copy_metadatum('Textarea');
+		$destination = $this->create_copy_metadatum('Textarea');
+		$value = '<p onclick="alert(1)">Safe <a href="https://example.org">existing</a></p><script>alert(1)</script><a href="javascript:alert(1)">Bad</a>' . "\n\nhttps://example.net";
+		update_post_meta($item->get_id(), $source->get_id(), $value);
+		$this->copy_metadata_values($source, $destination);
+		$saved = $this->read_copy_value($item->get_id(), $destination);
+		$this->assertStringNotContainsString('onclick', $saved);
+		$this->assertStringNotContainsString('<script', $saved);
+		$this->assertStringNotContainsString('javascript:', $saved);
+		$this->assertStringContainsString('<a href="https://example.org">existing</a>', $saved);
+		$this->assertStringContainsString('https://example.net', $saved);
+		$this->assertSame(1, substr_count($saved, 'href="https://example.org"'));
+		$this->assertSame($value, $this->read_copy_value($item->get_id(), $source));
 	}
 
 	/** @group bulkedit-copy */
-	function test_copy_same_textarea_and_rich_text_types_does_not_format() {
+	function test_copy_between_textareas_does_not_format_existing_markup() {
 		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		foreach (['Textarea', 'Rich_Text'] as $type) {
-			$source = $this->create_copy_metadatum($type);
-			$destination = $this->create_copy_metadatum($type);
-			$value = "<p>Existing</p>\nhttps://example.org";
-			$this->store_copy_value($item, $source, $value);
-			$this->copy_metadata_values($source, $destination);
-			$this->assertSame($value, $this->read_copy_value($item->get_id(), $destination));
-		}
+		$source = $this->create_copy_metadatum('Textarea');
+		$destination = $this->create_copy_metadatum('Textarea');
+		$value = "<p>Existing</p>\nhttps://example.org";
+		$this->store_copy_value($item, $source, $value);
+		$this->copy_metadata_values($source, $destination);
+		$this->assertSame($value, $this->read_copy_value($item->get_id(), $destination));
 	}
 
 	/**
@@ -2214,9 +2113,10 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	function test_rest_copy_dispatch_executes_the_queued_worker_payload() {
 		global $wpdb;
 		$source = $this->create_copy_metadatum('Textarea');
-		$destination = $this->create_copy_metadatum('Rich_Text');
+		$destination = $this->create_copy_metadatum('Textarea');
 		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
-		$this->store_copy_value($item, $source, "REST\n\nhttps://example.org");
+		$value = "REST\n\nhttps://example.org";
+		$this->store_copy_value($item, $source, $value);
 		$request = new \WP_REST_Request('POST', $this->api_baseroute);
 		$request->set_body(wp_json_encode(['items_ids' => [$item->get_id()]]));
 		$response = $this->server->dispatch($request);
@@ -2224,7 +2124,6 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$group_id = $response->get_data()['id'];
 		$request = new \WP_REST_Request('POST', $this->api_baseroute . '/' . $group_id . '/copy_value');
 		$request->set_body(wp_json_encode(['metadatum_id_from' => $source->get_id(), 'metadatum_id_to' => $destination->get_id()]));
-		// Only intercept the asynchronous transport; REST dispatch and queue persistence are real.
 		$transport = static function() { return ['headers' => [], 'body' => '', 'response' => ['code' => 200, 'message' => 'OK']]; };
 		add_filter('pre_http_request', $transport);
 		try {
@@ -2248,7 +2147,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 				$batch = $result;
 			}
 			$this->assertLessThan(100, $steps);
-			$this->assertSame(trim(wpautop(make_clickable("REST\n\nhttps://example.org"))), $this->read_copy_value($item->get_id(), $destination));
+			$this->assertSame($value, $this->read_copy_value($item->get_id(), $destination));
 		} finally {
 			$worker->delete($row->ID);
 		}
@@ -2260,7 +2159,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	 */
 	function test_copy_does_not_edit_items_without_permission() {
 		$source = $this->create_copy_metadatum('Textarea');
-		$destination = $this->create_copy_metadatum('Rich_Text');
+		$destination = $this->create_copy_metadatum('Textarea');
 		$item = \Tainacan\Repositories\Items::get_instance()->fetch($this->items_ids[0]);
 		$this->store_copy_value($item, $source, 'Source');
 		$this->store_copy_value($item, $destination, 'Previous');

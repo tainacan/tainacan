@@ -90,17 +90,6 @@ class Core_Description extends Metadata_Type {
 		
     }
 
-	/**
-	 * Prepare a legacy item description for the rich text editor without saving it.
-	 */
-	public function get_value_for_rich_text_editor( \Tainacan\Entities\Item_Metadata_Entity $item_metadata ) {
-		$value = $item_metadata->get_value();
-		if ( \Tainacan\Repositories\Items::get_instance()->is_core_description_saved_with_rich_text_editor( $item_metadata->get_item() ) ) {
-			return $value;
-		}
-		return wpautop( $this->make_clickable_links( $value ) );
-	}
-    
     /**
 	 * Get the value as a HTML string with links and breakline tag.
 	 * @return string
@@ -140,7 +129,7 @@ class Core_Description extends Metadata_Type {
 				}
 			}
 		} else {
-			$return = $this->get_value_for_rich_text_editor( $item_metadata );
+			$return = wpautop($this->make_clickable_links($value));
 		}
 
 		return 

@@ -36,7 +36,7 @@ export const itemMetadataMixin = {
             'deleteItemMetadataGroup',
             'deleteGroupFromItemSubmissionMetadatum'
         ]),
-        updateItemMetadataValue({ itemId, metadatumId, values, parentMetaId, parentId, editedWithRichTextEditor }) {
+        updateItemMetadataValue({ itemId, metadatumId, values, parentMetaId, parentId }) {
 
             if ( itemId ) {
 
@@ -51,8 +51,7 @@ export const itemMetadataMixin = {
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0])  ? values[0] : values,
-					parent_meta_id: parentMetaId ? parentMetaId : null,
-					edited_with_rich_text_editor: editedWithRichTextEditor
+					parent_meta_id: parentMetaId ? parentMetaId : null
                 })
                     .then(() => { 
                         this.isUpdatingValues = false;

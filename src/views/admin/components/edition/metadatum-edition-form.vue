@@ -537,7 +537,6 @@
     import { formHooks } from "../../js/mixins";
     import FormText from '../metadata-types/text/FormText.vue';
     import FormTextarea from '../metadata-types/textarea/FormTextarea.vue';
-    import FormRichText from '../metadata-types/rich-text/FormRichText.vue';
     import FormRelationship from '../metadata-types/relationship/FormRelationship.vue';
     import FormTaxonomy from '../metadata-types/taxonomy/FormTaxonomy.vue';
     import FormSelectbox from '../metadata-types/selectbox/FormSelectbox.vue';
@@ -552,7 +551,6 @@
         components: {
             'tainacan-form-text': FormText,
             'tainacan-form-textarea': FormTextarea,
-            'tainacan-form-rich-text': FormRichText,
             'tainacan-form-relationship': FormRelationship,
             'tainacan-form-taxonomy': FormTaxonomy,
             'tainacan-form-selectbox': FormSelectbox,

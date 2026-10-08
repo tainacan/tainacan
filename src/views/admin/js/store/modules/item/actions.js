@@ -6,14 +6,11 @@ import axios from '../../../axios';
  * Dispatches `item/updateItemMetadatum`.
  * @returns {Promise<Object>} Resolves with the updated item metadatum; rejects with API validation details.
  */
-export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values, parent_meta_id, edited_with_rich_text_editor }) => {
+export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values, parent_meta_id }) => {
     let body = { values: values }
 
     if (parent_meta_id != undefined && parent_meta_id != null && parent_meta_id != false)
         body['parent_meta_id'] = parent_meta_id;
-
-	if (typeof edited_with_rich_text_editor === 'boolean')
-		body['edited_with_rich_text_editor'] = edited_with_rich_text_editor;
 
     return new Promise((resolve, reject) => {
         axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, body)

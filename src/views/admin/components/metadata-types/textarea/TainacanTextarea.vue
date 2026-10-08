@@ -25,6 +25,40 @@
 </template>
 
 <script>
+    const editorBlockTag = /<(p|ul|ol)(\s[^>]*)?>/i;
+
+    function linkBareUrls(text) {
+        return text.split(/(<a\b[^>]*>[\s\S]*?<\/a>)/gi).map((part, index) => {
+            if (index % 2 === 1)
+                return part;
+
+            return part.replace(/((https?:\/\/|www\.)[^\s<]+)/gi, (url) => {
+                const href = /^www\./i.test(url) ? `http://${url}` : url;
+                return `<a href="${href}">${url}</a>`;
+            });
+        }).join('');
+    }
+
+    function paragraphsFromPlainText(text) {
+        return String(text)
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n')
+            .split(/\n{2,}/)
+            .map((block) => `<p>${block.replace(/\n/g, '<br>')}</p>`)
+            .join('\n');
+    }
+
+    function valueForRichTextEditor(value) {
+        if (value === null || value === undefined || value === '')
+            return '';
+
+        const text = String(value);
+        if (editorBlockTag.test(text))
+            return text;
+
+        return paragraphsFromPlainText(linkBareUrls(text));
+    }
+
     export default {
         props: {
             itemMetadatum: Object,
@@ -34,21 +68,20 @@
         },
         emits: [
             'update:value',
-			'update:edited-with-rich-text-editor',
             'blur',
             'mobile-special-focus'
         ],
         data() {
             return {
-                localValue: ''
+                localValue: '',
+                pendingValue: null,
+                pendingTimer: null
             }
         },
         computed: {
             shouldUseRichTextEditor() {
                 return this.itemMetadatum &&
                     this.itemMetadatum.metadatum &&
-                    this.itemMetadatum.metadatum.metadata_type_object &&
-					this.itemMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Core_Description' &&
                     typeof tainacan_plugin !== 'undefined' &&
                     tainacan_plugin.tainacan_allow_rich_text_editor === '1' &&
                     this.itemMetadatum.metadatum.metadata_type_options &&
@@ -62,10 +95,11 @@
             }
         },
         created() {
-			const initialValue = this.shouldUseRichTextEditor && typeof this.itemMetadatum.value_for_rich_text_editor === 'string'
-				? this.itemMetadatum.value_for_rich_text_editor
-				: this.value;
+			const initialValue = this.shouldUseRichTextEditor ? valueForRichTextEditor(this.value) : this.value;
 			this.localValue = initialValue ? JSON.parse(JSON.stringify(initialValue)) : '';
+        },
+        beforeUnmount() {
+            this.flushValue();
         },
         methods: {
             onInput(value) {
@@ -74,14 +108,20 @@
                     return;
 
                 this.localValue = value;
-				if (this.itemMetadatum?.metadatum?.metadata_type === 'Tainacan\\Metadata_Types\\Core_Description')
-					this.$emit('update:edited-with-rich-text-editor', this.shouldUseRichTextEditor);
-                this.changeValue(value);
+                this.pendingValue = value;
+                clearTimeout(this.pendingTimer);
+                this.pendingTimer = setTimeout(() => this.flushValue(), 750);
             },
-            changeValue: _.debounce(function(value) {
-                this.$emit('update:value', value);
-            }, 750),
+            flushValue() {
+                clearTimeout(this.pendingTimer);
+                this.pendingTimer = null;
+                if (this.pendingValue !== null) {
+                    this.$emit('update:value', this.pendingValue);
+                    this.pendingValue = null;
+                }
+            },
             onBlur() {
+                this.flushValue();
                 this.$emit('blur');
             },
             onMobileSpecialFocus() {

@@ -7,22 +7,23 @@ use Tainacan\Repositories;
 /**
  * @group api
  */
-class Rich_Text_Metadata extends TAINACAN_UnitApiTestCase {
+class Textarea_Rich_Text_Option extends TAINACAN_UnitApiTestCase {
 	private function create_item_and_metadatum( $options = [] ) {
 		$collection = $this->tainacan_entity_factory->create_entity( 'collection', [
-			'name' => 'Rich text collection',
+			'name' => 'Textarea collection',
 			'status' => 'publish',
 		], true );
 		$item = $this->tainacan_entity_factory->create_entity( 'item', [
-			'title' => 'Rich text item',
+			'title' => 'Textarea item',
 			'collection' => $collection,
 			'status' => 'publish',
 		], true );
 		$metadatum = $this->tainacan_entity_factory->create_entity( 'metadatum', array_merge( [
-			'name' => 'Rich text field',
+			'name' => 'Long text',
 			'collection' => $collection,
 			'status' => 'publish',
-			'metadata_type' => 'Tainacan\\Metadata_Types\\Rich_Text',
+			'metadata_type' => 'Tainacan\\Metadata_Types\\Textarea',
+			'metadata_type_options' => [ 'use_rich_text_editor' => 'yes' ],
 		], $options ), true );
 		return [ $item, $metadatum ];
 	}
@@ -39,40 +40,42 @@ class Rich_Text_Metadata extends TAINACAN_UnitApiTestCase {
 		return $this->server->dispatch( $request );
 	}
 
-	public function test_rich_text_is_a_registered_non_core_metadata_type() {
+	public function test_rich_text_is_not_a_separate_metadata_type() {
 		$types = Repositories\Metadata::get_instance()->fetch_metadata_types();
-		$this->assertContains( 'Tainacan\\Metadata_Types\\Rich_Text', $types );
+		$this->assertNotContains( 'Tainacan\\Metadata_Types\\Rich_Text', $types );
 
-		$type = new \Tainacan\Metadata_Types\Rich_Text();
-		$this->assertSame( 'long_string', $type->get_primitive_type() );
-		$this->assertSame( 'tainacan-rich-text', $type->get_component() );
-		$this->assertFalse( $type->get_core() );
+		$type = new \Tainacan\Metadata_Types\Textarea();
+		$this->assertSame( 'no', $type->get_options()['use_rich_text_editor'] );
+		$this->assertSame( 'tainacan-textarea', $type->get_component() );
 	}
 
-	public function test_rich_text_definition_can_be_created_through_rest_api() {
-		$collection = $this->tainacan_entity_factory->create_entity( 'collection', [ 'name' => 'Rich text definitions', 'status' => 'publish' ], true );
+	public function test_textarea_can_enable_the_rich_text_editor_option() {
+		$collection = $this->tainacan_entity_factory->create_entity( 'collection', [ 'name' => 'Textarea definitions', 'status' => 'publish' ], true );
 		$request = new \WP_REST_Request( 'POST', $this->namespace . '/collection/' . $collection->get_id() . '/metadata' );
 		$request->set_body( wp_json_encode( [
 			'name' => 'Essay',
-			'metadata_type' => 'Tainacan\\Metadata_Types\\Rich_Text',
+			'metadata_type' => 'Tainacan\\Metadata_Types\\Textarea',
+			'metadata_type_options' => [ 'use_rich_text_editor' => 'yes' ],
 		] ) );
 		$request->set_header( 'Content-Type', 'application/json' );
 		$response = $this->server->dispatch( $request );
 		$this->assertSame( 201, $response->get_status() );
-		$this->assertSame( 'tainacan-rich-text', $response->get_data()['metadata_type_object']['component'] );
+		$this->assertSame( 'tainacan-textarea', $response->get_data()['metadata_type_object']['component'] );
+		$this->assertSame( 'yes', $response->get_data()['metadata_type_options']['use_rich_text_editor'] );
 	}
 
-	public function test_rest_round_trip_keeps_safe_html_without_converting_it_again() {
+	public function test_editor_html_stays_stored_and_display_still_formats_it() {
 		[ $item, $metadatum ] = $this->create_item_and_metadatum();
 		update_option( 'tainacan_option_allow_rich_text_editor', false );
-		$html = '<p>First <strong>line</strong></p>' . "\n" . '<p>Second <a href="https://example.org">link</a></p>';
+		$html = '<p>First <strong>line</strong></p><p>Second <a href="https://example.org">link</a></p>';
 		$response = $this->put_value( $item, $metadatum, $html );
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame( $html, get_post_meta( $item->get_id(), $metadatum->get_id(), true ) );
 
 		$data = $this->get_value( $item, $metadatum )->get_data();
 		$this->assertSame( $html, $data['value'] );
-		$this->assertSame( $html, $data['value_as_html'] );
+		$this->assertStringContainsString( '<p>First <strong>line</strong></p>', $data['value_as_html'] );
+		$this->assertStringContainsString( '<a href="https://example.org">link</a>', $data['value_as_html'] );
 		$this->assertArrayNotHasKey( 'saved_with_rich_text_editor', $data );
 		$this->assertArrayNotHasKey( 'value_for_rich_text_editor', $data );
 	}
@@ -88,13 +91,15 @@ class Rich_Text_Metadata extends TAINACAN_UnitApiTestCase {
 		$this->assertStringContainsString( 'href="https://example.org"', $value );
 	}
 
-	public function test_multiple_values_render_as_html_without_plain_text_conversion() {
+	public function test_multiple_values_keep_each_entry() {
 		[ $item, $metadatum ] = $this->create_item_and_metadatum( [ 'multiple' => 'yes', 'html_formatting' => 'list' ] );
 		$values = [ '<p>First</p>', '<p>Second <em>part</em></p>' ];
 		$this->assertSame( 200, $this->put_value( $item, $metadatum, $values )->get_status() );
 		$data = $this->get_value( $item, $metadatum )->get_data();
 		$this->assertSame( $values, $data['value'] );
-		$this->assertSame( '<ul><li><p>First</p></li><li><p>Second <em>part</em></p></li></ul>', $data['value_as_html'] );
+		$this->assertStringContainsString( '<li>', $data['value_as_html'] );
+		$this->assertStringContainsString( '<p>First</p>', $data['value_as_html'] );
+		$this->assertStringContainsString( '<p>Second <em>part</em></p>', $data['value_as_html'] );
 	}
 
 	public function test_visually_empty_editor_markup_does_not_fill_required_metadata() {

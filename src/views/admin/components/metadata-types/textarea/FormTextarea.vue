@@ -18,7 +18,7 @@
                     @update:model-value="onUpdateMaxlength" />
         </b-field>
         <b-field
-                v-if="isCoreDescription && isRichTextEditorAllowed"
+                v-if="isRichTextEditorAllowed"
                 :addons="false"
                 :label="$i18n.getHelperTitle('tainacan-textarea', 'use_rich_text_editor')">
             &nbsp;
@@ -52,11 +52,6 @@
                 isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1'
             }
         },
-        computed: {
-            isCoreDescription() {
-                return this.metadatum && this.metadatum.metadata_type_object && this.metadatum.metadata_type_object.core;
-            }
-        },
         created() {
             this.maxlength = this.value && this.value.maxlength ? Number(this.value.maxlength) : null;
             this.useRichTextEditor = this.value && this.value.use_rich_text_editor === 'yes' ? 'yes' : 'no';
@@ -65,9 +60,7 @@
             onUpdateMaxlength(value) {
                 if (value == 0) value = null;
 
-                this.$emit('update:value', this.isCoreDescription
-                    ? { maxlength: value, use_rich_text_editor: this.useRichTextEditor }
-                    : { maxlength: value });
+                this.$emit('update:value', { maxlength: value, use_rich_text_editor: this.useRichTextEditor });
             },
             onUpdateUseRichTextEditor(value) {
                 this.useRichTextEditor = value;

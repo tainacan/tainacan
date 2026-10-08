@@ -87,7 +87,6 @@
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
                         @update:value="performValueChange"
-                        @update:edited-with-rich-text-editor="setEditedWithRichTextEditor"
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
                 <div
@@ -208,7 +207,6 @@
         components:{
             TainacanText: defineAsyncComponent(() => import('./text/TainacanText.vue')),
             TainacanTextarea: defineAsyncComponent(() => import('./textarea/TainacanTextarea.vue')),
-            TainacanRichText: defineAsyncComponent(() => import('./rich-text/TainacanRichText.vue')),
             TainacanSelectbox: defineAsyncComponent(() => import('./selectbox/TainacanSelectbox.vue')),
             TainacanNumeric: defineAsyncComponent(() => import('./numeric/TainacanNumeric.vue')),
             TainacanDate: defineAsyncComponent(() => import('./date/TainacanDate.vue')),
@@ -243,8 +241,7 @@
                 values: [],
                 errorMessage: '',
                 isHighlightedMetadatum: false,
-                invalidEmptyMultivalueIndex: [],
-                editedWithRichTextEditor: false
+                invalidEmptyMultivalueIndex: []
             }
         },
         computed: {
@@ -326,10 +323,6 @@
             }
         },
         methods: {
-			setEditedWithRichTextEditor(value) {
-				if (this.itemMetadatum?.metadatum?.metadata_type === 'Tainacan\\Metadata_Types\\Core_Description')
-					this.editedWithRichTextEditor = value;
-			},
             getItemMetadataInputId(index) {
                 if (!this.itemMetadatum || !this.itemMetadatum.metadatum)
                     return '';
@@ -438,10 +431,7 @@
                     metadatumId: this.itemMetadatum.metadatum.id,
                     values: this.values ? this.values : '',
                     parentMetaId: this.itemMetadatum.parent_meta_id,
-                    parentId: this.itemMetadatum.metadatum.parent != undefined ? this.itemMetadatum.metadatum.parent : 0,
-                    ...(this.itemMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Core_Description'
-                        ? { editedWithRichTextEditor: this.editedWithRichTextEditor }
-                        : {})
+                    parentId: this.itemMetadatum.metadatum.parent != undefined ? this.itemMetadatum.metadatum.parent : 0
                 });
             },
             addValue(){

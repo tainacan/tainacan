@@ -19,7 +19,6 @@ use Tainacan\Entities\Item;
 class Items extends Repository {
 	use \Tainacan\Traits\Singleton_Instance;
 
-	const CORE_DESCRIPTION_RICH_TEXT_META_KEY = '_tainacan_core_description_saved_with_rich_text_editor';
 	private $core_description_lock_depth = [];
 
 	public $entities_type = '\Tainacan\Entities\Item';
@@ -285,10 +284,6 @@ class Items extends Repository {
 					return false;
 				}
 			}
-			if ( ! $this->set_core_description_saved_with_rich_text_editor( $saved_item, false ) ) {
-				$this->restore_core_description( $saved_item, $previous_description, $metadatum, $had_mirror, $previous_mirror );
-				return false;
-			}
 		}
 
 		return $saved_item;
@@ -351,26 +346,6 @@ class Items extends Repository {
 			unset( $this->core_description_lock_depth[ $item_id ] );
 			$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock_name ) );
 		}
-	}
-
-	/**
-	 * Whether the current item description was saved by the rich text editor.
-	 */
-	public function is_core_description_saved_with_rich_text_editor( Item $item ) {
-		return get_post_meta( $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY, true ) === 'yes';
-	}
-
-	/**
-	 * Store the editor state on the item, independently of its metadatum definition.
-	 */
-	public function set_core_description_saved_with_rich_text_editor( Item $item, $saved_with_rich_text_editor ) {
-		if ( $saved_with_rich_text_editor ) {
-			update_post_meta( $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY, 'yes' );
-			return $this->is_core_description_saved_with_rich_text_editor( $item );
-		}
-
-		delete_post_meta( $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY );
-		return ! metadata_exists( 'post', $item->get_id(), self::CORE_DESCRIPTION_RICH_TEXT_META_KEY );
 	}
 
 	/**

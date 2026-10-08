@@ -421,10 +421,10 @@ private copy_value(\Tainacan\Entities\Item $item): mixed
 
 ### can_copy_metadata_value
 
-Check copy compatibility, including collection scope for Textarea/Rich Text.
+Check whether two metadata definitions can exchange values.
 
 ```php
-private can_copy_metadata_value(\Tainacan\Entities\Metadatum $source, \Tainacan\Entities\Metadatum $destination, \Tainacan\Entities\Item $item): bool
+private can_copy_metadata_value(\Tainacan\Entities\Metadatum $source, \Tainacan\Entities\Metadatum $destination): bool
 ```
 
 **Parameters:**
@@ -433,35 +433,10 @@ private can_copy_metadata_value(\Tainacan\Entities\Metadatum $source, \Tainacan\
 |----------------|----------------------------------|----------------------------------|
 | `$source`      | **\Tainacan\Entities\Metadatum** | Source metadata definition.      |
 | `$destination` | **\Tainacan\Entities\Metadatum** | Destination metadata definition. |
-| `$item`        | **\Tainacan\Entities\Item**      | Item being processed.            |
 
 **Return Value:**
 
 Whether the metadata values can be copied.
-
-***
-
-### convert_metadata_value_for_copy
-
-Format Textarea values for Rich Text and adapt the two new copy directions.
-
-```php
-private convert_metadata_value_for_copy(mixed $value, \Tainacan\Entities\Metadatum $source, \Tainacan\Entities\Metadatum $destination): mixed
-```
-
-Same-type copies and Rich Text to Textarea never receive formatting.
-
-**Parameters:**
-
-| Parameter      | Type                             | Description                                          |
-|----------------|----------------------------------|------------------------------------------------------|
-| `$value`       | **mixed**                        | Stored source value, not its display representation. |
-| `$source`      | **\Tainacan\Entities\Metadatum** | Source metadata definition.                          |
-| `$destination` | **\Tainacan\Entities\Metadatum** | Destination metadata definition.                     |
-
-**Return Value:**
-
-Value ready for assignment and normal destination validation.
 
 ***
 

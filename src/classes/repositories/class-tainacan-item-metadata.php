@@ -27,7 +27,7 @@ class Item_Metadata extends Repository {
 	 * @return Entities\Entity|Entities\Item_Metadata_Entity
 	 * @throws \Exception
 	 */
-	public function insert( $item_metadata, $edited_with_rich_text_editor = false ) {
+	public function insert( $item_metadata ) {
 
 		if ( ! $item_metadata->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
@@ -41,7 +41,7 @@ class Item_Metadata extends Repository {
 
 		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
 		if ( $metadata_type instanceof \Tainacan\Metadata_Types\Core_Description ) {
-			return $this->save_core_description_value( $item_metadata, $edited_with_rich_text_editor === true );
+			return $this->save_core_description_value( $item_metadata );
 		}
 
 		if ( $metadata_type->get_core() ) {
@@ -134,15 +134,15 @@ class Item_Metadata extends Repository {
 	}
 
 	/**
-	 * Save the canonical description, its queryable copy and the editor marker together.
+	 * Save the canonical description and its queryable copy together.
 	 */
-	private function save_core_description_value( Entities\Item_Metadata_Entity $item_metadata, $edited_with_rich_text_editor ) {
-		return Items::get_instance()->with_core_description_lock( $item_metadata->get_item(), function () use ( $item_metadata, $edited_with_rich_text_editor ) {
-			return $this->save_core_description_value_locked( $item_metadata, $edited_with_rich_text_editor );
+	private function save_core_description_value( Entities\Item_Metadata_Entity $item_metadata ) {
+		return Items::get_instance()->with_core_description_lock( $item_metadata->get_item(), function () use ( $item_metadata ) {
+			return $this->save_core_description_value_locked( $item_metadata );
 		} );
 	}
 
-	private function save_core_description_value_locked( Entities\Item_Metadata_Entity $item_metadata, $edited_with_rich_text_editor ) {
+	private function save_core_description_value_locked( Entities\Item_Metadata_Entity $item_metadata ) {
 		$item = $item_metadata->get_item();
 		$item_id = $item->get_id();
 		$metadatum_id = $item_metadata->get_metadatum()->get_id();
@@ -150,7 +150,6 @@ class Item_Metadata extends Repository {
 		$previous_description = get_post( $item_id )->post_content;
 		$had_mirror = metadata_exists( 'post', $item_id, $metadatum_id );
 		$previous_mirror = get_post_meta( $item_id, $metadatum_id, true );
-		$previous_mode = $items->is_core_description_saved_with_rich_text_editor( $item );
 		$value = $this->sanitize_item_metadata_value( $item_metadata, $item_metadata->get_value() );
 
 		try {
@@ -166,9 +165,6 @@ class Item_Metadata extends Repository {
 			if ( ! $items->sync_core_description_metadata( $saved_item, $item_metadata->get_metadatum(), $value ) ) {
 				throw new \Exception( 'Could not save the item description metadata' );
 			}
-			if ( ! $items->set_core_description_saved_with_rich_text_editor( $saved_item, $edited_with_rich_text_editor ) ) {
-				throw new \Exception( 'Could not save the item description editor state' );
-			}
 		} catch ( \Throwable $error ) {
 			wp_update_post( [ 'ID' => $item_id, 'post_content' => wp_slash( $previous_description ) ] );
 			if ( $had_mirror ) {
@@ -176,7 +172,6 @@ class Item_Metadata extends Repository {
 			} else {
 				delete_post_meta( $item_id, $metadatum_id );
 			}
-			$items->set_core_description_saved_with_rich_text_editor( $item, $previous_mode );
 			throw $error;
 		}
 
@@ -210,18 +205,7 @@ class Item_Metadata extends Repository {
 	}
 
 	protected function sanitize_item_metadata_value( Entities\Item_Metadata_Entity $item_metadata, $value ) {
-		if ( $this->is_rich_text_capable_metadata( $item_metadata ) ) {
-			return $this->sanitize_rich_text_value( $value );
-		}
-
 		return $this->sanitize_value( $value, $item_metadata->get_metadatum()->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Core_Title );
-	}
-
-	protected function is_rich_text_capable_metadata( Entities\Item_Metadata_Entity $item_metadata ) {
-		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
-
-		return $metadata_type instanceof \Tainacan\Metadata_Types\Core_Description ||
-			$metadata_type instanceof \Tainacan\Metadata_Types\Rich_Text;
 	}
 
 	/**
@@ -585,7 +569,7 @@ class Item_Metadata extends Repository {
 	 * @return mixed
 	 */
 	public function update( $object, $new_values = null ) {
-		return $this->insert( $object, $new_values );
+		return $this->insert( $object );
 	}
 
 	/**

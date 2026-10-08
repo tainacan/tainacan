@@ -358,8 +358,9 @@ class Item_Metadata_Entity extends Entity {
 	 * @return void
 	 */
 	function set_value($value) {
-		if ( $this->get_metadatum() && $this->get_metadatum()->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Rich_Text ) {
-			$value = \Tainacan\Metadata_Types\Rich_Text::normalize_value( $value );
+		$metadatum = $this->get_metadatum();
+		if ( $metadatum && ( $metadatum->get_metadata_type_options()['use_rich_text_editor'] ?? '' ) === 'yes' ) {
+			$value = \Tainacan\Metadata_Types\Textarea::normalize_value( $value );
 		}
 		$this->value = $value;
 	}

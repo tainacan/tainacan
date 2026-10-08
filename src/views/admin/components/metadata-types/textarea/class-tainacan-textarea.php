@@ -18,6 +18,9 @@ class Textarea extends Metadata_Type {
 		$this->set_form_component('tainacan-form-textarea');
 		$this->set_name( __('Textarea', 'tainacan') );
 		$this->set_description( __('A textarea with multiple lines', 'tainacan') );
+		$this->set_default_options([
+			'use_rich_text_editor' => 'no'
+		]);
 		$this->set_preview_template('
 			<div>
 				<div class="control is-clearfix">
@@ -36,8 +39,30 @@ class Textarea extends Metadata_Type {
 			'maxlength' => [
 				'title' => __( 'Maximum of characters', 'tainacan' ),
 				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
+			],
+			'use_rich_text_editor' => [
+				'title' => __( 'Use rich text editor', 'tainacan' ),
+				'description' => __( 'Replaces the textarea with the rich text editor when it is enabled for Tainacan.', 'tainacan' ),
 			]
 		];
+	}
+
+	/**
+	 * Treat an editor value with no visible content as empty.
+	 */
+	public static function normalize_value( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( [ __CLASS__, 'normalize_value' ], $value );
+		}
+		if ( ! is_string( $value ) || $value === '' ) {
+			return $value;
+		}
+		$text = html_entity_decode( wp_strip_all_tags( $value ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+		$visible_text = preg_replace( '/[\s\x{00A0}]+/u', '', $text );
+		if ( $visible_text === '' && ! preg_match( '/<(?:img|video|audio|iframe|embed|object|svg|hr)\b/i', $value ) ) {
+			return '';
+		}
+		return $value;
 	}
 	
 	public function get_multivalue_prefix() {

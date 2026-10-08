@@ -384,13 +384,13 @@ class Bulk_Edit_Process extends Generic_Process {
 			$this->add_error_log( __( 'Invalid source or destination metadata for copying values', 'tainacan' ) );
 			return false;
 		}
-		if ( ! $this->can_copy_metadata_value( $metadatum_from, $metadatum, $item ) ) {
+		if ( ! $this->can_copy_metadata_value( $metadatum_from, $metadatum ) ) {
 			$this->add_error_log( __( 'Not possible to copy values between incompatible metadata', 'tainacan' ) );
 			return false;
 		}
 
 		$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
-		$value = $this->convert_metadata_value_for_copy( $item_metadata_from->get_value(), $metadatum_from, $metadatum );
+		$value = $item_metadata_from->get_value();
 		if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 			if ( $metadatum_from->is_multiple() ) {
 				$temp = [];
@@ -407,56 +407,17 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	/**
-	 * Check copy compatibility, including collection scope for Textarea/Rich Text.
+	 * Check whether two metadata definitions can exchange values.
 	 *
 	 * @param Entities\Metadatum $source Source metadata definition.
 	 * @param Entities\Metadatum $destination Destination metadata definition.
-	 * @param Entities\Item $item Item being processed.
 	 * @return bool Whether the metadata values can be copied.
 	 */
-	private function can_copy_metadata_value( Entities\Metadatum $source, Entities\Metadatum $destination, Entities\Item $item ) {
+	private function can_copy_metadata_value( Entities\Metadatum $source, Entities\Metadatum $destination ) {
 		if ( $source->is_multiple() && ! $destination->is_multiple() ) {
 			return false;
 		}
-		if ( $source->get_metadata_type() === $destination->get_metadata_type() ) {
-			return true;
-		}
-		$types = [ 'Tainacan\Metadata_Types\Textarea', 'Tainacan\Metadata_Types\Rich_Text' ];
-		if ( ! in_array( $source->get_metadata_type(), $types, true ) ||
-			! in_array( $destination->get_metadata_type(), $types, true ) ||
-			$source->get_parent() > 0 || $destination->get_parent() > 0 ) {
-			return false;
-		}
-
-		// Use the repository's inheritance, visibility and disabled-metadata rules.
-		$metadata = $this->metadatum_repository->fetch_by_collection( $item->get_collection(), [ 'posts_per_page' => -1 ] );
-		$ids = array_map( static function( $metadatum ) { return $metadatum->get_id(); }, $metadata );
-		return in_array( $source->get_id(), $ids, true ) && in_array( $destination->get_id(), $ids, true );
-	}
-
-	/**
-	 * Format Textarea values for Rich Text and adapt the two new copy directions.
-	 * Same-type copies and Rich Text to Textarea never receive formatting.
-	 *
-	 * @param mixed $value Stored source value, not its display representation.
-	 * @param Entities\Metadatum $source Source metadata definition.
-	 * @param Entities\Metadatum $destination Destination metadata definition.
-	 * @return mixed Value ready for assignment and normal destination validation.
-	 */
-	private function convert_metadata_value_for_copy( $value, Entities\Metadatum $source, Entities\Metadatum $destination ) {
-		if ( $source->get_metadata_type() === $destination->get_metadata_type() ) {
-			return $value;
-		}
-		if ( $source->get_metadata_type() === 'Tainacan\Metadata_Types\Textarea' ) {
-			$convert = static function( $entry ) {
-				return $entry === null || $entry === '' ? '' : wpautop( make_clickable( $entry ) );
-			};
-			$value = is_array( $value ) ? array_map( $convert, $value ) : $convert( $value );
-		}
-		if ( ! $source->is_multiple() && $destination->is_multiple() ) {
-			$value = $value === null || $value === '' ? [] : [ $value ];
-		}
-		return $value;
+		return $source->get_metadata_type() === $destination->get_metadata_type();
 	}
 
 	private function remove_value(\Tainacan\Entities\Item $item) {

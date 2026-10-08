@@ -1226,12 +1226,6 @@ class REST_Items_Controller extends REST_Controller {
 						}
 					}
 
-					if ( $new_item->get_description() === $item->get_description() &&
-						$items_repo->is_core_description_saved_with_rich_text_editor( $item ) &&
-						! $items_repo->set_core_description_saved_with_rich_text_editor( $new_item, true ) ) {
-						return new \WP_REST_Response( [ 'error_message' => __( 'Could not copy the item description editor state.', 'tainacan' ) ], 500 );
-					}
-
 					if ($args['status'] != 'draft') {
 
 						$new_item->set_status( $args['status'] );
