@@ -60,6 +60,9 @@ require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer.php');
 require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer-handler.php');
 \Tainacan\Importer_Handler::get_instance();
 
+require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-exporter-files.php');
+\Tainacan\Exporter_Files::get_instance();
+
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-bg-exporter.php');
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-exporter-handler.php');
 \Tainacan\Exporter_Handler::get_instance();
