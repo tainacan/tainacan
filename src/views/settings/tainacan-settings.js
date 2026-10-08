@@ -30,8 +30,12 @@
 			heading.focus({ preventScroll: true });
 		}
 
+		var sectionIds = (window.tainacanSettingsSections && Array.isArray(tainacanSettingsSections.ids)) ? tainacanSettingsSections.ids : [];
+
 		var pairs = headings.map(function (heading, index) {
-			if (!heading.id)
+			if (sectionIds[index])
+				heading.id = 'tainacan-settings-section-' + sectionIds[index];
+			else if (!heading.id)
 				heading.id = 'tainacan-settings-section-' + (index + 1);
 
 			var item = document.createElement('li');

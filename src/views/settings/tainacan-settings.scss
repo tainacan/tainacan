@@ -8,6 +8,10 @@
         z-index: 1;
         top: var(--tainacan-settings-heading-top, calc(1.75em - 0.5rem + var(--tainacan-page-container-padding-y, 1rem) + var(--tainacan-page-container-padding-y, 1rem)));
         margin-top: 2rem;
+
+        &:first-of-type {
+            margin-top: 0;
+        }
     }
     .settings-section-description {
         font-size: 0.875em;
@@ -92,6 +96,7 @@
             .tainacan-settings-toc {
                 grid-column: 2;
                 grid-row: 1;
+                margin-top: -4px;
             }
         }
     }
