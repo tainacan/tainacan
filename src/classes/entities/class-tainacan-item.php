@@ -529,6 +529,14 @@ class Item extends Entity {
 			$is_valid = false;
 		}
 
+		$collection = $this->get_collection();
+		if ( $collection && $collection->get_item_require_document() === 'yes' ) {
+			if ( $this->get_document_type() === 'empty' ) {
+				$this->add_error( 'document', __('The document is required', 'tainacan') );
+				$is_valid = false;
+			}
+		}
+
 		$arrayItemMetadata = $this->get_metadata(['parent'=>'any', 'include_control_metadata_types' => 'true']);
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {

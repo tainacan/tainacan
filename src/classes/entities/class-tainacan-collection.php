@@ -49,6 +49,7 @@ class Collection extends Entity {
 		$submission_anonymous_user,
 		$submission_default_status,
 		$submission_use_recaptcha,
+		$item_require_document,
 		$item_enabled_document_types,
 		$item_publication_label,
 		$item_document_label,
@@ -660,6 +661,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Check if document is required to publish an item in this collection.
+	 *
+	 * @return string 'yes' if required, 'no' otherwise.
+	 */
+	function get_item_require_document() {
+		return $this->get_mapped_property('item_require_document');
+	}
+
+	/**
 	 * Get the enabled document types for this collection.
 	 *
 	 * @return array The enabled document types.
@@ -1083,6 +1093,16 @@ class Collection extends Entity {
 		return $this->set_mapped_property( 'default_metadata_section_properties', $value);
 	}
 
+
+	/**
+	 * Set if document is required for this collection.
+	 *
+	 * @param string $value 'yes' if required, 'no' otherwise.
+	 * @return void
+	 */
+	function set_item_require_document( $value ) {
+		$this->set_mapped_property('item_require_document', $value);
+	}
 
 	/**
 	 * Set the enabled document types for this collection.

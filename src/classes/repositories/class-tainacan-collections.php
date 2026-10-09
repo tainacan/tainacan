@@ -418,6 +418,14 @@ class Collections extends Repository {
 					]
 				]
 			],
+			'item_require_document' => [
+				'map'         => 'meta',
+				'title'       => __( 'Require Document', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Whether the document is required to publish an item.', 'tainacan' ),
+				'enum'        => [ 'yes', 'no' ],
+				'default'     => 'no'
+			],
 			'item_enabled_document_types' => [
 				'map'         => 'meta',
 				'title'       => __( 'Enabled document types', 'tainacan' ),
