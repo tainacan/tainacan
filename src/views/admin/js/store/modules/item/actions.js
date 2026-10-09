@@ -38,7 +38,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
 export const fetchItemMetadata = ({ commit }, item_id) => {
     commit('cleanItemMetadata');
     return new Promise((resolve, reject) => {
-		axios.tainacanApi.get('/item/' + item_id + '/metadata?context=edit')
+        axios.tainacanApi.get('/item/' + item_id + '/metadata')
         .then(res => {
             let itemMetadata = res.data;
             commit('setItemMetadata', itemMetadata);
@@ -57,7 +57,7 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
  */
 export const fetchItemMetadatum = ({ commit }, { item_id, metadatum_id }) => {
     return new Promise((resolve, reject) => {
-		axios.tainacanApi.get('/item/' + item_id + '/metadata/' + metadatum_id + '?context=edit')
+        axios.tainacanApi.get('/item/' + item_id + '/metadata/' + metadatum_id)
             .then(res => {
                 const updatedItemMetadatum = res.data;
                 if (updatedItemMetadatum && updatedItemMetadatum.metadatum) {
