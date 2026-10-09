@@ -10,7 +10,7 @@
         <Editor
                 :id="id"
                 ref="editor"
-                :model-value="modelValue"
+                :model-value="editorModelValue"
                 :init="editorInit"
                 license-key="gpl"
                 :disabled="disabled"
@@ -44,6 +44,40 @@ import 'tinymce/plugins/autolink';
 import 'tinymce/skins/ui/oxide/skin.css';
 import contentCss from 'tinymce/skins/content/default/content.css';
 import contentUiCss from 'tinymce/skins/ui/oxide/content.css';
+
+const editorBlockTag = /<(p|ul|ol)(\s[^>]*)?>/i;
+
+function linkBareUrls(text) {
+    return text.split(/(<a\b[^>]*>[\s\S]*?<\/a>)/gi).map((part, index) => {
+        if (index % 2 === 1)
+            return part;
+
+        return part.replace(/((https?:\/\/|www\.)[^\s<]+)/gi, (url) => {
+            const href = /^www\./i.test(url) ? `http://${url}` : url;
+            return `<a href="${href}">${url}</a>`;
+        });
+    }).join('');
+}
+
+function paragraphsFromPlainText(text) {
+    return String(text)
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
+        .split(/\n{2,}/)
+        .map((block) => `<p>${block.replace(/\n/g, '<br>')}</p>`)
+        .join('\n');
+}
+
+function valueForRichTextEditor(value) {
+    if (value === null || value === undefined || value === '')
+        return '';
+
+    const text = String(value);
+    if (editorBlockTag.test(text))
+        return text;
+
+    return paragraphsFromPlainText(linkBareUrls(text));
+}
 
 let nextKeyboardHintId = 0;
 const pendingRichTextEditorDialogMatchers = new Set();
@@ -182,6 +216,9 @@ export default {
         iframeAriaDescribedby() {
             return [ this.ariaDescribedby, this.keyboardHintId ].filter(Boolean).join(' ');
         },
+        editorModelValue() {
+            return valueForRichTextEditor(this.modelValue);
+        },
         editorInit() {
             return {
                 ...EDITOR_INIT,
@@ -212,7 +249,7 @@ export default {
             const editor = this.$refs.editor && this.$refs.editor.getEditor();
 
             if (editor && this.hasExceededMaxLength(editor)) {
-                editor.setContent(this.modelValue);
+                editor.setContent(this.editorModelValue);
                 return;
             }
 

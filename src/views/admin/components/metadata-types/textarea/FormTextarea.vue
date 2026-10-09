@@ -38,8 +38,7 @@
 <script>
     export default {
         props: {
-            value: [ String, Object, Array ],
-            metadatum: Object
+            value: [ String, Object, Array ]
         },
         emits: [
             'update:value',

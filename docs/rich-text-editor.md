@@ -18,9 +18,11 @@ When the setting is enabled, or the constant is defined as the boolean `true`, t
 - Filter description
 - Item text-document content
 
+The first time a stored value opens in the rich text editor, the editor prepares paragraphs and links in the browser when the string has no `<p>`, `<ul>`, or `<ol>` tag. Opening or canceling the editor does not change the stored value. The next save stores the HTML the editor produced. A later open sees those tags and loads the value as it is stored. A list-only value is treated as already converted, because TinyMCE can save a list without a paragraph.
+
 It also adds a **Use rich text editor** switch to the metadata-type options for Textarea and Core Description metadata.
 
-The switch defaults to `no`, so enabling the setting or constant does not change existing metadata fields. Set it to `yes` for each metadata that should display the rich text editor in item editing forms. It appears in the relevant metadata-type options section.
+The switch defaults to `no`, so enabling the setting or constant does not change existing metadata fields. Set it to `yes` for each metadata that should display the rich text editor in item editing forms. It appears in the relevant metadata-type options section. Its description notes that HTML saved in the field is included in textual search, so markup can split phrases and change which results match.
 
 When the setting is disabled, or the constant has any value other than boolean `true`, Tainacan does not use the rich text editor for the fields controlled by this setting. It hides those switches and uses the original textarea even when a metadatum was previously configured to use rich text. The saved option is retained, ready to be used again when rich text is enabled.
 
@@ -33,8 +35,6 @@ When `TAINACAN_ALLOW_RICH_TEXT_EDITOR` is defined, it overrides the saved settin
 Textarea and Core Description use a plain textarea by default. To edit either with TinyMCE, enable the global rich text editor setting and turn on **Use rich text editor** in that metadatum's type options. The option belongs to the metadatum definition.
 
 `value` remains the stored text. `value_as_html` always runs `wpautop()` and `make_clickable()` on that stored string, including after it has been saved from TinyMCE. The item metadata routes return the usual `value` and `value_as_html` fields.
-
-The first time a stored value opens in TinyMCE, the admin screen prepares paragraphs and links in the browser when the string has no `<p>`, `<ul>`, or `<ol>` tag. Opening or canceling the editor does not change the stored value. The next save stores the HTML the editor produced. A later open sees those tags and loads `value` as it is stored. A list-only value is treated as already converted, because TinyMCE can save a list without a paragraph.
 
 When the item form sends a value from the rich text editor, markup with no visible text and no media is sent as an empty value. A value sent through the API, including `<p><br></p>`, is stored as received. Bulk editing uses the same item form component, so a Textarea with the option on shows the editor there as well. Copying values stays limited to metadata of the same type and does not convert paragraphs or links during the copy.
 

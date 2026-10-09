@@ -25,29 +25,6 @@
 </template>
 
 <script>
-    const editorBlockTag = /<(p|ul|ol)(\s[^>]*)?>/i;
-
-    function linkBareUrls(text) {
-        return text.split(/(<a\b[^>]*>[\s\S]*?<\/a>)/gi).map((part, index) => {
-            if (index % 2 === 1)
-                return part;
-
-            return part.replace(/((https?:\/\/|www\.)[^\s<]+)/gi, (url) => {
-                const href = /^www\./i.test(url) ? `http://${url}` : url;
-                return `<a href="${href}">${url}</a>`;
-            });
-        }).join('');
-    }
-
-    function paragraphsFromPlainText(text) {
-        return String(text)
-            .replace(/\r\n/g, '\n')
-            .replace(/\r/g, '\n')
-            .split(/\n{2,}/)
-            .map((block) => `<p>${block.replace(/\n/g, '<br>')}</p>`)
-            .join('\n');
-    }
-
     function editorValueForSave(value) {
         if (value === null || value === undefined || value === '')
             return '';
@@ -63,17 +40,6 @@
             .replace(/\s+/g, '');
 
         return visibleText === '' ? '' : value;
-    }
-
-    function valueForRichTextEditor(value) {
-        if (value === null || value === undefined || value === '')
-            return '';
-
-        const text = String(value);
-        if (editorBlockTag.test(text))
-            return text;
-
-        return paragraphsFromPlainText(linkBareUrls(text));
     }
 
     export default {
@@ -112,8 +78,7 @@
             }
         },
         created() {
-			const initialValue = this.shouldUseRichTextEditor ? valueForRichTextEditor(this.value) : this.value;
-			this.localValue = initialValue ? JSON.parse(JSON.stringify(initialValue)) : '';
+            this.localValue = this.value ? JSON.parse(JSON.stringify(this.value)) : '';
         },
         beforeUnmount() {
             this.flushValue();
