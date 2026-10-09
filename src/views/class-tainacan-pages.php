@@ -319,11 +319,6 @@ abstract class Pages {
 			$class = new $metadata_type;
 			$settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 		}
-		$core_description = new \Tainacan\Metadata_Types\Core_Description();
-		$settings['i18n']['helpers_label'][$core_description->get_component()] = array_merge(
-			$settings['i18n']['helpers_label'][$core_description->get_component()],
-			$core_description->get_form_labels()
-		);
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types();
 		
