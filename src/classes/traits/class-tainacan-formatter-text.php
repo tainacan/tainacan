@@ -13,13 +13,10 @@ trait Formatter_Text {
 
 	/**
 	 * 
-	 * @return string Texts with url's transformed in html tag <a>
+	 * @return string Texts with url's and emails transformed in html tag <a>. It uses WordPress function make_clickable() to do this.
 	 */
 	public static function make_clickable_links($text) {
-		$url = '~((www\.|http:\/\/www\.|http:\/\/|https:\/\/www\.|https:\/\/|ftp:\/\/www\.|ftp:\/\/|ftps:\/\/www\.|ftps:\/\/)[^"<\s]+)(?![^<>]*>|[^"]*?<\/a)~i';
-		$text = preg_replace($url, '<a href="$0" target="_blank">$0</a>', $text);
-		$text = str_replace('href="www.', 'href="http://www.', $text);
 
-		return $text;
+		return make_clickable($text);
 	}
 }

@@ -321,6 +321,7 @@
     +default_field_callback(args)
     +sanitize_document_content_index_max_characters(value)
     +search_and_performance_section_description()
+    +text_editing_section_description()
     +theme_templates_section_description()
     +items_list_defaults_section_description()
     +repository_items_list_section_description()

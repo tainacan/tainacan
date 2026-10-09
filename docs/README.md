@@ -67,6 +67,7 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > 
 > <div class="three-columns-list">
 > 
+> - [Rich text editor](/dev/rich-text-editor.md)
 > - [Faceted Search](/dev/faceted-search.md)
 > - [Search Engine](/dev/search-engine.md)
 > - [Garbage Collector](/dev/garbage-collector.md)

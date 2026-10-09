@@ -192,7 +192,7 @@ abstract class Repository {
 		}
 
 		$sanitized_title = $this->sanitize_value($obj->get('name'));
-		$sanitized_desc = $this->sanitize_value($obj->get('description'));
+		$sanitized_desc = $this->sanitize_value($obj->get('description'), false);
 		if ( $obj instanceof Entities\Item ) {
 			$sanitized_title = $this->sanitize_value($obj->get('title'));
 
@@ -268,7 +268,8 @@ abstract class Repository {
 
 				return $diffs;
 			} else {
-				update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ) ) );
+				$remove_links = ! ( $prop === 'document' && $obj instanceof Entities\Item && $obj->get_document_type() === 'text' );
+				update_post_meta( $obj->get_id(), $prop, $this->maybe_add_slashes( $obj->get_mapped_property( $prop ), $remove_links ) );
 			}
 
 		} elseif ( $map[ $prop ]['map'] == 'meta_multi' ) {
@@ -299,12 +300,13 @@ abstract class Repository {
 		return $diffs;
 	}
 
-	function maybe_add_slashes( $value ) {
+	function maybe_add_slashes( $value, $remove_links = true ) {
 		if ( is_string( $value ) ) {
+			$sanitized = $this->sanitize_value( $value, $remove_links );
 			if( strpos( $value, '\\' ) !== false ) {
-				return wp_slash( $this->sanitize_value($value) );
+				return wp_slash( $sanitized );
 			}
-			return $this->sanitize_value($value);
+			return $sanitized;
 		}
 		return $value;
 	}
@@ -1008,7 +1010,14 @@ abstract class Repository {
 
 	}
 
-	protected function sanitize_value($content) {
+	/**
+	 * Sanitize post HTML, optionally removing anchor tags while keeping their text.
+	 *
+	 * @param mixed $content Value to sanitize.
+	 * @param bool $remove_links Whether anchor tags must be removed.
+	 * @return mixed
+	 */
+	protected function sanitize_value($content, $remove_links = true) {
 		if( $content == null ) {
 			return '';
 		}
@@ -1017,10 +1026,11 @@ abstract class Repository {
 		}
 
 		$allowed_html = wp_kses_allowed_html('post');
-		unset($allowed_html["a"]);
-	
+		if ( $remove_links ) {
+			unset($allowed_html['a']);
+		}
+
 		return trim(wp_kses($content, $allowed_html));
 	}
 
 }
-

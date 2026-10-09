@@ -24,6 +24,7 @@ classDiagram
         +default_field_callback(args)
         +sanitize_document_content_index_max_characters(value)
         +search_and_performance_section_description()
+        +text_editing_section_description()
         +theme_templates_section_description()
         +items_list_defaults_section_description()
         +repository_items_list_section_description()
@@ -197,6 +198,14 @@ public sanitize_document_content_index_max_characters(mixed $value): int
 
 ```php
 public search_and_performance_section_description(): mixed
+```
+
+***
+
+### text_editing_section_description
+
+```php
+public text_editing_section_description(): mixed
 ```
 
 ***

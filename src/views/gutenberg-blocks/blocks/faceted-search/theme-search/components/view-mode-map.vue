@@ -365,7 +365,7 @@
                                                             column.metadata_type_object != undefined &&
                                                             (column.metadata_type_object.related_mapped_prop != 'title') &&
                                                             (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate') "
-                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
+                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component === 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <div      
                                                             class="metadata-value"
@@ -701,5 +701,4 @@ export default {
         line-height: 1.5em;
     }
 </style>
-
 

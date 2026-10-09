@@ -1024,7 +1024,7 @@
                                         :key="metadatumIndex">
                                     <span
                                             v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
-                                            :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
+                                            :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <div
                                                 class="metadata-value"
@@ -1155,7 +1155,7 @@
                             <td
                                     v-if="column.display"
                                     class="column-default-width"
-                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
+                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea',
                                               'thumbnail-cell': column.metadatum == 'row_thumbnail',
                                               'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
                                               'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' ||
@@ -1219,7 +1219,7 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            popperClass: [ 'tainacan-tooltip', 'tooltip', 'content', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            popperClass: [ 'tainacan-tooltip', 'tooltip', 'content', column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
@@ -1616,7 +1616,7 @@
                                     :key="metadatumIndex">
                                 <span 
                                         v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
-                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
+                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component === 'tainacan-textarea' }">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <div      
                                             class="metadata-value"
@@ -2165,7 +2165,7 @@
                                                             column.metadata_type_object != undefined && 
                                                             (column.metadata_type_object.related_mapped_prop != 'title') &&
                                                             (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate')"
-                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
+                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <div
                                                             class="metadata-value"
@@ -3264,5 +3264,4 @@ export default {
     }
 
 </style>
-
 

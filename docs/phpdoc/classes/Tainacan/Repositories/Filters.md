@@ -71,7 +71,7 @@ classDiagram
         -insert_thumbnail(obj, diffs)
         +get_descendants_ids(id, depth)
         +get_capabilities()
-        #sanitize_value(content)
+        #sanitize_value(content, remove_links)
     }
     Repository ..> Filters
     Repository ..> Repository
@@ -1059,15 +1059,18 @@ Object with all the capabilities as member variables.
 
 ### sanitize_value
 
+Sanitize post HTML, optionally removing anchor tags while keeping their text.
+
 ```php
-protected sanitize_value(mixed $content): mixed
+protected sanitize_value(mixed $content, bool $remove_links = false): mixed
 ```
 
 **Parameters:**
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$content` | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$content`      | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
 
 ***
 

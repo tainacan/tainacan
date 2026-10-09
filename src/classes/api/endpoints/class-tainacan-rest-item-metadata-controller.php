@@ -143,8 +143,9 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		$item_arr = $item->_toArray(true, true);
 
 		if ($request['context'] === 'edit') {
-			$item_arr['current_user_can_edit'] = $item->can_edit();
-			$item_arr['current_user_can_delete'] = $item->can_delete();
+			// Item metadata permissions are checked against the owning item, not a post ID on the metadata entity.
+			$item_arr['current_user_can_edit'] = $item->get_item()->can_edit();
+			$item_arr['current_user_can_delete'] = $item->get_item()->can_edit();
 		}
 
 		return $item_arr;

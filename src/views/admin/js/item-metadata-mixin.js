@@ -51,7 +51,7 @@ export const itemMetadataMixin = {
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0])  ? values[0] : values,
-                    parent_meta_id: parentMetaId ? parentMetaId : null
+					parent_meta_id: parentMetaId ? parentMetaId : null
                 })
                     .then(() => { 
                         this.isUpdatingValues = false;

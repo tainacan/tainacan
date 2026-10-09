@@ -302,6 +302,15 @@ abstract class Metadata_Type  {
     public function set_manage_multiple_input( $manage_multiple_input ) {
         $this->manage_multiple_input = (bool) $manage_multiple_input;
     }
+
+	/**
+	 * Whether stored values and queries for this type may keep anchor tags.
+	 *
+	 * @return bool
+	 */
+	public function allows_links() {
+		return false;
+	}
 	
 	/**
 	* Gets a slug based on the class name to represent the metadata type

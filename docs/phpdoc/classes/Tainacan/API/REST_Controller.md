@@ -24,7 +24,8 @@ classDiagram
         #prepare_filters(request)
         #get_minimum_safe_perpage()
         +add_support_to_tax_query_like(args)
-        #sanitize_value(value)
+        #sanitize_value(value, remove_links)
+        -get_query_value_sanitizer(mapped, clause)
         -prepare_meta(mapped, request, query, mapped_v, args)
         #contains_array(array, query)
         +get_fetch_only_param()
@@ -152,15 +153,35 @@ public add_support_to_tax_query_like(mixed $args): mixed
 
 ### sanitize_value
 
+Sanitize query values as post HTML, optionally removing anchor tags.
+
 ```php
-protected sanitize_value(mixed $value): mixed
+protected sanitize_value(mixed $value, bool $remove_links = false): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$value`        | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
+
+***
+
+### get_query_value_sanitizer
+
+Select link removal from the actual field represented by a query clause.
+
+```php
+private get_query_value_sanitizer(string $mapped, array $clause): \Closure
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description           |
+|-----------|------------|-----------------------|
+| `$mapped` | **string** | Query parameter name. |
+| `$clause` | **array**  | Query clause.         |
 
 ***
 

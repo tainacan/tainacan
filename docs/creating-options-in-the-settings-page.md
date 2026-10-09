@@ -36,7 +36,7 @@ function your_plugin_settings_init() {
 
 ### Step 2: Create Your Settings Section
 
-You may skip this if you want to use one of the existing sections (`tainacan_settings_search_and_performance`, `tainacan_settings_theme_templates`, `tainacan_settings_items_list_defaults`...)
+You may skip this if you want to use one of the existing sections (`tainacan_settings_search_and_performance`, `tainacan_settings_text_editing`, `tainacan_settings_theme_templates`, `tainacan_settings_items_list_defaults`...)
 
 ```php
 function your_plugin_settings_init() {
