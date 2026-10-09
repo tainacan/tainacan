@@ -83,7 +83,7 @@ class Link_Sanitization extends TAINACAN_UnitApiTestCase {
 			$this->assertNotEmpty( $entity->get_id(), $type );
 			if ( $type === 'log' ) $entity = Repositories\Logs::get_instance()->fetch( $entity->get_id() );
 			$this->assertSame( 'Linked', $entity->get( $property ), $type );
-			$this->assertSame( $this->link, $entity->get_description(), $type );
+			$this->assertSame( $type === 'log' ? 'Linked' : $this->link, $entity->get_description(), $type );
 		}
 	}
 

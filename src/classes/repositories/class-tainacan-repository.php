@@ -214,7 +214,7 @@ abstract class Repository {
 			$obj->WP_Post->post_content = $sanitized_desc;
 		} else {
 			$obj->WP_Post->post_title = $this->sanitize_value($obj->WP_Post->post_title);
-			$obj->WP_Post->post_content = $this->sanitize_value($obj->WP_Post->post_content, false);
+			$obj->WP_Post->post_content = $this->sanitize_value($obj->WP_Post->post_content);
 		}
 		
 		// wp_parse_args is used here to ensure an array is passed to wp_insert_post (instead of, for example an object of stdClass)
