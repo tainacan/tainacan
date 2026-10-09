@@ -433,3 +433,54 @@ function handleUITweakButtons() {
 handleMenuCollapses();
 handleDynamicMenusAndBreadcrumbs();
 handleUITweakButtons();
+
+function getTainacanHelpSectionKey( currentRoute ) {
+    if ( !currentRoute )
+        return null;
+
+    let menuLink = currentRoute.meta && currentRoute.meta.menuLink ? currentRoute.meta.menuLink : null;
+
+    if ( currentRoute.params && currentRoute.params.collectionId && menuLink )
+        return menuLink === 'settings' ? 'collections' : menuLink;
+
+    let path = currentRoute.path || '';
+    let topLevelSections = [ 'collections', 'my-items', 'items', 'metadata', 'filters', 'taxonomies', 'activities', 'capabilities', 'reports', 'processes', 'importers', 'exporters' ];
+
+    return topLevelSections.find( section => path.indexOf( '/' + section ) === 0 ) || null;
+}
+
+function updateTainacanHelpTab( currentRoute ) {
+    if ( window.tainacan_plugin && window.tainacan_plugin.i18n && window.tainacan_plugin.i18n.help_tabs ) {
+        let sectionKey = getTainacanHelpSectionKey( currentRoute );
+        let currentHelp = ( sectionKey && window.tainacan_plugin.i18n.help_tabs[ '/' + sectionKey ] ) || window.tainacan_plugin.i18n.help_tabs['default'];
+
+        if ( currentHelp ) {
+            let helpTabTitle = document.querySelector('#tab-link-tainacan_admin_help_tab a');
+            let helpTabContent = document.getElementById('tainacan-dynamic-help-content');
+            let helpTabLink = document.getElementById('tainacan-dynamic-help-link');
+            let helpTabSectionLinkWrapper = document.getElementById('tainacan-dynamic-help-section-link-wrapper');
+            let helpTabSectionLink = document.getElementById('tainacan-dynamic-help-section-link');
+
+            if ( helpTabTitle ) helpTabTitle.innerText = currentHelp.title;
+            if ( helpTabContent ) helpTabContent.innerHTML = currentHelp.content;
+            if ( helpTabLink ) helpTabLink.href = currentHelp.link;
+
+            if ( helpTabSectionLinkWrapper && helpTabSectionLink ) {
+                if ( currentHelp !== window.tainacan_plugin.i18n.help_tabs['default'] ) {
+                    helpTabSectionLink.href = currentHelp.link;
+                    helpTabSectionLink.innerText = currentHelp.title;
+                    helpTabSectionLinkWrapper.hidden = false;
+                } else {
+                    helpTabSectionLinkWrapper.hidden = true;
+                }
+            }
+        }
+    }
+}
+
+if ( wp && wp.hooks ) {
+    wp.hooks.addAction( 'tainacan_navigation_path_updated', 'tainacan_admin_help_tab', function( { currentRoute } ) {
+        updateTainacanHelpTab( currentRoute );
+    });
+}
+
