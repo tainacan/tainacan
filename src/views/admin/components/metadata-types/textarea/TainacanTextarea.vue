@@ -29,16 +29,11 @@
         if (value === null || value === undefined || value === '')
             return '';
 
-        const html = String(value);
-        if (/<(?:img|video|audio|iframe|embed|object|svg|hr)\b/i.test(html))
+        const parsed = new DOMParser().parseFromString(String(value), 'text/html');
+        if (parsed.body.querySelector('img, video, audio, iframe, embed, object, svg, hr'))
             return value;
 
-        const visibleText = html
-            .replace(/<[^>]*>/g, '')
-            .replace(/&nbsp;|&#160;|&#xa0;/gi, ' ')
-            .replace(/\u00a0/g, ' ')
-            .replace(/\s+/g, '');
-
+        const visibleText = parsed.body.textContent.replace(/\s+/g, '');
         return visibleText === '' ? '' : value;
     }
 
