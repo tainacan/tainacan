@@ -86,13 +86,14 @@
 </template>
 
 <script>
-    import { dateInter } from "../../../js/mixins";
+    import { dateInter, datepickersSettings } from "../../../js/mixins";
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     import moment from 'moment';
 
     export default {
         mixins: [
             dateInter, 
+            datepickersSettings,
             filterTypeMixin
         ],
         emits: [

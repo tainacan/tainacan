@@ -99,12 +99,13 @@
 
 
 <script>
-    import { dateInter } from "../../../js/mixins";
+    import { dateInter, datepickersSettings } from "../../../js/mixins";
     import moment from 'moment';
 
     export default {
         mixins: [
             dateInter, 
+            datepickersSettings,
         ],
         props: {
             value: [ String, Object, Array ]

@@ -38,20 +38,24 @@ export const dateInter = {
             dateMask: ''
         }
     },
+    methods: {
+        parseDateToNavigatorLanguage(date) {
+            date = new Date(date.replace(/-/g, '/'));
+            return moment(date, moment.ISO_8601).format(this.dateFormat);  
+        }
+    }
+};
+
+/* Used by date metadata and filter fields to apply the datepickers options defined in the Tainacan settings page */
+export const datepickersSettings = {
     computed: {
-        // Years range of the datepicker year selector, defined in the Tainacan settings page
+        // Years range of the datepicker year selector
         datepickersYearsRange() {
             // wp_localize_script stringifies every scalar, so parse back to integers.
             return [
                 parseInt(tainacan_plugin.datepickers_year_min, 10),
                 parseInt(tainacan_plugin.datepickers_year_max, 10)
             ];
-        }
-    },
-    methods: {
-        parseDateToNavigatorLanguage(date) {
-            date = new Date(date.replace(/-/g, '/'));
-            return moment(date, moment.ISO_8601).format(this.dateFormat);  
         }
     }
 };
