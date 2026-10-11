@@ -41,12 +41,10 @@ export const dateInter = {
     computed: {
         // Years range of the datepicker year selector, defined in the Tainacan settings page
         datepickersYearsRange() {
-            const yearMin = parseInt(tainacan_plugin.datepickers_year_min);
-            const yearMax = parseInt(tainacan_plugin.datepickers_year_max);
-
+            // wp_localize_script stringifies every scalar, so parse back to integers.
             return [
-                isNaN(yearMin) ? -200 : yearMin,
-                isNaN(yearMax) ? 50 : yearMax
+                parseInt(tainacan_plugin.datepickers_year_min, 10),
+                parseInt(tainacan_plugin.datepickers_year_max, 10)
             ];
         }
     },
