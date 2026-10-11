@@ -211,7 +211,7 @@ export default {
                     break;
                     
                 case 'Enter':
-                case ' ':
+                case ' ': {
                     // Activate the currently focused tab
                     if (e.key === ' ') {
                         e.preventDefault();
@@ -223,6 +223,7 @@ export default {
                         activateTab(focusedTab);
                     }
                     break;
+                }
             }
         };
         

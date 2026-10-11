@@ -339,9 +339,7 @@
                         .then((newValue) => {
                             this.activitiesPerPage = newValue;
                         })
-                        .catch(() => {
-                            this.$console.log("Error settings user prefs for activities per page")
-                        });
+                        .catch(() => undefined);
                 }
                 this.activitiesPerPage = value;
                 this.loadActivities();

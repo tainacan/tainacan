@@ -46,9 +46,9 @@ use \Tainacan\Repositories;
 	 *     @type string      $after_title               String to be added after each metadata title
 	 *                                                  Default '</h3>'
 	 *     @type string      $before_value              String to be added before each metadata value
-	 *                                                  Default '<p>'
+	 *                                                  Default '<div class="metadata-value">'
 	 *     @type string      $after_value               String to be added after each metadata value
-	 *                                                  Default '</p>'
+	 *                                                  Default '</div>'
 	 * }
  * 
  * @param int|string $item_id       (Optional) The item ID to retrive the metadatum as a HTML string to be used as output. Default is the global $post
@@ -1826,8 +1826,8 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 		'after_term_hierarchy_path' => '</em></span>',
 		'before_term_name' => '<h2 class="term-name wp-block-post-title">',
 		'after_term_name' => '</h2>',
-		'before_term_description' => '<div class="term-description wp-block-post-excerpt"><p class="wp-block-post-excerpt__excerpt">',
-		'after_term_description' => '</p></div>',
+		'before_term_description' => '<div class="term-description wp-block-post-excerpt"><div class="wp-block-post-excerpt__excerpt">',
+		'after_term_description' => '</div></div>',
 		'before_term_links' => '',
 		'after_term_links' => '',
 		'before_term_children_link' => '<span class="term-children-link">',

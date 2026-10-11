@@ -118,12 +118,22 @@ class Cli_Move_Attachments {
 					
 					if ( isset($meta['sizes']) && is_array($meta['sizes']) ) {
 						foreach ($meta['sizes'] as $size) {
+							// phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- Move the resized file on the local uploads disk. WP_Filesystem::move() follows the configured transport, which may not be that disk.
 							rename($current_base_path . DIRECTORY_SEPARATOR . $size['file'], $new_path_base . DIRECTORY_SEPARATOR . $size['file']);
 						}
 					}
 					
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- Move the attachment on the local uploads disk. WP_Filesystem::move() follows the configured transport, which may not be that disk.
 					rename($current_path, $new_path);
-					$wpdb->query("UPDATE $wpdb->posts SET post_parent = {$item->get_id()}, guid = REPLACE(guid, '$current_url', '$new_url') WHERE ID = {$att->ID}");
+					$wpdb->query(
+						$wpdb->prepare(
+							"UPDATE $wpdb->posts SET post_parent = %d, guid = REPLACE(guid, %s, %s) WHERE ID = %d",
+							$item->get_id(),
+							$current_url,
+							$new_url,
+							$att->ID
+						)
+					);
 					wp_update_attachment_metadata($att->ID, $meta);
 					update_post_meta($att->ID, '_wp_attached_file', $new_url);
 					

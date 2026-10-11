@@ -2,9 +2,8 @@ classDiagram
     direction TB
     class Cli_Garbage_Collector {
         +__invoke(args, assoc_args)
-        -get_orphan_items_query(select)
+        -get_orphan_item_post_types()
         -delete_items(dry_run, deep)
-        -get_orphan_attachments_count()
         -delete_attachments(dry_run, deep)
         -filesize_formatted(size)
         -delete_terms_taxonomies(dry_run, deep)

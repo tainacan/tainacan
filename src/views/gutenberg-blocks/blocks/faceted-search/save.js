@@ -8,7 +8,6 @@ export default function({ attributes }) {
         defaultViewMode,
         enabledViewModes,
         collectionDefaultViewMode,
-        collectionEnabledViewModes,
         hideDisplayedMetadataButton,
         hideSortingArea,
         hideFilters,

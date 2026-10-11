@@ -23,7 +23,6 @@
 </template>
 
 <script>
-    import { isCancel } from '../../../js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
 
     export default {
@@ -116,10 +115,7 @@
                             this.$emit('update-parent-collapse', res.data.values.length > 0);
                         this.$nextTick(() => this.tryRestoreFocus());
                     })
-                    .catch((error) => {
-                        if (!isCancel(error))
-                            this.$console.log('Error on facets request: ', error);
-                    });
+                    .catch(() => undefined);
 
                 this.getOptionsValuesCancel = promise.source;
             },

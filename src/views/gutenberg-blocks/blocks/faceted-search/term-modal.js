@@ -105,9 +105,7 @@ export default class TermModal extends React.Component {
                 
                 return someTerms;
             })
-            .catch(error => {
-                console.log('Error trying to fetch terms: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     fetchModalTerms(offset, taxonomyId) {
@@ -147,9 +145,7 @@ export default class TermModal extends React.Component {
                 
                 return otherModalTerms;
             })
-            .catch(error => {
-                console.log('Error trying to fetch terms: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     // TAXONOMY RELATED --------------------------------------------------
@@ -195,18 +191,14 @@ export default class TermModal extends React.Component {
             
                 return otherModalTaxonomies;
             })
-            .catch(error => {
-                console.log('Error trying to fetch taxonomies: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     fetchTaxonomy(taxonomyId) {
         tainacanApi.get('/taxonomies/' + taxonomyId)
             .then((response) => {
                 this.setState({ taxonomyName: response.data.name });
-            }).catch(error => {
-                console.log('Error trying to fetch taxonomy: ' + error);
-            });
+            }).catch(() => undefined);
     }
 
     selectTaxonomy(selectedTaxonomyId) {
@@ -250,9 +242,7 @@ export default class TermModal extends React.Component {
                 
                 return someTaxonomies;
             })
-            .catch(error => {
-                console.log('Error trying to fetch taxonomies: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     resetTaxonomies() {

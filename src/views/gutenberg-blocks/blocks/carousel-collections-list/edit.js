@@ -1,4 +1,4 @@
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder,  PanelBody } = wp.components;
+const { Placeholder, RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
@@ -8,12 +8,13 @@ const { useSelect } = wp.data;
 
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
-import CarouselCollectionsModal from './carousel-collections-modal.js';
+import CollectionsSelectionModal from '../../js/selection/tainacan-collections-selection-modal.js';
 import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function ({ attributes, setAttributes, isSelected, clientId }) {
     let {
@@ -376,7 +377,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 (
                 <div>
                     { isModalOpen ?
-                        <CarouselCollectionsModal
+                        <CollectionsSelectionModal
                             selectedCollectionsObject={ selectedCollections }
                             onApplySelection={ (aSelectionOfCollections) => {
                                 selectedCollections = aSelectionOfCollections;
@@ -396,25 +397,10 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
 
             { !collections.length && !isLoading ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                height="24px"
-                                width="24px">
-                            <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                        </svg>
-                        {__('List collections on a Carousel, showing their thumbnails or a preview of items.', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Collections Carousel', 'tainacan' ) }
+                    instructions={ __( 'List collections on a Carousel, showing their thumbnails or a preview of items.', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"

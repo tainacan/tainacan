@@ -104,9 +104,8 @@ export default (element) => {
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
-                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
-                    const aPlugin = app.use(extraVuePluginObject);
-                }
+                for (let extraVuePluginObject of Object.values(window.tainacan_extra_plugins))
+                    app.use(extraVuePluginObject);
             }
 
             // Configure and Register Plugins
@@ -181,7 +180,7 @@ export default (element) => {
             app.use(ModalFocusReturnPlugin);
 
             /* Reports-related */
-            Apex.colors = [
+            window.Apex.colors = [
                 '#187181', // Tainacan Turquoise
                 '#062a57', // Tainacan Blue
                 '#1a745c', // Tainacan Green
@@ -198,7 +197,7 @@ export default (element) => {
             const browserLanguage = navigator.language.toLocaleLowerCase();
 
             if (availableLocales.indexOf(browserLanguage) >= 0) {
-                let localeConfig = {};
+                let localeConfig;
 
                 switch(browserLanguage) {
                     case 'es': localeConfig = esLocaleConfig; break;
@@ -207,7 +206,7 @@ export default (element) => {
                     case 'de': localeConfig = deLocaleConfig; break;
                     case 'en': default: localeConfig = enLocaleConfig; break;
                 }
-                Apex.chart = {
+                window.Apex.chart = {
                     defaultLocale: browserLanguage,
                     locales: [ localeConfig ]
                 }
@@ -219,15 +218,15 @@ export default (element) => {
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {
                 for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-                    const aComponent = app.component(extraVueComponentName, extraVueComponentObject);
+                    app.component(extraVueComponentName, extraVueComponentObject);
                 }
             }
 
             /* Others */
-            app.component('help-button', HelpButton);
-            app.component('tainacan-progressive-image', TainacanProgressiveImage);
-            app.component('tainacan-title', TainacanTitle);
-            app.component('tainacan-external-link', TainacanExternalLink)
+            app.component('HelpButton', HelpButton);
+            app.component('TainacanProgressiveImage', TainacanProgressiveImage);
+            app.component('TainacanTitle', TainacanTitle);
+            app.component('TainacanExternalLink', TainacanExternalLink)
             
             // Event bus are needed to facilate comunication between child-parent-child components
             app.use(eventBusSearch);

@@ -929,7 +929,7 @@ export default {
                             })
                             .catch(() => {
                                 this.isUpdatingMetadataOrder = false;
-                                this.$console.log("Error deleting metadatum.")
+                                
                             });
                     }
                 },
@@ -971,7 +971,7 @@ export default {
                             })
                             .catch(() => {
                                 this.isUpdatingMetadataSectionsOrder = false;
-                                this.$console.log("Error deleting metadata section.")
+                                
                             });
                     }
                 },

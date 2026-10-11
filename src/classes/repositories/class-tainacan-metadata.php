@@ -840,29 +840,35 @@ class Metadata extends Repository {
 		$new_title_metadatum       = $collection_new->get_core_title_metadatum();
 		$new_description_metadatum = $collection_new->get_core_description_metadatum();
 
-		$sql_statement = $wpdb->prepare(
-			"UPDATE $wpdb->postmeta
-				SET meta_key = %s
-				WHERE meta_key = %s AND post_id IN (
-				SELECT ID
-				FROM $wpdb->posts
-				WHERE post_type = %s
-			)", $new_title_metadatum->get_id(), $old_title_metadatum->get_id(), $item_post_type
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$wpdb->postmeta}
+					SET meta_key = %s
+					WHERE meta_key = %s AND post_id IN (
+					SELECT ID
+					FROM {$wpdb->posts}
+					WHERE post_type = %s
+				)",
+				$new_title_metadatum->get_id(),
+				$old_title_metadatum->get_id(),
+				$item_post_type
+			)
 		);
 
-		$res = $wpdb->query( $sql_statement );
-
-		$sql_statement = $wpdb->prepare(
-			"UPDATE $wpdb->postmeta
-				SET meta_key = %s
-				WHERE meta_key = %s AND post_id IN (
-				SELECT ID
-				FROM $wpdb->posts
-				WHERE post_type = %s
-			)", $new_description_metadatum->get_id(), $old_description_metadatum->get_id(), $item_post_type
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$wpdb->postmeta}
+					SET meta_key = %s
+					WHERE meta_key = %s AND post_id IN (
+					SELECT ID
+					FROM {$wpdb->posts}
+					WHERE post_type = %s
+				)",
+				$new_description_metadatum->get_id(),
+				$old_description_metadatum->get_id(),
+				$item_post_type
+			)
 		);
-
-		$res = $wpdb->query( $sql_statement );
 
 		wp_cache_flush();
 
@@ -1273,73 +1279,85 @@ class Metadata extends Repository {
 
 		$pagination = '';
 		if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
-			$pagination = $wpdb->prepare( "LIMIT %d,%d", (int) $args['offset'], (int) $args['number'] );
+			$pagination = $wpdb->prepare( 'LIMIT %d,%d', (int) $args['offset'], (int) $args['number'] );
 		}
 
-		$search_q = '';
-		$search = trim($args['search'] ?? '');
-		if (!empty($search)) {
-			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
-				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
+		// Each clause is prepared on its own. They are concatenated afterwards so a value
+		// that contains "%" is not interpreted as a placeholder by a second prepare().
+		$search_clause = '';
+		$search        = trim( $args['search'] ?? '' );
+		if ( '' !== $search ) {
+			$like = '%' . $wpdb->esc_like( $search ) . '%';
+			if ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
+				$search_clause = $wpdb->prepare( "AND meta_value IN ( SELECT ID FROM {$wpdb->posts} WHERE post_title LIKE %s )", $like );
 			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
-				$search_q = $wpdb->prepare("AND t.name LIKE %s", '%' . $search . '%');
+				$search_clause = $wpdb->prepare( 'AND t.name LIKE %s', $like );
 			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
-				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->users WHERE display_name LIKE %s )", '%' . $search . '%');
+				$search_clause = $wpdb->prepare( "AND meta_value IN ( SELECT ID FROM {$wpdb->users} WHERE display_name LIKE %s )", $like );
 			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Control' ) {
 				$metadata_type_object = $metadatum->get_metadata_type_object();
-				$search_q = $metadata_type_object->get_control_metadatum_search_sql( $search );
+				$search_clause        = $metadata_type_object->get_control_metadatum_search_sql( $search );
 			} else {
-				$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
+				$search_clause = $wpdb->prepare( 'AND meta_value LIKE %s', $like );
 			}
-
-
 		}
 
 		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 
 			if ($items_query) {
 
-				$check_hierarchy_q = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND parent > 0 LIMIT 1", $taxonomy_slug);
-				$has_hierarchy = ! is_null($wpdb->get_var($check_hierarchy_q));
+				$has_hierarchy = ! is_null(
+					$wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s AND parent > 0 LIMIT 1",
+							$taxonomy_slug
+						)
+					)
+				);
 
 				if ( ! $has_hierarchy ) {
-					$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr
-						INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id
-						INNER JOIN ($items_query) as posts ON tr.object_id = posts.ID
-						WHERE
-						tt.parent = %d AND
-						tt.taxonomy = %s
-						$search_q
-						ORDER BY t.name ASC
-						",
+					$where = $wpdb->prepare(
+						'WHERE tt.parent = %d AND tt.taxonomy = %s',
 						$args['parent_id'],
 						$taxonomy_slug
 					);
 
-					$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+					// $items_query is WP_Query::request. It can contain "%" and cannot be a placeholder.
+					$base_query = "FROM {$wpdb->term_relationships} tr
+						INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+						INNER JOIN {$wpdb->terms} t ON tt.term_id = t.term_id
+						INNER JOIN ({$items_query}) as posts ON tr.object_id = posts.ID
+						{$where}
+						{$search_clause}";
+					$filtered_terms_sql = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent
+						{$base_query}
+						ORDER BY t.name ASC
+						{$pagination}";
+					$filtered_terms_total_sql = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) {$base_query}";
 
-					$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
-					$total = $wpdb->get_var($total_query);
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Clauses are prepared above; $items_query is WP_Query::request. $search_clause may be prepared in the control metadata type, which this sniff cannot see.
+					$total = $wpdb->get_var( $filtered_terms_total_sql );
 
-					$results = $wpdb->get_results($query);
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Clauses are prepared above; $items_query is WP_Query::request. $search_clause may be prepared in the control metadata type, which this sniff cannot see.
+					$results = $wpdb->get_results( $filtered_terms_sql );
 
 				} else {
 
-					$base_query = $wpdb->prepare("
-						SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
-						FROM
-						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id
+					$taxonomy_clause = $wpdb->prepare( 'tt.taxonomy = %s', $taxonomy_slug );
+					$hierarchy_sql   = "SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
+						FROM {$wpdb->terms} t
+						INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id
 						LEFT JOIN (
-							SELECT DISTINCT term_taxonomy_id FROM $wpdb->term_relationships
-								INNER JOIN ($items_query) as posts ON $wpdb->term_relationships.object_id = posts.ID
+							SELECT DISTINCT term_taxonomy_id FROM {$wpdb->term_relationships}
+								INNER JOIN ({$items_query}) as posts ON {$wpdb->term_relationships}.object_id = posts.ID
 						) as tr ON tt.term_taxonomy_id = tr.term_taxonomy_id
-						WHERE tt.taxonomy = %s ORDER BY t.name ASC", $taxonomy_slug
-					);
+						WHERE {$taxonomy_clause}
+						ORDER BY t.name ASC";
 
-					$all_hierarchy = $wpdb->get_results($base_query);
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $taxonomy_clause is prepared; $items_query is WP_Query::request.
+					$all_hierarchy = $wpdb->get_results( $hierarchy_sql );
 
-					if (empty($search)) {
+					if ( '' === $search ) {
 						$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id'], 'parent');
 					} else  {
 						$results = $this->_process_terms_tree($all_hierarchy, $search, 'name');
@@ -1352,27 +1370,28 @@ class Metadata extends Repository {
 					}
 				}
 			} else {
-				$parent_q = $wpdb->prepare("AND tt.parent = %d", $args['parent_id']);
-				if ($search_q) {
-					$parent_q = '';
+				$parent_clause = '';
+				if ( ! $search_clause ) {
+					$parent_clause = $wpdb->prepare( 'AND tt.parent = %d', $args['parent_id'] );
 				}
-				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt
-					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id
+				$taxonomy_clause = $wpdb->prepare( 'AND tt.taxonomy = %s', $taxonomy_slug );
+				$base_query      = "FROM {$wpdb->term_taxonomy} tt
+					INNER JOIN {$wpdb->terms} t ON tt.term_id = t.term_id
 					WHERE 1=1
-					$parent_q
-					AND tt.taxonomy = %s
-					$search_q
+					{$parent_clause}
+					{$taxonomy_clause}
+					{$search_clause}";
+				$terms_sql       = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent
+					{$base_query}
 					ORDER BY t.name ASC
-					",
-					$taxonomy_slug
-				);
+					{$pagination}";
+				$terms_total_sql = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) {$base_query}";
 
-				$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Clauses are prepared above. Optional clauses are empty strings, which this sniff cannot follow. $search_clause may be prepared in the control metadata type, which this sniff cannot see.
+				$total = $wpdb->get_var( $terms_total_sql );
 
-				$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
-				$total = $wpdb->get_var($total_query);
-
-				$results = $wpdb->get_results($query);
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Clauses are prepared above. Optional clauses are empty strings, which this sniff cannot follow. $search_clause may be prepared in the control metadata type, which this sniff cannot see.
+				$results = $wpdb->get_results( $terms_sql );
 
 			}
 
@@ -1380,16 +1399,22 @@ class Metadata extends Repository {
 			if ( !empty($args['include']) ) {
 				if ( is_array($args['include']) && !empty($args['include']) ) {
 
-					// protect sql
-					$args['include'] = array_map(function($t) { return (int) $t; }, $args['include']);
+					$include_ids = wp_parse_id_list( $args['include'] );
+					$args['include'] = $include_ids;
+					$to_include = array();
 
-					$include_ids = implode(',', $args['include']);
-					$query_to_include = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent FROM $wpdb->term_taxonomy tt
-						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id
-						WHERE
-						t.term_id IN ($include_ids)";
-
-					$to_include = $wpdb->get_results($query_to_include);
+					if ( ! empty( $include_ids ) ) {
+						$include_placeholders = implode( ',', array_fill( 0, count( $include_ids ), '%d' ) );
+						$to_include           = $wpdb->get_results(
+							$wpdb->prepare(
+								"SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent
+								FROM {$wpdb->term_taxonomy} tt
+								INNER JOIN {$wpdb->terms} t ON tt.term_id = t.term_id
+								WHERE t.term_id IN ({$include_placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $include_placeholders is a generated list of %d tokens.
+								...$include_ids
+							)
+						);
+					}
 
 					// remove terms that will be included at the begining
 					$total_included = count($to_include) > $args['number'] ? count($to_include) : $args['number'];
@@ -1410,8 +1435,12 @@ class Metadata extends Repository {
 			$values = [];
 			foreach ($results as $r) {
 
-				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_id);
-				$total_children = $wpdb->get_var($count_query);
+				$total_children = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(term_id) FROM {$wpdb->term_taxonomy} WHERE parent = %d",
+						$r->term_id
+					)
+				);
 
 				$label = wp_specialchars_decode($r->name);
 				$total_items = null;
@@ -1452,20 +1481,27 @@ class Metadata extends Repository {
 
 		} else {
 
+			$meta_where = $wpdb->prepare( 'WHERE meta_key = %s', $metadatum_id );
 			if ($items_query) {
-				$items_query_clause = "($items_query) as qItems";
-				$base_query = $wpdb->prepare( "(SELECT DISTINCT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = %s $search_q ORDER BY meta_value) as qBase", $metadatum_id );
-				$total_query = "SELECT COUNT(DISTINCT qBase.meta_value) FROM $base_query INNER JOIN $items_query_clause ON qBase.post_id = qItems.ID";
-				$query = "SELECT DISTINCT qBase.meta_value FROM $base_query INNER JOIN $items_query_clause ON qBase.post_id = qItems.ID $pagination";
-				//$query = "SELECT DISTINCT meta_value $base_query $pagination";
-			} else {
-				$base_query = $wpdb->prepare( "FROM $wpdb->postmeta WHERE meta_key = %s $search_q ORDER BY meta_value", $metadatum_id );
-				$total_query = "SELECT COUNT(DISTINCT meta_value) $base_query";
-				$query = "SELECT DISTINCT meta_value $base_query $pagination";
-			}
+				$value_from                = "SELECT DISTINCT post_id, meta_value FROM {$wpdb->postmeta} {$meta_where} {$search_clause} ORDER BY meta_value";
+				$filtered_values_total_sql = "SELECT COUNT(DISTINCT qBase.meta_value) FROM ({$value_from}) as qBase INNER JOIN ({$items_query}) as qItems ON qBase.post_id = qItems.ID";
+				$filtered_values_sql       = "SELECT DISTINCT qBase.meta_value FROM ({$value_from}) as qBase INNER JOIN ({$items_query}) as qItems ON qBase.post_id = qItems.ID {$pagination}";
 
-			$results = $wpdb->get_col($query);
-			$total = $wpdb->get_var($total_query);
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Clauses are prepared above; $items_query is WP_Query::request. For a control metadatum, $search_clause is prepared in the metadata type.
+				$total = $wpdb->get_var( $filtered_values_total_sql );
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Clauses are prepared above; $items_query is WP_Query::request. For a control metadatum, $search_clause is prepared in the metadata type.
+				$results = $wpdb->get_col( $filtered_values_sql );
+			} else {
+				$values_total_sql = "SELECT COUNT(DISTINCT meta_value) FROM {$wpdb->postmeta} {$meta_where} {$search_clause}";
+				$values_sql       = "SELECT DISTINCT meta_value FROM {$wpdb->postmeta} {$meta_where} {$search_clause} ORDER BY meta_value {$pagination}";
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $search_clause and $pagination may be empty strings, which this sniff cannot follow. For a control metadatum, $search_clause is prepared in the metadata type.
+				$total = $wpdb->get_var( $values_total_sql );
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $search_clause and $pagination may be empty strings, which this sniff cannot follow. For a control metadatum, $search_clause is prepared in the metadata type.
+				$results = $wpdb->get_col( $values_sql );
+			}
 			$number = ctype_digit((string)$args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;

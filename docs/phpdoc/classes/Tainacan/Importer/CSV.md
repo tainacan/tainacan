@@ -777,9 +777,15 @@ public get_tmp_file(): mixed
 
 ### set_tmp_file
 
+Store the importer source file.
+
 ```php
-public set_tmp_file(mixed $filepath): mixed
+public set_tmp_file(mixed $filepath): bool
 ```
+
+The path must be an existing file inside the WordPress uploads directory.
+Absolute paths are accepted only after realpath() confirms that location,
+which is how attachments from media_handle_sideload() are stored.
 
 **Parameters:**
 

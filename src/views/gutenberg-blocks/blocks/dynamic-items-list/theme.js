@@ -115,7 +115,7 @@ export default (element) => {
                 });
                 VueDynamicItemsList.use(I18NPlugin);
                 VueDynamicItemsList.use(ThumbnailHelperPlugin);
-                VueDynamicItemsList.component('tainacan-progressive-image', TainacanProgressiveImage);
+                VueDynamicItemsList.component('TainacanProgressiveImage', TainacanProgressiveImage);
 
                 VueDynamicItemsList.mount('#' + block.id);
             });

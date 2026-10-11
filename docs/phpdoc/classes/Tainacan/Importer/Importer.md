@@ -44,6 +44,7 @@ classDiagram
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        -resolve_allowed_tmp_file(filepath)
         +get_tmp_file_id()
         +set_tmp_file_id(id)
         +get_collections()
@@ -460,8 +461,30 @@ public get_tmp_file(): mixed
 
 ### set_tmp_file
 
+Store the importer source file.
+
 ```php
-public set_tmp_file(mixed $filepath): mixed
+public set_tmp_file(mixed $filepath): bool
+```
+
+The path must be an existing file inside the WordPress uploads directory.
+Absolute paths are accepted only after realpath() confirms that location,
+which is how attachments from media_handle_sideload() are stored.
+
+**Parameters:**
+
+| Parameter   | Type      | Description |
+|-------------|-----------|-------------|
+| `$filepath` | **mixed** |             |
+
+***
+
+### resolve_allowed_tmp_file
+
+Resolve a source path and confirm it is a file inside the uploads directory.
+
+```php
+private resolve_allowed_tmp_file(mixed $filepath): string|false
 ```
 
 **Parameters:**
@@ -469,6 +492,10 @@ public set_tmp_file(mixed $filepath): mixed
 | Parameter   | Type      | Description |
 |-------------|-----------|-------------|
 | `$filepath` | **mixed** |             |
+
+**Return Value:**
+
+Canonical path, or false when the path is not allowed.
 
 ***
 

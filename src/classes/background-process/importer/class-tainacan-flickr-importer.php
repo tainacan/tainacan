@@ -388,7 +388,7 @@ class Flickr_Importer extends Importer {
 						break;
 
 					case 'date_upload':
-						$value = date('Y-m-d', $item->dateuploaded );
+						$value = gmdate('Y-m-d', $item->dateuploaded );
 						break;
 
 					case 'image_thumbnail':

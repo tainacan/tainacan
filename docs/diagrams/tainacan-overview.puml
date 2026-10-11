@@ -593,6 +593,7 @@
       #prefix : string
       #action : string
       #name : string
+      #default_max_retries : int
       +__construct()
       +get_id()
       +get_name()
@@ -621,6 +622,8 @@
       #cron_interval_identifier : mixed
       #cron_hook_check_identifier : string
       #process_lock_in_time : string
+      #is_cron_dispatch : bool
+      #stale_process_timeout : int
       #queue_lock_time : string
       #cron_interval : string
       +__construct()
@@ -644,6 +647,8 @@
       +schedule_cron_healthcheck(schedules)
       +handle_cron_healthcheck()
       +handle_cron_healthcheck_check()
+      #detect_and_cleanup_stale_processes()
+      +record_heartbeat()
       #schedule_event()
       #clear_scheduled_event()
       +cancel_process()
@@ -1081,6 +1086,7 @@
         +set_current_collection_item(value)
         +get_tmp_file()
         +set_tmp_file(filepath)
+        -resolve_allowed_tmp_file(filepath)
         +get_tmp_file_id()
         +set_tmp_file_id(id)
         +get_collections()
@@ -1516,6 +1522,7 @@
       +get_tainacan_item_gallery_template(args)
       +get_taxonomies_query_args()
       +register_tainacan_oficial_view_modes()
+      -parse_id_list(ids)
       -convert_params_to_camel_case(params)
     }
   }
@@ -1524,6 +1531,7 @@
       +__construct()
       #filter_object_by_attributes(object, attributes)
       #prepare_item_for_updating(object, new_values)
+      #get_readonly_fields()
       #prepare_filters(request)
       #get_minimum_safe_perpage()
       +add_support_to_tax_query_like(args)
@@ -1534,12 +1542,15 @@
       +get_wp_query_params()
       #get_meta_queries_params()
       +get_repository_schema(repository)
-      +get_permissions_schema()
+      #get_permissions_schema()
       +get_base_properties_schema()
       {abstract} #get_schema()
       +get_list_schema()
       +tainacan_sanitize_post_statuses(statuses, request, parameter)
       #validate_array_fields(body, fields)
+      #get_param_schema(param_name, properties)
+      #get_paginated_list_schema()
+      #prepare_paginated_response(data, total, total_pages, per_page, response)
     }
     package endpoints as api.endpoints {
       class "REST_Roles_Controller\n<b>REST API controller for managing Tainacan roles and capabilities.</b>" as api_endpoints_REST_Roles_Controller {
@@ -1743,6 +1754,7 @@
         -get_default_search_sentence()
         +process_request_filters(args)
         +get_attachments_schema()
+        +get_list_schema()
         +get_schema()
       }
       class "REST_Filters_Controller\n<b>REST API controller for managing Tainacan filters.</b>" as api_endpoints_REST_Filters_Controller {
@@ -1803,6 +1815,7 @@
         +get_endpoint_args_for_item_schema(method)
         +get_endpoint_arg_for_schema(name, properties, repository)
         +get_schema()
+        +get_list_schema()
       }
       class "REST_Facets_Controller\n<b>REST API controller for managing Tainacan facets.</b>" as api_endpoints_REST_Facets_Controller {
         -metadatum_repository : 
@@ -1864,7 +1877,7 @@
         +get_schema()
       }
       class "REST_Metadatum_Mappers_Controller\n<b>REST API controller for managing Tainacan metadatum mappers.</b>" as api_endpoints_REST_Metadatum_Mappers_Controller {
-        #get_schema()
+        +get_schema()
         +__construct()
         +register_routes()
         +prepare_item_for_response(mapper, request)
@@ -2096,9 +2109,8 @@
     }
     class "Cli_Garbage_Collector\n<b>Handles WP-CLI commands for Tainacan garbage collection operations.</b>" as cli_Cli_Garbage_Collector {
       +__invoke(args, assoc_args)
-      -get_orphan_items_query(select)
+      -get_orphan_item_post_types()
       -delete_items(dry_run, deep)
-      -get_orphan_attachments_count()
       -delete_attachments(dry_run, deep)
       -filesize_formatted(size)
       -delete_terms_taxonomies(dry_run, deep)

@@ -437,10 +437,13 @@ class Media {
 		}
 
 		if( @filesize($upload['file']) == 0 && is_resource($blob) ){
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Copy an open stream into the empty uploaded file. WP_Filesystem::put_contents() cannot take that stream.
 			$file_wordpress_stream = fopen( $upload['file'], 'r+');
 			stream_copy_to_stream($blob, $file_wordpress_stream);
 
-			if( file_exists(self::$file_name) ) unlink(self::$file_name);
+			if( file_exists(self::$file_name) ) {
+				wp_delete_file(self::$file_name);
+			}
 		}
 
 		$file_path = $upload['file'];

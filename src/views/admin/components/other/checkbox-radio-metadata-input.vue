@@ -592,8 +592,8 @@
 
                                 this.isSelectedTermsLoading = false;
                             })
-                            .catch((error) => {
-                                this.$console.log(error);
+                            .catch(() => {
+                                
                                 this.isSelectedTermsLoading = false;
                             });
                     }
@@ -614,8 +614,8 @@
 
                             this.isSelectedTermsLoading = false;
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
+                        .catch(() => {
+                            
                             this.isSelectedTermsLoading = false;
                         });
                 }
@@ -710,9 +710,7 @@
                         this.hasToDisplaySearchBar = !this.isSearching && (this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1);
                     })
                     .catch(error => {
-                        if (isCancel(error))
-                            this.$console.log('Request canceled: ' + error.message);
-                        else
+                        if (!isCancel(error))
                             this.$console.error( error );
                     })
 
@@ -745,9 +743,7 @@
                                 this.noMoreSearchPage = res.headers['x-wp-total'] <= this.checkboxListOffset + this.searchResults.length;
 
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        });
+                        .catch(() => undefined);
                 } else {
                     this.isLoadingSearch = true;
 
@@ -943,8 +939,8 @@
                             }
                         }
                     })
-                    .catch(error => {
-                        this.$console.log(error);
+                    .catch(() => {
+                        
 
                         this.isColumnLoading = false;
                     });
@@ -981,8 +977,8 @@
                             });
                             this.isColumnLoading = false;
                         })
-                        .catch(error => {
-                            this.$console.log(error);
+                        .catch(() => {
+                            
 
                             this.isColumnLoading = false;
                         });

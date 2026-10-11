@@ -75,10 +75,11 @@ class GeoCoordinate_Helper {
 					if ( !$valid || empty($safe_pairs) ) {
 						break;
 					}
-					$safe_polygon = implode(', ', $safe_pairs);
+					$safe_polygon = 'POLYGON((' . implode( ', ', $safe_pairs ) . '))';
 					$where_geo[] = $wpdb->prepare(
-						"(mtgeoquery.meta_key = %s AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON((" . $safe_polygon . "))'), point(SUBSTRING_INDEX(wp.meta_value, ',', 1), SUBSTRING_INDEX(wp.meta_value, ',', -1))) = true)",
-						$key
+						"(mtgeoquery.meta_key = %s AND ST_CONTAINS(ST_GEOMFROMTEXT(%s), point(SUBSTRING_INDEX(wp.meta_value, ',', 1), SUBSTRING_INDEX(wp.meta_value, ',', -1))) = true)",
+						$key,
+						$safe_polygon
 					);
 					break;
 			}

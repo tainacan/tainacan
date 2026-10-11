@@ -10,6 +10,7 @@ const TainacanPluginConfig = {
         tainacan_admin_navigation_menu: './src/views/tainacan-admin-navigation-menu.js',
         tainacan_command_palette: './src/views/tainacan-command-palette.js',
         tainacan_dashboard: './src/views/dashboard/tainacan-dashboard.js',
+        tainacan_settings: './src/views/settings/tainacan-settings.js',
         tainacan_blocks_common_scripts: './src/views/gutenberg-blocks/tainacan-blocks-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
         tainacan_blocks_query_variations: './src/views/gutenberg-blocks/js/tainacan-blocks-query-variations.js',
@@ -124,8 +125,9 @@ const TainacanPluginConfig = {
             localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'ca', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv', 'sq', 'sk', 'uk', 'de'],
         }),
         new ESLintPlugin({
-            extensions: ['vue'],
-            exclude: ['/node_modules/']
+            extensions: ['vue', 'js'],
+            // A leading slash is an absolute path and does not match this project.
+            exclude: ['**/node_modules/**']
         })
     ],
     stats: {

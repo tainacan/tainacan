@@ -141,7 +141,7 @@ class System_Check extends Pages {
 	public function check_upload_permission() {
 
 		$upload_dir = wp_upload_dir();
-		$writable = is_writable($upload_dir['basedir']);
+		$writable = wp_is_writable($upload_dir['basedir']);
 
 		if ( ! $writable ) {
 			$class = 'error';

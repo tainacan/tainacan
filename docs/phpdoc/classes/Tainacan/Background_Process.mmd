@@ -6,6 +6,7 @@ classDiagram
         #prefix : string
         #action : string
         #name : string
+        #default_max_retries : int
         +__construct()
         +get_id()
         +get_name()
@@ -34,6 +35,8 @@ classDiagram
         #cron_interval_identifier : mixed
         #cron_hook_check_identifier : string
         #process_lock_in_time : string
+        #is_cron_dispatch : bool
+        #stale_process_timeout : int
         #queue_lock_time : string
         #cron_interval : string
         +__construct()
@@ -57,6 +60,8 @@ classDiagram
         +schedule_cron_healthcheck(schedules)
         +handle_cron_healthcheck()
         +handle_cron_healthcheck_check()
+        #detect_and_cleanup_stale_processes()
+        +record_heartbeat()
         #schedule_event()
         #clear_scheduled_event()
         +cancel_process()

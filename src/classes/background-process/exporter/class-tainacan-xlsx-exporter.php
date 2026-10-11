@@ -72,8 +72,9 @@ class XLSX_Exporter extends Exporter {
 
 			if ($this->tempFilePath) {
 				if (file_exists($this->filePath)) {
-					unlink($this->filePath);
+					wp_delete_file($this->filePath);
 				}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- Replace the export with the temp workbook on the local disk. WP_Filesystem::move() follows the configured transport, which may not be the disk PhpSpreadsheet just wrote.
 				rename($this->tempFilePath, $this->filePath);
 			}
 		}

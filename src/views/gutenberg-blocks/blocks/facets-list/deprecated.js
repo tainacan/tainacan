@@ -150,7 +150,7 @@ export default [
                 "sticky": true
             }
         },
-        "save": function({ attributes, className }) {
+        "save": function({ attributes }) {
             const {
                 content, 
                 blockId,

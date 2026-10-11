@@ -147,15 +147,9 @@
                                                             'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
                                                         }"
                                                         class="content">
-                                                    <component 
-                                                            :is="
-                                                                itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
-                                                                    (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
-                                                                        itemMetadatum.metadatum.metadata_type_object.options &&
-                                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
-                                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
-                                                                    ) ? 'div' : 'p'" 
-                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-dark is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`" />
+                                                    <div
+                                                            class="metadata-value"
+                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<span class='has-text-dark is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
                                                 </div>
                                             </div>
                                             <br>
@@ -545,7 +539,6 @@
         name: 'ItemPage',
         components: {
             FileItem,
-            ActivitiesPage,
             RelatedItemsList,
             AttachmentsList
         },

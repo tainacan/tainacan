@@ -32,7 +32,7 @@ export function subscribeSelectionState(onState) {
                     onState(state);
             };
         }
-    } catch (error) {
+    } catch {
         channel = null;
     }
 

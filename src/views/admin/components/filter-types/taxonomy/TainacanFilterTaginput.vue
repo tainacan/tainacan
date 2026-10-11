@@ -44,7 +44,6 @@
 </template>
 
 <script>
-    import { isCancel } from '../../../js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
@@ -122,10 +121,7 @@
                         this.totalFacets = res.headers['x-wp-total'];
                         this.offset += 12;
                     })
-                    .catch((error) => {
-                        if (!isCancel(error))
-                            this.$console.log(error);
-                    });
+                    .catch(() => undefined);
 
                 this.getOptionsValuesCancel = promise.source;
             },

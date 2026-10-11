@@ -23,7 +23,6 @@ export default function getCollectionIdFromPossibleTemplateEdition() {
         const currentPost = select('core/editor')?.getCurrentPost();
         if (currentPost?.type === 'wp_template' && typeof currentPost?.slug === 'string') {
             templateSlug = currentPost.slug;
-            console.log('templateSlug: ' + templateSlug);
         }
         // Fallback for WP 5.9–6.0 (Site Editor used core/edit-site)
         if (!templateSlug) {

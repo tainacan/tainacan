@@ -147,6 +147,7 @@ class Admin_Commands {
 									'label' => $hierarchical_label,
 									'url'   => $other_url,
 								];
+								$this->append_settings_section_commands( $commands, $page_slug, $hierarchical_label );
 							}
 						}
 					}
@@ -194,12 +195,51 @@ class Admin_Commands {
 							'label' => $hierarchical_label,
 							'url'   => $url,
 						];
+						$this->append_settings_section_commands( $commands, $page_slug, $hierarchical_label );
 					}
 				}
 			}
 		}
 
 		return $commands;
+	}
+
+	/**
+	 * Adds one command per settings section under the Settings menu command.
+	 *
+	 * The Settings item is only present when the current user can open that screen,
+	 * so these commands keep the same gate. Section ids match the headings assigned
+	 * by the settings script.
+	 *
+	 * @param array  $commands        Command list, passed by reference.
+	 * @param string $page_slug       Menu item slug.
+	 * @param string $settings_label  Hierarchical label of the Settings command.
+	 * @return void
+	 * @since 1.0.2
+	 */
+	private function append_settings_section_commands( array &$commands, $page_slug, $settings_label ) {
+		if ( $page_slug !== 'tainacan_settings' ) {
+			return;
+		}
+
+		global $wp_settings_sections;
+
+		if ( empty( $wp_settings_sections['tainacan_settings'] ) ) {
+			return;
+		}
+
+		foreach ( $wp_settings_sections['tainacan_settings'] as $section ) {
+			if ( empty( $section['id'] ) || empty( $section['title'] ) ) {
+				continue;
+			}
+
+			$section_title = wp_strip_all_tags( $section['title'], true );
+			$commands[] = [
+				'name'  => 'tainacan/navigate-tainacan_settings-' . sanitize_key( $section['id'] ),
+				'label' => $settings_label . ' > ' . $section_title,
+				'url'   => admin_url( 'admin.php?page=tainacan_settings' ) . '#tainacan-settings-section-' . $section['id'],
+			];
+		}
 	}
 
 	/**

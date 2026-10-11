@@ -29,7 +29,7 @@ export const ThumbnailHelperFunctions = () => {
         },
         getEmptyThumbnailPlaceholder(documentType, tainacanSize) {
             
-            let imageSrc = '';
+            let imageSrc;
             switch(documentType) {
                 case 'image/png':
                 case 'image/jpeg':
@@ -125,7 +125,7 @@ export const ThumbnailHelperFunctions = () => {
     }
 }
 
-ThumbnailHelperPlugin.install = function (app, options = {}) {
+ThumbnailHelperPlugin.install = function (app) {
     app.config.globalProperties.$thumbHelper = ThumbnailHelperFunctions();
 };
 
@@ -253,7 +253,7 @@ export const OrderByHelperFunctions = () => {
     }
 }
 
-OrderByHelperPlugin.install = function (app, options = {}) {
+OrderByHelperPlugin.install = function (app) {
     app.config.globalProperties.$orderByHelper = OrderByHelperFunctions();
 };
 
@@ -262,7 +262,7 @@ import a11yDropdownDirective from './directives/a11y-dropdown.js';
 
 export const A11yDropdownPlugin = {};
 
-A11yDropdownPlugin.install = function (app, options = {}) {
+A11yDropdownPlugin.install = function (app) {
     app.directive('a11y-dropdown', a11yDropdownDirective);
 };
 
@@ -271,7 +271,7 @@ import a11yAutocompleteDirective from './directives/a11y-autocomplete.js';
 
 export const A11yAutocompletePlugin = {};
 
-A11yAutocompletePlugin.install = function (app, options = {}) {
+A11yAutocompletePlugin.install = function (app) {
     app.directive('a11y-autocomplete', a11yAutocompleteDirective);
 };
 
@@ -280,6 +280,6 @@ import a11yTabsDirective from './directives/a11y-tabs.js';
 
 export const A11yTabsPlugin = {};
 
-A11yTabsPlugin.install = function (app, options = {}) {
+A11yTabsPlugin.install = function (app) {
     app.directive('a11y-tabs', a11yTabsDirective);
 };

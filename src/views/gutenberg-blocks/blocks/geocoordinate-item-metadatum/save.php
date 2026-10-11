@@ -23,8 +23,8 @@ function tainacan_blocks_render_geocoordinate_item_metadatum( $block_attributes,
 		'metadata' => $metadatum_id,
 		'before_title' => '<h3 class="wp-block-tainacan-item-metadatum__metadatum-label">',
 		'after_title' => '</h3>',
-		'before_value' => '<p class="wp-block-tainacan-item-metadatum__metadatum-value">',
-		'after_value' => '</p>'
+		'before_value' => '<div class="wp-block-tainacan-item-metadatum__metadatum-value">',
+		'after_value' => '</div>'
 	);
 
 	// Classes from block and Text alignment

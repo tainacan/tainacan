@@ -29,7 +29,7 @@ export function toPlainItemIds(items) {
     let list;
     try {
         list = typeof items === 'string' ? [items] : Array.from(items);
-    } catch (error) {
+    } catch {
         return [];
     }
 
@@ -68,7 +68,7 @@ export function getInitiallySelectedItemIds() {
 function cloneQuery(query) {
     try {
         return JSON.parse(JSON.stringify(query || {}));
-    } catch (error) {
+    } catch {
         return {};
     }
 }
@@ -78,7 +78,7 @@ function openSelectionChannel() {
         if (typeof BroadcastChannel === 'undefined')
             return null;
         return new BroadcastChannel(TAINACAN_SELECTION_CHANNEL);
-    } catch (error) {
+    } catch {
         return null;
     }
 }
@@ -102,7 +102,7 @@ export function broadcastSelectionState(state) {
 
     try {
         selectionChannel.postMessage(payload);
-    } catch (error) {
+    } catch {
         // Vue proxies should already have been cloned; ignore clone failures.
     }
 }

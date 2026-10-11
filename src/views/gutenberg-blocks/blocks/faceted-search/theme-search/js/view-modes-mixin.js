@@ -138,7 +138,7 @@ export const viewModesMixin = {
         },
         starSlideshowFromHere(index) {
             if ( this.$router && this.$route && this.$route.query )
-                this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));
+                this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch(() => undefined);
         },
         getPosInSet(index) {
             if ( !isNaN(Number(this.queries.paged)) && !isNaN(Number(this.queries.perpage)) )

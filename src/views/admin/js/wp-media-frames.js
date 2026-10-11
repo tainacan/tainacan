@@ -69,7 +69,7 @@ export default {
 
 		initFrame: function() {
 
-			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
+			var l10n = wp.media.view.l10n = typeof window._wpMediaViewsL10n === 'undefined' ? {} : window._wpMediaViewsL10n;
 
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({
@@ -163,7 +163,7 @@ export default {
 		
 		initFrame: function() {
 
-			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
+			var l10n = wp.media.view.l10n = typeof window._wpMediaViewsL10n === 'undefined' ? {} : window._wpMediaViewsL10n;
 			
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({
@@ -306,6 +306,7 @@ export default {
                 var node,
                 attachment,
 				mejsSettings = window._wpmejsSettings || {};
+				const mediaElementPlayer = window.MediaElementPlayer;
 				attachment = this.frame.state().get( 'selection' ).first().toJSON();
 
                 this.params.attachment = attachment;
@@ -315,8 +316,8 @@ export default {
                 node = this.container.find( 'audio, video' ).get(0);
 
                 // Initialize audio/video previews.
-                if ( node ) {
-                    this.player = new MediaElementPlayer( node, mejsSettings );
+                if ( node && mediaElementPlayer ) {
+                    this.player = new mediaElementPlayer( node, mejsSettings );
                 } else {
                     this.cleanupPlayer();
                 }

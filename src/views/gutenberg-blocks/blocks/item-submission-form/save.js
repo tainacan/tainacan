@@ -1,3 +1,4 @@
+const { __ } = wp.i18n;
 const { RichText, useBlockProps } = wp.blockEditor;
 
 export default function({ attributes }) {
@@ -42,18 +43,19 @@ export default function({ attributes }) {
     let termsAgreementMessageHTML = <RichText.Content { ...blockProps } tagName="p" value={ termsAgreementMessage } />;
     termsAgreementMessageHTML = (termsAgreementMessageHTML && termsAgreementMessageHTML.props && termsAgreementMessageHTML.props.value) ? termsAgreementMessageHTML.props.value : '';
 
+    let backgroundColorValue = backgroundColor;
     if (backgroundColor.rgb != undefined) {
         if (backgroundColor.rgb.a)
-            backgroundColor = 'rgba(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ',' + backgroundColor.rgb.a + ')';
+            backgroundColorValue = 'rgba(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ',' + backgroundColor.rgb.a + ')';
         else
-            backgroundColor = 'rgb(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ')';
+            backgroundColorValue = 'rgb(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ')';
     }
 
     return <div 
                 style={{
                     'font-size': baseFontSize + 'px',
                     '--tainacan-base-font-size': baseFontSize + 'px',
-                    '--tainacan-background-color': backgroundColor,
+                    '--tainacan-background-color': backgroundColorValue,
                     '--tainacan-input-color': inputColor,
                     '--tainacan-input-background-color': inputBackgroundColor,
                     '--tainacan-input-border-color': inputBorderColor,

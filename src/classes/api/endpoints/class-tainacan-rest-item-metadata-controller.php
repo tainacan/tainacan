@@ -434,6 +434,10 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					'errors'        => "operation not permitted"
 				], 400 );
 			}
+		} else {
+			return new \WP_REST_Response([
+				'error_message' => __('Request body is required', 'tainacan'),
+			], 400);
 		}
 	}
 

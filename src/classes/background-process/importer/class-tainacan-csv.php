@@ -32,16 +32,18 @@ class CSV extends Importer {
 	 * @return resource|false File handle positioned after the BOM, or false on failure.
 	 */
 	protected function open_tmp_file() {
-		if ( ! isset( $this->tmp_file ) || ! file_exists( $this->tmp_file ) ) {
+		$tmp_file = $this->get_tmp_file();
+		if ( empty( $tmp_file ) || ! is_file( $tmp_file ) ) {
 			return false;
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Return a handle positioned after the UTF-8 BOM. WP_Filesystem::get_contents() would load the whole import file.
 		$handle = fopen( $this->tmp_file, 'r' );
 		if ( $handle === false ) {
 			return false;
 		}
 
-		$bom = fread( $handle, 3 );
+		$bom = fread( $handle, 3 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Read only the 3-byte UTF-8 BOM so the returned handle stays positioned for the importer.
 		if ( $bom !== "\xEF\xBB\xBF" ) {
 			rewind( $handle );
 		}
@@ -117,8 +119,9 @@ class CSV extends Importer {
 	}
 
 	public function get_source_file_name() {
-		if ( isset( $this->tmp_file ) && file_exists( $this->tmp_file ) ) {
-			return basename( $this->tmp_file );
+		$tmp_file = $this->get_tmp_file();
+		if ( ! empty( $tmp_file ) && is_file( $tmp_file ) ) {
+			return basename( $tmp_file );
 		}
 		return false;
 	}

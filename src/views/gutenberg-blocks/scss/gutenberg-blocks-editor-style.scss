@@ -12,44 +12,6 @@
     --tainacan-block-primary: #{gutenberg-blocks-variables.$primary};
 }
 
-// Control and placeholder region ----------------------------------------------------
-.tainacan-block-placeholder.components-placeholder {
-    align-items: center !important;
-    margin-bottom: 0 !important;
-    background: var(--tainacan-block-gray0, gutenberg-blocks-variables.$gray0) !important;
-
-    .components-placeholder__label {
-        margin-bottom: 0;
-    }
-    .components-placeholder__fieldset {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: baseline;
-        width: 100%;
-        max-width: 85%;
-        flex-wrap: wrap;
-        z-index: 1;
-
-        p {
-            font-size: 1em !important;
-            margin: 12px;
-            color: var(--tainacan-block-gray5, gutenberg-blocks-variables.$gray5);
-            fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
-
-            svg {
-                margin-inline-end: 1em; 
-                top: 4px;
-                position: relative;
-                fill: var(--tainacan-block-gray4, gutenberg-blocks-variables.$gray4);
-            }
-        }
-        .components-button {
-            margin: 0;
-        }
-    }
-}
-  
 // Generic style for selection modals ---------------------------
 .wp-block-tainacan-modal {
     width: 50% !important;

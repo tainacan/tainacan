@@ -102,8 +102,8 @@ export default {
             .then((res) => {
                 this.availableImporters = res;
                 this.isLoading = false;
-            }).catch((error) => {
-                this.$console.log(error);
+            }).catch(() => {
+                
                 this.isLoading = false;
             });
 

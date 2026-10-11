@@ -92,7 +92,12 @@ class Cli_Garbage_Collector {
 	}
 
 	
-	private function get_orphan_items_query($select = 'ID') {
+	/**
+	 * Post types of items whose collection no longer exists.
+	 *
+	 * @return string[]
+	 */
+	private function get_orphan_item_post_types() {
 		global $wpdb;
 		
 		$collections = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE post_type = 'tainacan-collection'");
@@ -107,18 +112,20 @@ class Cli_Garbage_Collector {
 			$post_types = ['return-nothing'];
 		}
 		
-		$in_str_arr = array_fill( 0, count( $post_types ), '%s' );
-		$in_str = join( ',', $in_str_arr );
-		
-		
-		return $wpdb->prepare("SELECT $select FROM $wpdb->posts WHERE post_type IN ($in_str)", $post_types);
-		
+		return array_values( $post_types );
 	}
 	
 	private function delete_items($dry_run = false, $deep = false) {
 		global $wpdb;
 		
-		$items_found = $wpdb->get_var( $this->get_orphan_items_query('COUNT(ID)') );
+		$post_types   = $this->get_orphan_item_post_types();
+		$placeholders = implode( ',', array_fill( 0, count( $post_types ), '%s' ) );
+		$items_found  = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(ID) FROM $wpdb->posts WHERE post_type IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is a generated list of %s tokens.
+				$post_types
+			)
+		);
 		$items_deleted = 0;
 		
 		WP_CLI::line( "Found $items_found items" );
@@ -127,7 +134,12 @@ class Cli_Garbage_Collector {
 			
 			$progress = \WP_CLI\Utils\make_progress_bar( 'Deleting items', $items_found );
 			
-			$items_ids = $wpdb->get_col( $this->get_orphan_items_query() );
+			$items_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT ID FROM $wpdb->posts WHERE post_type IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is a generated list of %s tokens.
+					$post_types
+				)
+			);
 			
 			foreach ($items_ids as $item_id) {
 				$deleted = wp_delete_post($item_id, true);
@@ -144,26 +156,30 @@ class Cli_Garbage_Collector {
 		
 	}
 	
-	private function get_orphan_attachments_count() {
-		global $wpdb;
-		return $wpdb->get_var( $this->get_orphan_attachments_query('COUNT(ID)') );
-		
-	}
-	
 	private function delete_attachments($dry_run = false, $deep = false) {
 		global $wpdb;
 		
-		$orphan_items_query = $this->get_orphan_items_query();
+		$post_types   = $this->get_orphan_item_post_types();
+		$placeholders = implode( ',', array_fill( 0, count( $post_types ), '%s' ) );
 		
-		$orphan_documents = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' 
-			AND ID IN (
-				SELECT meta_value FROM $wpdb->postmeta WHERE post_id IN ($orphan_items_query) 
-					AND meta_key = 'document'
+		$orphan_documents = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment'
+				AND ID IN (
+					SELECT meta_value FROM $wpdb->postmeta
+					WHERE meta_key = 'document'
+					AND post_id IN ( SELECT ID FROM $wpdb->posts WHERE post_type IN ($placeholders) ) )", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is a generated list of %s tokens.
+				$post_types
+			)
+		);
 		
-			)");
-		
-		$orphan_att = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' 
-			AND post_parent IN ( $orphan_items_query )");
+		$orphan_att = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment'
+				AND post_parent IN ( SELECT ID FROM $wpdb->posts WHERE post_type IN ($placeholders) )", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is a generated list of %s tokens.
+				$post_types
+			)
+		);
 		
 		$orphan_att_deep = [];
 		
@@ -257,7 +273,12 @@ class Cli_Garbage_Collector {
 		$in_str_arr = array_fill( 0, $orphan_taxonomies_count, '%s' );
 		$in_str = join( ',', $in_str_arr );
 		
-		$orphan_terms = $wpdb->get_results( $wpdb->prepare("SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy IN ($in_str)", $orphan_taxonomies) );
+		$orphan_terms = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy IN ($in_str)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $in_str is a generated list of %s tokens.
+				$orphan_taxonomies
+			)
+		);
 		$orphan_terms_count = count($orphan_terms);
 		
 		WP_CLI::line( "Found $orphan_terms_count orphan terms" );
@@ -272,13 +293,13 @@ class Cli_Garbage_Collector {
 			$in_str_arr = array_fill( 0, count($term_ids), '%s' );
 			$in_str = join( ',', $in_str_arr );
 			
-			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->termmeta WHERE term_id IN ($in_str)", $term_ids) );
+			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->termmeta WHERE term_id IN ($in_str)", $term_ids) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $in_str is a generated list of %s tokens.
 			$progress->tick();
-			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ($in_str)", $term_taxonomy_ids) );
+			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ($in_str)", $term_taxonomy_ids) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $in_str is a generated list of %s tokens.
 			$progress->tick();
-			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ($in_str)", $term_taxonomy_ids) );
+			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ($in_str)", $term_taxonomy_ids) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $in_str is a generated list of %s tokens.
 			$progress->tick();
-			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->terms WHERE term_id IN ($in_str)", $term_ids) );
+			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->terms WHERE term_id IN ($in_str)", $term_ids) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $in_str is a generated list of %s tokens.
 			$progress->tick();
 			$progress->finish();
 			
@@ -320,7 +341,12 @@ class Cli_Garbage_Collector {
 		if ($meta_to_delete_count > 0) {
 			$in_str_arr = array_fill( 0, $meta_to_delete_count, '%d' );
 			$in_str = join( ',', $in_str_arr );
-			$metas = $wpdb->get_col( $wpdb->prepare("SELECT meta_id FROM $wpdb->postmeta WHERE meta_key IN ($in_str)", $meta_to_delete) );
+			$metas = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT meta_id FROM $wpdb->postmeta WHERE meta_key IN ($in_str)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $in_str is a generated list of %d tokens.
+					$meta_to_delete
+				)
+			);
 		}
 		
 		$metas_count = count($metas);
@@ -342,7 +368,7 @@ class Cli_Garbage_Collector {
 			if ($metas_count > 0) {
 				$in_str_arr = array_fill( 0, $metas_count, '%d' );
 				$in_str = join( ',', $in_str_arr );
-				$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE meta_id IN ($in_str)", $metas) );
+				$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE meta_id IN ($in_str)", $metas) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $in_str is a generated list of %d tokens.
 			}
 			
 			$progress->tick();

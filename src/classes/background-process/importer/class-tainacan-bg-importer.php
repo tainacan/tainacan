@@ -54,7 +54,7 @@ class Background_Importer extends Background_Process {
 				$this->write_error_log(
 					$key,
 					[[
-						'datetime' => date( 'Y-m-d H:i:s' ),
+						'datetime' => gmdate( 'Y-m-d H:i:s' ),
 						'message'  => 'Failed to delete importer source file.'
 					]]
 				);

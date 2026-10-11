@@ -532,7 +532,7 @@ export default {
                         .catch((errors) => {
                             this.isLoadingSourceInfo = false;
                             this.formErrorMessage = errors.error_message;
-                            this.$console.log(errors);
+                            
                         });
                     
                 })
@@ -662,7 +662,7 @@ export default {
                 })
                 .catch((errors) => {
                     this.isLoadingRun = false;
-                    this.$console.log(errors);
+                    
 
                     this.formErrorMessage = errors.error_message;
                 });
@@ -679,7 +679,7 @@ export default {
                 })
                 .catch((errors) => {
                     this.isLoadingRun = false;
-                    this.$console.log(errors);
+                    
 
                     this.formErrorMessage = errors.error_message;
                 });

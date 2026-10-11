@@ -63,7 +63,7 @@
                 height: 130px !important;
             }
 
-            .media .list-metadata p.metadata-description {
+            .media .list-metadata .metadata-description {
                 max-height: 9.125em !important;
             }
         }
@@ -217,11 +217,13 @@
                 border-end-start-radius: var(--tainacan-item-border-radius, 0px);
                 color: var(--tainacan-info-color);
 
-                p.metadata-description {
+                .metadata-description {
                     font-size: 0.75em !important;
                     overflow: hidden;
                     margin-bottom: 1em;
                     max-height: 12.125em;
+                    overflow-wrap: break-word;
+                    word-wrap: break-word;
                 }
 
                 .metadata-author-creation {

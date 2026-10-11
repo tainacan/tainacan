@@ -190,9 +190,7 @@
                     })
                     .catch( error => {
                         const cause = error && error.error ? error.error : error;
-                        if (isCancel(cause))
-                            this.$console.log('Request canceled: ' + (cause.message || error.message));
-                        else
+                        if (!isCancel(cause))
                             this.$console.error( error );
                     });
 
@@ -224,9 +222,7 @@
                                 this.label = item.title;
                                 this.selected = item.title;
                             })
-                            .catch(error => {
-                                this.$console.log(error);
-                            });
+                            .catch(() => undefined);
                     } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\Control') {
 
                         let endpoint = `/collection/${this.filter.collection_id}/facets/${this.filter.metadatum.metadatum_id}?getSelected=1&offset=0&number=1&count_items=0`;
@@ -247,8 +243,8 @@
                                 this.label = match ? match.label : metadata.value;
                                 this.selected = this.label;
                             })
-                            .catch(error => {
-                                this.$console.log(error);
+                            .catch(() => {
+                                
                                 this.label = metadata.value;
                                 this.selected = metadata.value;
                             });

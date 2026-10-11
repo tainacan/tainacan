@@ -22,6 +22,9 @@ export default (element) => {
                 
                 // Configure Vue logic before passing it to constructor:
                 const VueFacetsList = createApp({
+                    mounted() {
+                        block.classList.add('has-mounted');
+                    },
                     render() { 
                         return h(FacetsListTheme, {
                             metadatumId: getDataAttribute(block, 'metadatum-id'),
@@ -46,14 +49,11 @@ export default (element) => {
                             tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
                             tainacanSiteUrl: getDataAttribute(block, 'tainacan-site-url')
                         });
-                    },
-                    mounted() {
-                        block.classList.add('has-mounted');
                     }
                 });
                 
                 VueFacetsList.use(ThumbnailHelperPlugin);
-                VueFacetsList.component('facets-list-theme-unit', FacetsListThemeUnit);
+                VueFacetsList.component('FacetsListThemeUnit', FacetsListThemeUnit);
 
                 VueFacetsList.mount('#' + block.id);
             });

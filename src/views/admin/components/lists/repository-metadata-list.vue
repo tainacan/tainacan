@@ -462,9 +462,7 @@ export default {
                             metadatumId: removedMetadatum.id,
                             isRepositoryLevel: true
                         })
-                        .catch(() => {
-                            this.$console.log("Error deleting metadatum.")
-                        });
+                        .catch(() => undefined);
                     }
                 },
                 trapFocus: true,

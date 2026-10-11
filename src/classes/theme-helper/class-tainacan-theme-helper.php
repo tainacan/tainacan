@@ -1796,6 +1796,7 @@ class Theme_Helper {
 	 * @param array $args {
 		 *     Optional. Array of arguments.
 		 *     @type string  $itemId                            The Item ID
+		 *     @type array   $relatedCollectionIds              Collection IDs to include. Empty lists every related collection.
 		 *     @type string  $itemsListLayout                   The type of list to be rendered. Accepts 'grid', 'list', 'mosaic', 'carousel', 'gallery' and 'tainacan-view-mode. 
 		 * 	   @type string  $order                             Sorting direction to the related items query. Either 'desc' or 'asc'. 
 		 * 	   @type string  $orderby                           Sortby metadata. By now we're accepting only 'title' and 'date'.
@@ -1860,12 +1861,23 @@ class Theme_Helper {
 		if (!count($related_items))
 			return;
 
+		$allowed_related_collection_ids = $this->parse_id_list( isset( $args['relatedCollectionIds'] ) ? $args['relatedCollectionIds'] : [] );
+
 		// Always pass the default class. We force passing the wp-block-tainacan-carousel-related-items because themes might have used it to style before the other layouts exist;
 		$output = '<div data-module="related-items-list" class="' .  esc_attr($args['className']) . ' wp-block-tainacan-carousel-related-items wp-block-tainacan-related-items' . '">';
+		$has_visible_related_group = false;
 		
 		foreach($related_items as $collection_id => $related_group) {
 			
+			if ( ! empty( $allowed_related_collection_ids ) ) {
+				$related_group_collection_id = isset( $related_group['collection_id'] ) ? (int) $related_group['collection_id'] : 0;
+				if ( ! in_array( $related_group_collection_id, $allowed_related_collection_ids, true ) ) {
+					continue;
+				}
+			}
+
 			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
+				$has_visible_related_group = true;
 				// Adds a heading with the collection name
 				$collection_heading = '';
 				if ( $args['hideCollectionHeading'] !== true && isset($related_group['collection_name']) ) {
@@ -1988,6 +2000,10 @@ class Theme_Helper {
 		}
 		
 		$output .= '</div>';
+
+		if ( ! $has_visible_related_group ) {
+			return;
+		}
 
 		return $output;
 	}
@@ -2968,9 +2984,9 @@ class Theme_Helper {
 		 *     @type string      $after_title               String to be added after each metadata title
 		 *                                                  Default '</h3>'
 		 *     @type string      $before_value              String to be added before each metadata value
-		 *                                                  Default '<p>'
+		 *                                                  Default '<div class="metadata-value">'
 		 *     @type string      $after_value               String to be added after each metadata value
-		 *                                                  Default '</p>'
+		 *                                                  Default '</div>'
 		 * }
 	 * 
 	 * @param int|string $item_id       (Optional) The item ID to retrive the metadatum as a HTML string to be used as output. Default is the global $post
@@ -3006,8 +3022,8 @@ class Theme_Helper {
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
-			'before_value' 			=> '<p>',
-			'after_value' 			=> '</p>'
+			'before_value' 			=> '<div class="metadata-value">',
+			'after_value' 			=> '</div>',
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -3281,16 +3297,15 @@ class Theme_Helper {
 			$before_metadata_list = str_replace('$id', $section_id, $before_metadata_list);
 			$before_metadata_list = str_replace('$slug', $section_slug, $before_metadata_list);
 
-			// Let theme authors tweak the metadata list wrapper
-			$before_description = isset($args['before_description']) ? $args['before_description'] : '';
-			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_description, $metadata_section );
-			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_description, $metadata_section );
+			// Themes append to this opener, so added markup stays inside the list.
+			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_metadata_list, $metadata_section );
+			$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_metadata_list, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
-				$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_description, $metadata_section );	
+				$before_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_metadata_list, $metadata_section );	
 			}
 
 			// Renders the section metadata list wrapper
-			$return .= $before_metadata_list . $before_description;
+			$return .= $before_metadata_list;
 
 			// Renders the section metadata list, using get_tainacan_item_metadata_template
 			if ($has_metadata_list) {
@@ -3310,19 +3325,17 @@ class Theme_Helper {
 			} else {
 				$return .= $args['empty_metadata_list_message'];
 			}
-			// Gets the wrapper closer
+			// Gets the wrapper closer. Callbacks prepend to this string to insert markup
+			// before the list is closed.
 			$after_metadata_list = $args['after_metadata_list'];
-
-			// Let theme authors tweak the metadata list closer
-			$after_description = isset($args['after_description']) ? $args['after_description'] : '';
-			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_description, $metadata_section );
-			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_description, $metadata_section );
+			$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_metadata_list, $metadata_section );
+			$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_metadata_list, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
-				$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_description, $metadata_section );	
+				$after_metadata_list = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_metadata_list, $metadata_section );	
 			}
 			
 			// Renders the section metadata list wrapper
-			$return .= $after_description . $after_metadata_list;
+			$return .= $after_metadata_list;
 
 			// Gets the wrapper closer
 			$after = $args['after'];
@@ -3730,6 +3743,35 @@ class Theme_Helper {
 				}) .
 			'</ul>'
 		]);
+	}
+
+	/**
+	 * Parses a list of IDs from an array or a JSON string.
+	 *
+	 * Non-numeric values and IDs below 1 are dropped.
+	 *
+	 * @param mixed $ids
+	 * @return int[]
+	 */
+	private function parse_id_list( $ids ) {
+		if ( is_string( $ids ) ) {
+			$decoded = json_decode( $ids, true );
+			$ids = is_array( $decoded ) ? $decoded : [];
+		}
+
+		if ( ! is_array( $ids ) ) {
+			return [];
+		}
+
+		$parsed_ids = [];
+
+		foreach ( $ids as $id ) {
+			if ( is_numeric( $id ) && (int) $id > 0 ) {
+				$parsed_ids[] = (int) $id;
+			}
+		}
+
+		return array_values( array_unique( $parsed_ids ) );
 	}
 
 	/**

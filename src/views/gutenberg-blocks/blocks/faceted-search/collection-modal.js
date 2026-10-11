@@ -134,13 +134,10 @@ export default class CollectionModal extends React.Component {
             
                 return otherModalCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     selectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, collectionDefaultOrder, collectionDefaultOrderBy, collectionDefaultOrderByMeta, collectionDefaultOrderByType }) {
-        collectionId = collectionId;
         this.setState({ collectionId: collectionId });
         this.props.onSelectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, collectionDefaultOrder, collectionDefaultOrderBy, collectionDefaultOrderByMeta, collectionDefaultOrderByType });
     }
@@ -207,9 +204,7 @@ export default class CollectionModal extends React.Component {
                 
                 return someCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     resetCollections() {

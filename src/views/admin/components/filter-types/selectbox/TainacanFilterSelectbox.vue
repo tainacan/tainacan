@@ -91,9 +91,7 @@
                         this.$nextTick(() => this.tryRestoreFocus());
                     })
                     .catch( error => {
-                        if (isCancel(error))
-                            this.$console.log('Request canceled: ' + error.message);
-                        else
+                        if (!isCancel(error))
                             this.$console.error( error );
                     });
 

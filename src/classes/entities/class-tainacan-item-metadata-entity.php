@@ -51,19 +51,22 @@ class Item_Metadata_Entity extends Entity {
 			if ( is_object( $childrens ) ) {
 				$childrens = $childrens->meta_value;
 				if ( is_array($childrens) && !empty($childrens) ) {
-					$childrens_in = implode(',', $childrens);
-					global $wpdb;
-					$item_metadata = $wpdb->get_results( $wpdb->prepare(
-						"SELECT * FROM $wpdb->postmeta
-							WHERE post_id = %d AND 
-										meta_key = %s AND
-										meta_id IN ($childrens_in)",
-							$item->get_id(),
-							$metadatum->get_id() 
-					), ARRAY_A );
-					if( is_array($item_metadata) && !empty($item_metadata) ) {
-						$meta_id = (int)$item_metadata[0]['meta_id'];
-						$this->set_meta_id($meta_id);
+					$children_ids = wp_parse_id_list( $childrens );
+					if ( ! empty( $children_ids ) ) {
+						global $wpdb;
+						$placeholders = implode( ',', array_fill( 0, count( $children_ids ), '%d' ) );
+						// Placeholders are post_id, meta_key, then each child meta ID.
+						$item_metadata = $wpdb->get_results( $wpdb->prepare(
+							"SELECT * FROM $wpdb->postmeta
+								WHERE post_id = %d AND
+											meta_key = %s AND
+											meta_id IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is a generated list of %d tokens.
+								array_merge( array( $item->get_id(), $metadatum->get_id() ), $children_ids )
+						), ARRAY_A );
+						if( is_array($item_metadata) && !empty($item_metadata) ) {
+							$meta_id = (int)$item_metadata[0]['meta_id'];
+							$this->set_meta_id($meta_id);
+						}
 					}
 				}
 			}

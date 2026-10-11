@@ -93,7 +93,6 @@
 </template>
 
 <script>
-    import { isCancel } from '../../../js/axios';
     import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
     import { filterTypeMixin, dynamicFilterTypeMixin, progressiveCheckboxMixin } from '../../../js/filter-types-mixin';
 
@@ -206,10 +205,7 @@
                             this.$emit('update-parent-collapse', this.options.length > 0);
                         this.$nextTick(() => this.tryRestoreFocus());
                     })
-                    .catch((error) => {
-                        if (!isCancel(error))
-                            this.$console.log('Error on facets request: ', error);
-                    });
+                    .catch(() => undefined);
 
                 this.getOptionsValuesCancel = promise.source;
             },
@@ -243,11 +239,9 @@
                         this.shouldAddOptions = false;
                         this.$nextTick(() => this.handleFocusAfterLoadMore(previousOptionsCount));
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoadingMore = false;
                         this.shouldAddOptions = false;
-                        if (!isCancel(error))
-                            this.$console.log('Error on facets request: ', error);
                     });
 
                 this.getOptionsValuesCancel = promise.source;

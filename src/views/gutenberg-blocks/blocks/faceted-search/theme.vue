@@ -1037,7 +1037,7 @@
                                 this.$userPrefs.set(orderByKey, { 
                                     slug: 'creation_date',
                                     name: this.$i18n.get('label_creation_date')
-                                }).catch(() => { });
+                                }).catch(() => undefined);
                             }
                         } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
                             this.$route.query.orderby = 'date'
@@ -1255,7 +1255,7 @@
             this.$eventBusSearchEmitter.on('startSlideshowFromItem', (index) => {
                 let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
                 delete currentQuery['slideshow-from'];
-                this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
+                this.$router.replace({ query: currentQuery }).catch(() => undefined);
 
                 this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
                 this.onChangeViewMode('slideshow');
@@ -2045,9 +2045,12 @@
                     font-size: 1em !important;
                     color: var(--tainacan-info-color);
                 }
-                .tainacan-compound-metadatum p {
+                .tainacan-compound-metadatum p,
+                .tainacan-compound-metadatum .child-metadatum-value {
                     margin-bottom: 0.75em;
                     font-size: 1em;
+                    overflow-wrap: break-word;
+                    word-wrap: break-word;
                 }
                 .tainacan-metadatum .label {
                     font-size: 1em;

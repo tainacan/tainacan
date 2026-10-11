@@ -209,9 +209,15 @@ class REST_Metadata_Controller extends REST_Controller {
 		$metadatum = new Entities\Metadatum();
 
 		$meta = json_decode( $request, true );
+		$readonly = $this->get_readonly_fields();
 		foreach ( $meta as $key => $value ) {
+			if ( in_array($key, $readonly, true) ) {
+				continue;
+			}
 			$set_ = 'set_' . $key;
-			$metadatum->$set_( $value );
+			if ( method_exists($metadatum, $set_) ) {
+				$metadatum->$set_( $value );
+			}
 		}
 
 		if($collection_id) {

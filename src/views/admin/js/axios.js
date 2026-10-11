@@ -15,7 +15,6 @@ export const tainacanErrorHandler = function(error) {
         // that falls out of the range of 2xx
         
         if (error.response.status) {
-            let duration = 5000;
             switch(error.response.status) {
                 case 400:
                 case 401:
@@ -36,7 +35,7 @@ export const tainacanErrorHandler = function(error) {
                     break;
             }
         } else {
-            console.log('Tainacan Error Handler: ', error.response);
+            console.error('Tainacan Error Handler: ', error.response);
         }
 
     } else if ( error.request ) {

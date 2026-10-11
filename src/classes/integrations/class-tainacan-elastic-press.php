@@ -1011,11 +1011,12 @@ class Elastic_Press {
 					}
 					
 					// Count children
-					$count_query = $wpdb->prepare(
-						"SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", 
-						$term_id
+					$total_children = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d",
+							$term_id
+						)
 					);
-					$total_children = $wpdb->get_var($count_query);
 					
 					// Format term data
 					$fct = [
@@ -1163,11 +1164,12 @@ class Elastic_Press {
 					}
 					
 					// Count children
-					$count_query = $wpdb->prepare(
-						"SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", 
-						$term_id
+					$total_children = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d",
+							$term_id
+						)
 					);
-					$total_children = $wpdb->get_var($count_query);
 					
 					// Format term data
 					$fct = [

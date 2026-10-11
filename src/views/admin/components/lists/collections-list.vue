@@ -247,7 +247,7 @@
                                 :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"
                                 @click.left="onClickCollection($event, collection.id, index)" 
                                 @click.right="onRightClickCollection($event, collection.id, index)">
-                            <p
+                            <div
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
@@ -258,7 +258,8 @@
                                         html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
-                                    }" 
+                                    }"
+                                    class="metadata-value"
                                     v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-dark is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
                         <!-- Total items -->

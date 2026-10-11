@@ -148,11 +148,8 @@ export const dynamicFilterTypeMixin = {
                                     resolve(res);
                                 })
                                 .catch((thrown) => {
-                                    if (axios.isCancel(thrown)) {
-                                        console.log('Request canceled: ', thrown.message);
-                                    } else {
+                                    if (!axios.isCancel(thrown))
                                         this.isLoadingOptions = false;
-                                    }
                                     reject(thrown);
                                 })
                             }),
@@ -333,11 +330,8 @@ export const dynamicFilterTypeMixin = {
                                     resolve(res);
                                 })
                                 .catch((thrown) => {
-                                    if (axios.isCancel(thrown)) {
-                                        console.log('Request canceled: ', thrown.message);
-                                    } else {
+                                    if (!axios.isCancel(thrown))
                                         this.isLoadingOptions = false;
-                                    }
                                     reject(thrown);
                                 })
                             }),

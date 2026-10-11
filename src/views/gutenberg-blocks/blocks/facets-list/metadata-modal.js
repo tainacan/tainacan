@@ -104,9 +104,7 @@ export default class MetadataModal extends React.Component {
             
                 return otherModalCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     selectCollection(selectedCollectionId) {
@@ -167,9 +165,7 @@ export default class MetadataModal extends React.Component {
                 
                 return someCollections;
             })
-            .catch(error => {
-                console.log('Error trying to fetch collections: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     resetCollections() {
@@ -223,9 +219,7 @@ export default class MetadataModal extends React.Component {
             
                 return otherModalMetadata;
             })
-            .catch(error => {
-                console.log('Error trying to fetch metadata: ' + error);
-            });
+            .catch(() => undefined);
     }
 
     selectMetadatum(selectedMetadatum) {

@@ -116,7 +116,7 @@ abstract class Background_Process extends Background_Process_Base {
 					'priority' => $priority,
 					'action' => $this->action,
 					'name' => $this->get_name(),
-					'queued_on' => date('Y-m-d H:i:s'),
+					'queued_on' => gmdate('Y-m-d H:i:s'),
 					'status' => 'waiting',
 					'bg_uuid' => uniqid(),
 				]
@@ -148,7 +148,7 @@ abstract class Background_Process extends Background_Process_Base {
 				$this->table, 
 				[
 					'data' => maybe_serialize($data),
-					'processed_last' => date('Y-m-d H:i:s'),
+					'processed_last' => gmdate('Y-m-d H:i:s'),
 					'progress_label' => $batch->progress_label,
 					'progress_value' => $batch->progress_value,
 					'output' => $batch->output
@@ -191,8 +191,60 @@ abstract class Background_Process extends Background_Process_Base {
 	 *
 	 * @return $this
 	 */
+	/**
+	 * Default maximum number of retries for a failed background process.
+	 *
+	 * @since 1.4.0
+	 * @var int
+	 */
+	protected $default_max_retries = 3;
+
 	public function close( $key, $status = 'finished' ) {
 		global $wpdb;
+
+		// If the process errored, check whether it should be retried.
+		if ( $status === 'errored' ) {
+			$process = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT retry_count, max_retries, status FROM {$this->table} WHERE ID = %d",
+					$key
+				)
+			);
+
+			if ( $process && (int) $process->retry_count < (int) $process->max_retries ) {
+				// Increment retry count and re-queue the process for another attempt.
+				$wpdb->query('START TRANSACTION');
+				$wpdb->update(
+					$this->table,
+					[
+						'retry_count' => (int) $process->retry_count + 1,
+						'status'      => 'waiting',
+						'done'        => 0,
+					],
+					[ 'ID' => $key ]
+				);
+				$wpdb->query('COMMIT');
+
+				$this->debug( sprintf( 'Process %d re-queued for retry (attempt %d of %d)', $key, (int) $process->retry_count + 1, (int) $process->max_retries ) );
+				$this->write_log( $key, [
+					[
+						'datetime' => gmdate( 'Y-m-d H:i:s' ),
+						'message'  => sprintf(
+							/* translators: %1$d is the retry attempt number, %2$d is the max retries */
+							__( 'Process re-queued for retry (attempt %1$d of %2$d)', 'tainacan' ),
+							(int) $process->retry_count + 1,
+							(int) $process->max_retries
+						),
+					],
+				] );
+
+				// Re-dispatch so the retried process starts immediately.
+				$this->is_cron_dispatch = true;
+				$this->dispatch();
+				return $this;
+			}
+		}
+
 		$params = [
 			'done' => 1,
 			'status' => $status
@@ -206,7 +258,7 @@ abstract class Background_Process extends Background_Process_Base {
 		}
 		$wpdb->query('START TRANSACTION');
 		$wpdb->update(
-			$this->table, 
+			$this->table,
 			$params,
 			['ID' => $key]
 		);
@@ -325,11 +377,15 @@ abstract class Background_Process extends Background_Process_Base {
 		$batch = $this->get_batch();
 
 		if($this->process_lock_in_time != get_site_transient( $this->identifier . '_process_lock' )) {
-			$this->write_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'New request has ignored']]);
+			$this->write_log($batch->key, [['datetime' => gmdate("Y-m-d H:i:s"), 'message' => 'New request has ignored']]);
 			wp_die();
 		}
 		
-		$this->write_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'New Request']]);
+		$this->write_log($batch->key, [['datetime' => gmdate("Y-m-d H:i:s"), 'message' => 'New Request']]);
+
+		// Record the initial heartbeat so the watchdog knows this process is alive.
+		$this->ID = $batch->key;
+		$this->record_heartbeat();
 
 		register_shutdown_function(function() use($batch) {
 			$error = error_get_last();
@@ -349,24 +405,28 @@ abstract class Background_Process extends Background_Process_Base {
 
 			$this->debug('Shutdown with Fatal error captured');
 			$this->debug($error_str);
-			$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Fatal Error: see the server error log for more details']] );
-			$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
+			$this->write_error_log($batch->key, [['datetime' => gmdate("Y-m-d H:i:s"), 'message' => 'Fatal Error: see the server error log for more details']] );
+			$this->write_error_log($batch->key, [['datetime' => gmdate("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
 			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
 			$this->unlock_process();
+			// Record final heartbeat so the watchdog sees the updated processed_last timestamp.
+			$this->record_heartbeat();
 		});
 
 		$task = $batch;
 		$close_status = 'finished';
 
 		do {
+			// Update heartbeat on each iteration so the watchdog can track live processes.
+			$this->record_heartbeat();
 			try {
 				$task = $this->task( $task );
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
 				$this->debug('Fatal Error: ' . $e->getMessage());
-				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Try Fatal Error: see the server error log for more details']]);
-				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
+				$this->write_error_log($batch->key, [['datetime' => gmdate("Y-m-d H:i:s"), 'message' => 'Try Fatal Error: see the server error log for more details']]);
+				$this->write_error_log($batch->key, [['datetime' => gmdate("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
 				$task = false;
 				$close_status = 'errored';
 			}
@@ -394,7 +454,7 @@ abstract class Background_Process extends Background_Process_Base {
 		} else {
 			$this->debug('Complete');
 			$this->complete();
-			$this->write_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process Finished']] );
+			$this->write_log($batch->key, [['datetime' => gmdate("Y-m-d H:i:s"), 'message' => 'Process Finished']] );
 		}
 
 		$this->debug('dying');
@@ -445,7 +505,7 @@ abstract class Background_Process extends Background_Process_Base {
 		}
 		
 		if (!is_dir($logs_folder)) {
-			if (!mkdir($logs_folder)) {
+			if (!wp_mkdir_p($logs_folder)) {
 				return false;
 			}
 		}

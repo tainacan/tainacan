@@ -156,7 +156,7 @@ export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, paren
     return new Promise((resolve, reject) => {
         axios.tainacanApi.get(endpoint)
             .then(res => {
-                let taxonomyTerms = {};
+                let taxonomyTerms;
                 if (collectionId && collectionId != 'default')
                     taxonomyTerms = res.data.list ? res.data.list : [];
                 else

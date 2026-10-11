@@ -21,7 +21,7 @@ export const fetchMetadata = ({commit}, {
 
     return new Object({ 
         request: new Promise((resolve, reject) => {
-            let endpoint = '';
+            let endpoint;
             if (!isRepositoryLevel)
                 endpoint = '/collection/' + collectionId + '/metadata/?';
             else
@@ -58,11 +58,8 @@ export const fetchMetadata = ({commit}, {
                     resolve(metadata);
                 })
                 .catch((error) => {
-                    if (axios.isCancel(error)) {
-                        console.log('Request canceled: ', error.message);
-                    } else {
+                    if (!axios.isCancel(error))
                         reject(error);
-                    }
                 });
         }),
         source: source
@@ -75,7 +72,7 @@ export const fetchMetadata = ({commit}, {
  */
 export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex, parent, includeOptionsAsHtml, sectionId }) => {
     return new Promise((resolve, reject) => {
-        let endpoint = '';
+        let endpoint;
         if (!isRepositoryLevel)
             endpoint = '/collection/' + collectionId + '/metadata/';
         else
@@ -119,7 +116,7 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
  */
 export const updateMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel, index, options, includeOptionsAsHtml, sectionId }) => {
     return new Promise((resolve, reject) => {
-        let endpoint = '';
+        let endpoint;
 
         if (!isRepositoryLevel) {
             endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
@@ -160,9 +157,9 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
  * Dispatches `metadata/fetchMetadatum`.
  * @returns {*} Action result.
  */
-export const fetchMetadatum = ({commit}, {collectionId, metadatumId}) => {
+export const fetchMetadatum = ({}, {collectionId, metadatumId}) => {
     return new Promise((resolve, reject) => {
-        let endpoint = '';
+        let endpoint;
         if (collectionId && collectionId != "default")
             endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
         else
@@ -174,7 +171,6 @@ export const fetchMetadatum = ({commit}, {collectionId, metadatumId}) => {
                 resolve(metadata);
             })
             .catch((error) => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -193,7 +189,7 @@ export const updateMetadata = ({commit}, metadata) => {
  * @returns {*} Action result.
  */
 export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel }) => {
-    let endpoint = '';
+    let endpoint;
     if (!isRepositoryLevel)
         endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
     else
@@ -249,8 +245,8 @@ export const updateCollectionMetadataOrder = ({ commit }, { collectionId, metada
  * Dispatches `metadata/updateChildMetadataOrder`.
  * @returns {*} Action result.
  */
-export const updateChildMetadataOrder = ({ commit }, {isRepositoryLevel, collectionId, parentMetadatumId, childMetadataOrder }) => {
-    let endpoint = '';
+export const updateChildMetadataOrder = ({}, {isRepositoryLevel, collectionId, parentMetadatumId, childMetadataOrder }) => {
+    let endpoint;
     
     if (isRepositoryLevel)
         endpoint = '/metadata/' + parentMetadatumId; 
@@ -286,7 +282,6 @@ export const fetchMetadatumTypes = ({commit}) => {
                 resolve(metadatumTypes);
             })
             .catch((error) => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -314,7 +309,6 @@ export const fetchMetadatumMappers = ({commit}) => {
                 resolve(metadatumMappers);
             })
             .catch((error) => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -324,7 +318,7 @@ export const fetchMetadatumMappers = ({commit}) => {
  * Dispatches `metadata/updateMetadataMapperMetadata`.
  * @returns {*} Action result.
  */
-export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetadata, mapper}) => {
+export const updateMetadataMapperMetadata = ({}, {metadataMapperMetadata, mapper}) => {
     return new Promise((resolve, reject) => {
         var param = {
                 metadata_mappers: metadataMapperMetadata,
@@ -334,7 +328,6 @@ export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetada
                 resolve(res.data);
             })
             .catch((error) => {
-                console.log(error);
                 reject(error);
             });
     });
@@ -445,7 +438,6 @@ export const deleteMetadataSection = ({commit}, { collectionId, metadataSectionI
                 commit('deleteMetadataSection', metadataSection);
                 resolve(res.data);
             }).catch((error) => {
-                console.log(error);
                 reject(error);
             });
     });

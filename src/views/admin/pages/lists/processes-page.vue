@@ -90,7 +90,7 @@
                     :page="processesPage"
                     :processes-per-page="processesPerPage"
                     :processes="processes"
-                    @update-total-processes="(total) => { totalProcesses = total; $console.log(totalProcesses);}" />
+                    @update-total-processes="(total) => { totalProcesses = total; }" />
 
             <!-- Empty state processes image -->
             <div v-if="processes.length <= 0 && !isLoading">
@@ -229,9 +229,7 @@
                     .then((newValue) => {
                         this.processesPerPage = newValue;
                     })
-                    .catch(() => {
-                        this.$console.log("Error settings user prefs for processes per page")
-                    });
+                    .catch(() => undefined);
                 }
                 this.processesPerPage = value;
                 this.loadProcesses();

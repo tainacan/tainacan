@@ -94,7 +94,7 @@
                             
                             <div class="list-metadata media-body">
                                 <!-- Description -->
-                                <p 
+                                <div 
                                         v-tooltip="{
                                             delay: {
                                                 show: 500,
@@ -141,7 +141,12 @@ export default {
     },
     methods: {
         getLimitedDescription(description) {
-            return description.length > this.descriptionMaxCharacter ? description.substring(0, this.descriptionMaxCharacter - 3) + '...' : description;
+            const container = document.createElement('div');
+            container.innerHTML = description;
+            const plainText = (container.textContent || '').replace(/\s+/g, ' ').trim();
+            if (plainText.length <= this.descriptionMaxCharacter)
+                return description;
+            return plainText.substring(0, this.descriptionMaxCharacter - 3) + '...';
         }
     }
 }

@@ -21,6 +21,9 @@ export default (element) => {
             blocks.forEach((block) => {
 
                 const VueCarouselItemsList = createApp({
+                    mounted() {
+                        block.classList.add('has-mounted');
+                    },
                     render() {
                         return h(CarouselItemsListTheme, {
                             blockId: block.id,
@@ -47,14 +50,11 @@ export default (element) => {
                             tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
                             variableItemsWidth: getDataAttribute(block, 'variable-items-width', false) == 'true',
                         });
-                    },
-                    mounted() {
-                        block.classList.add('has-mounted');
                     }
                 });
 
                 VueCarouselItemsList.use(ThumbnailHelperPlugin);
-                VueCarouselItemsList.component('tainacan-progressive-image', TainacanProgressiveImage);
+                VueCarouselItemsList.component('TainacanProgressiveImage', TainacanProgressiveImage);
 
                 VueCarouselItemsList.mount('#' + block.id);
             });

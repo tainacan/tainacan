@@ -149,10 +149,11 @@ class Private_Files {
 		$post_id = false;
 
 		// Regular ajax uploads via Admin Panel will send post_id
-		/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment(). */
-		if ( isset($_REQUEST['post_id']) && $_REQUEST['post_id'] ) {
-			/* phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment(). */
-			$post_id = sanitize_text_field( wp_unslash( $_REQUEST['post_id'] ) );
+		if ( isset( $_REQUEST['post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment().
+			$requested_post_id = sanitize_text_field( wp_unslash( $_REQUEST['post_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is a filter hook called by WordPress core after upload validation. WordPress core already handles nonce verification for uploads in wp_handle_upload() and wp_ajax_upload_attachment().
+			if ( $requested_post_id ) {
+				$post_id = $requested_post_id;
+			}
 		}
 
 		// API requests to media endpoint will send post
@@ -225,10 +226,14 @@ class Private_Files {
 
 		if (is_404()) {
 
+			if ( ! isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) ) {
+				return;
+			}
+
 			$upload_dir = wp_get_upload_dir();
 			$base_upload_url = preg_replace('/^https?:\/\//', '', $upload_dir['baseurl']);
 
-			$requested_uri = ($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+			$requested_uri = wp_unslash( $_SERVER['HTTP_HOST'] ) . wp_unslash( $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Percent-encoded characters must reach urldecode() below. sanitize_text_field() would strip them.
 
 			if ( strpos($requested_uri, $base_upload_url) === false ) {
 				// Not uploads
@@ -286,6 +291,7 @@ class Private_Files {
 						\ob_clean();
 					}
 					\flush();
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream the attachment to the response. WP_Filesystem::get_contents() would load the whole file into memory.
 					\readfile($existing_file);
 
 					die;
@@ -379,6 +385,7 @@ class Private_Files {
 			$full_path_check = $base_dir . $this->dir_separator . $this->get_items_uploads_folder() . $check_folder;
 
 			if (\file_exists($full_path_check)) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- Add or remove the private-folder prefix on the local uploads directory. WP_Filesystem::move() follows the configured transport, which may not be the disk path template_redirect() checks with file_exists().
 				rename($full_path_check, $full_path);
 				
 				do_action('tainacan-upload-folder-renamed', $check_folder, $folder);
@@ -411,7 +418,8 @@ class Private_Files {
 	function bulk_edit($status, $group, $select_query, $query) {
 		global $wpdb;
 
-		$ids = $wpdb->get_col($select_query);
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $select_query is prepared in Bulk_Edit::_build_select().
+		$ids = $wpdb->get_col( $select_query );
 
 		$status_obj = get_post_status_object($status);
 		$prefix = $status_obj->public ? $this->get_private_folder_prefix() : '';
@@ -432,6 +440,7 @@ class Private_Files {
 					$target = str_replace($this->dir_separator . $id, $this->dir_separator . $this->get_private_folder_prefix() . $id, $found[0]);
 				}
 
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- Add or remove the private-folder prefix on the local uploads directory. WP_Filesystem::move() follows the configured transport, which may not be the disk path template_redirect() checks with file_exists().
 				rename($found[0], $target);
 				do_action('tainacan-upload-folder-renamed', $found[0], $target);
 

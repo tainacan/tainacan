@@ -53,7 +53,7 @@ class Csv extends Exposer {
 		
 		if (sizeof($items) > 0) {
 			
-			$csv = fopen('php://memory', 'r+');
+			$csv = fopen('php://memory', 'r+'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- In-memory stream so fputcsv() can build the response. There is no disk file.
 			
 			$headers = array_map(function($a) {
 				return $a['name'];
@@ -71,7 +71,7 @@ class Csv extends Exposer {
 			}
 			rewind($csv);
 			$ret_csv = stream_get_contents($csv);
-			fclose($csv);
+			fclose($csv); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Close the in-memory stream used to build the CSV response.
 			$response->set_data($ret_csv);
 			
 		}

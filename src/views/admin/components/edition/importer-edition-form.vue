@@ -403,7 +403,7 @@ export default {
                         })
                         .catch((errors) => {
                             this.formErrorMessage = errors.error_message;
-                            this.$console.log(errors);
+                            
                             reject(errors);
                         });
 
@@ -422,16 +422,16 @@ export default {
                 } else if (!this.importer.accepts.file && this.importer.accepts.url) {
                     this.onInputURL()
                         .then(() => { this.isLoadingUpload = false; resolve() })
-                        .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors); }); 
+                        .catch(() => { this.isLoadingUpload = false; }); 
                 } else if (this.importer.accepts.file && this.importer.accepts.url) {
                     if (this.importerFile) {
                         this.onUploadFile()
                             .then(() => { this.isLoadingUpload = false; resolve(); })
-                            .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors) });
+                            .catch(() => { this.isLoadingUpload = false; });
                     } else if (this.url) {
                         this.onInputURL()
                             .then(() => { this.isLoadingUpload = false; resolve() })
-                            .catch((errors) => { this.isLoadingUpload = false; this.$console.log(errors); }); 
+                            .catch(() => { this.isLoadingUpload = false; }); 
                     } else {
                         this.isLoadingUpload = false;
                         reject('No source file given');
@@ -453,14 +453,14 @@ export default {
                         } else {
                             this.onRunImporter();
                         }
-                    }).catch((errors) => {
+                    }).catch(() => {
                         this.isLoadingRun = false;
-                        this.$console.log(errors);
+                        
                     });   
             })
-            .catch((errors) => {
+            .catch(() => {
                 this.isLoadingRun = false;
-                this.$console.log(errors);
+                
             });
           
         },
@@ -471,9 +471,9 @@ export default {
                     this.isLoadingRun = false;
                     this.$router.push(this.$routerHelper.getProcessesPath(backgroundProcess.bg_process_id));
                 })
-                .catch((errors) => {
+                .catch(() => {
                     this.isLoadingRun = false;
-                    this.$console.log(errors);
+                    
                 });
         },
         goToMappingPage() {

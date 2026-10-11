@@ -1,11 +1,12 @@
 const { __ } = wp.i18n;
 
-const { RangeControl,  Button, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { Placeholder, RangeControl,  Button, ToggleControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
-import CollectionsModal from './collections-modal.js';
+import CollectionsSelectionModal from '../../js/selection/tainacan-collections-selection-modal.js';
+import tainacanLogoIcon from '../../js/tainacan-logo-icon.js';
 
 export default function({ attributes, setAttributes, isSelected }) {
     let { 
@@ -201,7 +202,8 @@ export default function({ attributes, setAttributes, isSelected }) {
                 (
                 <div>
                     { isModalOpen ? 
-                        <CollectionsModal
+                        <CollectionsSelectionModal
+                            prefixNumericIds={ true }
                             selectedCollectionsObject={ selectedCollectionsObject } 
                             onApplySelection={ (aSelectedCollectionsObject) =>{
                                 selectedCollectionsObject = aSelectedCollectionsObject
@@ -220,29 +222,16 @@ export default function({ attributes, setAttributes, isSelected }) {
 
             { !selectedCollectionsHTML.length ? (
                 <Placeholder
-                    className="tainacan-block-placeholder"                        
-                    icon={(
-                        <span style={{ display: 'inline-block', width: '148px' }}>
-                            <img
-                                style={{ width: '100%', height: 'auto' }}
-                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                                alt="Tainacan Logo"/>
-                        </span>
-                    )}>
-                    <p>
-                        <svg width="24" height="24" viewBox="0 -5 12 16">
-                            <path
-                                d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
-                                c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
-                        </svg>
-                        {__('Expose collections from your Tainacan repository', 'tainacan')}
-                    </p>
+                    icon={ tainacanLogoIcon() }
+                    label={ __( 'Tainacan Collections List', 'tainacan' ) }
+                    instructions={ __( 'Expose collections from your Tainacan repository', 'tainacan' ) }
+                >
                     <Button
                         isPrimary
                         type="button"
                         onClick={ () => openCollectionsModal() }>
                         {__('Select collections', 'tainacan')}
-                    </Button>   
+                    </Button>
                 </Placeholder>
                 ) : null
             }

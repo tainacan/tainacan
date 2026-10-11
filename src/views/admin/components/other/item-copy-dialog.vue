@@ -41,7 +41,8 @@
                                 ref="copy-count-numerbinput"
                                 :aria-minus-label="$i18n.get('label_decrease')"
                                 :aria-plus-label="$i18n.get('label_increase')"
-                                min="1" 
+                                min="1"
+                                :max="maxCopies"
                                 :model-value="copyCount"
                                 step="1"
                                 controls-position="compact"
@@ -59,12 +60,12 @@
                         @click="onConfirm(newItems); $emit('close');">
                     {{ hasCopied ? $i18n.get('label_return_to_list') : $i18n.get('cancel') }}
                 </button>
-                <button 
+                <button
                         v-if="!hasCopied"
                         :class="{'is-loading': isLoading, 'is-success': !isLoading }"
                         type="submit"
                         class="button"
-                        :disabled="copyCount <= 0 || isNaN(copyCount)"
+                        :disabled="copyCount <= 0 || copyCount > maxCopies || isNaN(copyCount)"
                         @click="generateCopies();">
                     {{ $i18n.get('run') }}
                 </button>
@@ -122,6 +123,7 @@
                 copyCount: Number,
                 hasCopied: Boolean,
                 isCreatingSequenceEditGroup: Boolean,
+                maxCopies: 50,
             }
         },
         created() {
