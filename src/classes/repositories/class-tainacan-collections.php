@@ -420,11 +420,13 @@ class Collections extends Repository {
 			],
 			'item_require_document' => [
 				'map'         => 'meta',
-				'title'       => __( 'Require Document', 'tainacan' ),
+				'title'       => __( 'Require document', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'Whether the document is required to publish an item.', 'tainacan' ),
-				'enum'        => [ 'yes', 'no' ],
-				'default'     => 'no'
+				'description' => __( 'If enabled, items can only be published if they have a main document. Items without a document can still be saved as draft.', 'tainacan' ),
+				'default'     => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
 			'item_enabled_document_types' => [
 				'map'         => 'meta',
