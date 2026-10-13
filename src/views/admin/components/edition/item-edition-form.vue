@@ -574,6 +574,7 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
+                                            :error-message="documentErrorMessage"
                                             @on-set-document="setDocument"
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
@@ -658,6 +659,7 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
+                                    :error-message="documentErrorMessage"
                                     @on-set-document="setDocument"
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
@@ -1032,6 +1034,10 @@ export default {
                     ( this.collection.item_enabled_document_types['url'] && this.collection.item_enabled_document_types['url']['enabled'] === 'yes' )
                 )
             );
+        },
+        documentErrorMessage() {
+            const existingError = this.errors.find(error => error.metadatum_id == 'document');
+            return existingError ? existingError.errors : '';
         },
         shouldDisplayItemEditionThumbnail() {
             return !this.$adminOptions.hideItemEditionThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
