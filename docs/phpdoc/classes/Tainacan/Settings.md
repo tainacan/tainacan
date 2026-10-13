@@ -17,6 +17,7 @@ classDiagram
         +init()
         +add_admin_menu()
         +admin_enqueue_css()
+        +admin_enqueue_js()
         +render_page_content()
         +settings_init()
         +create_tainacan_setting(args)
@@ -83,6 +84,17 @@ enqueue the page's CSS using wp_enqueue_script()
 
 ```php
 public admin_enqueue_css(): void
+```
+
+***
+
+### admin_enqueue_js
+
+admin_enqueue_js is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
+enqueue the page's JS using wp_enqueue_script()
+
+```php
+public admin_enqueue_js(): void
 ```
 
 ***
