@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Tainacan pre-push hook.
+# Lints the files this branch changed (PHP syntax and ESLint errors) before they leave your machine.
+# Bypass it with: git push --no-verify
+#
+
+# Hooks can be invoked from any directory, the lint script expects the repository root.
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# Never break a push because of a missing tool: CI runs the same check.
+if ! command -v node >/dev/null 2>&1; then
+    echo "⚠️  Node.js not found in PATH, skipping the pre-push lint (CI will run it)."
+    exit 0
+fi
+
+echo "🔍 Tainacan pre-push: linting changed files..."
+
+if ! node scripts/lint-changed.js; then
+    echo ""
+    echo "❌ Push aborted. Fix the errors above, or bypass with: git push --no-verify"
+    exit 1
+fi
