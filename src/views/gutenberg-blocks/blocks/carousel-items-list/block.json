@@ -82,6 +82,10 @@
             "type": "string",
             "default": ""
         },
+        "randomOrder": {
+            "type": "boolean",
+            "default": false
+        },
         "arrowsPosition": {
             "type": "string",
             "default": "around"

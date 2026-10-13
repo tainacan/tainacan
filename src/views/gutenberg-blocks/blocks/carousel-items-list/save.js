@@ -27,7 +27,8 @@ export default function ({ attributes }) {
         variableItemsWidth,
         order,
         orderBy,
-        orderByMetaKey
+        orderByMetaKey,
+        randomOrder
     } = attributes;
     
     // Gets attributes such as style, that are automatically added by the editor hook
@@ -61,6 +62,7 @@ export default function ({ attributes }) {
                 data-order={ order }
                 data-order-by={ orderBy }
                 data-order-by-meta-key={ orderByMetaKey }
+                data-random-order={ '' + randomOrder }
                 id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
                     { content }
             </div>

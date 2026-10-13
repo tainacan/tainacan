@@ -34,6 +34,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         order,
         orderBy,
         orderByMetaKey,
+        randomOrder,
         searchString,
         selectedItems,
         isLoading,
@@ -318,46 +319,32 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 setAttributes({ maxItemsNumber: 12 });
             }
 
-// Set up sorting orderby
-            if (queryObject.orderby != '')
-                setAttributes({ orderBy: queryObject.orderby });
-            else if (orderBy != 'date')
-                queryObject.orderby = orderBy;
-            else {
-                queryObject.orderby = 'date';
-                setAttributes({ orderBy: 'date' });
+            // Keep the chosen sort separate from random mode, including legacy rand URLs.
+            if (queryObject.orderby && queryObject.orderby != 'rand') {
+                orderBy = queryObject.orderby;
+                if (queryObject.order && !showSearchBar)
+                    order = queryObject.order;
+                if (queryObject.metakey)
+                    orderByMetaKey = queryObject.metakey;
+                setAttributes({ orderBy: orderBy, order: order, orderByMetaKey: orderByMetaKey });
             }
 
-            if (queryObject.orderby == 'rand' || orderBy == 'rand') {
-
-                // Random order: 'order' e 'metakey' não fazem sentido com orderby=rand,
-                // e a API rejeita order='' (o enum só aceita asc/desc/ASC/DESC)
+            if (randomOrder) {
                 queryObject.orderby = 'rand';
                 delete queryObject.order;
                 delete queryObject.metakey;
-                setAttributes({ orderBy: 'rand', orderByMetaKey: '' });
-
             } else {
-
-                // Set up sorting order
-                if (queryObject.order != '' && !showSearchBar)
-                    setAttributes({ order: queryObject.order });
-                else if (order != '')
+                queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
+                if (order)
                     queryObject.order = order;
                 else {
                     queryObject.order = 'asc';
                     setAttributes({ order: 'asc' });
                 }
-
-                // Set up sorting metakey (used by some orderby)
-                if (queryObject.metakey != '')
-                    setAttributes({ orderByMetaKey: queryObject.metakey });
-                else if (orderByMetaKey != '')
+                if (orderByMetaKey)
                     queryObject.metakey = orderByMetaKey;
-                else {
-                    queryObject.metakey = '';
-                    setAttributes({ orderByMetaKey: '' });
-                }
+                else
+                    delete queryObject.metakey;
             }
 
             // Set up search string
@@ -733,11 +720,11 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                 />
                                 <ToggleControl
                                     label={__('Random order', 'tainacan')}
-                                    help={ orderBy == 'rand' ? __('Items are being displayed in a random order.', 'tainacan') : __('Toggle to display items in a random order.', 'tainacan') }
-                                    checked={ orderBy == 'rand' }
+                                    help={ randomOrder ? __('Items are being displayed in a random order.', 'tainacan') : __('Toggle to display items in a random order.', 'tainacan') }
+                                    checked={ randomOrder }
                                     onChange={ ( isChecked ) => {
-                                        orderBy = isChecked ? 'rand' : 'date';
-                                        setAttributes({ orderBy: orderBy });
+                                        randomOrder = isChecked;
+                                        setAttributes({ randomOrder: randomOrder });
                                         setContent();
                                     }}
                                 />
@@ -1033,7 +1020,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             {
                 showSearchBar ?
                 <div className="dynamic-items-search-bar">
-                    { orderBy != 'rand' ?
+                    { !randomOrder ?
                         <>
                             <Button
                                 onClick={ () => { order = 'asc'; setAttributes({ order: order }); setContent(); }}

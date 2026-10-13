@@ -49,7 +49,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         variableItemsWidth,
         order,
         orderBy,
-        orderByMetaKey
+        orderByMetaKey,
+        randomOrder
     } = attributes;
 
     // Gets blocks props from hook
@@ -207,40 +208,27 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                 setAttributes({ maxItemsNumber: 12 });
             }
 
-            // Set up sorting orderby: a searchURL configurada no modal tem prioridade;
-            // o atributo do bloco só é usado se a searchURL não trouxer nenhum orderby.
-            if (queryObject.orderby != undefined && queryObject.orderby != '')
-                setAttributes({ orderBy: queryObject.orderby });
-            else if (orderBy != undefined && orderBy != 'date')
-                queryObject.orderby = orderBy;
-            else {
-                queryObject.orderby = 'date';
-                setAttributes({ orderBy: 'date' });
+            // Keep the chosen sort separate from random mode, including legacy rand URLs.
+            if (queryObject.orderby && queryObject.orderby != 'rand') {
+                orderBy = queryObject.orderby;
+                if (queryObject.order)
+                    order = queryObject.order;
+                if (queryObject.metakey)
+                    orderByMetaKey = queryObject.metakey;
+                setAttributes({ orderBy: orderBy, order: order, orderByMetaKey: orderByMetaKey });
             }
 
-            if (queryObject.orderby == 'rand' || orderBy == 'rand') {
-
-                // Random order: 'order' e 'metakey' não fazem sentido com orderby=rand,
-                // e a API rejeita order='' (o enum só aceita asc/desc/ASC/DESC)
+            if (randomOrder) {
                 queryObject.orderby = 'rand';
                 delete queryObject.order;
                 delete queryObject.metakey;
-                setAttributes({ orderBy: 'rand', order: '', orderByMetaKey: '' });
-
             } else {
-
-                // Set up sorting order (mesma prioridade: searchURL > atributo)
-                if (queryObject.order != undefined && queryObject.order != '')
-                    setAttributes({ order: queryObject.order });
-                else if (order != undefined && order != '')
+                queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
+                if (order)
                     queryObject.order = order;
                 else
                     delete queryObject.order;
-
-                // Set up sorting metakey (mesma prioridade: searchURL > atributo)
-                if (queryObject.metakey != undefined && queryObject.metakey != '')
-                    setAttributes({ orderByMetaKey: queryObject.metakey });
-                else if (orderByMetaKey != undefined && orderByMetaKey != '')
+                if (orderByMetaKey)
                     queryObject.metakey = orderByMetaKey;
                 else
                     delete queryObject.metakey;
@@ -605,11 +593,11 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                 />
                                 <ToggleControl
                                     label={__('Random order', 'tainacan')}
-                                    help={ orderBy == 'rand' ? __('Items are being displayed in a random order.', 'tainacan') : __('Toggle to display items in a random order.', 'tainacan') }
-                                    checked={ orderBy == 'rand' }
+                                    help={ randomOrder ? __('Items are being displayed in a random order.', 'tainacan') : __('Toggle to display items in a random order.', 'tainacan') }
+                                    checked={ randomOrder }
                                     onChange={ ( isChecked ) => {
-                                        orderBy = isChecked ? 'rand' : 'date';
-                                        setAttributes({ orderBy: orderBy });
+                                        randomOrder = isChecked;
+                                        setAttributes({ randomOrder: randomOrder });
                                         setContent();
                                     }}
                                 />

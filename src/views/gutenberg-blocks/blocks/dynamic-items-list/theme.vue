@@ -47,7 +47,7 @@
     <div
             v-if="showSearchBar"
             class="dynamic-items-search-bar">
-        <template v-if="orderBy != 'rand'">
+        <template v-if="!randomOrder">
             <button
                     :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
                     :label="wpI18n('Sort ascending', 'tainacan')"
@@ -329,6 +329,7 @@ export default {
         order: String,
         orderBy: String,
         orderByMetaKey: String,
+        randomOrder: Boolean,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
@@ -472,9 +473,8 @@ export default {
                     this.localMaxItemsNumber = 12;
                 }
 
-                if (this.orderBy == 'rand') {
-
-                    // Random order: 'order' e 'metakey' não se aplicam
+                if (this.randomOrder) {
+                    // Random mode only changes the request, leaving the chosen sort intact.
                     queryObject.orderby = 'rand';
                     delete queryObject.order;
                     delete queryObject.metakey;
@@ -491,12 +491,14 @@ export default {
                         delete queryObject.order;
 
                     // Set up orderBy
-                    if (this.orderBy != undefined)
-                        queryObject.orderby = this.orderBy;
+                    const orderBy = this.orderBy || queryObject.orderby;
+                    queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
 
                     // Set up orderByMetaKey
                     if (this.orderByMetaKey != undefined)
                         queryObject.metakey = this.orderByMetaKey;
+                    if (!queryObject.metakey)
+                        delete queryObject.metakey;
                 }
 
                 // Set up search string

@@ -70,6 +70,7 @@ export default (element) => {
                             order: getDataAttribute(block, 'order'),
                             orderBy: getDataAttribute(block, 'order-by'),
                             orderByMetaKey: getDataAttribute(block, 'order-by-meta-key'),
+                            randomOrder: getDataAttribute(block, 'random-order', 'false') == 'true',
                             showSearchBar: getDataAttribute(block, 'show-search-bar', 'false') == 'true',
                             showCollectionHeader: getDataAttribute(block, 'show-collection-header', 'false') == 'true',
                             showCollectionLabel: getDataAttribute(block, 'show-collection-label', 'false') == 'true',
