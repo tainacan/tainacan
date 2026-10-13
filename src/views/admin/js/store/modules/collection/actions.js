@@ -358,7 +358,7 @@ export const fetchCollectionForExposer = ({}, collectionId) => {
  */
 export const fetchCollectionForItemSubmission = ({}, collectionId) => {
     return new Promise((resolve, reject) => { 
-        let endpoint = '/collections/' + collectionId + '?fetch_only=name,allows_submission,submission_use_recaptcha,item_enable_metadata_enumeration,metadata_section_order';
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,allows_submission,submission_use_recaptcha,item_require_document,item_enable_metadata_enumeration,metadata_section_order';
         axios.tainacanApi.get(endpoint)
         .then(res => {
             resolve( res.data );
