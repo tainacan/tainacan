@@ -351,6 +351,21 @@
                                             id="tainacan-text-item-document-label"
                                             v-model="form.item_document_label" />
                                 </b-field>
+                                <b-field
+                                        v-if="Object.values(form.item_enabled_document_types).some((aDocumentType) => aDocumentType.enabled === 'yes')"
+                                        :addons="false"
+                                        :label="$i18n.getHelperTitle('collections', 'item_require_document')">
+                                    &nbsp;
+                                    <b-switch
+                                            id="tainacan-checkbox-item-require-document"
+                                            v-model="form.item_require_document"
+                                            size="is-small"
+                                            true-value="yes"
+                                            false-value="no" />
+                                    <help-button
+                                            :title="$i18n.getHelperTitle('collections', 'item_require_document')"
+                                            :message="$i18n.getHelperMessage('collections', 'item_require_document')" />
+                                </b-field>
                             </div>
 
                             <!-- Features related to document content index extraction -------------------------------- --> 
@@ -1157,6 +1172,7 @@ export default {
                 },
                 item_publication_label: this.$i18n.get('label_publication_data'),
                 item_document_label: this.$i18n.get( 'Document', 'tainacan' ),
+                item_require_document: 'no',
                 item_thumbnail_label: this.$i18n.get( 'Thumbnail', 'tainacan' ),
                 item_enable_thumbnail: 'yes',
                 item_attachment_label: this.$i18n.get( 'Attachments', 'tainacan' ),
@@ -1318,6 +1334,7 @@ export default {
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                 this.form.item_publication_label = this.collection.item_publication_label;
                 this.form.item_document_label = this.collection.item_document_label;
+                this.form.item_require_document = this.collection.item_require_document;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                 this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
                 this.form.item_attachment_label = this.collection.item_attachment_label;
@@ -1435,6 +1452,7 @@ export default {
                 item_enabled_document_types: this.form.item_enabled_document_types,
                 item_publication_label: this.form.item_publication_label,
                 item_document_label: this.form.item_document_label,
+                item_require_document: this.form.item_require_document,
                 item_thumbnail_label: this.form.item_thumbnail_label,
                 item_enable_thumbnail: this.form.item_enable_thumbnail,
                 item_attachment_label: this.form.item_attachment_label,
@@ -1479,6 +1497,7 @@ export default {
                     this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                     this.form.item_publication_label = this.collection.item_publication_label;
                     this.form.item_document_label = this.collection.item_document_label;
+                    this.form.item_require_document = this.collection.item_require_document;
                     this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                     this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
                     this.form.item_attachment_label = this.collection.item_attachment_label;
@@ -1558,6 +1577,7 @@ export default {
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                 this.form.item_publication_label = this.collection.item_publication_label;
                 this.form.item_document_label = this.collection.item_document_label;
+                this.form.item_require_document = this.collection.item_require_document;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                 this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
                 this.form.item_attachment_label = this.collection.item_attachment_label;
