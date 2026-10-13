@@ -531,8 +531,8 @@ class Item extends Entity {
 
 		$collection = $this->get_collection();
 		if ( $collection && $collection->get_item_require_document() === 'yes' ) {
-			if ( $this->get_document_type() === 'empty' ) {
-				$this->add_error( 'document', __('The document is required', 'tainacan') );
+			if ( $this->get_document_type() === 'empty' || empty( $this->get_document() ) ) {
+				$this->add_error( 'document', __( 'The document is required', 'tainacan' ) );
 				$is_valid = false;
 			}
 		}
