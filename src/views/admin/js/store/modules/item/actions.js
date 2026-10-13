@@ -226,12 +226,14 @@ export const sendItem = ( { commit }, item) => {
 /**
  * Updates an existing item and syncs the cached item state.
  * Dispatches `item/updateItem`.
+ * Pass `silentError: true` when the caller renders the validation errors itself,
+ * so the global error handler does not show its generic feedback.
  * @returns {Promise<Object>} Resolves with updated item data; rejects with API error_message and errors.
  */
-export const updateItem = ({ commit }, item) => {
+export const updateItem = ({ commit }, { silentError, ...item }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item)
+        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item, { silentError: !!silentError })
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
