@@ -666,7 +666,7 @@ class Collection extends Entity {
 	 * @return string 'yes' if required, 'no' otherwise.
 	 */
 	function get_item_require_document() {
-		return $this->get_mapped_property('item_require_document');
+		return $this->get_mapped_property( 'item_require_document' );
 	}
 
 	/**
@@ -1101,7 +1101,7 @@ class Collection extends Entity {
 	 * @return void
 	 */
 	function set_item_require_document( $value ) {
-		$this->set_mapped_property('item_require_document', $value);
+		$this->set_mapped_property( 'item_require_document', $value );
 	}
 
 	/**
