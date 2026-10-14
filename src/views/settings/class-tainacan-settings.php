@@ -64,7 +64,7 @@ class Settings extends Pages {
 			}
 		}
 
-		wp_localize_script( 'tainacan-settings', 'tainacanSettingsSections', array(
+		wp_localize_script( 'tainacan-settings', 'tainacan_settings', array(
 			'ids' => $section_ids,
 		) );
 	}
