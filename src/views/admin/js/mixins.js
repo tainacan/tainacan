@@ -46,6 +46,20 @@ export const dateInter = {
     }
 };
 
+/* Used by date metadata and filter fields to apply the datepickers options defined in the Tainacan settings page */
+export const datepickersSettings = {
+    computed: {
+        // Years range of the datepicker year selector
+        datepickersYearsRange() {
+            // wp_localize_script stringifies every scalar, so parse back to integers.
+            return [
+                parseInt(tainacan_plugin.datepickers_year_min, 10),
+                parseInt(tainacan_plugin.datepickers_year_max, 10)
+            ];
+        }
+    }
+};
+
 // Used for filling extra form data on hooks
 // Any form component that uses this should have a 'entityName' and a 'form' in their data atts
 export const formHooks = {
