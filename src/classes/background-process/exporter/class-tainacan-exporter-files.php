@@ -401,6 +401,17 @@ class Exporter_Files {
 
 		$data = maybe_unserialize( $process->data );
 
+		if ( is_array( $data ) && isset( $data['class_name'] )
+			&& ltrim( $data['class_name'], '\\' ) === 'Tainacan\Exporter\Logs_Exporter'
+			&& ! current_user_can( 'tnc_rep_read_logs' ) ) {
+			return new \WP_Error(
+				'exporter_file_forbidden',
+				__( 'You are not allowed to access this exporter file.', 'tainacan' ),
+				array( 'status' => 403 )
+			);
+		}
+
+
 		if (
 			! is_array( $data ) ||
 			empty( $data['output_files'] ) ||

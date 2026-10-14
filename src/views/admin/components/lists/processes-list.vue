@@ -134,16 +134,16 @@
                             <td
                                     class="table-creation column-default-width"
                                     :label="$i18n.get('label_queued_on')"
-                                    :aria-label="$i18n.get('label_queued_on') + ': ' + getDate(bgProcess.queued_on)">
+                                    :aria-label="$i18n.get('label_queued_on') + ': ' + getUTCDate(bgProcess.queued_on)">
                                 <p
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
-                                            content: getDate(bgProcess.queued_on),
+                                            content: getUTCDate(bgProcess.queued_on),
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }">
-                                    {{ getDate(bgProcess.queued_on) }}
+                                    {{ getUTCDate(bgProcess.queued_on) }}
                                 </p>
                             </td>
 
@@ -151,17 +151,17 @@
                             <td
                                     class="table-modification column-default-width"
                                     :label="$i18n.get('label_last_processed_on')"
-                                    :aria-label="$i18n.get('label_last_processed_on') + ': ' + getDate(bgProcess.processed_last)">
+                                    :aria-label="$i18n.get('label_last_processed_on') + ': ' + getUTCDate(bgProcess.processed_last)">
                                 <p
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
-                                            content: getDate(bgProcess.processed_last),
+                                            content: getUTCDate(bgProcess.processed_last),
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                         :class="{ 'is-not-processed': !hasValidDate(bgProcess.processed_last) }">
-                                    {{ getDate(bgProcess.processed_last) }}
+                                    {{ getUTCDate(bgProcess.processed_last) }}
                                 </p>
                             </td>
 
@@ -471,6 +471,13 @@
                         beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     }
                 });
+            },
+            getUTCDate(rawDate) {
+                if (!this.hasValidDate(rawDate)) {
+                    return this.getDate(rawDate);
+                }
+
+                return moment.utc(rawDate).local().format(this.dateFormat);
             },
             getDate(rawDate) {
                 // A process that has never been processed has a zero/empty

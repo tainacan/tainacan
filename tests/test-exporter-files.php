@@ -1341,4 +1341,100 @@ class Exporter_Files_Test extends TAINACAN_UnitApiTestCase {
 			$response->output
 		);
 	}
+
+	public function test_logs_download_requires_log_permission() {
+		global $wpdb;
+
+		$user_id = self::factory()->user->create(
+			[ 'role' => 'administrator' ]
+		);
+		wp_set_current_user( $user_id );
+
+		$user = new \WP_User( $user_id );
+		$user->add_cap( 'manage_tainacan' );
+		$user->add_cap( 'tnc_rep_read_logs' );
+
+		$file = $this->create_exporter_file(
+			'logs-permission-test.csv'
+		);
+		$file['expires_at'] = time() + DAY_IN_SECONDS;
+
+		$process_id = $this->create_exporter_process(
+			[ $file ],
+			$user_id
+		);
+
+		$updated = $wpdb->update(
+			$wpdb->prefix . 'tnc_bg_process',
+			[
+				'data' => maybe_serialize(
+					[
+						'class_name' => '\Tainacan\Exporter\Logs_Exporter',
+						'output_files' => [ $file ],
+					]
+				),
+			],
+			[ 'ID' => $process_id ],
+			[ '%s' ],
+			[ '%d' ]
+		);
+		$this->assertSame( 1, $updated );
+
+		$allowed = $this->exporter_files->get_process_file(
+			$process_id,
+			$file['guid']
+		);
+		$this->assertIsArray( $allowed );
+		$this->assertSame(
+			wp_normalize_path( $file['filename'] ),
+			$allowed['path']
+		);
+
+		$deny_logs = function (
+			$allcaps, $caps, $args, $checked_user
+		) use ( $user_id ) {
+			if (
+				(int) $checked_user->ID === (int) $user_id
+				&& $args[0] === 'tnc_rep_read_logs'
+			) {
+				$allcaps['tnc_rep_read_logs'] = false;
+			}
+			return $allcaps;
+		};
+
+		add_filter( 'user_has_cap', $deny_logs, PHP_INT_MAX, 4 );
+
+		try {
+			$this->assertTrue( current_user_can( 'manage_tainacan' ) );
+			$this->assertFalse( current_user_can( 'tnc_rep_read_logs' ) );
+
+			$denied = $this->exporter_files->get_process_file(
+				$process_id,
+				$file['guid']
+			);
+
+			$this->assertWPError( $denied );
+			$this->assertSame(
+				'exporter_file_forbidden',
+				$denied->get_error_code()
+			);
+			$this->assertSame(
+				403,
+				$denied->get_error_data()['status']
+			);
+			$this->assertFileExists( $file['filename'] );
+		} finally {
+			remove_filter( 'user_has_cap', $deny_logs, PHP_INT_MAX );
+		}
+
+		$restored = $this->exporter_files->get_process_file(
+			$process_id,
+			$file['guid']
+		);
+		$this->assertIsArray( $restored );
+		$this->assertSame(
+			wp_normalize_path( $file['filename'] ),
+			$restored['path']
+		);
+	}
 }

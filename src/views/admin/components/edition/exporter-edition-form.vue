@@ -342,7 +342,9 @@
                 this.runButtonLoading = true;
 
                 let formElement = document.getElementById('exporterOptionsForm');
-                let formData = new FormData(formElement);
+                let formData = formElement
+                    ? new FormData(formElement)
+                    : new FormData();
  
                 let options = {};
 
