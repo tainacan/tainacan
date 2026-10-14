@@ -176,6 +176,7 @@ classDiagram
     Pages ..> Exposers_Handler
     Pages ..> Mappers_Handler
     Pages ..> Media
+    Pages ..> Settings
     Pages ..> Theme_Helper
     Pages <|-- Admin
     Pages <|-- Dashboard
