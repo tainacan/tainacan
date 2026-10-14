@@ -10,7 +10,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 		</h1>
 		<?php settings_errors(); ?>
 	</div>
-	<form method="post" action="options.php" class="tainacan-settings">
+	<div class="tainacan-settings-layout">
+		<form method="post" action="options.php" class="tainacan-settings">
 		<?php
 			settings_fields( 'tainacan_settings' );
 			do_settings_sections( 'tainacan_settings' );
@@ -18,5 +19,12 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 		<footer class="form-footer">
 			<?php submit_button( __( 'Save Changes', 'tainacan' ), 'primary', 'submit', true ); ?>
 		</footer>
-	</form>
+		</form>
+		<nav id="tainacan-settings-toc" class="tainacan-settings-toc" hidden aria-labelledby="tainacan-settings-toc-label">
+			<h2 id="tainacan-settings-toc-label" class="tainacan-settings-toc__label">
+				<?php esc_html_e( 'Sections', 'tainacan' ); ?>
+			</h2>
+			<ol id="tainacan-settings-toc-list" class="tainacan-settings-toc__list"></ol>
+		</nav>
+	</div>
 </div>

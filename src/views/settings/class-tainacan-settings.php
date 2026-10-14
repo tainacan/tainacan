@@ -46,6 +46,29 @@ class Settings extends Pages {
 		wp_enqueue_style( 'tainacan-settings-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-settings.css', [], TAINACAN_VERSION );
 	}
 
+	function admin_enqueue_js() {
+		global $TAINACAN_BASE_URL, $wp_settings_sections;
+		wp_enqueue_script(
+			'tainacan-settings',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_settings.js',
+			array(),
+			TAINACAN_VERSION,
+			true
+		);
+
+		$section_ids = array();
+		if ( isset( $wp_settings_sections['tainacan_settings'] ) ) {
+			foreach ( $wp_settings_sections['tainacan_settings'] as $section ) {
+				if ( ! empty( $section['title'] ) )
+					$section_ids[] = $section['id'];
+			}
+		}
+
+		wp_localize_script( 'tainacan-settings', 'tainacanSettingsSections', array(
+			'ids' => $section_ids,
+		) );
+	}
+
 	public function render_page_content() {
 		require_once('page.php');
 	}
