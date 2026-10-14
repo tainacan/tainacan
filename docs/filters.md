@@ -4644,7 +4644,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$admin_request_options` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 214](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L214-L351)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 214](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L214-L353)
 
 ---------------------------------
 <br>
@@ -4658,7 +4658,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `false` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 501](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L501-L508)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 503](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L503-L510)
 
 ---------------------------------
 <br>
@@ -4672,7 +4672,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_header_white.svg' : 'tainacan_logo_header.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 510](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L510-L520)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 512](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L512-L522)
 
 ---------------------------------
 <br>
@@ -4686,7 +4686,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_symbol.svg' : 'tainacan_logo_icon.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 522](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L522-L532)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 524](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L524-L534)
 
 ---------------------------------
 <br>
@@ -4700,7 +4700,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$breadcrumbs` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 651](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L651-L654)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 653](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L653-L656)
 
 ---------------------------------
 <br>
@@ -4715,7 +4715,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `array_merge(self::$admin_ui_options, $sanitized_get)` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 733](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L733-L784)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 735](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L735-L786)
 
 ---------------------------------
 <br>

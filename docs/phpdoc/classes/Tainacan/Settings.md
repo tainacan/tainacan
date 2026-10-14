@@ -24,10 +24,13 @@ classDiagram
         +tainacan_settings_field_callback(args)
         +default_field_callback(args)
         +sanitize_document_content_index_max_characters(value)
+        +sanitize_datepickers_year_min(value)
+        +sanitize_datepickers_year_max(value)
         +search_and_performance_section_description()
         +theme_templates_section_description()
         +items_list_defaults_section_description()
         +repository_items_list_section_description()
+        +datepickers_section_description()
         +sanitize_repository_core_display(value)
         +sanitize_repository_core_advanced_search(value)
         +gutenberg_blocks_section_description()
@@ -37,6 +40,13 @@ classDiagram
         +tnc_option_recaptch_secret_key()
     }
 ```
+
+## Constants
+
+| Constant                       | Visibility | Type | Value |
+|--------------------------------|------------|------|-------|
+| `DATEPICKERS_YEAR_MIN_DEFAULT` | public     |      | -200  |
+| `DATEPICKERS_YEAR_MAX_DEFAULT` | public     |      | 50    |
 
 ## Methods
 
@@ -205,6 +215,38 @@ public sanitize_document_content_index_max_characters(mixed $value): int
 
 ***
 
+### sanitize_datepickers_year_min
+
+Sanitizes the datepickers minimum year setting, which can not be positive.
+
+```php
+public sanitize_datepickers_year_min(mixed $value): int
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description        |
+|-----------|-----------|--------------------|
+| `$value`  | **mixed** | Raw setting value. |
+
+***
+
+### sanitize_datepickers_year_max
+
+Sanitizes the datepickers maximum year setting, which can not be negative.
+
+```php
+public sanitize_datepickers_year_max(mixed $value): int
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description        |
+|-----------|-----------|--------------------|
+| `$value`  | **mixed** | Raw setting value. |
+
+***
+
 ### search_and_performance_section_description
 
 ```php
@@ -233,6 +275,16 @@ public items_list_defaults_section_description(): mixed
 
 ```php
 public repository_items_list_section_description(): mixed
+```
+
+***
+
+### datepickers_section_description
+
+Renders the description of the date selectors settings section.
+
+```php
+public datepickers_section_description(): mixed
 ```
 
 ***

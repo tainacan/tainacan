@@ -322,10 +322,13 @@
     +tainacan_settings_field_callback(args)
     +default_field_callback(args)
     +sanitize_document_content_index_max_characters(value)
+    +sanitize_datepickers_year_min(value)
+    +sanitize_datepickers_year_max(value)
     +search_and_performance_section_description()
     +theme_templates_section_description()
     +items_list_defaults_section_description()
     +repository_items_list_section_description()
+    +datepickers_section_description()
     +sanitize_repository_core_display(value)
     +sanitize_repository_core_advanced_search(value)
     +gutenberg_blocks_section_description()
@@ -556,6 +559,7 @@
   Pages ..> Exposers_Handler
   Pages ..> Mappers_Handler
   Pages ..> Media
+  Pages ..> Settings
   Pages ..> Theme_Helper
   Pages <|-- Admin
   Pages <|-- Dashboard
