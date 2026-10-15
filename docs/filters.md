@@ -3572,7 +3572,7 @@ Argument | Type | Description
 `[]` |  | 
 `$request` |  | 
 
-Source: [class-tainacan-rest-filters-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php), [line 379](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php#L379-L386)
+Source: [class-tainacan-rest-filters-controller.php](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php), [line 380](https://github.com/tainacan/tainacan/blob/master/src/classes/api/endpoints/class-tainacan-rest-filters-controller.php#L380-L387)
 
 ---------------------------------
 <br>
