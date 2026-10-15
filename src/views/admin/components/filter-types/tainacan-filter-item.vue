@@ -1,6 +1,7 @@
 <template>
     <b-field
             v-if="!isHiddenPendingReveal"
+            :addons="false"
             :ref="isMobileScreen ? ('filter-field-id-' + filter.id) : null"
             class="filter-item-forms"
             :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}"
