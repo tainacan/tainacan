@@ -202,47 +202,40 @@ abstract class Background_Process extends Background_Process_Base {
 	public function close( $key, $status = 'finished' ) {
 		global $wpdb;
 
-		// If the process errored, check whether it should be retried.
-		if ( $status === 'errored' ) {
-			$process = $wpdb->get_row(
-				$wpdb->prepare(
-					"SELECT retry_count, max_retries, status FROM {$this->table} WHERE ID = %d",
-					$key
-				)
+		// If the process errored and still has retries left, re-queue it for another attempt.
+		$retry_state = $this->get_retry_state( $key, $status );
+
+		if ( $retry_state ) {
+			// Increment retry count and re-queue the process for another attempt.
+			$wpdb->query('START TRANSACTION');
+			$wpdb->update(
+				$this->table,
+				[
+					'retry_count' => (int) $retry_state->retry_count + 1,
+					'status'      => 'waiting',
+					'done'        => 0,
+				],
+				[ 'ID' => $key ]
 			);
+			$wpdb->query('COMMIT');
 
-			if ( $process && (int) $process->retry_count < (int) $process->max_retries ) {
-				// Increment retry count and re-queue the process for another attempt.
-				$wpdb->query('START TRANSACTION');
-				$wpdb->update(
-					$this->table,
-					[
-						'retry_count' => (int) $process->retry_count + 1,
-						'status'      => 'waiting',
-						'done'        => 0,
-					],
-					[ 'ID' => $key ]
-				);
-				$wpdb->query('COMMIT');
+			$this->debug( sprintf( 'Process %d re-queued for retry (attempt %d of %d)', $key, (int) $retry_state->retry_count + 1, (int) $retry_state->max_retries ) );
+			$this->write_log( $key, [
+				[
+					'datetime' => gmdate( 'Y-m-d H:i:s' ),
+					'message'  => sprintf(
+						/* translators: %1$d is the retry attempt number, %2$d is the max retries */
+						__( 'Process re-queued for retry (attempt %1$d of %2$d)', 'tainacan' ),
+						(int) $retry_state->retry_count + 1,
+						(int) $retry_state->max_retries
+					),
+				],
+			] );
 
-				$this->debug( sprintf( 'Process %d re-queued for retry (attempt %d of %d)', $key, (int) $process->retry_count + 1, (int) $process->max_retries ) );
-				$this->write_log( $key, [
-					[
-						'datetime' => gmdate( 'Y-m-d H:i:s' ),
-						'message'  => sprintf(
-							/* translators: %1$d is the retry attempt number, %2$d is the max retries */
-							__( 'Process re-queued for retry (attempt %1$d of %2$d)', 'tainacan' ),
-							(int) $process->retry_count + 1,
-							(int) $process->max_retries
-						),
-					],
-				] );
-
-				// Re-dispatch so the retried process starts immediately.
-				$this->is_cron_dispatch = true;
-				$this->dispatch();
-				return $this;
-			}
+			// Re-dispatch so the retried process starts immediately.
+			$this->is_cron_dispatch = true;
+			$this->dispatch();
+			return $this;
 		}
 
 		$params = [
@@ -264,6 +257,43 @@ abstract class Background_Process extends Background_Process_Base {
 		);
 		$wpdb->query('COMMIT');
 		return $this;
+	}
+
+	/**
+	 * Determine whether a process that is being closed will be re-queued for a retry.
+	 *
+	 * Returns the process row (with `retry_count` and `max_retries`) when another
+	 * attempt is still due, or false when the process is going to be finalised.
+	 *
+	 * Subclasses use this to avoid irreversible side effects while a retry is still
+	 * pending. For example, the importer must not delete its source file before the
+	 * retried run has had a chance to read it (see issue #1249).
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param int    $key    The process ID.
+	 * @param string $status The status the process is being closed with.
+	 * @return object|false Process row when a retry will happen, false otherwise.
+	 */
+	protected function get_retry_state( $key, $status ) {
+		if ( $status !== 'errored' ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$process = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT retry_count, max_retries FROM {$this->table} WHERE ID = %d",
+				$key
+			)
+		);
+
+		if ( ! $process || (int) $process->retry_count >= (int) $process->max_retries ) {
+			return false;
+		}
+
+		return $process;
 	}
 
 	/**
