@@ -323,4 +323,103 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 
 		delete_option( 'tainacan_option_search_each_word_by_default' );
 	}
+
+	/**
+	 * Terms of a private taxonomy metadatum must not be matched by the search of users
+	 * who cannot read private metadata, while terms of public taxonomy metadata still are.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/1125
+	 */
+	public function test_private_taxonomy_metadata_is_not_searched_without_permission() {
+		$soneto    = $this->item_titled( 'Soneto de fidelidade' );
+		$dialetica = $this->item_titled( 'Dialética' );
+
+		$this->set_taxonomy_value( $soneto, $this->create_taxonomy_metadatum( 'Acervo interno', 'private' ), 'My taxonomy 001' );
+		$this->set_taxonomy_value( $dialetica, $this->create_taxonomy_metadatum( 'Acervo aberto', 'publish' ), 'Publico 001' );
+
+		wp_set_current_user( 0 );
+		$this->assertCount( 0, $this->search_poemas( 'My taxonomy 001' ), 'Term of a private taxonomy metadatum leaked to an anonymous user' );
+		$this->assertCount( 1, $this->search_poemas( 'Publico 001' ), 'Term of a public taxonomy metadatum must still be searchable' );
+		$this->assertCount( 1, $this->search_poemas( 'Soneto de fidelidade' ) );
+
+		wp_set_current_user( $this->user_id );
+		$this->assertCount( 1, $this->search_poemas( 'My taxonomy 001' ), 'Users who can read private metadata still find the term' );
+	}
+
+	/**
+	 * Creates a taxonomy plus a taxonomy metadatum (accepting new terms) in the poems collection.
+	 *
+	 * @param string $name   Taxonomy and metadatum name.
+	 * @param string $status Metadatum status.
+	 * @return \Tainacan\Entities\Metadatum
+	 */
+	private function create_taxonomy_metadatum( $name, $status ) {
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'            => $name,
+				'allow_insert'    => 'yes',
+				'status'          => 'publish',
+				'collections_ids' => [ $this->collection_poemas->get_id() ],
+			),
+			true
+		);
+
+		return $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                  => $name,
+				'collection'            => $this->collection_poemas,
+				'metadata_type'         => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'                => $status,
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id'     => $taxonomy->get_id(),
+				],
+			),
+			true
+		);
+	}
+
+	/**
+	 * Assigns a (new) term to an item through a taxonomy metadatum.
+	 *
+	 * @param \Tainacan\Entities\Item      $item      Item.
+	 * @param \Tainacan\Entities\Metadatum $metadatum Taxonomy metadatum.
+	 * @param string                       $term_name Term to create and assign.
+	 */
+	private function set_taxonomy_value( $item, $metadatum, $term_name ) {
+		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity( $item, $metadatum );
+		$item_metadata->set_value( $term_name );
+		$this->assertTrue( $item_metadata->validate(), 'Could not assign term ' . $term_name . ': ' . print_r( $item_metadata->get_errors(), true ) );
+		\Tainacan\Repositories\Item_Metadata::get_instance()->insert( $item_metadata );
+	}
+
+	/**
+	 * Finds an item of the poems collection by its title.
+	 *
+	 * @param string $title Item title.
+	 * @return \Tainacan\Entities\Item
+	 */
+	private function item_titled( $title ) {
+		$items = \Tainacan\Repositories\Items::get_instance()->fetch( [ 'posts_per_page' => -1 ], $this->collection_poemas, 'OBJECT' );
+		foreach ( $items as $item ) {
+			if ( $item->get_title() === $title ) {
+				return $item;
+			}
+		}
+		$this->fail( 'Item not found: ' . $title );
+	}
+
+	/**
+	 * Searches the poems collection through the REST API with an exact sentence.
+	 *
+	 * @param string $search Search sentence.
+	 * @return array Items of the response.
+	 */
+	private function search_poemas( $search ) {
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $this->collection_poemas->get_id() . '/items' );
+		$request->set_query_params( [ 'search' => $search, 'sentence' => true ] );
+		return $this->server->dispatch( $request )->get_data()['items'];
+	}
 }
