@@ -574,6 +574,7 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
+                                            :error-message="documentErrorMessage"
                                             @on-set-document="setDocument"
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
@@ -658,6 +659,7 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
+                                    :error-message="documentErrorMessage"
                                     @on-set-document="setDocument"
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
@@ -1033,6 +1035,10 @@ export default {
                 )
             );
         },
+        documentErrorMessage() {
+            const existingError = this.errors.find(error => error.metadatum_id == 'document');
+            return existingError ? existingError.errors : '';
+        },
         shouldDisplayItemEditionThumbnail() {
             return !this.$adminOptions.hideItemEditionThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
         },
@@ -1313,7 +1319,7 @@ export default {
 
             const promise = status == 'trash'
                 ? this.deleteItem({ itemId: this.itemId, isPermanently: false })
-                : this.updateItem(data);
+                : this.updateItem({ ...data, silentError: true });
 
             // Clear errors so we don't have them duplicated from api
             this.errors = [];
@@ -1388,12 +1394,36 @@ export default {
                     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
             .catch((errors) => {
-                
+
                 this.prepareErrors(errors);
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
+                // The update request is silent, so we show the API validation errors here instead of the generic feedback
+                if (status != 'trash')
+                    this.showSubmitErrorsSnackbar(errors);
+
                 this.isLoading = false;
+            });
+        },
+        showSubmitErrorsSnackbar(errors) {
+            const errorMessages = this.errors
+                .map((error) => [].concat(error.errors)
+                    .map((singleError) => typeof singleError == 'string' ? singleError : Object.values(singleError).join(' '))
+                    .join(' ')
+                )
+                .filter((errorMessage) => errorMessage);
+
+            const message = errorMessages.length
+                ? this.$i18n.get('info_errors_in_form') + ': ' + errorMessages.join(' ')
+                : (errors && errors.error_message ? errors.error_message : this.$i18n.get('error_other'));
+
+            this.$buefy.snackbar.open({
+                message: this.$htmlSanitizer.sanitize(message),
+                type: 'is-danger',
+                position: 'is-bottom-right',
+                pauseOnHover: true,
+                queue: false
             });
         },
         hasErrorsOnForm(hasErrors) {
