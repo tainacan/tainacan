@@ -781,6 +781,78 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$this->assertSame( [], $importer->get_source_metadata() );
 	}
 
+	/**
+	 * Files referenced through the "server_path" option must stay inside the allowed directories.
+	 *
+	 * @group importer
+	 */
+	public function test_server_path_rejects_files_outside_allowed_dirs() {
+		$importer = \Tainacan\Importer_Handler::get_instance()->initialize_importer( 'csv' );
+		$resolve = new \ReflectionMethod( $importer, 'resolve_server_file' );
+		$resolve->setAccessible( true );
+
+		$upload_dir = wp_upload_dir();
+		$server_dir = trailingslashit( $upload_dir['basedir'] ) . 'tainacan-server-path-test';
+		wp_mkdir_p( $server_dir );
+		$allowed_file = $server_dir . '/allowed.txt';
+		file_put_contents( $allowed_file, 'allowed' );
+
+		$importer->set_option( 'server_path', '/etc' );
+		$this->assertFalse( $resolve->invoke( $importer, 'passwd' ) );
+
+		$importer->set_option( 'server_path', '' );
+		$this->assertFalse( $resolve->invoke( $importer, '/etc/passwd' ) );
+		$this->assertFalse( $resolve->invoke( $importer, '../../../../../../../../etc/passwd' ) );
+		$this->assertFalse( $resolve->invoke( $importer, '' ) );
+		$this->assertFalse( $resolve->invoke( $importer, [ 'allowed.txt' ] ) );
+		$this->assertSame( wp_normalize_path( realpath( $allowed_file ) ), $resolve->invoke( $importer, 'tainacan-server-path-test/allowed.txt' ) );
+
+		$importer->set_option( 'server_path', $server_dir );
+		$this->assertSame( wp_normalize_path( realpath( $allowed_file ) ), $resolve->invoke( $importer, 'allowed.txt' ) );
+		$this->assertFalse( $resolve->invoke( $importer, '../../../../../../../../etc/passwd' ) );
+		$this->assertFalse( $resolve->invoke( $importer, "allowed.txt\0.jpg" ) );
+
+		$link = $server_dir . '/link-outside.txt';
+		if ( @symlink( '/etc/passwd', $link ) ) {
+			$this->assertFalse( $resolve->invoke( $importer, 'link-outside.txt' ) );
+			unlink( $link );
+		}
+
+		unlink( $allowed_file );
+		rmdir( $server_dir );
+	}
+
+	/**
+	 * Directories outside uploads can be allowed with the 'tainacan-importer-allowed-server-paths' filter.
+	 *
+	 * @group importer
+	 */
+	public function test_server_path_allows_filtered_dirs() {
+		$importer = \Tainacan\Importer_Handler::get_instance()->initialize_importer( 'csv' );
+		$resolve = new \ReflectionMethod( $importer, 'resolve_server_file' );
+		$resolve->setAccessible( true );
+
+		$server_dir = trailingslashit( sys_get_temp_dir() ) . 'tainacan-server-path-' . wp_generate_password( 8, false );
+		wp_mkdir_p( $server_dir );
+		$file = $server_dir . '/external.txt';
+		file_put_contents( $file, 'external' );
+
+		$importer->set_option( 'server_path', $server_dir );
+		$this->assertFalse( $resolve->invoke( $importer, 'external.txt' ) );
+
+		$allow_dir = function( $dirs ) use ( $server_dir ) {
+			$dirs[] = $server_dir;
+			return $dirs;
+		};
+		add_filter( 'tainacan-importer-allowed-server-paths', $allow_dir );
+		$this->assertSame( wp_normalize_path( realpath( $file ) ), $resolve->invoke( $importer, 'external.txt' ) );
+		$this->assertFalse( $resolve->invoke( $importer, '../../../../../../../../etc/passwd' ) );
+		remove_filter( 'tainacan-importer-allowed-server-paths', $allow_dir );
+
+		unlink( $file );
+		rmdir( $server_dir );
+	}
+
 	private function write_csv_fixture( $file_name, array $headers, array $rows ) {
 		$file = fopen( $file_name, 'w' );
 		fputcsv( $file, $headers );
