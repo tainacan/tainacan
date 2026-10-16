@@ -268,7 +268,7 @@ class Admin extends Pages {
 			array(
 				'id'      => 'tainacan_admin_help_tab',
 				'title'   => __( 'Tainacan Help', 'tainacan' ),
-				'content' => '<div id="tainacan-dynamic-help-content"><p>' . __( 'Welcome to Tainacan! Navigate through the menu to see specific help for each section.', 'tainacan' ) . '</p></div>',
+				'content' => '<div id="tainacan-dynamic-help-content"><p>' . __( 'This screen has no specific guidance yet. The documentation link lists the available guides.', 'tainacan' ) . '</p></div>',
 			),
 		);
 	}

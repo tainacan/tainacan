@@ -438,7 +438,7 @@ function getTainacanHelpSectionKey( currentRoute ) {
 
     if ( menuLink ) {
         if ( currentRoute.params && currentRoute.params.collectionId && menuLink === 'settings' )
-            return 'collections';
+            return 'collection-settings';
 
         return menuLink;
     }

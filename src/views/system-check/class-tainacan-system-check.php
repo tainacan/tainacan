@@ -73,7 +73,6 @@ class System_Check extends Pages {
 	protected function get_help_sidebar() {
 		return
 			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
-			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/requirements', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'System requirements', 'tainacan' ) . '</a></p>' .
 			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/faq', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Frequently Asked Questions', 'tainacan' ) . '</a></p>';
 	}
 

@@ -43,12 +43,12 @@ class Roles_Editor extends Pages {
 			array(
 				'id'      => 'tainacan_roles_overview_help_tab',
 				'title'   => __( 'User roles', 'tainacan' ),
-				'content' => '<p>' . __( 'Use this page to review and adjust the Tainacan capabilities assigned to each WordPress user role.', 'tainacan' ) . '</p>',
+				'content' => '<p>' . __( 'This page edits the Tainacan capabilities of each WordPress role, including the Tainacan Administrator, Editor and Author roles. A role is a set of capabilities given to every user who has it.', 'tainacan' ) . '</p>',
 			),
 			array(
 				'id'      => 'tainacan_roles_capabilities_help_tab',
 				'title'   => __( 'Capabilities', 'tainacan' ),
-				'content' => '<p>' . __( 'Capabilities control who can manage repository structures, collections, items, taxonomies, processes and other administrative resources. Review changes carefully before saving.', 'tainacan' ) . '</p>',
+				'content' => '<p>' . __( 'Changing a role affects every user who has it, across the whole repository. Exceptions for a single collection are set in that collection, under Capabilities.', 'tainacan' ) . '</p>',
 			),
 		);
 	}
@@ -61,7 +61,7 @@ class Roles_Editor extends Pages {
 	protected function get_help_sidebar() {
 		return
 			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
-			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/permissions', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Permissions and roles', 'tainacan' ) . '</a></p>';
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/users-roles', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Permissions and roles', 'tainacan' ) . '</a></p>';
 	}
 
 

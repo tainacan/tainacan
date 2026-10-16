@@ -85,7 +85,7 @@ class Settings extends Pages {
 			array(
 				'id'      => 'tainacan_settings_overview_help_tab',
 				'title'   => __( 'Settings', 'tainacan' ),
-				'content' => '<p>' . __( 'Use this page to configure repository-wide behavior, including search and performance, media processing, metadata, URLs and interface options.', 'tainacan' ) . '</p>',
+				'content' => '<p>' . __( 'This page changes Tainacan for the whole site: search, media, the public templates and submission forms. It is separate from the settings of one collection.', 'tainacan' ) . '</p>',
 			),
 			array(
 				'id'      => 'tainacan_settings_constants_help_tab',
@@ -103,8 +103,7 @@ class Settings extends Pages {
 	protected function get_help_sidebar() {
 		return
 			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
-			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/settings', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Tainacan settings', 'tainacan' ) . '</a></p>' .
-			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/dev', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Developer documentation', 'tainacan' ) . '</a></p>';
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/settings-page', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Tainacan settings', 'tainacan' ) . '</a></p>';
 	}
 
 	public function render_page_content() {
