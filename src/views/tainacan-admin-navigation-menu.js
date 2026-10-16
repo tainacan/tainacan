@@ -449,7 +449,7 @@ function getTainacanHelpSectionKey( currentRoute ) {
 function updateTainacanHelpTab( currentRoute ) {
     if ( window.tainacan_plugin && window.tainacan_plugin.i18n && window.tainacan_plugin.i18n.help_tabs ) {
         let sectionKey = getTainacanHelpSectionKey( currentRoute );
-        let currentHelp = ( sectionKey && window.tainacan_plugin.i18n.help_tabs[ '/' + sectionKey ] ) || window.tainacan_plugin.i18n.help_tabs['default'];
+        let currentHelp = ( sectionKey && window.tainacan_plugin.i18n.help_tabs[ sectionKey ] ) || window.tainacan_plugin.i18n.help_tabs['default'];
 
         if ( currentHelp ) {
             let helpTabTitle = document.querySelector('#tab-link-tainacan_admin_help_tab a');
