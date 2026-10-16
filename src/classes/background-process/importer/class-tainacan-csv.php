@@ -177,6 +177,16 @@ class CSV extends Importer {
 	public function process_item( $index, $collection_definition ) {
 		$processedItem = [];
 		$compoundHeaders = [];
+
+		// raw_source_metadata() returns false when the source file can no longer be
+		// opened (deleted, moved or unreadable). Guard against it so a missing file
+		// produces a readable log entry instead of a fatal array_map() TypeError.
+		$raw_headers = $this->raw_source_metadata();
+		if ( ! is_array( $raw_headers ) ) {
+			$this->add_error_log( __( 'Unable to read the source file. It may have been deleted, moved or made unreadable.', 'tainacan' ) );
+			return false;
+		}
+
 		$headers = array_map(function ($header) use (&$compoundHeaders) {
 			if ( preg_match ('/.*\|compound\(.*\)/', $header ) ) {
 				$data = preg_split("/[()]+/", $header, -1, PREG_SPLIT_NO_EMPTY);
@@ -185,7 +195,7 @@ class CSV extends Importer {
 				return $header;
 			}
 			return $header;
-		}, $this->raw_source_metadata());
+		}, $raw_headers);
 
 		$item_line = (int) $index + 2;
 
@@ -216,6 +226,13 @@ class CSV extends Importer {
 			$values = $this->handle_enclosure( $file );
 		} else {
 			$values = fgetcsv($file, 0, $this->get_option('delimiter'));
+		}
+
+		// fgetcsv() returns false at end of file / on read failure. Bail out with a
+		// readable log entry rather than letting the count() below fail on a non-array.
+		if ( ! is_array( $values ) ) {
+			$this->add_error_log( __( 'Unable to read a row from the source file.', 'tainacan' ) );
+			return false;
 		}
 
 		$this->add_transient('csv_pointer', ftell($file)); // add reference for insert

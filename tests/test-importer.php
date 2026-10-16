@@ -129,10 +129,23 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * A process that errored but still has retries left is re-queued, so the source
+	 * file must be kept: deleting it here makes every retry fail (issue #1249).
+	 *
 	 * @group importer
 	 */
-	public function test_source_file_is_removed_when_background_import_errors() {
-		$this->assert_source_file_is_removed_when_background_import_closes( 'errored' );
+	public function test_source_file_is_kept_when_background_import_errors_and_will_retry() {
+		$this->assert_source_file_is_kept_when_background_import_will_retry( 'errored' );
+	}
+
+	/**
+	 * Once the retries are exhausted the process is finalised, so the source file
+	 * is finally removed.
+	 *
+	 * @group importer
+	 */
+	public function test_source_file_is_removed_when_background_import_errors_and_retries_are_exhausted() {
+		$this->assert_source_file_is_removed_when_background_import_closes( 'errored', 'csv', false, 3 );
 	}
 
 	/**
@@ -142,51 +155,8 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$this->assert_source_file_is_removed_when_background_import_closes( 'cancelled', 'csv', true );
 	}
 
-	private function assert_source_file_is_removed_when_background_import_closes( $status, $importer_slug = 'csv', $cancel_via_api = false ) {
-		$file_name = wp_tempnam( 'issue-1091.csv' );
-		$this->assertNotFalse( $file_name );
-
-		$file = fopen( $file_name, 'w' );
-		fputcsv( $file, [ 'Name' ] );
-		fputcsv( $file, [ 'Item 1' ] );
-		fclose( $file );
-
-		$handler = \Tainacan\Importer_Handler::get_instance();
-		$importer = $handler->initialize_importer( $importer_slug );
-
-		$file_array = [
-			'name'     => 'issue-1091.csv',
-			'type'     => 'text/csv',
-			'tmp_name' => $file_name,
-			'error'    => 0,
-			'size'     => filesize( $file_name ),
-		];
-
-		$this->assertTrue( $importer->add_file( $file_array ) );
-
-		$uploaded_file = $importer->get_tmp_file();
-		$this->assertFileExists( $uploaded_file );
-
-		$attachment_ids = get_posts( [
-			'post_type'      => 'attachment',
-			'post_status'    => 'inherit',
-			'posts_per_page' => 1,
-			'fields'         => 'ids',
-			'meta_key'       => '_wp_attached_file',
-			'meta_value'     => _wp_relative_upload_path( $uploaded_file ),
-		] );
-
-		$this->assertNotEmpty( $attachment_ids );
-		$attachment_id = (int) $attachment_ids[0];
-
-		$background_importer = new \Tainacan\Background_Importer();
-
-		$background_importer
-			->data( $importer->_to_Array( true ) )
-			->set_name( 'CSV Importer' )
-			->save();
-
-		$process_id = $background_importer->ID;
+	private function assert_source_file_is_removed_when_background_import_closes( $status, $importer_slug = 'csv', $cancel_via_api = false, $retry_count = 0 ) {
+		list( $uploaded_file, $attachment_id, $background_importer, $process_id ) = $this->create_csv_background_import( $importer_slug, $retry_count );
 
 		if ( $cancel_via_api ) {
 			$request = new \WP_REST_Request( 'POST', '/' );
@@ -207,13 +177,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$attachment_after_close = get_post( $attachment_id );
 
 		// Prevent test artifacts from remaining when an assertion fails.
-		$background_importer->delete( $process_id );
-
-		if ( $attachment_after_close ) {
-			wp_delete_attachment( $attachment_id, true );
-		} elseif ( $file_exists_after_close ) {
-			wp_delete_file( $uploaded_file );
-		}
+		$this->cleanup_background_import( $background_importer, $process_id, $attachment_id, $uploaded_file );
 
 		$this->assertFalse(
 			$file_exists_after_close,
@@ -224,6 +188,177 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 			$attachment_after_close,
 			'The WordPress attachment should also be removed when the background import reaches a terminal state.'
 		);
+	}
+
+	/**
+	 * Asserts the source file survives an errored close while a retry is still pending.
+	 */
+	private function assert_source_file_is_kept_when_background_import_will_retry( $status, $importer_slug = 'csv' ) {
+		global $wpdb;
+
+		list( $uploaded_file, $attachment_id, $background_importer, $process_id ) = $this->create_csv_background_import( $importer_slug );
+
+		$background_importer->close( $process_id, $status );
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT status, done, retry_count FROM {$wpdb->prefix}tnc_bg_process WHERE ID = %d",
+				$process_id
+			)
+		);
+
+		$file_exists_after_close = file_exists( $uploaded_file );
+		$attachment_after_close = get_post( $attachment_id );
+
+		$this->cleanup_background_import( $background_importer, $process_id, $attachment_id, $uploaded_file );
+
+		$this->assertTrue(
+			$file_exists_after_close,
+			'The importer source file must be kept while a retry is still pending (issue #1249).'
+		);
+
+		$this->assertNotNull(
+			$attachment_after_close,
+			'The WordPress attachment must be kept while a retry is still pending (issue #1249).'
+		);
+
+		$this->assertEquals( 'waiting', $row->status, 'An errored process with retries left should be re-queued.' );
+		$this->assertEquals( 0, (int) $row->done, 'A re-queued process should have done=0.' );
+		$this->assertEquals( 1, (int) $row->retry_count, 'The retry counter should be incremented.' );
+	}
+
+	/**
+	 * Uploads a small CSV as an importer source file and stores a background process row.
+	 *
+	 * @return array [ uploaded_file_path, attachment_id, Background_Importer, process_id ]
+	 */
+	private function create_csv_background_import( $importer_slug = 'csv', $retry_count = 0 ) {
+		// The retry columns are added by a migration that may not have run in the
+		// test environment; make sure they exist before close() reads them.
+		\Tainacan\Migrations::alter_table_tnc_bg_process_add_retry_columns();
+
+		// Use a unique filename so tests cannot collide on a reused uploads path.
+		$source_name = 'issue-1249-' . uniqid() . '.csv';
+		$file_name = wp_tempnam( $source_name );
+		$this->assertNotFalse( $file_name );
+
+		$file = fopen( $file_name, 'w' );
+		fputcsv( $file, [ 'Name' ] );
+		fputcsv( $file, [ 'Item 1' ] );
+		fclose( $file );
+
+		$handler = \Tainacan\Importer_Handler::get_instance();
+		$importer = $handler->initialize_importer( $importer_slug );
+
+		$file_array = [
+			'name'     => $source_name,
+			'type'     => 'text/csv',
+			'tmp_name' => $file_name,
+			'error'    => 0,
+			'size'     => filesize( $file_name ),
+		];
+
+		$this->assertTrue( $importer->add_file( $file_array ) );
+
+		$uploaded_file = $importer->get_tmp_file();
+		$this->assertFileExists( $uploaded_file );
+
+		// Read the attachment from the importer itself: querying by the attached
+		// file path can match a stale attachment that reused the same uploads path.
+		$attachment_id = (int) $importer->get_tmp_file_id();
+		$this->assertGreaterThan( 0, $attachment_id );
+
+		$background_importer = new \Tainacan\Background_Importer();
+
+		$background_importer
+			->data( $importer->_to_Array( true ) )
+			->set_name( 'CSV Importer' )
+			->save();
+
+		$process_id = $background_importer->ID;
+
+		if ( $retry_count > 0 ) {
+			global $wpdb;
+			$wpdb->update(
+				$wpdb->prefix . 'tnc_bg_process',
+				[ 'retry_count' => $retry_count ],
+				[ 'ID' => $process_id ],
+				[ '%d' ],
+				[ '%d' ]
+			);
+		}
+
+		return [ $uploaded_file, $attachment_id, $background_importer, $process_id ];
+	}
+
+	/**
+	 * Removes the background process row and the uploaded attachment/file after a test.
+	 */
+	private function cleanup_background_import( $background_importer, $process_id, $attachment_id, $uploaded_file ) {
+		$background_importer->delete( $process_id );
+
+		if ( get_post( $attachment_id ) ) {
+			wp_delete_attachment( $attachment_id, true );
+		} elseif ( file_exists( $uploaded_file ) ) {
+			wp_delete_file( $uploaded_file );
+		}
+	}
+
+	/**
+	 * Regression test for issue #1249: when the source file is gone, process_item()
+	 * must log a readable error and return false instead of raising a fatal
+	 * TypeError from array_map().
+	 *
+	 * @group importer
+	 */
+	public function test_process_item_returns_false_when_source_file_is_missing() {
+		$file_name = wp_tempnam( 'issue-1249-missing.csv' );
+		$this->assertNotFalse( $file_name );
+
+		$file = fopen( $file_name, 'w' );
+		fputcsv( $file, [ 'Name' ] );
+		fputcsv( $file, [ 'Item 1' ] );
+		fclose( $file );
+
+		$handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $handler->initialize_importer( 'csv' );
+
+		$file_array = [
+			'name'     => 'issue-1249-missing.csv',
+			'type'     => 'text/csv',
+			'tmp_name' => $file_name,
+			'error'    => 0,
+			'size'     => filesize( $file_name ),
+		];
+		$this->assertTrue( $csv_importer->add_file( $file_array ) );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			[ 'name' => 'missing_source_file', 'status' => 'publish' ],
+			true
+		);
+
+		$uploaded_file = $csv_importer->get_tmp_file();
+		$this->assertFileExists( $uploaded_file );
+
+		// Remove the source file behind the importer's back, mimicking the watchdog
+		// deleting the CSV before a retry (issue #1249).
+		wp_delete_file( $uploaded_file );
+		$this->assertFileDoesNotExist( $uploaded_file );
+
+		$collection_definition = [
+			'id'          => $collection->get_id(),
+			'total_items' => 1,
+			'mapping'     => [],
+		];
+
+		$result = $csv_importer->process_item( 0, $collection_definition );
+
+		$this->assertFalse( $result, 'process_item() should return false instead of raising a fatal error when the source file is missing.' );
+		$this->assertGreaterThan( 0, count( $csv_importer->get_error_log() ), 'A readable error should be logged when the source file is missing.' );
+
+		// Cleanup: remove the attachment that add_file() created.
+		$csv_importer->delete_source_file();
 	}
 
 	/**
