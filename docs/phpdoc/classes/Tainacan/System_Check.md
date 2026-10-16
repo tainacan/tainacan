@@ -24,6 +24,8 @@ classDiagram
         +init()
         +add_admin_menu()
         +render_page_content()
+        #get_help_tabs()
+        #get_help_sidebar()
         +test_php_version()
         -prepare_sql_data()
         +check_permalink_settings()
@@ -143,6 +145,26 @@ render_page_content defines the inner content of the page. It is called from the
 
 ```php
 public render_page_content(): void
+```
+
+***
+
+### get_help_tabs
+
+Returns help tabs for the system check page.
+
+```php
+protected get_help_tabs(): array
+```
+
+***
+
+### get_help_sidebar
+
+Returns help sidebar content for the system check page.
+
+```php
+protected get_help_sidebar(): string
 ```
 
 ***
@@ -373,6 +395,36 @@ If a page or group of pages is to be listed in the root level of the Tainacan ad
 $this->tainacan_root_menu_slug. A child slug then should be defined so that child submenus are added to it
 (see class-tainacan-admin for an example). If the page is to be listed in the "Others" menu collapse, the
 parent should be $this->tainacan_other_links_slug.
+
+***
+
+### get_help_tabs
+
+Returns the help tabs to be added to the current admin screen.
+
+```php
+protected get_help_tabs(): array
+```
+
+***
+
+### get_help_sidebar
+
+Returns the help sidebar content for the current admin screen.
+
+```php
+protected get_help_sidebar(): string
+```
+
+***
+
+### add_help_tabs
+
+Adds WordPress help tabs and sidebar to the current admin screen.
+
+```php
+protected add_help_tabs(): void
+```
 
 ***
 

@@ -193,6 +193,36 @@ parent should be $this->tainacan_other_links_slug.
 
 ***
 
+### get_help_tabs
+
+Returns the help tabs to be added to the current admin screen.
+
+```php
+protected get_help_tabs(): array
+```
+
+***
+
+### get_help_sidebar
+
+Returns the help sidebar content for the current admin screen.
+
+```php
+protected get_help_sidebar(): string
+```
+
+***
+
+### add_help_tabs
+
+Adds WordPress help tabs and sidebar to the current admin screen.
+
+```php
+protected add_help_tabs(): void
+```
+
+***
+
 ### admin_enqueue_css
 
 admin_enqueue_css is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
