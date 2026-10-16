@@ -66,6 +66,7 @@ abstract class Pages {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_js' ), 90 );
 		add_filter( 'screen_settings', array( &$this, 'admin_add_screen_options' ), 10, 2 );
+		$this->add_help_tabs();
 	}
 	
 	/**
@@ -79,6 +80,62 @@ abstract class Pages {
 	 * @return void
 	 */
 	function add_admin_menu() {}
+
+	/**
+	 * Returns the help tabs to be added to the current admin screen.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array();
+	}
+
+	/**
+	 * Returns the help sidebar content for the current admin screen.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return '';
+	}
+
+	/**
+	 * Adds WordPress help tabs and sidebar to the current admin screen.
+	 *
+	 * @return void
+	 */
+	protected function add_help_tabs() {
+		$screen = get_current_screen();
+
+		if ( ! $screen )
+			return;
+
+		$allowed_html = wp_kses_allowed_html( 'post' );
+		foreach ( array( 'div', 'p', 'a' ) as $tag ) {
+			if ( isset( $allowed_html[ $tag ] ) )
+				$allowed_html[ $tag ]['hidden'] = true;
+		}
+
+		$help_tabs = $this->get_help_tabs();
+
+		foreach ( $help_tabs as $help_tab ) {
+			if ( empty( $help_tab['id'] ) || empty( $help_tab['title'] ) || empty( $help_tab['content'] ) )
+				continue;
+
+			$screen->add_help_tab(
+				array(
+					'id'      => sanitize_key( $help_tab['id'] ),
+					'title'   => wp_strip_all_tags( $help_tab['title'] ),
+					'content' => wp_kses( $help_tab['content'], $allowed_html ),
+				)
+			);
+		}
+
+		$help_sidebar = $this->get_help_sidebar();
+
+		if ( ! empty( $help_sidebar ) )
+			$screen->set_help_sidebar( wp_kses( $help_sidebar, $allowed_html ) );
+	}
 	
 	/**
 	 * admin_enqueue_css is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
