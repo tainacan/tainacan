@@ -175,7 +175,11 @@ export default {
         collectionBackgroundColor: String,
         collectionTextColor: String,
         tainacanApiRoot: String,
-        variableItemsWidth: Boolean
+        variableItemsWidth: Boolean,
+        order: String,
+        orderBy: String,
+        orderByMetaKey: String,
+        randomOrder: Boolean
     },
     data() {
         return {
@@ -288,10 +292,29 @@ export default {
                 else
                     this.paged = 1;
 
+                // Random mode only changes the request, leaving the chosen sort intact.
+                if (this.randomOrder) {
+                    queryObject.orderby = 'rand';
+                    delete queryObject.order;
+                    delete queryObject.metakey;
+                } else {
+                    // Older carousel markup keeps its sort in the search URL.
+                    const orderBy = this.orderBy || queryObject.orderby;
+                    queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
+                    if (this.order !== undefined)
+                        queryObject.order = this.order;
+                    if (!queryObject.order)
+                        delete queryObject.order;
+                    if (this.orderByMetaKey !== undefined)
+                        queryObject.metakey = this.orderByMetaKey;
+                    if (!queryObject.metakey)
+                        delete queryObject.metakey;
+                }
+
                 // Remove unecessary queries
                 delete queryObject.admin_view_mode;
                 delete queryObject.fetch_only_meta;
-                
+
                 endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
