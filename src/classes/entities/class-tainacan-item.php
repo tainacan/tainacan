@@ -977,7 +977,15 @@ class Item extends Entity {
 				$output .= $embed;
 			}
 		}
-		return apply_filters("tainacan-item-get-attachment-as-html", wp_kses($output, wp_kses_allowed_html('tainacan_content')), $img_size, $this);
+		/**
+		 * Filters the rendered attachment, allowing integrations to identify the file.
+		 *
+		 * @param string $output     Attachment HTML.
+		 * @param string $img_size   Requested image size.
+		 * @param Item   $item       Item containing the attachment.
+		 * @param int    $attachment Attachment ID.
+		 */
+		return apply_filters("tainacan-item-get-attachment-as-html", wp_kses($output, wp_kses_allowed_html('tainacan_content')), $img_size, $this, $attachment);
 
 	}
 
