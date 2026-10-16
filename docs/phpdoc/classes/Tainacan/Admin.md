@@ -19,6 +19,8 @@ classDiagram
         +init()
         +add_admin_menu()
         +admin_enqueue_css()
+        #get_help_tabs()
+        #get_help_sidebar()
         +admin_enqueue_js()
         +admin_body_class(classes)
         +render_page_content()
@@ -91,6 +93,32 @@ enqueue the page's CSS using wp_enqueue_script()
 ```php
 public admin_enqueue_css(): void
 ```
+
+***
+
+### get_help_tabs
+
+Returns help tabs for the repository administration page.
+
+```php
+protected get_help_tabs(): array
+```
+
+The tab body is a shell. tainacan-admin-navigation-menu.js replaces it
+when the Vue admin route changes.
+
+***
+
+### get_help_sidebar
+
+Returns help sidebar content for the repository administration page.
+
+```php
+protected get_help_sidebar(): string
+```
+
+The markup is updated from tainacan-admin-navigation-menu.js as the
+Vue admin route changes.
 
 ***
 
@@ -251,6 +279,36 @@ If a page or group of pages is to be listed in the root level of the Tainacan ad
 $this->tainacan_root_menu_slug. A child slug then should be defined so that child submenus are added to it
 (see class-tainacan-admin for an example). If the page is to be listed in the "Others" menu collapse, the
 parent should be $this->tainacan_other_links_slug.
+
+***
+
+### get_help_tabs
+
+Returns the help tabs to be added to the current admin screen.
+
+```php
+protected get_help_tabs(): array
+```
+
+***
+
+### get_help_sidebar
+
+Returns the help sidebar content for the current admin screen.
+
+```php
+protected get_help_sidebar(): string
+```
+
+***
+
+### add_help_tabs
+
+Adds WordPress help tabs and sidebar to the current admin screen.
+
+```php
+protected add_help_tabs(): void
+```
 
 ***
 
