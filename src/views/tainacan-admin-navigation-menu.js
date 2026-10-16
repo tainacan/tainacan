@@ -438,15 +438,12 @@ function getTainacanHelpSectionKey( currentRoute ) {
     if ( !currentRoute )
         return null;
 
-    let menuLink = currentRoute.meta && currentRoute.meta.menuLink ? currentRoute.meta.menuLink : null;
+    let menuLink = currentRoute.meta && currentRoute.meta.menuLink;
 
     if ( currentRoute.params && currentRoute.params.collectionId && menuLink )
         return menuLink === 'settings' ? 'collections' : menuLink;
 
-    let path = currentRoute.path || '';
-    let topLevelSections = [ 'collections', 'my-items', 'items', 'metadata', 'filters', 'taxonomies', 'activities', 'capabilities', 'reports', 'processes', 'importers', 'exporters' ];
-
-    return topLevelSections.find( section => path.indexOf( '/' + section ) === 0 ) || null;
+    return ( currentRoute.path || '' ).split( '/' ).filter( Boolean )[0] || null;
 }
 
 function updateTainacanHelpTab( currentRoute ) {

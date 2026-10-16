@@ -213,28 +213,6 @@ class Admin extends Pages {
 		}
 	}
 
-	function load_page() {
-		parent::load_page();
-		$screen = get_current_screen();
-		if ( ! $screen ) {
-			return;
-		}
-
-		$screen->add_help_tab(array(
-			'id'      => 'tainacan_admin_help_tab',
-			'title'   => __('Tainacan Help', 'tainacan'),
-			'content' => '<div id="tainacan-dynamic-help-content"><p>' . __('Welcome to Tainacan! Navigate through the menu to see specific help for each section.', 'tainacan') . '</p></div>',
-		));
-
-		$screen->set_help_sidebar(
-			'<div id="tainacan-dynamic-help-sidebar">' .
-			'<p>' . __('For more information:', 'tainacan') . '</p>' .
-			'<p><a id="tainacan-dynamic-help-link" href="https://tainacan.github.io/tainacan-wiki/" target="_blank">' . __('Tainacan Documentation', 'tainacan') . '</a></p>' .
-			'<p id="tainacan-dynamic-help-section-link-wrapper" hidden><a id="tainacan-dynamic-help-section-link" href="https://tainacan.github.io/tainacan-wiki/" target="_blank"></a></p>' .
-			'</div>'
-		);
-	}
-	
 	function admin_enqueue_css() {
 		global $TAINACAN_BASE_URL;
 
@@ -280,24 +258,17 @@ class Admin extends Pages {
 	/**
 	 * Returns help tabs for the repository administration page.
 	 *
+	 * The tab body is a shell. tainacan-admin-navigation-menu.js replaces it
+	 * when the Vue admin route changes.
+	 *
 	 * @return array
 	 */
 	protected function get_help_tabs() {
 		return array(
 			array(
-				'id'      => 'tainacan_repository_overview_help_tab',
-				'title'   => __( 'Repository', 'tainacan' ),
-				'content' => '<p>' . __( 'Use the Repository area to manage the structures shared by your digital repository, such as metadata, filters, taxonomies, activities, processes and reports.', 'tainacan' ) . '</p>',
-			),
-			array(
-				'id'      => 'tainacan_collections_overview_help_tab',
-				'title'   => __( 'Collections and items', 'tainacan' ),
-				'content' => '<p>' . __( 'Collections group items and define their metadata, filters and publication settings. The items pages let you browse, create and edit records across the repository or inside a specific collection.', 'tainacan' ) . '</p>',
-			),
-			array(
-				'id'      => 'tainacan_repository_tools_help_tab',
-				'title'   => __( 'Importers and exporters', 'tainacan' ),
-				'content' => '<p>' . __( 'Importers help you bring data into Tainacan, while exporters generate files from repository data. Long-running tasks can be followed from the Processes page.', 'tainacan' ) . '</p>',
+				'id'      => 'tainacan_admin_help_tab',
+				'title'   => __( 'Tainacan Help', 'tainacan' ),
+				'content' => '<div id="tainacan-dynamic-help-content"><p>' . __( 'Welcome to Tainacan! Navigate through the menu to see specific help for each section.', 'tainacan' ) . '</p></div>',
 			),
 		);
 	}
@@ -305,13 +276,20 @@ class Admin extends Pages {
 	/**
 	 * Returns help sidebar content for the repository administration page.
 	 *
+	 * The markup is updated from tainacan-admin-navigation-menu.js as the
+	 * Vue admin route changes.
+	 *
 	 * @return string
 	 */
 	protected function get_help_sidebar() {
+		$docs_url = 'https://tainacan.github.io/tainacan-wiki/';
+
 		return
-			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
-			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/admin', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Repository management', 'tainacan' ) . '</a></p>' .
-			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/collections', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Collections', 'tainacan' ) . '</a></p>';
+			'<div id="tainacan-dynamic-help-sidebar">' .
+			'<p>' . __( 'For more information:', 'tainacan' ) . '</p>' .
+			'<p><a id="tainacan-dynamic-help-link" href="' . esc_url( $docs_url ) . '" target="_blank">' . __( 'Tainacan Documentation', 'tainacan' ) . '</a></p>' .
+			'<p id="tainacan-dynamic-help-section-link-wrapper" hidden><a id="tainacan-dynamic-help-section-link" href="' . esc_url( $docs_url ) . '" target="_blank"></a></p>' .
+			'</div>';
 	}
 
 	function admin_enqueue_js() {

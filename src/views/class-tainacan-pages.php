@@ -110,6 +110,12 @@ abstract class Pages {
 		if ( ! $screen )
 			return;
 
+		$allowed_html = wp_kses_allowed_html( 'post' );
+		foreach ( array( 'div', 'p', 'a' ) as $tag ) {
+			if ( isset( $allowed_html[ $tag ] ) )
+				$allowed_html[ $tag ]['hidden'] = true;
+		}
+
 		$help_tabs = $this->get_help_tabs();
 
 		foreach ( $help_tabs as $help_tab ) {
@@ -120,7 +126,7 @@ abstract class Pages {
 				array(
 					'id'      => sanitize_key( $help_tab['id'] ),
 					'title'   => wp_strip_all_tags( $help_tab['title'] ),
-					'content' => wp_kses_post( $help_tab['content'] ),
+					'content' => wp_kses( $help_tab['content'], $allowed_html ),
 				)
 			);
 		}
@@ -128,7 +134,7 @@ abstract class Pages {
 		$help_sidebar = $this->get_help_sidebar();
 
 		if ( ! empty( $help_sidebar ) )
-			$screen->set_help_sidebar( wp_kses_post( $help_sidebar ) );
+			$screen->set_help_sidebar( wp_kses( $help_sidebar, $allowed_html ) );
 	}
 	
 	/**
