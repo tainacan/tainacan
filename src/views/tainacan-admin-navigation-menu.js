@@ -430,18 +430,18 @@ function handleUITweakButtons() {
     }
 }
 
-handleMenuCollapses();
-handleDynamicMenusAndBreadcrumbs();
-handleUITweakButtons();
-
 function getTainacanHelpSectionKey( currentRoute ) {
     if ( !currentRoute )
         return null;
 
     let menuLink = currentRoute.meta && currentRoute.meta.menuLink;
 
-    if ( currentRoute.params && currentRoute.params.collectionId && menuLink )
-        return menuLink === 'settings' ? 'collections' : menuLink;
+    if ( menuLink ) {
+        if ( currentRoute.params && currentRoute.params.collectionId && menuLink === 'settings' )
+            return 'collections';
+
+        return menuLink;
+    }
 
     return ( currentRoute.path || '' ).split( '/' ).filter( Boolean )[0] || null;
 }
@@ -475,9 +475,16 @@ function updateTainacanHelpTab( currentRoute ) {
     }
 }
 
-if ( wp && wp.hooks ) {
-    wp.hooks.addAction( 'tainacan_navigation_path_updated', 'tainacan_admin_help_tab', function( { currentRoute } ) {
-        updateTainacanHelpTab( currentRoute );
-    });
+function handleHelpTab() {
+    if ( wp && wp.hooks ) {
+        wp.hooks.addAction( 'tainacan_navigation_path_updated', 'tainacan_admin_help_tab', function( { currentRoute } ) {
+            updateTainacanHelpTab( currentRoute );
+        });
+    }
 }
+
+handleMenuCollapses();
+handleDynamicMenusAndBreadcrumbs();
+handleUITweakButtons();
+handleHelpTab();
 
