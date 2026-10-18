@@ -52,6 +52,90 @@ class CSV extends Importer {
 	}
 
 	/**
+	 * Resolves a file referenced in the CSV and read from the "server_path" option.
+	 *
+	 * The resolved file must live inside one of the allowed server directories
+	 * (see get_allowed_server_dirs()), so the CSV and the server_path option
+	 * cannot be used to copy arbitrary server files into the media library.
+	 *
+	 * @param mixed $file_name Path relative to the server_path option.
+	 * @return string|false Canonical file path, or false when it is not allowed.
+	 */
+	protected function resolve_server_file( $file_name ) {
+		if ( ! is_string( $file_name ) ) {
+			return false;
+		}
+
+		$file_name = trim( $file_name );
+		if ( $file_name === '' || strpos( $file_name, "\0" ) !== false ) {
+			return false;
+		}
+
+		$server_path = $this->get_option( 'server_path' );
+		if ( ! is_string( $server_path ) || trim( $server_path ) === '' ) {
+			$upload_dir = wp_upload_dir();
+			if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) ) {
+				return false;
+			}
+			$server_path = $upload_dir['basedir'];
+		}
+
+		$real_file_path = realpath( trailingslashit( trim( $server_path ) ) . $file_name );
+		if ( $real_file_path === false || ! is_file( $real_file_path ) ) {
+			return false;
+		}
+
+		$real_file_path = wp_normalize_path( $real_file_path );
+		foreach ( $this->get_allowed_server_dirs() as $allowed_dir ) {
+			if ( strpos( $real_file_path, $allowed_dir ) === 0 ) {
+				return $real_file_path;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Directories the "server_path" option may read files from.
+	 *
+	 * Defaults to the WordPress uploads directory. Other directories can be
+	 * allowed with the TAINACAN_IMPORTER_SERVER_PATHS constant (a path or an
+	 * array of paths) or the 'tainacan-importer-allowed-server-paths' filter.
+	 *
+	 * @return string[] Canonical directory paths with a trailing slash.
+	 */
+	protected function get_allowed_server_dirs() {
+		$dirs = [];
+
+		$upload_dir = wp_upload_dir();
+		if ( empty( $upload_dir['error'] ) && ! empty( $upload_dir['basedir'] ) ) {
+			$dirs[] = $upload_dir['basedir'];
+		}
+
+		if ( defined( 'TAINACAN_IMPORTER_SERVER_PATHS' ) ) {
+			$dirs = array_merge( $dirs, (array) TAINACAN_IMPORTER_SERVER_PATHS );
+		}
+
+		$dirs = apply_filters( 'tainacan-importer-allowed-server-paths', $dirs, $this );
+
+		$allowed_dirs = [];
+		foreach ( (array) $dirs as $dir ) {
+			if ( ! is_string( $dir ) || $dir === '' ) {
+				continue;
+			}
+
+			$real_dir = realpath( $dir );
+			if ( $real_dir === false || ! is_dir( $real_dir ) ) {
+				continue;
+			}
+
+			$allowed_dirs[] = trailingslashit( wp_normalize_path( $real_dir ) );
+		}
+
+		return array_unique( $allowed_dirs );
+	}
+
+	/**
 	 * alter the default options
 	 */
 	public function set_option($key,$value) {
@@ -560,7 +644,7 @@ class CSV extends Importer {
 									<h5><?php esc_html_e('Server path', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php esc_html_e("When using CSV special field to add documents or attachments that you've uploaded to the server, specify the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
+									<p><?php esc_html_e("When using CSV special field to add documents or attachments that you've uploaded to the server, specify the full path to the folder here (e.g. /home/user/files/). The folder must be inside the WordPress uploads directory, unless it was allowed with the TAINACAN_IMPORTER_SERVER_PATHS constant.", 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
@@ -644,11 +728,11 @@ class CSV extends Importer {
 					$item_inserted = $this->items_repo->update($item_inserted);
 				}
 			} else {
-				$server_path_files = trailingslashit($this->get_option('server_path'));
-				$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value, $item_inserted->get_id());
+				$server_file = $this->resolve_server_file( $correct_value );
+				$id = $server_file ? $TainacanMedia->insert_attachment_from_file( $server_file, $item_inserted->get_id() ) : false;
 
 				if (!$id) {
-					$this->add_error_log('Error in Document file imported from server ' . $server_path_files . $correct_value);
+					$this->add_error_log('Error in Document file imported from server ' . trailingslashit($this->get_option('server_path')) . $correct_value);
 					return false;
 				}
 
@@ -701,11 +785,11 @@ class CSV extends Importer {
 				$item_inserted = $this->items_repo->update($item_inserted);
 			}
 		} else {
-			$server_path_files = trailingslashit($this->get_option('server_path'));
-			$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $column_value);
+			$server_file = $this->resolve_server_file( $column_value );
+			$id = $server_file ? $TainacanMedia->insert_attachment_from_file( $server_file ) : false;
 
 			if (!$id) {
-				$this->add_error_log('Error in Thumbnail file imported from server ' . $server_path_files . $column_value);
+				$this->add_error_log('Error in Thumbnail file imported from server ' . trailingslashit($this->get_option('server_path')) . $column_value);
 				return false;
 			}
 
@@ -752,11 +836,11 @@ class CSV extends Importer {
 					continue;
 				}
 
-				$server_path_files = trailingslashit($this->get_option('server_path'));
-				$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $attachment, $item_inserted->get_id());
+				$server_file = $this->resolve_server_file( $attachment );
+				$id = $server_file ? $TainacanMedia->insert_attachment_from_file( $server_file, $item_inserted->get_id() ) : false;
 
 				if (!$id) {
-					$this->add_log('Error in Attachment file imported from server ' . $server_path_files . $attachment);
+					$this->add_log('Error in Attachment file imported from server ' . trailingslashit($this->get_option('server_path')) . $attachment);
 					continue;
 				}
 
