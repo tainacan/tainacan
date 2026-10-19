@@ -4658,7 +4658,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `false` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 560](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L560-L567)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 567](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L567-L574)
 
 ---------------------------------
 <br>
@@ -4672,7 +4672,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_header_white.svg' : 'tainacan_logo_header.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 569](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L569-L579)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 576](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L576-L586)
 
 ---------------------------------
 <br>
@@ -4686,7 +4686,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_symbol.svg' : 'tainacan_logo_icon.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 581](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L581-L591)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 588](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L588-L598)
 
 ---------------------------------
 <br>
@@ -4700,7 +4700,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$breadcrumbs` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 710](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L710-L713)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 717](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L717-L720)
 
 ---------------------------------
 <br>
@@ -4715,7 +4715,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `array_merge(self::$admin_ui_options, $sanitized_get)` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 792](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L792-L843)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 799](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L799-L850)
 
 ---------------------------------
 <br>
