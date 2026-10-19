@@ -415,8 +415,10 @@ abstract class Pages {
 	
 	/**
 	 * register_user_meta is called from the 'init' action and defines the tainacan_prefs object as a user meta.
-	 * 
+	 *
 	 * The tainacan_prefs holds several user defined options such as perpage and orderby preferences.
+	 * It is exposed on the users endpoint only in the edit context, so public view responses omit it.
+	 * Updates via POST /wp/v2/users/me still return the field.
 	 *
 	 * @return void
 	 */
@@ -427,7 +429,12 @@ abstract class Pages {
 			'type'         => 'string',
 			'description'  => 'Tainacan admin user preferences',
 			'single'       => true,
-			'show_in_rest' => true,
+			'show_in_rest' => array(
+				'schema' => array(
+					'type'    => 'string',
+					'context' => array( 'edit' ),
+				),
+			),
 		);
 		register_meta( 'user', 'tainacan_prefs', $args );
 	}
