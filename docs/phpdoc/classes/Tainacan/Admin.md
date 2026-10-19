@@ -403,6 +403,8 @@ public register_user_meta(): void
 ```
 
 The tainacan_prefs holds several user defined options such as perpage and orderby preferences.
+It is exposed on the users endpoint only in the edit context, so public view responses omit it.
+Updates via POST /wp/v2/users/me still return the field.
 
 ***
 
