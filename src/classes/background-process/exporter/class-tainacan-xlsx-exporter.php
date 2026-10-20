@@ -278,7 +278,7 @@ class XLSX_Exporter extends Exporter {
 		return $collections_names;
 	}
 
-	public function get_output() {
+	public function get_output( $for_email = false ) {
 		$files = $this->get_output_files();
 		
 		if ( is_array($files) && isset($files[$this->collection_name])) {
@@ -290,9 +290,9 @@ class XLSX_Exporter extends Exporter {
 			$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
 			$message .= __('Exported by:', 'tainacan');
 			$message .= " <b> $author_name </b><br/>";
-			$message .= __('Your XLSX file is ready! Access it in the link below:', 'tainacan');
+			$message .= __( 'Your XLSX file is ready! Access it in the link below:', 'tainacan' );
 			$message .= '<br/><br/>';
-			$message .= '<a target="_blank" href="' . $file['url'] . '">Download</a>';
+			$message .= $this->get_output_link( $file['url'], $for_email );
 			
 			return $message;
 			

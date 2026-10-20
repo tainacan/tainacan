@@ -37,7 +37,7 @@ class Term_Exporter extends Exporter {
     /**
      * When exporter is finished, gets the final output
      */
-    public function get_output() {
+    public function get_output( $for_email = false ) {
         $files = $this->get_output_files();
 
         if ( is_array($files) && isset($files['csvvocabularyexporter.csv'])) {
@@ -47,9 +47,9 @@ class Term_Exporter extends Exporter {
                 $message = __('target taxonomy:', 'tainacan');
                 $message .= " <b>" . $taxonomy->get_name() . "</b><br/>";
             }
-            $message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');
+            $message .= __( 'Your CSV file is ready! Access it in the link below:', 'tainacan' );
             $message .= '<br/><br/>';
-            $message .= '<a href="' . $file['url'] . '">Download</a>';
+            $message .= $this->get_output_link( $file['url'], $for_email );
 
             return $message;
 
