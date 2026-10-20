@@ -15,6 +15,7 @@ classDiagram
         +update(key, batch)
         +open(key)
         +close(key, status)
+        #get_retry_state(key, status)
         +delete(key)
         #is_queue_empty()
         #get_batch()
