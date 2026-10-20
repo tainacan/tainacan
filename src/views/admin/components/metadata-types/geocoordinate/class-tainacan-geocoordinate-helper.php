@@ -1,9 +1,14 @@
 <?php
 
+namespace Tainacan\Metadata_Types;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanFilterType
+ * Joins post meta and appends spatial WHERE clauses for `geoquery` item queries.
+ *
+ * Loaded with the GeoCoordinate metadata type via require_once. It is not a
+ * metadata type, so the autoloader never looks it up on its own.
  */
 class GeoCoordinate_Helper {
 	use \Tainacan\Traits\Singleton_Instance;
