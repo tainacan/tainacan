@@ -761,10 +761,10 @@ class Logs extends Repository {
 		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
 
 		if ( $old instanceof Entities\Item_Metadata_Entity ) {
-			$diff['old'] = \explode($this->__temporary_multivalue_separator(''), $old->get_value_as_string());
+			$diff['old'] = \explode($this->__temporary_multivalue_separator(''), (string) $old->get_value_as_string());
 		}
 
-		$diff['new'] = \explode($this->__temporary_multivalue_separator(''), $unsaved->get_value_as_string());
+		$diff['new'] = \explode($this->__temporary_multivalue_separator(''), (string) $unsaved->get_value_as_string());
 
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
 

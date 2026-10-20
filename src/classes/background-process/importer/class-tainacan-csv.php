@@ -639,44 +639,42 @@ class CSV extends Importer {
 			}
 		} else if ( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
-			//removing the old document attachment
-			if ($this->get_option('document_import_mode') === 'replace' && $item_inserted->get_document_type() == 'attachment' ) {
-				$this->add_log('Item Document will be replaced ... ');
-				wp_delete_attachment($item_inserted->get_document(), true);
-				$this->add_log('Deleted previous Item Documents ... ');
-			}
+			$old_document_id = ( $this->get_option('document_import_mode') === 'replace' && $item_inserted->get_document_type() == 'attachment' ) ?
+				$item_inserted->get_document() : false;
 
 			if (isset(wp_parse_url($correct_value)['scheme'] )) {
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
 				if (!$id){
 					$this->add_error_log('Error in Document file imported from URL ' . $correct_value);
+					$this->items_repo->enable_logs();
 					return false;
 				}
 
-				$item_inserted->set_document( $id );
-				$item_inserted->set_document_type( 'attachment' );
 				$this->add_log('Document file URL imported from ' . $correct_value);
-
-				if ( $item_inserted->validate() ) {
-					$item_inserted = $this->items_repo->update($item_inserted);
-				}
 			} else {
 				$server_path_files = trailingslashit($this->get_option('server_path'));
 				$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value, $item_inserted->get_id());
 
 				if (!$id) {
 					$this->add_error_log('Error in Document file imported from server ' . $server_path_files . $correct_value);
+					$this->items_repo->enable_logs();
 					return false;
 				}
 
-				$item_inserted->set_document( $id );
-				$item_inserted->set_document_type( 'attachment' );
 				$this->add_log('Document file in Server imported from ' . $correct_value);
+			}
 
-				if ( $item_inserted->validate() ) {
-					$item_inserted = $this->items_repo->update($item_inserted);
-				}
+			$item_inserted->set_document( $id );
+			$item_inserted->set_document_type( 'attachment' );
+			if ( $item_inserted->validate() ) {
+				$item_inserted = $this->items_repo->update($item_inserted);
+			}
+
+			//removing the old document attachment only after the new one was successfully imported
+			if ( $old_document_id && $old_document_id != $id ) {
+				wp_delete_attachment($old_document_id, true);
+				$this->add_log('Deleted previous Item Documents ... ');
 			}
 		}
 
@@ -695,44 +693,53 @@ class CSV extends Importer {
 	 */
 	private function handle_thumbnail($column_value, $item_inserted) {
 		$TainacanMedia = \Tainacan\Media::get_instance();
-		$this->items_repo->disable_logs();
+		$replace = $this->get_option('thumbnail_import_mode') === 'replace';
+		$old_thumbnail_id = $item_inserted->get__thumbnail_id();
+		$column_value = trim( (string) $column_value );
 
-		//removing the old item thumbnail
-		if ( $this->get_option('thumbnail_import_mode') === 'replace' ) {
-			$this->add_log('Item Thumbnail will be replaced ... ');
-			wp_delete_attachment($item_inserted->get__thumbnail_id(), true);
-			$this->add_log('Deleted previous Item Thumbnail ... ');
+		// empty value: on REPLACE mode removes the current thumbnail, otherwise does nothing
+		if ( empty($column_value) ) {
+			if ( $replace && $old_thumbnail_id ) {
+				wp_delete_attachment($old_thumbnail_id, true);
+				$this->add_log('Deleted previous Item Thumbnail (empty value on replace mode) ... ');
+			}
+			return true;
 		}
+
+		$this->items_repo->disable_logs();
 
 		if (isset(wp_parse_url($column_value)['scheme'] )) {
 			$id = $TainacanMedia->insert_attachment_from_url($column_value);
 
 			if (!$id){
 				$this->add_error_log('Error in Thumbnail file imported from URL ' . $column_value);
+				$this->items_repo->enable_logs();
 				return false;
 			}
 
-			$item_inserted->set__thumbnail_id( $id );
 			$this->add_log('Thumbnail file URL imported from ' . $column_value);
-
-			if ( $item_inserted->validate() ) {
-				$item_inserted = $this->items_repo->update($item_inserted);
-			}
 		} else {
 			$server_path_files = trailingslashit($this->get_option('server_path'));
 			$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $column_value);
 
 			if (!$id) {
 				$this->add_error_log('Error in Thumbnail file imported from server ' . $server_path_files . $column_value);
+				$this->items_repo->enable_logs();
 				return false;
 			}
 
-			$item_inserted->set__thumbnail_id( $id );
 			$this->add_log('Thumbnail file in Server imported from ' . $column_value);
+		}
 
-			if ( $item_inserted->validate() ) {
-				$item_inserted = $this->items_repo->update($item_inserted);
-			}
+		$item_inserted->set__thumbnail_id( $id );
+		if ( $item_inserted->validate() ) {
+			$item_inserted = $this->items_repo->update($item_inserted);
+		}
+
+		//removing the old item thumbnail only after the new one was successfully imported
+		if ( $replace && $old_thumbnail_id && $old_thumbnail_id != $id ) {
+			wp_delete_attachment($old_thumbnail_id, true);
+			$this->add_log('Deleted previous Item Thumbnail ... ');
 		}
 
 		$this->items_repo->enable_logs();
