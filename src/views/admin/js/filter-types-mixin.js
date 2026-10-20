@@ -520,8 +520,9 @@ export const progressiveCheckboxMixin = {
             return this.viewMoreClicks < this.maxViewMorePages;
         },
         showViewAllButton() {
+            // When forced, the modal is the only way to reach some options (e.g. child terms)
             if (this.forceViewAllModalOnly)
-                return this.hasMoreOptions;
+                return true;
             if (!this.hasMoreOptions)
                 return false;
             if (this.maxViewMorePages <= 0)

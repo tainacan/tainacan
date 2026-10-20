@@ -1330,5 +1330,78 @@ return apply_filters( 'tainacan-i18n', [
 	'error_thumbnail_alt_ai_empty_response'          => __( 'The generator did not return alternative text. Please try again or enter it manually.', 'tainacan' ),
 	'error_thumbnail_alt_ai_unavailable'             => __( 'Alt text generation is not available on this site.', 'tainacan' ),
 	'error_thumbnail_alt_ai_failed_detail'           => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
+
+	'help_tabs' => [
+		'default' => [
+			'title'   => __( 'Tainacan Help', 'tainacan' ),
+			'content' => '<p>' . __( 'This screen has no specific guidance yet. The documentation link lists the available guides.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/'
+		],
+		'collections' => [
+			'title'   => __( 'Collections', 'tainacan' ),
+			'content' => '<p>' . __( 'A collection is a group of items that share one set of metadata. Each item belongs to a single collection. From this list you create a collection and open it to configure its items, metadata and filters.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/collections'
+		],
+		'collection-settings' => [
+			'title'   => __( 'Collection settings', 'tainacan' ),
+			'content' => '<p>' . __( 'These are the settings of this collection: name, description, status, images, address and moderators, and which metadata it inherits from a parent collection. Public collections are visible to visitors; private ones stay limited to their author and moderators.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/collections'
+		],
+		'taxonomies' => [
+			'title'   => __( 'Taxonomies', 'tainacan' ),
+			'content' => '<p>' . __( 'A taxonomy is a vocabulary shared by several collections, such as countries or genres. It is made of terms, which can be nested. A collection uses it through a taxonomy metadata field, so the same term can describe items in different collections.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/taxonomies'
+		],
+		'metadata' => [
+			'title'   => __( 'Metadata', 'tainacan' ),
+			'content' => '<p>' . __( 'Metadata are the fields used to describe items, like the fields of a catalog card. Fields created for the whole repository are inherited by every collection; the others belong only to this collection. The type of a field, such as text, date or taxonomy, cannot be changed after you create it.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/metadata'
+		],
+		'filters' => [
+			'title'   => __( 'Filters', 'tainacan' ),
+			'content' => '<p>' . __( 'A filter lets people narrow the item list by the values of one metadata field. Any metadata field can become a filter, and the filter control depends on that field\'s type. Removing a filter removes the browsing option only; the field and its values remain.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/filters'
+		],
+		'items' => [
+			'title'   => __( 'Items', 'tainacan' ),
+			'content' => '<p>' . __( 'An item is one record: a document (file, URL or text), the metadata that describes it, and any attachments. Here you browse, create and edit items. An item cannot be moved to another collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'my-items' => [
+			'title'   => __( 'My items', 'tainacan' ),
+			'content' => '<p>' . __( 'These are the items you created, in this collection or across the repository.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'activities' => [
+			'title'   => __( 'Activities', 'tainacan' ),
+			'content' => '<p>' . __( 'Activities are the log of creations, edits and deletions, for the repository, for one collection, or for one item. Open an entry to compare the values before and after the change.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/activities'
+		],
+		'capabilities' => [
+			'title'   => __( 'Capabilities', 'tainacan' ),
+			'content' => '<p>' . __( 'Capabilities decide what each WordPress role can do in the whole repository, or in this collection only. A change made for one collection does not apply to the others. Editing which capabilities a role has, for every collection, is done on the User roles page.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/capabilities'
+		],
+		'reports' => [
+			'title'   => __( 'Reports', 'tainacan' ),
+			'content' => '<p>' . __( 'Reports chart how the repository or one collection is filled in: totals by status, how complete the metadata is, how terms are used, and who has been editing. The figures are kept for about a week; reload a chart to recalculate it. Each chart can be exported as an image or a CSV file.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/reports'
+		],
+		'importers' => [
+			'title'   => __( 'Importers', 'tainacan' ),
+			'content' => '<p>' . __( 'Importers bring items or taxonomy terms in from an external file, such as a CSV. You map the file columns to metadata, then run the import as a background process and follow it under Processes. The mapping step can also create metadata that does not exist yet.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/importers'
+		],
+		'exporters' => [
+			'title'   => __( 'Exporters', 'tainacan' ),
+			'content' => '<p>' . __( 'Exporters build a file from a collection or from the whole repository. Choose an exporter, set its options, and follow the file creation under Processes.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/exporters'
+		],
+		'processes' => [
+			'title'   => __( 'Processes', 'tainacan' ),
+			'content' => '<p>' . __( 'Imports, exports and bulk edits run here in the background. Each process stays in the list so you can follow its progress and open its log when it finishes.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/activities'
+		]
+	]
 ] );
 ?>

@@ -1,5 +1,6 @@
 @use '../../scss/gutenberg-blocks-variables.scss';
 
+.wp-block-tainacan-related-items-list,
 .wp-block-tainacan-related-items {
     margin: 0.5em auto;
     width: 100%;
@@ -52,6 +53,14 @@
         & .skeleton {
             min-height: 150px;
         }
+    }
+    .preview-warning {
+        width: 100%;
+        font-size: 0.875rem;
+        font-style: italic;
+        text-align: center;
+        margin: 0 auto;
+        padding: 8px 2px 2px 2px;
     }
     .has-view-more-link--bottom-right .related-items-view-more-link {
         text-align: right;

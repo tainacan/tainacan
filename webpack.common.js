@@ -10,6 +10,7 @@ const TainacanPluginConfig = {
         tainacan_admin_navigation_menu: './src/views/tainacan-admin-navigation-menu.js',
         tainacan_command_palette: './src/views/tainacan-command-palette.js',
         tainacan_dashboard: './src/views/dashboard/tainacan-dashboard.js',
+        tainacan_settings: './src/views/settings/tainacan-settings.js',
         tainacan_blocks_common_scripts: './src/views/gutenberg-blocks/tainacan-blocks-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
         tainacan_blocks_query_variations: './src/views/gutenberg-blocks/js/tainacan-blocks-query-variations.js',

@@ -32,6 +32,9 @@ const state = {
         zoom: {
             enabled: true,
             autoScaleYaxis: true,
+        },
+        animations: {
+            enabled: true
         }
       },
       title: {

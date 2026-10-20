@@ -12,36 +12,19 @@ Class TainacanFilterType
 classDiagram
     direction TB
     class GeoCoordinate_Helper {
-        +posts_join : mixed
-        +filter_where : mixed
         +init()
         +init_filters()
         +posts_join(join, wp_query)
         +posts_where(where, wp_query)
+        -build_geo_clauses(geoquery)
     }
 ```
 
-## Properties
+## Constants
 
-### posts_join
-
-```php
-public static $posts_join
-```
-
-* This property is **static**.
-
-***
-
-### filter_where
-
-```php
-public static $filter_where
-```
-
-* This property is **static**.
-
-***
+| Constant     | Visibility | Type | Value        |
+|--------------|------------|------|--------------|
+| `META_ALIAS` | public     |      | 'mtgeoquery' |
 
 ## Methods
 
@@ -88,6 +71,28 @@ public posts_where(mixed $where, mixed $wp_query): mixed
 |-------------|-----------|-------------|
 | `$where`    | **mixed** |             |
 | `$wp_query` | **mixed** |             |
+
+***
+
+### build_geo_clauses
+
+Builds one prepared WHERE fragment per valid `geoquery` entry.
+
+```php
+private build_geo_clauses(mixed $geoquery): string[]
+```
+
+Entries with missing keys or non-numeric coordinates are skipped.
+
+**Parameters:**
+
+| Parameter   | Type      | Description                                                                                          |
+|-------------|-----------|------------------------------------------------------------------------------------------------------|
+| `$geoquery` | **mixed** | Raw `geoquery` argument: array of ['compare' => 'DISTANCE'\|'CONTAINS', 'key' => metadatum ID, ...]. |
+
+**Return Value:**
+
+Prepared SQL fragments; empty when nothing valid was given.
 
 ***
 
