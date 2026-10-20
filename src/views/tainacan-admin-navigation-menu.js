@@ -306,6 +306,29 @@ function handleDynamicMenusAndBreadcrumbs() {
 }
 
 /**
+ * Read tainacan_user.prefs as an object.
+ *
+ * The meta is an empty string until something saves it, and JSON.parse('')
+ * throws "Unexpected end of JSON input". Callers must survive that and any
+ * other invalid value.
+ */
+function parseTainacanUserPrefs() {
+    if ( typeof tainacan_user === 'undefined' || !tainacan_user.prefs )
+        return {};
+
+    try {
+        const currentUserPrefs = JSON.parse(tainacan_user.prefs);
+
+        if ( !currentUserPrefs || typeof currentUserPrefs !== 'object' || Array.isArray(currentUserPrefs) )
+            return {};
+
+        return currentUserPrefs;
+    } catch {
+        return {};
+    }
+}
+
+/**
  * Handle UI Tweak buttons such as menu collapsing and fullscreen mode
  */
 function handleUITweakButtons() {
@@ -339,10 +362,11 @@ function handleUITweakButtons() {
             tainacanNavigationMenu.classList.toggle('is-collapsed');
             tainacanMenuCollapser.ariaPressed = '' + isCollapsed;
 
-            let currentUserPrefs = JSON.parse(tainacan_user.prefs);
+            let currentUserPrefs = parseTainacanUserPrefs();
             currentUserPrefs['is_navigation_sidebar_collapsed'] = isCollapsed;
+            tainacan_user.prefs = JSON.stringify(currentUserPrefs);
 
-            let data = { 'meta': { 'tainacan_prefs': JSON.stringify(currentUserPrefs) } };
+            let data = { 'meta': { 'tainacan_prefs': tainacan_user.prefs } };
 
             if ( tainacan_user.nonce && tainacan_user.wp_api_url ) {
             
@@ -383,10 +407,11 @@ function handleUITweakButtons() {
                 return; 
             }
 
-            let currentUserPrefs = JSON.parse(tainacan_user.prefs);
+            let currentUserPrefs = parseTainacanUserPrefs();
             currentUserPrefs['is_fullscreen'] = isFullscreen;
+            tainacan_user.prefs = JSON.stringify(currentUserPrefs);
 
-            let data = { 'meta': { 'tainacan_prefs': JSON.stringify(currentUserPrefs) } };
+            let data = { 'meta': { 'tainacan_prefs': tainacan_user.prefs } };
 
             if ( tainacan_user.nonce && tainacan_user.wp_api_url ) {
             
@@ -430,6 +455,61 @@ function handleUITweakButtons() {
     }
 }
 
+function getTainacanHelpSectionKey( currentRoute ) {
+    if ( !currentRoute )
+        return null;
+
+    let menuLink = currentRoute.meta && currentRoute.meta.menuLink;
+
+    if ( menuLink ) {
+        if ( currentRoute.params && currentRoute.params.collectionId && menuLink === 'settings' )
+            return 'collection-settings';
+
+        return menuLink;
+    }
+
+    return ( currentRoute.path || '' ).split( '/' ).filter( Boolean )[0] || null;
+}
+
+function updateTainacanHelpTab( currentRoute ) {
+    if ( window.tainacan_plugin && window.tainacan_plugin.i18n && window.tainacan_plugin.i18n.help_tabs ) {
+        let sectionKey = getTainacanHelpSectionKey( currentRoute );
+        let currentHelp = ( sectionKey && window.tainacan_plugin.i18n.help_tabs[ sectionKey ] ) || window.tainacan_plugin.i18n.help_tabs['default'];
+
+        if ( currentHelp ) {
+            let helpTabTitle = document.querySelector('#tab-link-tainacan_admin_help_tab a');
+            let helpTabContent = document.getElementById('tainacan-dynamic-help-content');
+            let helpTabLink = document.getElementById('tainacan-dynamic-help-link');
+            let helpTabSectionLinkWrapper = document.getElementById('tainacan-dynamic-help-section-link-wrapper');
+            let helpTabSectionLink = document.getElementById('tainacan-dynamic-help-section-link');
+
+            if ( helpTabTitle ) helpTabTitle.innerText = currentHelp.title;
+            if ( helpTabContent ) helpTabContent.innerHTML = currentHelp.content;
+            if ( helpTabLink ) helpTabLink.href = currentHelp.link;
+
+            if ( helpTabSectionLinkWrapper && helpTabSectionLink ) {
+                if ( currentHelp !== window.tainacan_plugin.i18n.help_tabs['default'] ) {
+                    helpTabSectionLink.href = currentHelp.link;
+                    helpTabSectionLink.innerText = currentHelp.title;
+                    helpTabSectionLinkWrapper.hidden = false;
+                } else {
+                    helpTabSectionLinkWrapper.hidden = true;
+                }
+            }
+        }
+    }
+}
+
+function handleHelpTab() {
+    if ( wp && wp.hooks ) {
+        wp.hooks.addAction( 'tainacan_navigation_path_updated', 'tainacan_admin_help_tab', function( { currentRoute } ) {
+            updateTainacanHelpTab( currentRoute );
+        });
+    }
+}
+
 handleMenuCollapses();
 handleDynamicMenusAndBreadcrumbs();
 handleUITweakButtons();
+handleHelpTab();
+

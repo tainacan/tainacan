@@ -15,32 +15,6 @@ within collections, improving the user interface and organization.
 ```mermaid
 classDiagram
     direction TB
-    class Metadata_Section {
-        +post_type : mixed
-        +default_section_slug : mixed
-        #name : mixed
-        #repository : string
-        +enabled_for_collection : mixed
-        +__toString()
-        +get_id()
-        +get_name()
-        +get_slug()
-        +get_description()
-        +get_description_bellow_name()
-        +get_metadata_object_list(args)
-        +get_is_conditional_section()
-        +get_conditional_section_rules()
-        +is_conditional_section()
-        +set_name(value)
-        +set_slug(value)
-        +set_description(value)
-        +set_description_bellow_name(value)
-        +set_is_conditional_section(value)
-        +set_conditional_section_rules(value)
-        +get_enabled_for_collection()
-        +set_enabled_for_collection(value)
-        +validate()
-    }
     class Entity {
         #repository : Repository
         -errors : array
@@ -78,6 +52,32 @@ classDiagram
         +can_publish(user)
         +get_capabilities()
         +diff(which)
+    }
+    class Metadata_Section {
+        +post_type : mixed
+        +default_section_slug : mixed
+        #name : mixed
+        #repository : string
+        +enabled_for_collection : mixed
+        +__toString()
+        +get_id()
+        +get_name()
+        +get_slug()
+        +get_description()
+        +get_description_bellow_name()
+        +get_metadata_object_list(args)
+        +get_is_conditional_section()
+        +get_conditional_section_rules()
+        +is_conditional_section()
+        +set_name(value)
+        +set_slug(value)
+        +set_description(value)
+        +set_description_bellow_name(value)
+        +set_is_conditional_section(value)
+        +set_conditional_section_rules(value)
+        +get_enabled_for_collection()
+        +set_enabled_for_collection(value)
+        +validate()
     }
     Entity ..> Entity
     Entity <|-- Metadata_Section

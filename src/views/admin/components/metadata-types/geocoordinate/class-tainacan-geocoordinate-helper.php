@@ -1,14 +1,23 @@
 <?php
 
+namespace Tainacan\Metadata_Types;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanFilterType
+ * Joins post meta and appends spatial WHERE clauses for `geoquery` item queries.
+ *
+ * Loaded with the GeoCoordinate metadata type via require_once. It is not a
+ * metadata type, so the autoloader never looks it up on its own.
  */
 class GeoCoordinate_Helper {
 	use \Tainacan\Traits\Singleton_Instance;
-	static $posts_join= false;
-	static $filter_where= false;
+
+	/**
+	 * Alias given to the postmeta table joined for geo queries.
+	 * Both posts_join() and posts_where() must read from this alias.
+	 */
+	const META_ALIAS = 'mtgeoquery';
 
 	function init() {
 		$this->init_filters();
@@ -19,32 +28,59 @@ class GeoCoordinate_Helper {
 		add_filter('posts_where', array( &$this, 'posts_where' ), 10, 2);
 	}
 
-	// join for relationship metadata
+	// join for geocoordinate metadata
 	function posts_join( $join, $wp_query ) {
 		global $wpdb;
 		$args = $wp_query->query;
-		if ($this::$posts_join || !isset($args['geoquery'])) { 
+		// Idempotent per query: skip if this query's JOIN clause already has the alias.
+		// (A static flag here would silently disable geo queries after the first one in the same request.)
+		if ( !isset($args['geoquery']) || false !== strpos($join, ' AS ' . self::META_ALIAS . ' ') ) {
 			return $join;
 		}
-		$this::$posts_join = true;
-		$join .= " INNER JOIN $wpdb->postmeta AS mtgeoquery ON ( wp_posts.ID = mtgeoquery.post_id ) ";
-		remove_filter('posts_join', [$this, 'relationships_join']);
+		// Only join when posts_where() will actually add a clause. An unconstrained postmeta
+		// join would otherwise return one row per meta entry of each item.
+		if ( empty( $this->build_geo_clauses( $args['geoquery'] ) ) ) {
+			return $join;
+		}
+		$join .= " INNER JOIN {$wpdb->postmeta} AS " . self::META_ALIAS . " ON ( {$wpdb->posts}.ID = " . self::META_ALIAS . ".post_id ) ";
 		return $join;
 	}
 
 	public function posts_where($where, $wp_query) {
-		global $wpdb;
 		$args = $wp_query->query;
 
-		if ($this::$filter_where || !isset($args['geoquery'])) {
+		if ( !isset($args['geoquery']) || false !== strpos($where, self::META_ALIAS . '.meta_key') ) {
 			return $where;
 		}
-		$this::$filter_where = true;
-		$geoquery = $args['geoquery'];
+		$where_geo = $this->build_geo_clauses( $args['geoquery'] );
+		if ( empty( $where_geo ) ) {
+			return $where;
+		}
+		return "$where AND " . trim( implode( ' AND ', $where_geo ) );
+	}
+
+	/**
+	 * Builds one prepared WHERE fragment per valid `geoquery` entry.
+	 * Entries with missing keys or non-numeric coordinates are skipped.
+	 *
+	 * @param mixed $geoquery Raw `geoquery` argument: array of ['compare' => 'DISTANCE'|'CONTAINS', 'key' => metadatum ID, ...].
+	 * @return string[] Prepared SQL fragments; empty when nothing valid was given.
+	 */
+	private function build_geo_clauses( $geoquery ) {
+		global $wpdb;
 		$where_geo = [];
+		if ( !is_array($geoquery) ) {
+			return $where_geo;
+		}
 		foreach($geoquery as $params) {
+			if ( !is_array($params) || !isset($params['compare'], $params['key']) ) {
+				continue;
+			}
 			switch ($params['compare']) {
 				case 'DISTANCE':
+					if ( !isset($params['point'], $params['distance']) ) {
+						break;
+					}
 					$point_parts = explode(',', $params['point'], 2);
 					if ( count($point_parts) !== 2 || !is_numeric(trim($point_parts[0])) || !is_numeric(trim($point_parts[1])) ) {
 						break;
@@ -59,6 +95,9 @@ class GeoCoordinate_Helper {
 					);
 					break;
 				case 'CONTAINS':
+					if ( !isset($params['polygon']) ) {
+						break;
+					}
 					$polygon = $params['polygon'];
 					$key     = $params['key'];
 					$pairs   = array_map('trim', explode(',', $polygon));
@@ -76,8 +115,10 @@ class GeoCoordinate_Helper {
 						break;
 					}
 					$safe_polygon = 'POLYGON((' . implode( ', ', $safe_pairs ) . '))';
+					// The stored point lives in the joined postmeta alias, same as the DISTANCE branch.
+					// Reading it from "wp.meta_value" referenced a table that is not part of the statement (#1221).
 					$where_geo[] = $wpdb->prepare(
-						"(mtgeoquery.meta_key = %s AND ST_CONTAINS(ST_GEOMFROMTEXT(%s), point(SUBSTRING_INDEX(wp.meta_value, ',', 1), SUBSTRING_INDEX(wp.meta_value, ',', -1))) = true)",
+						"(mtgeoquery.meta_key = %s AND ST_CONTAINS(ST_GEOMFROMTEXT(%s), point(SUBSTRING_INDEX(mtgeoquery.meta_value, ',', 1), SUBSTRING_INDEX(mtgeoquery.meta_value, ',', -1))) = true)",
 						$key,
 						$safe_polygon
 					);
@@ -85,12 +126,7 @@ class GeoCoordinate_Helper {
 			}
 		}
 
-		if ( empty($where_geo) ) {
-			return $where;
-		}
-
-		$where_geo = trim(implode(" AND ", $where_geo));
-		return "$where AND $where_geo";
+		return $where_geo;
 	}
 }
 GeoCoordinate_Helper::get_instance();

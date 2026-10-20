@@ -212,7 +212,7 @@ class Admin extends Pages {
 			);
 		}
 	}
-	
+
 	function admin_enqueue_css() {
 		global $TAINACAN_BASE_URL;
 
@@ -253,6 +253,43 @@ class Admin extends Pages {
 		// wp_dequeue_style( $undesired_wp_styles );
 		// wp_deregister_style( $undesired_wp_styles );
 
+	}
+
+	/**
+	 * Returns help tabs for the repository administration page.
+	 *
+	 * The tab body is a shell. tainacan-admin-navigation-menu.js replaces it
+	 * when the Vue admin route changes.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array(
+			array(
+				'id'      => 'tainacan_admin_help_tab',
+				'title'   => __( 'Tainacan Help', 'tainacan' ),
+				'content' => '<div id="tainacan-dynamic-help-content"><p>' . __( 'This screen has no specific guidance yet. The documentation link lists the available guides.', 'tainacan' ) . '</p></div>',
+			),
+		);
+	}
+
+	/**
+	 * Returns help sidebar content for the repository administration page.
+	 *
+	 * The markup is updated from tainacan-admin-navigation-menu.js as the
+	 * Vue admin route changes.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		$docs_url = 'https://tainacan.github.io/tainacan-wiki/';
+
+		return
+			'<div id="tainacan-dynamic-help-sidebar">' .
+			'<p>' . __( 'For more information:', 'tainacan' ) . '</p>' .
+			'<p><a id="tainacan-dynamic-help-link" href="' . esc_url( $docs_url ) . '" target="_blank">' . __( 'Tainacan Documentation', 'tainacan' ) . '</a></p>' .
+			'<p id="tainacan-dynamic-help-section-link-wrapper" hidden><a id="tainacan-dynamic-help-section-link" href="' . esc_url( $docs_url ) . '" target="_blank"></a></p>' .
+			'</div>';
 	}
 
 	function admin_enqueue_js() {

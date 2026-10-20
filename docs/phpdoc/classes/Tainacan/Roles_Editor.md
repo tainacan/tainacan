@@ -45,6 +45,26 @@ public admin_enqueue_css(): void
 
 ***
 
+### get_help_tabs
+
+Returns help tabs for the user roles page.
+
+```php
+protected get_help_tabs(): array
+```
+
+***
+
+### get_help_sidebar
+
+Returns help sidebar content for the user roles page.
+
+```php
+protected get_help_sidebar(): string
+```
+
+***
+
 ### admin_enqueue_js
 
 admin_enqueue_js is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
@@ -178,6 +198,36 @@ parent should be $this->tainacan_other_links_slug.
 
 ***
 
+### get_help_tabs
+
+Returns the help tabs to be added to the current admin screen.
+
+```php
+protected get_help_tabs(): array
+```
+
+***
+
+### get_help_sidebar
+
+Returns the help sidebar content for the current admin screen.
+
+```php
+protected get_help_sidebar(): string
+```
+
+***
+
+### add_help_tabs
+
+Adds WordPress help tabs and sidebar to the current admin screen.
+
+```php
+protected add_help_tabs(): void
+```
+
+***
+
 ### admin_enqueue_css
 
 admin_enqueue_css is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
@@ -269,6 +319,8 @@ public register_user_meta(): void
 ```
 
 The tainacan_prefs holds several user defined options such as perpage and orderby preferences.
+It is exposed on the users endpoint only in the edit context, so public view responses omit it.
+Updates via POST /wp/v2/users/me still return the field.
 
 ***
 

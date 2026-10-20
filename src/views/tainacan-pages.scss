@@ -50,6 +50,11 @@ html {
     z-index: 10;
     font-size: 13px;
 }
+.tainacan-pages-container #screen-meta p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 1em 0;
+}
 .tainacan-pages-container #screen-meta-links {
     margin: 0px;
     position: absolute;
@@ -70,6 +75,9 @@ html {
         border-start-start-radius: 0 !important;
         box-shadow: 0 0 0 transparent !important;
         font-size: 13px !important;
+        line-height: 2.30769231 !important;
+        min-height: 32px !important;
+        font-weight: 400 !important;
         display: inline-block !important;
 
         &:not([aria-expanded="true"]) {

@@ -7,6 +7,12 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Settings extends Pages {
 	use \Tainacan\Traits\Singleton_Instance;
 
+	/**
+	 * Default years range of the datepickers, relative to the year being displayed.
+	 */
+	const DATEPICKERS_YEAR_MIN_DEFAULT = -200;
+	const DATEPICKERS_YEAR_MAX_DEFAULT = 50;
+
 	protected function get_page_slug() : string {
         return 'tainacan_settings';
     }
@@ -64,9 +70,40 @@ class Settings extends Pages {
 			}
 		}
 
-		wp_localize_script( 'tainacan-settings', 'tainacanSettingsSections', array(
+		wp_localize_script( 'tainacan-settings', 'tainacan_settings', array(
 			'ids' => $section_ids,
 		) );
+	}
+
+	/**
+	 * Returns help tabs for the settings page.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array(
+			array(
+				'id'      => 'tainacan_settings_overview_help_tab',
+				'title'   => __( 'Settings', 'tainacan' ),
+				'content' => '<p>' . __( 'This page changes Tainacan for the whole site: search, media, the public templates and submission forms. It is separate from the settings of one collection.', 'tainacan' ) . '</p>',
+			),
+			array(
+				'id'      => 'tainacan_settings_constants_help_tab',
+				'title'   => __( 'Locked settings', 'tainacan' ),
+				'content' => '<p>' . __( 'Some settings can be locked by constants defined in the WordPress configuration. When this happens, the current value is shown here but can only be changed in the server configuration.', 'tainacan' ) . '</p>',
+			),
+		);
+	}
+
+	/**
+	 * Returns help sidebar content for the settings page.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return
+			'<p><strong>' . __( 'For more information:', 'tainacan' ) . '</strong></p>' .
+			'<p><a href="' . esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/settings-page', 'tainacan' ) ) . '" target="_blank" rel="noopener noreferrer">' . __( 'Tainacan settings', 'tainacan' ) . '</a></p>';
 	}
 
 	public function render_page_content() {
@@ -504,6 +541,42 @@ class Settings extends Pages {
 		) );
 
 		/**
+		 * Date selectors -----------------------------------------------------
+		 */
+		add_settings_section(
+			'tainacan_settings_datepickers',
+			__( 'Date selectors', 'tainacan' ),
+			array( $this, 'datepickers_section_description' ),
+			'tainacan_settings'
+		);
+
+		$this->create_tainacan_setting( array(
+			'id' => 'datepickers_year_min',
+			'section' => 'tainacan_settings_datepickers',
+			'title' => __( 'Years before', 'tainacan' ),
+			// translators: %s: The default number of years.
+			'description' => sprintf( __( 'Sets how far back the year selector goes, counting from the year being displayed. Enter zero or a negative number (e.g. -500 lets you pick up to 500 years back). The default is %s. For historical collections, use a larger negative number.', 'tainacan' ), self::DATEPICKERS_YEAR_MIN_DEFAULT ),
+			'type' => 'integer',
+			'input_type' => 'number',
+			'input_attrs' => 'max=0 step=1 required',
+			'sanitize_callback' => array( $this, 'sanitize_datepickers_year_min' ),
+			'default' => self::DATEPICKERS_YEAR_MIN_DEFAULT,
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'datepickers_year_max',
+			'section' => 'tainacan_settings_datepickers',
+			'title' => __( 'Years after', 'tainacan' ),
+			// translators: %s: The default number of years.
+			'description' => sprintf( __( 'Sets how far forward the year selector goes, counting from the year being displayed. Enter zero or a positive number (e.g. 50 lets you pick up to 50 years ahead). The default is %s.', 'tainacan' ), self::DATEPICKERS_YEAR_MAX_DEFAULT ),
+			'type' => 'integer',
+			'input_type' => 'number',
+			'input_attrs' => 'min=0 step=1 required',
+			'sanitize_callback' => array( $this, 'sanitize_datepickers_year_max' ),
+			'default' => self::DATEPICKERS_YEAR_MAX_DEFAULT,
+		) );
+
+		/**
 		 * Gutenberg blocks -----------------------------------------------------
 		 */
 		add_settings_section(
@@ -817,6 +890,36 @@ class Settings extends Pages {
 	<?php
 	}
 
+	/**
+	 * Sanitizes the datepickers minimum year setting, which can not be positive.
+	 *
+	 * @param mixed $value Raw setting value.
+	 *
+	 * @return int
+	 */
+	public function sanitize_datepickers_year_min( $value ) {
+		if ( ! is_numeric( $value ) ) {
+			return self::DATEPICKERS_YEAR_MIN_DEFAULT;
+		}
+
+		return min( 0, intval( $value ) );
+	}
+
+	/**
+	 * Sanitizes the datepickers maximum year setting, which can not be negative.
+	 *
+	 * @param mixed $value Raw setting value.
+	 *
+	 * @return int
+	 */
+	public function sanitize_datepickers_year_max( $value ) {
+		if ( ! is_numeric( $value ) ) {
+			return self::DATEPICKERS_YEAR_MAX_DEFAULT;
+		}
+
+		return max( 0, intval( $value ) );
+	}
+
 	public function search_and_performance_section_description() {
 	?>
 		<p class="settings-section-description">
@@ -845,6 +948,17 @@ class Settings extends Pages {
 	?>
 		<p class="settings-section-description">
 			<?php esc_html_e( 'Core title, core description, and item thumbnails on the repository items list and on taxonomy term items lists, for both public and admin pages. Each collection keeps its own definitions and it is not affected by these settings.', 'tainacan' ); ?>
+		</p>
+	<?php
+	}
+
+	/**
+	 * Renders the description of the date selectors settings section.
+	 */
+	public function datepickers_section_description() {
+	?>
+		<p class="settings-section-description">
+			<?php esc_html_e( 'Options for the date selectors used in date metadata and filters. They define the years range offered by the year selector, relative to the year being displayed.', 'tainacan' ); ?>
 		</p>
 	<?php
 	}
