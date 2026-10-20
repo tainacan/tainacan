@@ -184,6 +184,7 @@ class CSV extends Importer {
 		$raw_headers = $this->raw_source_metadata();
 		if ( ! is_array( $raw_headers ) ) {
 			$this->add_error_log( __( 'Unable to read the source file. It may have been deleted, moved or made unreadable.', 'tainacan' ) );
+			$this->abort();
 			return false;
 		}
 

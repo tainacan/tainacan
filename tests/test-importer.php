@@ -306,12 +306,12 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
 	/**
 	 * Regression test for issue #1249: when the source file is gone, process_item()
-	 * must log a readable error and return false instead of raising a fatal
-	 * TypeError from array_map().
+	 * must log a readable error and abort the run instead of raising a fatal
+	 * TypeError from array_map() or skipping through every remaining item.
 	 *
 	 * @group importer
 	 */
-	public function test_process_item_returns_false_when_source_file_is_missing() {
+	public function test_process_item_aborts_when_source_file_is_missing() {
 		$file_name = wp_tempnam( 'issue-1249-missing.csv' );
 		$this->assertNotFalse( $file_name );
 
@@ -355,6 +355,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$result = $csv_importer->process_item( 0, $collection_definition );
 
 		$this->assertFalse( $result, 'process_item() should return false instead of raising a fatal error when the source file is missing.' );
+		$this->assertTrue( $csv_importer->get_abort(), 'The import should be aborted when the source file is missing, not continue item by item.' );
 		$this->assertGreaterThan( 0, count( $csv_importer->get_error_log() ), 'A readable error should be logged when the source file is missing.' );
 
 		// Cleanup: remove the attachment that add_file() created.
