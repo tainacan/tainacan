@@ -2214,10 +2214,19 @@ export default {
                             }
                         }
                         
-                        this.errors.push({
-                            metadatum_id: parentCompoundId ? parentCompoundId : metadatumId,
-                            errors: error[metadatumId]
-                        });
+                        const targetMetadatumId = parentCompoundId ? parentCompoundId : metadatumId;
+                        const existingErrorIndex = this.errors.findIndex(errorItem => errorItem.metadatum_id == targetMetadatumId);
+                        if (existingErrorIndex >= 0) {
+                            this.errors.splice(existingErrorIndex, 1, {
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        } else {
+                            this.errors.push({
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        }
                     }   
                 }
                 this.formErrorMessage = errors.error_message;
