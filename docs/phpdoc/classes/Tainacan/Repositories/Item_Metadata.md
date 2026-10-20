@@ -15,26 +15,6 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
-    class Item_Metadata {
-        +entities_type : mixed
-        #init()
-        +insert(item_metadata)
-        +save_core_metadatum_value(item_metadata)
-        +save_terms_metadatum_value(item_metadata)
-        +upclean_compound_value(item_metadata)
-        +add_compound_value(item_metadata, meta_id)
-        +delete_metadata(item_metadata)
-        +remove_compound_value(parent_meta_id)
-        +fetch(object, output, args)
-        +get_value(item_metadata)
-        +create_default_value_metadata(item)
-        -extract_compound_value(ids, item, compound_meta_id)
-        +register_post_type()
-        #_get_map()
-        +get_default_properties(map)
-        +update(object, new_values)
-        +suggest(item_metadata)
-    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -71,6 +51,26 @@ classDiagram
         +get_descendants_ids(id, depth)
         +get_capabilities()
         #sanitize_value(content)
+    }
+    class Item_Metadata {
+        +entities_type : mixed
+        #init()
+        +insert(item_metadata)
+        +save_core_metadatum_value(item_metadata)
+        +save_terms_metadatum_value(item_metadata)
+        +upclean_compound_value(item_metadata)
+        +add_compound_value(item_metadata, meta_id)
+        +delete_metadata(item_metadata)
+        +remove_compound_value(parent_meta_id)
+        +fetch(object, output, args)
+        +get_value(item_metadata)
+        +create_default_value_metadata(item)
+        -extract_compound_value(ids, item, compound_meta_id)
+        +register_post_type()
+        #_get_map()
+        +get_default_properties(map)
+        +update(object, new_values)
+        +suggest(item_metadata)
     }
     Repository ..> Item_Metadata
     Repository ..> Repository
