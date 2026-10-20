@@ -1432,6 +1432,14 @@ export default {
             else
                 this.formErrorMessage = '';
         },
+        clearDocumentError() {
+            const index = this.errors.findIndex(errorItem => errorItem.metadatum_id == 'document');
+            if (index >= 0)
+                this.errors.splice(index, 1);
+
+            if (!this.errors.length)
+                this.formErrorMessage = '';
+        },
         onDiscard() {
             if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode)
                 this.$router.go(-1);
@@ -1655,6 +1663,7 @@ export default {
                     this.item.document_mimetype = item.document_mimetype;
                     if (item.document_type != undefined && item.document_type == 'text')
                         this.textContent = item.document;
+                    this.clearDocumentError();
                     this.isLoading = false;
                 })
                 .catch((errors) => {
@@ -1727,6 +1736,7 @@ export default {
                     if (item.document_options !== undefined && item.document_options['forced_iframe_allowfullscreen'] !== undefined)
                         this.urlIframeAllowfullscreen = item.document_options['forced_iframe_allowfullscreen'];
 
+                    this.clearDocumentError();
                     this.isLoading = false;
 
                     let oldThumbnail = this.item.thumbnail;
@@ -1835,6 +1845,7 @@ export default {
                         
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                             .then((item) => {
+                                this.clearDocumentError();
                                 this.isLoading = false;
                                 this.item.document_as_html = item.document_as_html;
                                 this.item.document_mimetype = item.document_mimetype;
