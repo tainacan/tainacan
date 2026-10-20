@@ -482,10 +482,11 @@ function updateTainacanHelpTab( currentRoute ) {
             let helpTabLink = document.getElementById('tainacan-dynamic-help-link');
             let helpTabSectionLinkWrapper = document.getElementById('tainacan-dynamic-help-section-link-wrapper');
             let helpTabSectionLink = document.getElementById('tainacan-dynamic-help-section-link');
+            let defaultHelp = window.tainacan_plugin.i18n.help_tabs['default'];
 
             if ( helpTabTitle ) helpTabTitle.innerText = currentHelp.title;
             if ( helpTabContent ) helpTabContent.innerHTML = currentHelp.content;
-            if ( helpTabLink ) helpTabLink.href = currentHelp.link;
+            if ( helpTabLink && defaultHelp ) helpTabLink.href = defaultHelp.link;
 
             if ( helpTabSectionLinkWrapper && helpTabSectionLink ) {
                 if ( currentHelp !== window.tainacan_plugin.i18n.help_tabs['default'] ) {
