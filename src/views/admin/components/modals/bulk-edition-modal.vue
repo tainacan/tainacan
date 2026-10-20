@@ -157,8 +157,8 @@
                                 <template
                                         v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'author_id'">
                                     <b-autocomplete
-                                            v-model="bulkEditionProcedures[criterion].authorSearch"
                                             v-a11y-autocomplete="{ appendToBody: true }"
+                                            :model-value="authorInputs[criterion] ? authorInputs[criterion].search : ''"
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone }"
                                             :clearable="!bulkEditionProcedures[criterion].isDone"
                                             :clear-on-select="false"
@@ -173,6 +173,7 @@
                                             icon="account"
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             check-infinite-scroll
+                                            @update:model-value="(value) => onAuthorSearchInput(value, criterion)"
                                             @focus="browseUsersForAuthor"
                                             @active="(isOpen) => onAuthorSuggestionsActive(isOpen, criterion)"
                                             @typing="(search) => fetchUsersForAuthor(search, criterion)"
@@ -418,11 +419,10 @@
                     1: {
                         isDone: false,
                         isExecuting: false,
-                        totalItemsEditedWithSuccess: 0,
-                        authorSearch: '',
-                        committedAuthorName: ''
+                        totalItemsEditedWithSuccess: 0
                     }
                 },
+                authorInputs: {},
                 groupId: null,
                 dones: [false],
                 isApplying: false,
@@ -442,18 +442,6 @@
             ...mapGetters('metadata', {
                 'metadata': 'getMetadata'
             })
-        },
-        watch: {
-            bulkEditionProcedures: {
-                deep: true,
-                handler(procedures) {
-                    Object.keys(procedures).forEach((criterion) => {
-                        const procedure = procedures[criterion];
-                        if (procedure && !procedure.authorSearch && (procedure.newValue || procedure.committedAuthorName))
-                            this.onSelectAuthor(null, criterion);
-                    });
-                }
-            }
         },
         created() {
             if (this.collectionId) {
@@ -722,9 +710,7 @@
                         [`${aleatoryKey}`]: {
                             isDone: false,
                             isExecuting: false,
-                            totalItemsEditedWithSuccess: 0,
-                            authorSearch: '',
-                            committedAuthorName: ''
+                            totalItemsEditedWithSuccess: 0
                         }
                     });
 
@@ -741,6 +727,7 @@
                 if (this.editionCriteria[criterionIndex]) {
                     this.editionCriteria.splice(criterionIndex, 1);
                     delete this.bulkEditionProcedures[criterion];
+                    delete this.authorInputs[criterion];
                     this.dones.splice(criterionIndex, 1)
                 }
             },
@@ -807,6 +794,13 @@
 
                 Object.assign( this.bulkEditionProcedures[criterion], { [`${key}`]: value });
 
+                if (key === 'metadatum') {
+                    if (value && value.id === 'author_id')
+                        this.ensureAuthorInput(criterion);
+                    else
+                        delete this.authorInputs[criterion];
+                }
+
                 // Presets the action in case the selected metadatum only offers one possible option
                 if (
                     key === 'metadatum' &&
@@ -816,30 +810,53 @@
                     Object.assign( this.bulkEditionProcedures[criterion], { 'action': Object.values(this.getValidEditionActions(this.bulkEditionProcedures[criterion].metadatum))[0] });
                 }
             },
-            onSelectAuthor(user, criterion) {
+            ensureAuthorInput(criterion) {
+                if (!this.authorInputs[criterion])
+                    this.authorInputs[criterion] = { search: '', committedName: '' };
+
+                return this.authorInputs[criterion];
+            },
+            onAuthorSearchInput(value, criterion) {
+                const author = this.ensureAuthorInput(criterion);
+                author.search = value || '';
+
+                if (!author.search)
+                    this.clearAuthorSelection(criterion);
+            },
+            clearAuthorSelection(criterion) {
+                const author = this.authorInputs[criterion];
                 const procedure = this.bulkEditionProcedures[criterion];
-                if (!procedure)
+                if (!author || !procedure || (!procedure.newValue && !author.committedName))
                     return;
 
+                author.committedName = '';
+                this.addToBulkEditionProcedures(undefined, 'newValue', criterion);
+            },
+            onSelectAuthor(user, criterion) {
+                const procedure = this.bulkEditionProcedures[criterion];
+                if (!procedure || !procedure.metadatum || procedure.metadatum.id !== 'author_id')
+                    return;
+
+                const author = this.ensureAuthorInput(criterion);
+
                 if (!user || !user.id) {
-                    if (!procedure.authorSearch && (procedure.newValue || procedure.committedAuthorName)) {
-                        procedure.committedAuthorName = '';
-                        this.addToBulkEditionProcedures(undefined, 'newValue', criterion);
-                    }
+                    if (!author.search)
+                        this.clearAuthorSelection(criterion);
                     return;
                 }
 
-                procedure.committedAuthorName = user.name || '';
-                procedure.authorSearch = procedure.committedAuthorName;
+                author.committedName = user.name || '';
+                author.search = author.committedName;
                 this.addToBulkEditionProcedures(user.id, 'newValue', criterion);
             },
             onAuthorSuggestionsActive(isOpen, criterion) {
                 if (isOpen)
                     return;
 
+                const author = this.authorInputs[criterion];
                 const procedure = this.bulkEditionProcedures[criterion];
-                if (procedure && procedure.newValue && procedure.committedAuthorName && procedure.authorSearch !== procedure.committedAuthorName)
-                    procedure.authorSearch = procedure.committedAuthorName;
+                if (author && procedure && procedure.newValue && author.committedName && author.search !== author.committedName)
+                    author.search = author.committedName;
             },
             browseUsersForAuthor() {
                 this.usersSearch = '';
@@ -851,9 +868,8 @@
             },
             fetchUsersForAuthor: _.debounce(function (search, criterion) {
                 const query = search || '';
-                const committed = criterion && this.bulkEditionProcedures[criterion]
-                    ? this.bulkEditionProcedures[criterion].committedAuthorName
-                    : '';
+                const author = criterion ? this.authorInputs[criterion] : undefined;
+                const committed = author ? author.committedName : '';
 
                 if (committed && query === committed)
                     return;

@@ -177,9 +177,9 @@ class Search_Engine {
 			foreach ($post_types as $pt) {
 				$pattern = '/^' . \Tainacan\Entities\Collection::$db_identifier_prefix . '(\d+)' . \Tainacan\Entities\Collection::$db_identifier_sufix . '$/';
 				if ( preg_match_all($pattern, $pt, $matches) ) {
-					$taxonomies = array_merge( $taxonomies, get_object_taxonomies($pt) );
 					if (isset($matches[1][0])) {
 						$this->is_inner_query = true;
+						$taxonomies = array_merge( $taxonomies, $this->get_searchable_taxonomies( (int) $matches[1][0] ) );
 						$relationships = array_merge( $relationships, \Tainacan\Repositories\Metadata::get_instance()->fetch_ids_by_collection( (int) $matches[1][0], ['metadata_type' => 'Tainacan\Metadata_Types\Relationship'] ) );
 						$this->is_inner_query = false;
 					}
@@ -196,6 +196,63 @@ class Search_Engine {
 			$this->taxonomies = $taxonomies;
 			$this->relationships = $relationships;
 		}
+	}
+
+	/**
+	 * Lists the taxonomies whose terms the current user may match through the search.
+	 *
+	 * Only taxonomies used by Taxonomy metadata the user can read are returned, so terms of a
+	 * private metadatum are not matched for users without the read_private_metadata capability
+	 * of the collection (or of the repository, for repository-level metadata). This mirrors the
+	 * post_status check get_where_to_postmeta() applies to text values. Metadata nested in
+	 * compound metadata are included.
+	 *
+	 * Metadata::fetch_by_collection() already restricts statuses by capability.
+	 *
+	 * @param int $collection_id Collection being searched.
+	 * @return string[] Taxonomy db identifiers.
+	 */
+	private function get_searchable_taxonomies( $collection_id ) {
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( $collection_id );
+		if ( ! $collection instanceof \Tainacan\Entities\Collection ) {
+			return [];
+		}
+
+		$metadata_repository   = \Tainacan\Repositories\Metadata::get_instance();
+		$taxonomies_repository = \Tainacan\Repositories\Taxonomies::get_instance();
+		$taxonomies            = [];
+
+		$queue = $metadata_repository->fetch_by_collection( $collection, [ 'include_disabled' => true ] );
+		while ( ! empty( $queue ) ) {
+			$metadatum = array_shift( $queue );
+			if ( ! $metadatum instanceof \Tainacan\Entities\Metadatum ) {
+				continue;
+			}
+
+			$type = $metadatum->get_metadata_type();
+			if ( 'Tainacan\Metadata_Types\Compound' === $type ) {
+				$children = $metadata_repository->fetch_by_collection(
+					$collection,
+					[
+						'parent'           => $metadatum->get_id(),
+						'include_disabled' => true,
+					]
+				);
+				$queue    = array_merge( $queue, is_array( $children ) ? $children : [] );
+				continue;
+			}
+			if ( 'Tainacan\Metadata_Types\Taxonomy' !== $type ) {
+				continue;
+			}
+
+			$options = $metadatum->get_metadata_type_options();
+			if ( empty( $options['taxonomy_id'] ) ) {
+				continue;
+			}
+			$taxonomies[] = $taxonomies_repository->get_db_identifier_by_id( (int) $options['taxonomy_id'] );
+		}
+
+		return $taxonomies;
 	}
 
 	function get_where_to_title_and_content() {

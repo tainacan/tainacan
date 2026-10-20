@@ -107,7 +107,7 @@
             "default": ""
         },
         "parentTerm": {
-            "type": "number",
+            "type": ["object", "null"],
             "default": null
         },
         "isParentTermModalOpen": {

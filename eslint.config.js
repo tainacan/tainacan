@@ -31,6 +31,7 @@ module.exports = [
                 'tainacan_user': true,
                 'tainacan_commands': true,
                 'tainacan_dashboard': true,
+                'tainacan_settings': true,
                 '_': true,
                 'jQuery': true,
                 'tainacan_extra_components': true,

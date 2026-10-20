@@ -864,19 +864,13 @@ class Item extends Entity {
 			// Renders the metadatum opener
 			$return .= $before;
 
-			// Renders the metadatum name
+			// Renders the metadatum name. Metadata are posts, so the front-end label
+			// follows get_the_title(), including private_title_format.
 			$metadatum_title_before = $args['before_title'];
 			$metadatum_title_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-title', $metadatum_title_before, $item_metadatum );
-			
-			$metadatum_status_info = '';
-			if ( $item_metadatum->get_metadatum()->get_status() != 'publish' ) {
-				$metadatum_status_object = get_post_status_object( $item_metadatum->get_metadatum()->get_status() );
-				$metadatum_status_info = ( $metadatum_status_object && $metadatum_status_object->label ? $metadatum_status_object->label : $item_metadatum->get_metadatum()->get_status() ) . ': ';
-			}
-			
 			$metadatum_title_after = $args['after_title'];
 			$metadatum_title_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-title', $metadatum_title_after, $item_metadatum );
-			$return .= $metadatum_title_before . $metadatum_status_info . $item_metadatum->get_metadatum()->get_name() . $metadatum_title_after;
+			$return .= $metadatum_title_before . get_the_title( $item_metadatum->get_metadatum()->get_id() ) . $metadatum_title_after;
 			
 			// Renders the metadatum value
 			$metadatum_value_before = $args['before_value'];
@@ -1351,8 +1345,12 @@ class Item extends Entity {
 					$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--index-' . $section_index, $after_name, $metadata_section );	
 				}
 
-				// Renders the metadata section name (escaped for safety)
-				$return .= $before_name . wp_kses_post($metadata_section->get_name()) . $after_name;
+				// Real sections are posts, so the front-end label follows get_the_title().
+				// The default section is not a post and keeps its stored name.
+				$section_name = is_numeric( $metadata_section->get_id() )
+					? get_the_title( $metadata_section->get_id() )
+					: $metadata_section->get_name();
+				$return .= $before_name . wp_kses_post( $section_name ) . $after_name;
 			}
 
 			// Adds section description (escaped for safety)
