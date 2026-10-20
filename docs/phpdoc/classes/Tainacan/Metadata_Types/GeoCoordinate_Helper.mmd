@@ -1,0 +1,9 @@
+classDiagram
+    direction TB
+    class GeoCoordinate_Helper {
+        +init()
+        +init_filters()
+        +posts_join(join, wp_query)
+        +posts_where(where, wp_query)
+        -build_geo_clauses(geoquery)
+    }

@@ -1,4 +1,16 @@
 @startuml class-diagram
+  class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
+  class "Inbcm_Archive" as Inbcm_Archive {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
+  }
   class "Mappers_Handler" as Mappers_Handler {
     -instance : 
     #mappers : 
@@ -34,18 +46,6 @@
     +get_url(meta_slug)
     +__construct()
   }
-  class "Inbcm_Museological" as Inbcm_Museological {
-    +slug : 
-    +name : 
-    +allow_extra_metadata : 
-    +__construct()
-  }
-  class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
-    +slug : 
-    +name : 
-    +allow_extra_metadata : 
-    +__construct()
-  }
   class "Dublin_Core\n<b>Support Dublin Core Mapping </b>" as Dublin_Core {
     +slug : 
     +name : 
@@ -57,7 +57,7 @@
     +XML_append_root : 
     +__construct()
   }
-  class "Inbcm_Archive" as Inbcm_Archive {
+  class "Inbcm_Museological" as Inbcm_Museological {
     +slug : 
     +name : 
     +allow_extra_metadata : 

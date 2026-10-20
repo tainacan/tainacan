@@ -5,12 +5,6 @@ This is an automatically generated documentation for **Documentation**.
 
 ### \
 
-#### Classes
-
-| Class                                                    | Description              |
-|----------------------------------------------------------|--------------------------|
-| [`GeoCoordinate_Helper`](/dev/phpdoc/classes/GeoCoordinate_Helper.md) | Class TainacanFilterType |
-
 #### Functions
 
 | Function                                                                                                                   | Description                                                                                                                                                 |
@@ -132,37 +126,37 @@ lightbox |
 ```mermaid
 classDiagram
     direction TB
-    class Mappers_Handler { }
-    class Search_Engine { }
-    class Admin { }
-    class System_Check { }
-    class Background_Process { }
-    class Exposers_Handler { }
-    class Background_Process_Base { }
-    class Private_Files { }
-    class Cli_Garbage_Collector { }
-    class Gutenberg_Blocks { }
-    class Media { }
-    class Admin_Bar_Items { }
-    class Cli_Move_Attachments { }
-    class __Bulk_Edit { }
-    class Cli { }
-    class Cli_Document { }
-    class Embed { }
-    class Roles_Editor { }
-    class Pdf_Extracted_Text_Quality { }
-    class Cli_Control_Metadata { }
-    class Async_Request { }
     class Pages { }
-    class Dashboard { }
-    class Cli_Collection { }
+    class System_Check { }
     class Admin_Commands { }
+    class Admin { }
+    class Gutenberg_Blocks { }
+    class Theme_Helper { }
+    class Pdf_Extracted_Text_Quality { }
+    class Media { }
+    class Mappers_Handler { }
+    class Background_Process { }
+    class Cli_Control_Metadata { }
+    class Background_Process_Base { }
+    class Settings { }
+    class Roles_Editor { }
+    class Cli { }
+    class Cli_Collection { }
+    class Mobile_App { }
+    class Dashboard { }
+    class Embed { }
+    class Cli_Garbage_Collector { }
+    class __Bulk_Edit { }
+    class Exposers_Handler { }
+    class Async_Request { }
+    class Admin_Bar_Items { }
+    class Background_Process_Heartbeat { }
+    class Cli_Document { }
     class Logs_Wp_Posts_Migration { }
     class Cli_Logs { }
-    class Settings { }
-    class Theme_Helper { }
-    class Background_Process_Heartbeat { }
-    class Mobile_App { }
+    class Cli_Move_Attachments { }
+    class Search_Engine { }
+    class Private_Files { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
     Cli_Logs ..> Logs_Wp_Posts_Migration
@@ -251,28 +245,28 @@ to the dedicated tainacan_logs table. |
 classDiagram
     direction TB
     class REST_Controller { }
-    class endpoints_REST_Metadata_Controller { }
-    class endpoints_REST_Taxonomies_Controller { }
-    class endpoints_REST_Metadata_Types_Controller { }
     class endpoints_REST_Roles_Controller { }
-    class endpoints_REST_Facets_Controller { }
-    class endpoints_REST_Exposers_Controller { }
-    class endpoints_REST_Collections_Controller { }
     class endpoints_REST_Item_Metadata_Controller { }
-    class endpoints_REST_Exporters_Controller { }
-    class endpoints_REST_Importers_Controller { }
-    class endpoints_REST_Background_Processes_Controller { }
-    class endpoints_REST_Filter_Types_Controller { }
-    class endpoints_REST_Filters_Controller { }
-    class endpoints_REST_Items_Controller { }
-    class endpoints_REST_Metadatum_Mappers_Controller { }
-    class endpoints_REST_Metadata_Sections_Controller { }
-    class endpoints_REST_Sequence_Edit_Controller { }
-    class endpoints_REST_Logs_Controller { }
     class endpoints_REST_Bulkedit_Controller { }
-    class endpoints_REST_Reports_Controller { }
-    class endpoints_REST_Oaipmh_Controller { }
     class endpoints_REST_Terms_Controller { }
+    class endpoints_REST_Metadata_Sections_Controller { }
+    class endpoints_REST_Importers_Controller { }
+    class endpoints_REST_Items_Controller { }
+    class endpoints_REST_Filters_Controller { }
+    class endpoints_REST_Collections_Controller { }
+    class endpoints_REST_Facets_Controller { }
+    class endpoints_REST_Background_Processes_Controller { }
+    class endpoints_REST_Logs_Controller { }
+    class endpoints_REST_Taxonomies_Controller { }
+    class endpoints_REST_Metadatum_Mappers_Controller { }
+    class endpoints_REST_Filter_Types_Controller { }
+    class endpoints_REST_Exporters_Controller { }
+    class endpoints_REST_Exposers_Controller { }
+    class endpoints_REST_Sequence_Edit_Controller { }
+    class endpoints_REST_Metadata_Controller { }
+    class endpoints_REST_Oaipmh_Controller { }
+    class endpoints_REST_Reports_Controller { }
+    class endpoints_REST_Metadata_Types_Controller { }
     REST_Controller <|-- endpoints_REST_Background_Processes_Controller
     REST_Controller <|-- endpoints_REST_Bulkedit_Controller
     REST_Controller <|-- endpoints_REST_Collections_Controller
@@ -311,28 +305,28 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class REST_Metadata_Controller { }
-    class REST_Taxonomies_Controller { }
-    class REST_Metadata_Types_Controller { }
     class REST_Roles_Controller { }
-    class REST_Facets_Controller { }
-    class REST_Exposers_Controller { }
-    class REST_Collections_Controller { }
     class REST_Item_Metadata_Controller { }
-    class REST_Exporters_Controller { }
-    class REST_Importers_Controller { }
-    class REST_Background_Processes_Controller { }
-    class REST_Filter_Types_Controller { }
-    class REST_Filters_Controller { }
-    class REST_Items_Controller { }
-    class REST_Metadatum_Mappers_Controller { }
-    class REST_Metadata_Sections_Controller { }
-    class REST_Sequence_Edit_Controller { }
-    class REST_Logs_Controller { }
     class REST_Bulkedit_Controller { }
-    class REST_Reports_Controller { }
-    class REST_Oaipmh_Controller { }
     class REST_Terms_Controller { }
+    class REST_Metadata_Sections_Controller { }
+    class REST_Importers_Controller { }
+    class REST_Items_Controller { }
+    class REST_Filters_Controller { }
+    class REST_Collections_Controller { }
+    class REST_Facets_Controller { }
+    class REST_Background_Processes_Controller { }
+    class REST_Logs_Controller { }
+    class REST_Taxonomies_Controller { }
+    class REST_Metadatum_Mappers_Controller { }
+    class REST_Filter_Types_Controller { }
+    class REST_Exporters_Controller { }
+    class REST_Exposers_Controller { }
+    class REST_Sequence_Edit_Controller { }
+    class REST_Metadata_Controller { }
+    class REST_Oaipmh_Controller { }
+    class REST_Reports_Controller { }
+    class REST_Metadata_Types_Controller { }
 ```
 #### Classes
 
@@ -370,16 +364,16 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Metadatum { }
+    class Metadata_Section { }
+    class Item { }
+    class Entity { }
     class Item_Metadata_Entity { }
+    class Term { }
     class Log { }
     class Taxonomy { }
-    class Term { }
-    class Entity { }
-    class Metadata_Section { }
-    class Metadatum { }
-    class Item { }
-    class Filter { }
     class Collection { }
+    class Filter { }
     Collection ..> Collection
     Collection ..> Metadatum
     Entity ..> Collection
@@ -429,12 +423,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class CSV { }
-    class Term_Exporter { }
-    class Exporter_Handler { }
-    class Background_Exporter { }
     class XLSX_Exporter { }
+    class CSV { }
     class Exporter { }
+    class Term_Exporter { }
+    class Background_Exporter { }
+    class Exporter_Handler { }
     class traits_Exporter_Handler_Cell { }
     Exporter ..> Exporter_Handler
     Exporter <|-- CSV
@@ -461,15 +455,15 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Xml { }
-    class Csv { }
-    class Txt { }
-    class Exposers_Handler { }
-    class JSON_flat { }
-    class Html { }
-    class Exposer { }
     class JSON_LD { }
+    class Exposer { }
+    class JSON_flat { }
+    class Csv { }
     class OAI_PMH { }
+    class Txt { }
+    class Xml { }
+    class Exposers_Handler { }
+    class Html { }
     Exposer <|-- Csv
     Exposer <|-- Html
     Exposer <|-- JSON_LD
@@ -535,8 +529,8 @@ classDiagram
     direction TB
     class Bulk_Edit_Process { }
     class Generic_Process_Handler { }
-    class Generic_Process { }
     class Background_Generic_Process { }
+    class Generic_Process { }
     Generic_Process <|-- Bulk_Edit_Process
     Generic_Process_Handler ..> Background_Generic_Process
     Generic_Process_Handler ..> Generic_Process
@@ -560,11 +554,11 @@ classDiagram
     class Flickr_Importer { }
     class CSV { }
     class Background_Importer { }
-    class Youtube_Importer { }
-    class Importer_Handler { }
     class Oaipmh_Importer { }
     class Importer { }
     class Term_Importer { }
+    class Youtube_Importer { }
+    class Importer_Handler { }
     class Test_Importer { }
     Importer ..> Importer_Handler
     Importer <|-- CSV
@@ -597,9 +591,9 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Elastic_Press { }
-    class WordPress_AI { }
     class Elastic_Press_lte4 { }
+    class WordPress_AI { }
+    class Elastic_Press { }
     Elastic_Press ..> Elastic_Press
     Elastic_Press ..> Elastic_Press_lte4
 ```
@@ -620,12 +614,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Inbcm_Bibliographic { }
+    class Inbcm_Archive { }
     class Mappers_Handler { }
     class Mapper { }
-    class Inbcm_Museological { }
-    class Inbcm_Bibliographic { }
     class Dublin_Core { }
-    class Inbcm_Archive { }
+    class Inbcm_Museological { }
     Mapper <|-- Dublin_Core
     Mapper <|-- Inbcm_Archive
     Mapper <|-- Inbcm_Bibliographic
@@ -647,25 +641,26 @@ http://purl.org/dc/elements/1.1/ |
 
 #### Classes
 
-| Class                                                                                      | Description                 |
-|--------------------------------------------------------------------------------------------|-----------------------------|
-| [`Compound`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Compound.md)                                   | Class TainacanMetadatumType |
-| [`MetadataTypeControlHelper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/MetadataTypeControlHelper.md) |                             |
-| [`Control`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Control.md)                                     | Class TainacanMetadatumType |
-| [`Core_Description`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Description.md)                   | Class TainacanMetadatumType |
-| [`Core_Title`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Title.md)                               | Class TainacanMetadatumType |
-| [`Date`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Date.md)                                           | Class TainacanMetadatumType |
-| [`GeoCoordinate`](/dev/phpdoc/classes/Tainacan/Metadata_Types/GeoCoordinate.md)                         | Class GeoCoordinate         |
-| [`Metadata_Type`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type.md)                         | Class TainacanMetadatumType |
-| [`Metadata_Type_Helper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type_Helper.md)           | Class MetadataTypeHelper    |
-| [`Numeric`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Numeric.md)                                     | Class TainacanMetadatumType |
-| [`Relationship`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Relationship.md)                           | Class TainacanMetadatumType |
-| [`Selectbox`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Selectbox.md)                                 | Class TainacanMetadatumType |
-| [`Taxonomy`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Taxonomy.md)                                   | Class TainacanMetadatumType |
-| [`Text`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Text.md)                                           | Class TainacanMetadatumType |
-| [`Textarea`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Textarea.md)                                   | Class TainacanMetadatumType |
-| [`URL`](/dev/phpdoc/classes/Tainacan/Metadata_Types/URL.md)                                             | Class TainacanMetadatumType |
-| [`User`](/dev/phpdoc/classes/Tainacan/Metadata_Types/User.md)                                           | Class TainacanMetadatumType |
+| Class                                                                                      | Description                                                                    |
+|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`Compound`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Compound.md)                                   | Class TainacanMetadatumType                                                    |
+| [`MetadataTypeControlHelper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/MetadataTypeControlHelper.md) |                                                                                |
+| [`Control`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Control.md)                                     | Class TainacanMetadatumType                                                    |
+| [`Core_Description`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Description.md)                   | Class TainacanMetadatumType                                                    |
+| [`Core_Title`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Title.md)                               | Class TainacanMetadatumType                                                    |
+| [`Date`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Date.md)                                           | Class TainacanMetadatumType                                                    |
+| [`GeoCoordinate_Helper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/GeoCoordinate_Helper.md)           | Joins post meta and appends spatial WHERE clauses for `geoquery` item queries. |
+| [`GeoCoordinate`](/dev/phpdoc/classes/Tainacan/Metadata_Types/GeoCoordinate.md)                         | Class GeoCoordinate                                                            |
+| [`Metadata_Type`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type.md)                         | Class TainacanMetadatumType                                                    |
+| [`Metadata_Type_Helper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type_Helper.md)           | Class MetadataTypeHelper                                                       |
+| [`Numeric`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Numeric.md)                                     | Class TainacanMetadatumType                                                    |
+| [`Relationship`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Relationship.md)                           | Class TainacanMetadatumType                                                    |
+| [`Selectbox`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Selectbox.md)                                 | Class TainacanMetadatumType                                                    |
+| [`Taxonomy`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Taxonomy.md)                                   | Class TainacanMetadatumType                                                    |
+| [`Text`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Text.md)                                           | Class TainacanMetadatumType                                                    |
+| [`Textarea`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Textarea.md)                                   | Class TainacanMetadatumType                                                    |
+| [`URL`](/dev/phpdoc/classes/Tainacan/Metadata_Types/URL.md)                                             | Class TainacanMetadatumType                                                    |
+| [`User`](/dev/phpdoc/classes/Tainacan/Metadata_Types/User.md)                                           | Class TainacanMetadatumType                                                    |
 
 ### \Tainacan\OAIPMH
 
@@ -676,8 +671,8 @@ http://purl.org/dc/elements/1.1/ |
 ```mermaid
 classDiagram
     direction TB
-    class OAIPMH_Data_Provider { }
     class OAIPMH_Token_Manager { }
+    class OAIPMH_Data_Provider { }
     class OAIPMH_Xml_Generator { }
     OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
 ```
@@ -698,17 +693,17 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Terms { }
+    class Logs { }
+    class Item_Metadata { }
+    class Taxonomies { }
     class Logs { }
     class Items { }
-    class Repository { }
-    class Metadata_Sections { }
-    class Taxonomies { }
-    class Terms { }
-    class Collections { }
-    class Logs { }
-    class Metadata { }
     class Filters { }
-    class Item_Metadata { }
+    class Repository { }
+    class Metadata { }
+    class Metadata_Sections { }
+    class Collections { }
     Collections ..> Metadata
     Filters ..> Collections
     Item_Metadata ..> Items
@@ -773,12 +768,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Formatter_Text { }
     class SVG_Icon { }
+    class Entity_Collection_Relation { }
+    class Formatter_Text { }
+    class Singleton_Instance { }
     class Entity_Collections_Relation { }
     class Admin_UI_Options { }
-    class Singleton_Instance { }
-    class Entity_Collection_Relation { }
 ```
 #### Traits
 
