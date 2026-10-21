@@ -1751,11 +1751,6 @@ export default {
                 });
         },
         removeDocument() {
-            const previousTextContent = this.textContent;
-            const previousUrlLink = this.urlLink;
-            const previousDocumentType = this.form.document_type;
-            const previousDocument = this.form.document;
-
             this.textContent = '';
             this.urlLink = '';
             this.form.document_type = 'empty';
@@ -1769,12 +1764,8 @@ export default {
                 this.item.document_mimetype = 'empty';
                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
-            .catch(() => {
-                this.textContent = previousTextContent;
-                this.urlLink = previousUrlLink;
-                this.form.document_type = previousDocumentType;
-                this.form.document = previousDocument;
-                this.clearDocumentError();
+            .catch((errors) => {
+                this.prepareErrors(errors);
             });
         },
         deleteThumbnail() {
