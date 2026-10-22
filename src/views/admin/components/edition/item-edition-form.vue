@@ -1657,7 +1657,7 @@ export default {
             this.isLoading = true;
             this.form.document_type = 'text';
             this.form.document = newTextContent;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type, silentError: true })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
@@ -1713,7 +1713,8 @@ export default {
                     item_id: this.itemId,
                     document: this.form.document,
                     document_type: this.form.document_type,
-                    document_options: this.form.document_options
+                    document_options: this.form.document_options,
+                    silentError: true
                 })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
@@ -1758,7 +1759,8 @@ export default {
             this.updateItemDocument({
                 item_id: this.itemId,
                 document: this.form.document,
-                document_type: this.form.document_type
+                document_type: this.form.document_type,
+                silentError: true
             })
             .then(() => {
                 this.item.document_mimetype = 'empty';
@@ -1843,7 +1845,7 @@ export default {
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
                         
-                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type, silentError: true })
                             .then((item) => {
                                 this.clearDocumentError();
                                 this.isLoading = false;
