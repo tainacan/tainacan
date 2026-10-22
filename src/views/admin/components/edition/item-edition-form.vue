@@ -574,6 +574,7 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
+                                            :error-message="documentErrorMessage"
                                             @on-set-document="setDocument"
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
@@ -658,6 +659,7 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
+                                    :error-message="documentErrorMessage"
                                     @on-set-document="setDocument"
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
@@ -1033,6 +1035,10 @@ export default {
                 )
             );
         },
+        documentErrorMessage() {
+            const existingError = this.errors.find(error => error.metadatum_id == 'document');
+            return existingError ? existingError.errors : '';
+        },
         shouldDisplayItemEditionThumbnail() {
             return !this.$adminOptions.hideItemEditionThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
         },
@@ -1313,7 +1319,7 @@ export default {
 
             const promise = status == 'trash'
                 ? this.deleteItem({ itemId: this.itemId, isPermanently: false })
-                : this.updateItem(data);
+                : this.updateItem({ ...data, silentError: true });
 
             // Clear errors so we don't have them duplicated from api
             this.errors = [];
@@ -1388,18 +1394,50 @@ export default {
                     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
             .catch((errors) => {
-                
+
                 this.prepareErrors(errors);
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
+                // The update request is silent, so we show the API validation errors here instead of the generic feedback
+                if (status != 'trash')
+                    this.showSubmitErrorsSnackbar(errors);
+
                 this.isLoading = false;
+            });
+        },
+        showSubmitErrorsSnackbar(errors) {
+            const errorMessages = this.errors
+                .map((error) => [].concat(error.errors)
+                    .map((singleError) => typeof singleError == 'string' ? singleError : Object.values(singleError).join(' '))
+                    .join(' ')
+                )
+                .filter((errorMessage) => errorMessage);
+
+            const message = errorMessages.length
+                ? this.$i18n.get('info_errors_in_form') + ': ' + errorMessages.join(' ')
+                : (errors && errors.error_message ? errors.error_message : this.$i18n.get('error_other'));
+
+            this.$buefy.snackbar.open({
+                message: this.$htmlSanitizer.sanitize(message),
+                type: 'is-danger',
+                position: 'is-bottom-right',
+                pauseOnHover: true,
+                queue: false
             });
         },
         hasErrorsOnForm(hasErrors) {
             if (hasErrors)
                 this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else
+                this.formErrorMessage = '';
+        },
+        clearDocumentError() {
+            const index = this.errors.findIndex(errorItem => errorItem.metadatum_id == 'document');
+            if (index >= 0)
+                this.errors.splice(index, 1);
+
+            if (!this.errors.length)
                 this.formErrorMessage = '';
         },
         onDiscard() {
@@ -1619,12 +1657,13 @@ export default {
             this.isLoading = true;
             this.form.document_type = 'text';
             this.form.document = newTextContent;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type, silentError: true })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
                     if (item.document_type != undefined && item.document_type == 'text')
                         this.textContent = item.document;
+                    this.clearDocumentError();
                     this.isLoading = false;
                 })
                 .catch((errors) => {
@@ -1674,7 +1713,8 @@ export default {
                     item_id: this.itemId,
                     document: this.form.document,
                     document_type: this.form.document_type,
-                    document_options: this.form.document_options
+                    document_options: this.form.document_options,
+                    silentError: true
                 })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
@@ -1697,6 +1737,7 @@ export default {
                     if (item.document_options !== undefined && item.document_options['forced_iframe_allowfullscreen'] !== undefined)
                         this.urlIframeAllowfullscreen = item.document_options['forced_iframe_allowfullscreen'];
 
+                    this.clearDocumentError();
                     this.isLoading = false;
 
                     let oldThumbnail = this.item.thumbnail;
@@ -1718,7 +1759,8 @@ export default {
             this.updateItemDocument({
                 item_id: this.itemId,
                 document: this.form.document,
-                document_type: this.form.document_type
+                document_type: this.form.document_type,
+                silentError: true
             })
             .then(() => {
                 this.item.document_mimetype = 'empty';
@@ -1803,8 +1845,9 @@ export default {
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
                         
-                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type, silentError: true })
                             .then((item) => {
+                                this.clearDocumentError();
                                 this.isLoading = false;
                                 this.item.document_as_html = item.document_as_html;
                                 this.item.document_mimetype = item.document_mimetype;
@@ -2164,10 +2207,19 @@ export default {
                             }
                         }
                         
-                        this.errors.push({
-                            metadatum_id: parentCompoundId ? parentCompoundId : metadatumId,
-                            errors: error[metadatumId]
-                        });
+                        const targetMetadatumId = parentCompoundId ? parentCompoundId : metadatumId;
+                        const existingErrorIndex = this.errors.findIndex(errorItem => errorItem.metadatum_id == targetMetadatumId);
+                        if (existingErrorIndex >= 0) {
+                            this.errors.splice(existingErrorIndex, 1, {
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        } else {
+                            this.errors.push({
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        }
                     }   
                 }
                 this.formErrorMessage = errors.error_message;
