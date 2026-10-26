@@ -341,7 +341,7 @@
                                     </div>
                                 </b-field>
                                 <b-field
-                                        v-if="Object.values(form.item_enabled_document_types).some((aDocumentType) => aDocumentType.enabled === 'yes')"
+                                        v-if="hasSomeDocumentTypeEnabled"
                                         :addons="false" 
                                         :label="$i18n.getHelperTitle('collections', 'item_document_label')">
                                     <help-button 
@@ -352,7 +352,7 @@
                                             v-model="form.item_document_label" />
                                 </b-field>
                                 <b-field
-                                        v-if="Object.values(form.item_enabled_document_types).some((aDocumentType) => aDocumentType.enabled === 'yes')"
+                                        v-if="hasSomeDocumentTypeEnabled"
                                         :addons="false"
                                         :label="$i18n.getHelperTitle('collections', 'item_require_document')">
                                     &nbsp;
@@ -1230,6 +1230,9 @@ export default {
         hasCoverPage() {
             return !!(this.coverPage && this.coverPage.id && this.coverPage.title);
         },
+        hasSomeDocumentTypeEnabled() {
+            return Object.values(this.form.item_enabled_document_types).some((aDocumentType) => aDocumentType.enabled === 'yes');
+        },
         ...mapGetters('metadata', {
             'metadata': 'getMetadata'
         }),
@@ -1453,7 +1456,8 @@ export default {
                 item_enabled_document_types: this.form.item_enabled_document_types,
                 item_publication_label: this.form.item_publication_label,
                 item_document_label: this.form.item_document_label,
-                item_require_document: this.form.item_require_document,
+                // The switch is hidden when no document type is enabled, so the document can not be required
+                item_require_document: this.hasSomeDocumentTypeEnabled ? this.form.item_require_document : 'no',
                 item_thumbnail_label: this.form.item_thumbnail_label,
                 item_enable_thumbnail: this.form.item_enable_thumbnail,
                 item_attachment_label: this.form.item_attachment_label,
