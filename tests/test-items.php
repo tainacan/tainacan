@@ -581,6 +581,21 @@ class Items extends TAINACAN_UnitTestCase {
 		$item->set_document( 'Item document' );
 		$this->assertTrue( $item->validate() );
 
+		// Document can not be required if every document type is disabled.
+		$collection->set_item_enabled_document_types(
+			array(
+				'attachment' => array( 'enabled' => 'no' ),
+				'url'        => array( 'enabled' => 'no' ),
+				'text'       => array( 'enabled' => 'no' )
+			)
+		);
+		$this->assertTrue( $collection->validate() );
+		\Tainacan\Repositories\Collections::get_instance()->update( $collection );
+
+		$item->set_document_type( 'empty' );
+		$item->set_document( '' );
+		$this->assertTrue( $item->validate() );
+
 		// Collections that do not require document still allow publishing without it.
 		$collection2 = $this->tainacan_entity_factory->create_entity(
 			'collection',
