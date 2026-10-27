@@ -80,4 +80,16 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringNotContainsString( 'root:x:0:0', wp_json_encode( $source_response->get_data() ) );
 	}
 
+	public function test_run_rejects_terms_importer_without_taxonomy() {
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$importer = $Tainacan_Importer_Handler->initialize_importer( 'terms' );
+		$Tainacan_Importer_Handler->save_importer_instance( $importer );
+
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/importers/session/' . $importer->get_id() . '/run' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertEquals( 'Select an existing taxonomy or enter a name for the new one.', $response->get_data()['error_message'] );
+	}
+
 }
