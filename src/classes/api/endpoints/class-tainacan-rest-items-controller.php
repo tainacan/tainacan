@@ -1497,64 +1497,91 @@ class REST_Items_Controller extends REST_Controller {
 		$default_status = $collection->get_submission_default_status();
 		$item->set_status($default_status);
 
-		$TainacanMedia = \Tainacan\Media::get_instance();
-		$files = $request->get_file_params();
-
-		$insert_attachments = [];
-		$entities_erros = [];
-		if( isset($files['document']) && !is_array($files['document']['tmp_name']) == 1 && $files['document']['size'] > 0 ) {
-			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . sanitize_file_name($files['document']['name']);
-			// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Keep the upload in the local temp directory under its original filename so Media::insert_attachment_from_file() can read that path. Replacing this with media_handle_upload() is tracked in https://github.com/tainacan/tainacan/issues/1226.
-			move_uploaded_file($files['document']['tmp_name'], $tmp_file_name);
-			$document_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
-			if($document_id === false) {
-				$entities_erros[] = ["document" => __('Error while creating document', 'tainacan')];
-				wp_delete_attachment($document_id, true);
-			} else {
-				$item->set_document_type('attachment');
-				$item->set_document($document_id);
-				$insert_attachments[] = $document_id;
-			}
-			wp_delete_file($tmp_file_name);
+		if ( ! function_exists( 'media_handle_upload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/media.php';
 		}
 
-		if( isset($files['thumbnail']) && !is_array($files['thumbnail']['tmp_name']) == 1 && $files['thumbnail']['size'] > 0 ) {
-			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['thumbnail']['name'];
-			// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Keep the upload in the local temp directory under its original filename so Media::insert_attachment_from_file() can read that path. Replacing this with media_handle_upload() is tracked in https://github.com/tainacan/tainacan/issues/1226.
-			move_uploaded_file($files['thumbnail']['tmp_name'], $tmp_file_name);
-			$thumbnail_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name);
-			if($thumbnail_id === false) {
-				$entities_erros[] = ["thumbnail" => __('Error while creating thumbnail', 'tainacan')];
-				wp_delete_attachment($thumbnail_id, true);
+		$files          = $request->get_file_params();
+		$original_files = $_FILES;
+
+		$upload_overrides = array(
+			'test_form' => false,
+		);
+		if ( defined( 'DIR_TESTDATA' ) && DIR_TESTDATA ) {
+			$upload_overrides['action'] = 'wp_handle_sideload';
+		}
+
+		$insert_attachments = array();
+		$entities_erros     = array();
+		if ( isset( $files['document'] ) && ! is_array( $files['document']['tmp_name'] ) && $files['document']['size'] > 0 ) {
+			$_FILES['document'] = $files['document'];
+
+			$GLOBALS['TAINACAN_UPLOADING_ATTACHMENT_TO_POST'] = $item_id;
+
+			$document_id = media_handle_upload( 'document', $item_id, array(), $upload_overrides );
+			unset( $GLOBALS['TAINACAN_UPLOADING_ATTACHMENT_TO_POST'] );
+			if ( is_wp_error( $document_id ) ) {
+				$entities_erros[] = array( 'document' => __( 'Error while creating document', 'tainacan' ) );
 			} else {
-				$item->set__thumbnail_id($thumbnail_id);
+				$item->set_document_type( 'attachment' );
+				$item->set_document( $document_id );
+				$insert_attachments[] = $document_id;
+			}
+		}
+
+		if ( isset( $files['thumbnail'] ) && ! is_array( $files['thumbnail']['tmp_name'] ) && $files['thumbnail']['size'] > 0 ) {
+			$_FILES['thumbnail'] = $files['thumbnail'];
+			unset( $GLOBALS['TAINACAN_UPLOADING_ATTACHMENT_TO_POST'] );
+			$thumbnail_id = media_handle_upload( 'thumbnail', 0, array(), $upload_overrides );
+			if ( is_wp_error( $thumbnail_id ) ) {
+				$entities_erros[] = array( 'thumbnail' => __( 'Error while creating thumbnail', 'tainacan' ) );
+			} else {
+				$item->set__thumbnail_id( $thumbnail_id );
 				$insert_attachments[] = $thumbnail_id;
 			}
-			wp_delete_file($tmp_file_name);
 		} else {
-			$thumbnail_id = $this->items_repository->get_thumbnail_id_from_document($item);
-			if (!is_null($thumbnail_id)) {
+			$thumbnail_id = $this->items_repository->get_thumbnail_id_from_document( $item );
+			if ( ! is_null( $thumbnail_id ) ) {
 				set_post_thumbnail( $item_id, (int) $thumbnail_id );
 				$insert_attachments[] = $thumbnail_id;
 			}
 		}
 
-		if( isset($files['attachments']) ) {
-			$attachments = is_array($files['attachments']['tmp_name']) ? $files['attachments']['tmp_name'] : [$files['attachments']['tmp_name']];
-			$attachments_name = is_array($files['attachments']['name']) ? $files['attachments']['name'] : [$files['attachments']['name']];
-			for ($i = 0; $i < count($attachments); $i++) {
-				$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $attachments_name[$i];
-				// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Keep the upload in the local temp directory under its original filename so Media::insert_attachment_from_file() can read that path. Replacing this with media_handle_upload() is tracked in https://github.com/tainacan/tainacan/issues/1226.
-				move_uploaded_file($attachments[$i], $tmp_file_name);
-				$attachment_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
-				wp_delete_file($tmp_file_name);
-				if($attachment_id === false) {
-					$entities_erros[] = ['attachments' => __('Error while creating attachment ', 'tainacan') . "($attachments_name[$i])" ];
+		if ( isset( $files['attachments'] ) ) {
+			$attachments_files = array();
+			if ( is_array( $files['attachments']['tmp_name'] ) ) {
+				foreach ( array_keys( $files['attachments']['tmp_name'] ) as $index ) {
+					$attachments_files[] = array(
+						'name'     => $files['attachments']['name'][ $index ] ?? '',
+						'type'     => $files['attachments']['type'][ $index ] ?? '',
+						'tmp_name' => $files['attachments']['tmp_name'][ $index ] ?? '',
+						'error'    => $files['attachments']['error'][ $index ] ?? 0,
+						'size'     => $files['attachments']['size'][ $index ] ?? 0,
+					);
+				}
+			} else {
+				$attachments_files[] = $files['attachments'];
+			}
+
+			$GLOBALS['TAINACAN_UPLOADING_ATTACHMENT_TO_POST'] = $item_id;
+			foreach ( $attachments_files as $attachment_file ) {
+				$_FILES['tainacan_submission_attachment'] = $attachment_file;
+
+				$attachment_id = media_handle_upload( 'tainacan_submission_attachment', $item_id, array(), $upload_overrides );
+				unset( $_FILES['tainacan_submission_attachment'] );
+				if ( is_wp_error( $attachment_id ) ) {
+					$attachment_name  = $attachment_file['name'] ?? '';
+					$entities_erros[] = array( 'attachments' => __( 'Error while creating attachment ', 'tainacan' ) . "($attachment_name)" );
 					break;
 				}
 				$insert_attachments[] = $attachment_id;
 			}
+			unset( $GLOBALS['TAINACAN_UPLOADING_ATTACHMENT_TO_POST'] );
 		}
+
+		$_FILES = $original_files;
 
 		if( !empty($entities_erros) ) {
 			foreach($insert_attachments as $remove_id) {
