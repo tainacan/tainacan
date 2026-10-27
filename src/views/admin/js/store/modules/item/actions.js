@@ -429,6 +429,24 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
 };
 
 /**
+ * Uploads a file to be used as the item document via WordPress media API.
+ * Unlike `sendAttachment`, it does not add the raw media response to the attachments list,
+ * which expects the Tainacan attachment format and is reloaded once the document is set.
+ * Dispatches `item/sendDocumentFile`.
+ * @returns {Promise<Object>} Resolves with uploaded media data; rejects with error.response.
+ */
+export const sendDocumentFile = ( {}, { item_id, file, onUploadProgress }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.wpApi.post('/media/?post=' + item_id, file, {
+            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
+            onUploadProgress
+        })
+            .then( res => resolve( res.data ) )
+            .catch( error => reject( error.response ) );
+    });
+};
+
+/**
  * Detaches one attachment from an item without deleting the media record.
  * Dispatches `item/removeAttachmentFromItem`.
  * @returns {Promise<Object>} Resolves with updated attachment data; rejects with error.response.

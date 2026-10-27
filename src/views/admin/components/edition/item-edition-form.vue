@@ -574,9 +574,11 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
+                                            :upload-progress="documentUploadProgress"
                                             @on-set-document="setDocument"
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
+                                            @on-drop-file-document="onDropFileDocument"
                                             @on-set-text-document="setTextDocument"
                                             @on-set-url-document="setURLDocument"
                                             @on-edit-document-content-index="editDocumentContentIndex" />
@@ -658,9 +660,11 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
+                                    :upload-progress="documentUploadProgress"
                                     @on-set-document="setDocument"
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
+                                    @on-drop-file-document="onDropFileDocument"
                                     @on-set-text-document="setTextDocument"
                                     @on-set-url-document="setURLDocument"
                                     @on-edit-document-content-index="editDocumentContentIndex" />
@@ -909,6 +913,7 @@ export default {
             thumbnailMediaFrame: undefined,
             attachmentsMediaFrame: undefined,
             fileMediaFrame: undefined,
+            documentUploadProgress: null,
             urlLink: '',
             textContent: '',
             isUpdatingValues: false,
@@ -1244,6 +1249,7 @@ export default {
             'fetchItem',
             'cleanItemMetadata',
             'sendAttachments',
+            'sendDocumentFile',
             'deletePermanentlyAttachment',
             'updateThumbnail',
             'cleanLastUpdated',
@@ -1586,6 +1592,96 @@ export default {
             this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
             this.fileMediaFrame.openFrame(event);
         },
+        onDropFileDocument(files) {
+            if ( !files || !files.length )
+                return;
+
+            if ( files.length > 1 ) {
+                this.$buefy.toast.open({
+                    message: this.$i18n.get('info_warning_only_first_file_used_as_document'),
+                    type: 'is-warning',
+                    position: 'is-bottom',
+                    duration: 3500
+                });
+            }
+
+            const file = files[0];
+            const hasDocument = this.form.document && this.form.document_type && this.form.document_type !== 'empty';
+
+            if ( !hasDocument ) {
+                this.uploadFileAsDocument(file);
+                return;
+            }
+
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
+            this.$buefy.modal.open({
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_document_replace'),
+                    onConfirm: () => this.uploadFileAsDocument(file)
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                canCancel: ['escape', 'outside'],
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
+            });
+        },
+        uploadFileAsDocument(file) {
+            this.documentUploadProgress = 0;
+
+            // File type and size are validated by WordPress on the media endpoint
+            this.sendDocumentFile({
+                    item_id: this.itemId,
+                    file: file,
+                    onUploadProgress: (progressEvent) => {
+                        if ( progressEvent.total )
+                            this.documentUploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    }
+                })
+                .then((attachment) => {
+                    this.documentUploadProgress = null;
+                    this.setAttachmentAsDocument(attachment.id);
+                })
+                .catch((error) => {
+                    this.documentUploadProgress = null;
+                    this.$buefy.toast.open({
+                        message: (error && error.data && error.data.message ? error.data.message : this.$i18n.get('info_error_upload')) + ': ' + file.name,
+                        type: 'is-danger',
+                        position: 'is-bottom',
+                        duration: 3500
+                    });
+                    this.$console.error(error);
+                });
+        },
+        setAttachmentAsDocument(attachmentId) {
+            this.isLoading = true;
+            this.form.document_type = 'attachment';
+            this.form.document = attachmentId + '';
+
+            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+                .then((item) => {
+                    this.isLoading = false;
+                    this.item.document_as_html = item.document_as_html;
+                    this.item.document_mimetype = item.document_mimetype;
+
+                    let oldThumbnail = this.item.thumbnail;
+                    if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
+                        this.item.thumbnail = item.thumbnail;
+                        this.item.thumbnail_id = item.thumbnail_id;
+                    }
+
+                    this.shouldLoadAttachments = !this.shouldLoadAttachments;
+
+                })
+                .catch((errors) => {
+                    this.prepareErrors(errors);
+                    this.isLoading = false;
+                });
+        },
         onOpenThumbnailFrame(event) {
             this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
             this.thumbnailMediaFrame.openFrame(event);
@@ -1798,31 +1894,7 @@ export default {
                     },
                     relatedPostId: this.itemId,
                     onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
-                    onSave: (file) => {
-                        this.isLoading = true;
-                        this.form.document_type = 'attachment';
-                        this.form.document = file.id + '';
-                        
-                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-                            .then((item) => {
-                                this.isLoading = false;
-                                this.item.document_as_html = item.document_as_html;
-                                this.item.document_mimetype = item.document_mimetype;
-
-                                let oldThumbnail = this.item.thumbnail;
-                                if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
-                                    this.item.thumbnail = item.thumbnail;
-                                    this.item.thumbnail_id = item.thumbnail_id;
-                                }
-
-                                this.shouldLoadAttachments = !this.shouldLoadAttachments;
-
-                            })
-                            .catch((errors) => {
-                                this.prepareErrors(errors);
-                                this.isLoading = false;
-                            });
-                    }
+                    onSave: (file) => this.setAttachmentAsDocument(file.id)
                 }
             );
 

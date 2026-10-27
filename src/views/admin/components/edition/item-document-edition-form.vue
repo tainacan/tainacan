@@ -11,7 +11,37 @@
                     :title="collection && collection.item_document_label ? collection.item_document_label : $i18n.getHelperTitle('items', 'document')"
                     :message="$i18n.getHelperMessage('items', 'document')" />
         </div>
-        <div class="section-box document-field">
+        <div
+                class="section-box document-field"
+                :class="{ 'is-dragging-over': isDraggingOver }"
+                @dragenter="onDragEnter"
+                @dragover="onDragOver"
+                @dragleave="onDragLeave"
+                @drop="onDrop">
+            <div
+                    v-if="isDraggingOver"
+                    class="document-drop-overlay"
+                    aria-hidden="true">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
+                </span>
+                <p>{{ $i18n.get('instruction_drop_file_to_set_document') }}</p>
+            </div>
+            <div
+                    v-if="uploadProgress !== null"
+                    class="document-upload-progress"
+                    role="progressbar"
+                    :aria-label="$i18n.get('info_uploading_document')"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    :aria-valuenow="uploadProgress">
+                <p>{{ $i18n.get('info_uploading_document') }} ({{ uploadProgress }}%)</p>
+                <div class="document-upload-progress-track">
+                    <div
+                            class="document-upload-progress-bar"
+                            :style="{ width: uploadProgress + '%' }" />
+                </div>
+            </div>
             <div
                     v-if="form.document != undefined && form.document != null &&
                         form.document_type != undefined && form.document_type != null &&
@@ -147,22 +177,138 @@ export default {
     props: {
         item: Object,
         form: Object,
-        collection: Object
+        collection: Object,
+        uploadProgress: {
+            type: Number,
+            default: null
+        }
     },
     emits: [
         'on-set-file-document',
+        'on-drop-file-document',
         'on-set-text-document',
         'on-set-url-document',
         'on-set-document',
         'on-remove-document',
         'on-edit-document-content-index'
-    ]
+    ],
+    data() {
+        return {
+            isDraggingOver: false,
+            dragEnterCounter: 0
+        }
+    },
+    computed: {
+        acceptsFileDrop() {
+            return !this.$adminOptions.hideItemEditionDocumentFileInput &&
+                this.uploadProgress === null &&
+                this.collection &&
+                this.collection.item_enabled_document_types &&
+                this.collection.item_enabled_document_types['attachment'] &&
+                this.collection.item_enabled_document_types['attachment']['enabled'] === 'yes';
+        }
+    },
+    methods: {
+        isDraggingFiles(event) {
+            return !!event.dataTransfer && Array.from(event.dataTransfer.types || []).includes('Files');
+        },
+        onDragEnter(event) {
+            if ( !this.acceptsFileDrop || !this.isDraggingFiles(event) )
+                return;
+
+            event.preventDefault();
+
+            // Counts nested dragenter/dragleave pairs so the overlay does not flicker over child elements
+            this.dragEnterCounter++;
+            this.isDraggingOver = true;
+        },
+        onDragOver(event) {
+            if ( !this.acceptsFileDrop || !this.isDraggingFiles(event) )
+                return;
+
+            // Required for the browser to allow the drop event
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
+        },
+        onDragLeave() {
+            if ( !this.isDraggingOver )
+                return;
+
+            this.dragEnterCounter--;
+            if ( this.dragEnterCounter <= 0 )
+                this.resetDragState();
+        },
+        onDrop(event) {
+            if ( !this.acceptsFileDrop || !this.isDraggingFiles(event) )
+                return;
+
+            event.preventDefault();
+            this.resetDragState();
+
+            if ( event.dataTransfer.files && event.dataTransfer.files.length )
+                this.$emit('on-drop-file-document', Array.from(event.dataTransfer.files));
+        },
+        resetDragState() {
+            this.dragEnterCounter = 0;
+            this.isDraggingOver = false;
+        }
+    }
 }
 </script>
 
 <style lang="scss" scoped>
     
     .document-field {
+
+        &.is-dragging-over .document-field-placeholder,
+        &.is-dragging-over .document-field-content {
+            opacity: 0.25;
+        }
+
+        .document-drop-overlay,
+        .document-upload-progress {
+            position: absolute;
+            inset: 0;
+            // Matches the horizontal padding of .section-box in the item edition form
+            inset-inline-start: 1.75em;
+            inset-inline-end: 0.75em;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            border-radius: var(--tainacan-item-border-radius, 3px);
+            color: var(--tainacan-secondary);
+
+            p {
+                font-size: 0.875em;
+                margin: 0;
+            }
+        }
+        .document-drop-overlay {
+            pointer-events: none;
+            border: 2px dashed var(--tainacan-secondary);
+            background-color: var(--tainacan-primary);
+        }
+        .document-upload-progress {
+            background-color: var(--tainacan-background-color);
+
+            .document-upload-progress-track {
+                width: 80%;
+                height: 0.5rem;
+                overflow: hidden;
+                border-radius: 0.25rem;
+                background-color: var(--tainacan-input-border-color);
+            }
+            .document-upload-progress-bar {
+                height: 100%;
+                background-color: var(--tainacan-secondary);
+                transition: width 0.2s ease;
+            }
+        }
 
         .document-field-content {
             max-height: 32vh;
