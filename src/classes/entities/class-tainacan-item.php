@@ -529,6 +529,22 @@ class Item extends Entity {
 			$is_valid = false;
 		}
 
+		$collection = $this->get_collection();
+		if ( $collection && $collection->get_item_require_document() === 'yes' ) {
+			// A document can only be required if the collection allows at least one document type.
+			$enabled_document_types = array_filter(
+				(array) $collection->get_item_enabled_document_types(),
+				function ( $document_type ) {
+					return isset( $document_type['enabled'] ) && $document_type['enabled'] === 'yes';
+				}
+			);
+
+			if ( ! empty( $enabled_document_types ) && ( $this->get_document_type() === 'empty' || empty( $this->get_document() ) ) ) {
+				$this->add_error( 'document', __( 'The document is required', 'tainacan' ) );
+				$is_valid = false;
+			}
+		}
+
 		$arrayItemMetadata = $this->get_metadata(['parent'=>'any', 'include_control_metadata_types' => 'true']);
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {

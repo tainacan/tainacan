@@ -230,12 +230,14 @@ export const sendItem = ( { commit }, item) => {
 /**
  * Updates an existing item and syncs the cached item state.
  * Dispatches `item/updateItem`.
+ * Pass `silentError: true` when the caller renders the validation errors itself,
+ * so the global error handler does not show its generic feedback.
  * @returns {Promise<Object>} Resolves with updated item data; rejects with API error_message and errors.
  */
-export const updateItem = ({ commit }, item) => {
+export const updateItem = ({ commit }, { silentError, ...item }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item)
+        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item, { silentError: !!silentError })
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
@@ -270,7 +272,7 @@ export const duplicateItem = ({}, { collectionId, itemId, copies }) => {
  * Dispatches `item/updateItemDocument`.
  * @returns {Promise<Object>} Resolves with updated item data; rejects with API error_message and errors.
  */
-export const updateItemDocument = ({ commit }, { item_id, document, document_type, document_options }) => {
+export const updateItemDocument = ({ commit }, { item_id, document, document_type, document_options, silentError }) => {
     let params = {
         document: document,
         document_type: document_type,
@@ -279,7 +281,7 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
         params['document_options'] = document_options;
         
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item_id, params).then( res => {
+        axios.tainacanApi.put('/items/' + item_id, params, { silentError: !!silentError }).then( res => {
             let item = res.data;
 
             commit('setItem', item);

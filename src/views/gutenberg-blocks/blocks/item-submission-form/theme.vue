@@ -30,7 +30,13 @@
                 <div
                         v-if="documentSectionLabel"
                         class="section-label">
-                    <label>{{ documentSectionLabel }}</label>
+                    <label :class="{ 'has-text-danger': documentErrorMessage }">{{ documentSectionLabel }}</label>
+                    <span
+                            v-if="requireDocument == 'yes'"
+                            class="required-metadatum-asterisk"
+                            :class="documentErrorMessage ? 'is-danger' : ''">
+                        *
+                    </span>
                     <help-button
                             v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')"
                             :title="$i18n.getHelperTitle('items', 'document')"
@@ -213,6 +219,11 @@
                             <p>{{ $i18n.get('label_url') }}</p>
                         </li>
                     </ul>
+                    <p
+                            v-if="documentErrorMessage && form.document_type != 'attachment'"
+                            class="help is-danger">
+                        {{ documentErrorMessage }}
+                    </p>
                 </div>
 
             </template>
@@ -880,6 +891,7 @@ export default {
             showThumbnailInput: false,
             couldLoadCollection: true,
             useCaptcha: 'no',
+            requireDocument: 'no',
             captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
             linkToCreatedItem: '',
             userHasAgreedToTerms: false,
@@ -967,6 +979,7 @@ export default {
                 this.collectionItemMetadataEnumeration = collection.item_enable_metadata_enumeration;
                 this.collectionMetadataSectionOrder = collection.metadata_section_order;
                 this.useCaptcha = collection.submission_use_recaptcha;
+                this.requireDocument = collection.item_require_document;
 
                 // Initialize clear data from store
                 this.clearItemSubmission();

@@ -543,4 +543,81 @@ class Items extends TAINACAN_UnitTestCase {
 		$this->assertTrue( \Tainacan\Media::is_image_blurhash_enabled() );
 	}
 
+	function test_item_require_document() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'                  => 'collectionRequireDocument',
+				'item_require_document' => 'yes'
+			),
+			true,
+			true
+		);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'itemWithoutDocument',
+				'collection' => $collection,
+				'status'     => 'draft'
+			),
+			true,
+			true
+		);
+
+		// Drafts can be saved without document.
+		$this->assertTrue( $item->validate() );
+
+		$item->set_status( 'publish' );
+		$this->assertFalse( $item->validate() );
+		$this->assertNotEmpty( array_column( $item->get_errors(), 'document' ) );
+
+		// Document type set but no document value.
+		$item->set_document_type( 'attachment' );
+		$item->set_document( '' );
+		$this->assertFalse( $item->validate() );
+
+		$item->set_document_type( 'text' );
+		$item->set_document( 'Item document' );
+		$this->assertTrue( $item->validate() );
+
+		// Document can not be required if every document type is disabled.
+		$collection->set_item_enabled_document_types(
+			array(
+				'attachment' => array( 'enabled' => 'no' ),
+				'url'        => array( 'enabled' => 'no' ),
+				'text'       => array( 'enabled' => 'no' )
+			)
+		);
+		$this->assertTrue( $collection->validate() );
+		\Tainacan\Repositories\Collections::get_instance()->update( $collection );
+
+		$item->set_document_type( 'empty' );
+		$item->set_document( '' );
+		$this->assertTrue( $item->validate() );
+
+		// Collections that do not require document still allow publishing without it.
+		$collection2 = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'collectionOptionalDocument'
+			),
+			true,
+			true
+		);
+		$this->assertEquals( 'no', $collection2->get_item_require_document() );
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'itemWithoutDocument2',
+				'collection' => $collection2,
+				'status'     => 'publish'
+			),
+			true,
+			true
+		);
+		$this->assertTrue( $item2->validate() );
+	}
+
 }
