@@ -831,6 +831,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_select_a_mapper'                    => __( 'Select a mapper', 'tainacan' ),
 	'instruction_select_an_importer_type'            => __( 'Select an importer from the options below:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
+	'instruction_drop_file_to_set_document'          => __( 'Drop the file here to set it as the item document.', 'tainacan' ),
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type', 'tainacan' ),
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum', 'tainacan' ),
 	'instruction_configure_the_metadatum'            => __( 'Configure the metadatum', 'tainacan' ),
@@ -969,6 +970,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_item_deleted'                              => __( 'Item deleted.', 'tainacan' ),
 	'info_taxonomy_deleted'                          => __( 'Taxonomy deleted', 'tainacan' ),
 	'info_warning_attachment_delete'                 => __( 'Do you really want to delete this attachment?', 'tainacan' ),
+	'info_warning_document_replace'                  => __( 'This item already has a document. Do you really want to replace it with the dropped file?', 'tainacan' ),
+	'info_warning_only_first_file_used_as_document'  => __( 'Only one file can be the item document. The first dropped file was used.', 'tainacan' ),
+	'info_uploading_document'                        => __( 'Uploading document', 'tainacan' ),
 	/* translators: %s is the collection name */
 	'info_warning_collection_delete_%s'              => __( 'Do you really want to permanently delete the collection "%s"?', 'tainacan' ),
 	/* translators: %s is the collection name */
