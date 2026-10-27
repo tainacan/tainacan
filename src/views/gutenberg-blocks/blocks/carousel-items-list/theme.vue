@@ -302,14 +302,10 @@ export default {
                     // Older carousel markup keeps its sort in the search URL.
                     const orderBy = this.orderBy || queryObject.orderby;
                     queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
-                    if (this.order !== undefined)
+                    if (typeof this.order === 'string' && this.order !== '')
                         queryObject.order = this.order;
-                    if (!queryObject.order)
-                        delete queryObject.order;
-                    if (this.orderByMetaKey !== undefined)
+                    if (typeof this.orderByMetaKey === 'string' && this.orderByMetaKey !== '')
                         queryObject.metakey = this.orderByMetaKey;
-                    if (!queryObject.metakey)
-                        delete queryObject.metakey;
                 }
 
                 // Remove unecessary queries
