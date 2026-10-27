@@ -671,7 +671,6 @@ AxiosErrorHandlerPlugin.install = function (app) {
     };
 
     // Runs after the caller's catch, so claimApiError / showApiError can win.
-    // silentError stays honored for callers that still pass it (item update on pr-1251).
     const scheduleStatusSnackbar = function ({ error, errorMessage, errorMessageDetail }) {
         if (!error || !error.config || isCancel(error))
             return;
@@ -679,7 +678,7 @@ AxiosErrorHandlerPlugin.install = function (app) {
         const axiosError = error;
 
         setTimeout(() => {
-            if (axiosError.config.handledError || axiosError.config.silentError)
+            if (axiosError.config.handledError)
                 return;
 
             const hasResponse = !!(axiosError.response && axiosError.response.status);
