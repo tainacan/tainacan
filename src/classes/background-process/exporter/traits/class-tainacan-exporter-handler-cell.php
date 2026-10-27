@@ -6,6 +6,22 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 trait Exporter_Handler_Cell {
 
+	function validate_options() {
+		if ( empty( $this->get_collections() ) ) {
+			return __('The source collection is required.', 'tainacan');
+		}
+
+		if ( strlen( $this->get_option('delimiter') ) !== 1 ) {
+			return __('The CSV delimiter must be a single character.', 'tainacan');
+		}
+
+		if ( strlen( $this->get_option('enclosure') ) !== 1 ) {
+			return __('The enclosure must be a single character.', 'tainacan');
+		}
+
+		return true;
+	}
+
 	function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
 		// Open a memory "file" for read/write...
 		$fp = fopen('php://temp', 'r+'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- In-memory stream so fputcsv() can format one row. There is no disk file.
