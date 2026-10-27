@@ -322,9 +322,9 @@
                 </b-button>
             </div>
         </div>
-        <p class="help is-danger">
+        <span class="help is-danger">
             {{ formErrorMessage }}
-        </p>
+        </span>
     </form>
 </template>
 
@@ -332,7 +332,6 @@
 import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
 import { formHooks } from "../../js/mixins";
-
 import FormFilterDate from '../filter-types/date/FormDate.vue';
 import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNumericInterval.vue';
@@ -444,17 +443,21 @@ export default {
                         this.closedByForm = true;
                         this.$emit('on-edition-finished');
                     })
-                    .catch((errors) => {
+                    .catch((error) => {
                         this.isLoading = false;
-                        for (let error of errors.errors) {     
-                            for (let attribute of Object.keys(error))
-                                this.formErrors[attribute] = error[attribute];
-                        }
-                        this.formErrorMessage = errors.error_message;
-                        this.$emit('on-error-found');
+                        const errors = error.response && error.response.data;
+                        if (errors && errors.errors) {
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let attribute of Object.keys(fieldError))
+                                    this.formErrors[attribute] = fieldError[attribute];
+                            }
+                            this.formErrorMessage = errors.error_message;
+                            this.$emit('on-error-found');
 
-                        this.form.formErrors = this.formErrors;
-                        this.form.formErrorMessage = this.formErrorMessage;
+                            this.form.formErrors = this.formErrors;
+                            this.form.formErrorMessage = this.formErrorMessage;
+                        }
                     });
             } else {
                 let formElement = document.getElementById('filterEditForm');
@@ -486,17 +489,21 @@ export default {
                         this.closedByForm = true;
                         this.$emit('on-edition-finished');
                     })
-                    .catch((errors) => {
+                    .catch((error) => {
                         this.isLoading = false;
-                        for (let error of errors.errors) {     
-                            for (let attribute of Object.keys(error))
-                                this.formErrors[attribute] = error[attribute];
-                        }
-                        this.formErrorMessage = errors.error_message;
-                        this.$emit('on-error-found');
+                        const errors = error.response && error.response.data;
+                        if (errors && errors.errors) {
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let attribute of Object.keys(fieldError))
+                                    this.formErrors[attribute] = fieldError[attribute];
+                            }
+                            this.formErrorMessage = errors.error_message;
+                            this.$emit('on-error-found');
 
-                        this.form.formErrors = this.formErrors;
-                        this.form.formErrorMessage = this.formErrorMessage;
+                            this.form.formErrors = this.formErrors;
+                            this.form.formErrorMessage = this.formErrorMessage;
+                        }
                     });
             }           
         },

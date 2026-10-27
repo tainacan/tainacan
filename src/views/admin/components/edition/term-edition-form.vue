@@ -501,12 +501,16 @@
                             this.isLoading = false;
                             this.$emit('close');
                         })
-                        .catch((errors) => {
+                        .catch((error) => {
                             this.isLoading = false;
+                            const errors = error.response && error.response.data;
+                            if (!errors || !errors.errors)
+                                return;
 
-                            for (let error of errors.errors) {
-                                for (let metadatum of Object.keys(error)) {
-                                   Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let metadatum of Object.keys(fieldError)) {
+                                   Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + fieldError[metadatum] + '\n' });
                                 }
                             }
                         });
@@ -536,10 +540,14 @@
                             this.$emit('on-edition-finished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
                             this.$emit('close');
                         })
-                        .catch((errors) => {
-                            for (let error of errors.errors) {
-                                for (let metadatum of Object.keys(error)) {
-                                    Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
+                        .catch((error) => {
+                            const errors = error.response && error.response.data;
+                            if (errors && errors.errors) {
+                                this.$claimApiError(error);
+                                for (let fieldError of errors.errors) {
+                                    for (let metadatum of Object.keys(fieldError)) {
+                                        Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + fieldError[metadatum] + '\n' });
+                                    }
                                 }
                             }
                             this.isLoading = false;

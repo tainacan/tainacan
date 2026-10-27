@@ -1048,9 +1048,9 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <p class="help is-danger">
+                <span class="help is-danger">
                     {{ formErrorMessage }}
-                </p>
+                </span>
                 <div 
                         style="margin-inline-start: auto;"
                         class="control is-hidden-mobile">
@@ -1105,7 +1105,6 @@ import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import { permalinkGetter, formHooks } from '../../js/mixins';
 import { CancelToken, isCancel } from '../../js/axios';
-
 export default {
     name: 'CollectionEditionForm',
     components: {
@@ -1506,13 +1505,16 @@ export default {
                             this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
                     }
                 })
-                .catch((errors) => {
-                    
-                    for (let error of errors.errors) {     
-                        for (let attribute of Object.keys(error))
-                            this.editFormErrors[attribute] = error[attribute];
+                .catch((error) => {
+                    const errors = error.response && error.response.data;
+                    if (errors && errors.errors) {
+                        this.$claimApiError(error);
+                        for (let fieldError of errors.errors) {
+                            for (let attribute of Object.keys(fieldError))
+                                this.editFormErrors[attribute] = fieldError[attribute];
+                        }
+                        this.formErrorMessage = errors.error_message;
                     }
-                    this.formErrorMessage = errors.error_message;
 
                     this.isLoading = false;
                 });     
@@ -2261,7 +2263,7 @@ export default {
 
         .help {
             display: inline-flex;
-            font-size: 1.0em;
+            font-size: 0.813em;
             margin-top: 0;
             margin-inline-start: 24px;
 

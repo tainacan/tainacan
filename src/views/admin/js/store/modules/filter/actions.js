@@ -102,7 +102,7 @@ export const updateFilter = ( { commit }, { filterId, index, options }) => {
                 resolve( filter );
             })
             .catch( (error) => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };

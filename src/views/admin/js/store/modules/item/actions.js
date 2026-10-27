@@ -21,11 +21,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
                 resolve(itemMetadatum)
             })
             .catch( error => {
-                reject({
-                    error: error.response.data.errors,
-                    error_message: error.response.data.error_message,
-                    item_metadata: error.response.data.item_metadata
-                });
+                reject(error);
             })
     });
 };
@@ -361,11 +357,7 @@ export const extractItemDocumentContentIndex = ({}, { itemId }) => {
                 });
             })
             .catch(error => {
-                reject({
-                    error_message: error.response && error.response.data && error.response.data.error_message
-                        ? error.response.data.error_message
-                        : error
-                });
+                reject(error);
             });
     });
 };
@@ -392,14 +384,7 @@ export const updateItemDocumentContentIndex = ({}, { itemId, documentContentInde
                 });
             })
             .catch(error => {
-                reject({
-                    error_message: error.response && error.response.data && error.response.data.error_message
-                        ? error.response.data.error_message
-                        : error,
-                    errors: error.response && error.response.data && error.response.data.errors
-                        ? error.response.data.errors
-                        : {}
-                });
+                reject(error);
             });
     });
 };

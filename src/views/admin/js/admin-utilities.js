@@ -1,5 +1,5 @@
 import qs from 'qs';
-import axios from './axios';
+import axios, { isCancel } from './axios';
 import CustomDialog from '../components/other/custom-dialog.vue'
 
 const tainacanSanitize = function(htmlString) {
@@ -619,51 +619,103 @@ CommentsStatusHelperPlugin.install = function (app) {
 
 export const AxiosErrorHandlerPlugin = {};
 AxiosErrorHandlerPlugin.install = function (app) {
-    
-    const tainacanVisualErrorHandler = function({ error, errorMessage, errorMessageDetail }) {
 
-        // Caller will show its own feedback (e.g. form/snackbar for known API errors).
-        if ( error && error.config && error.config.silentError )
+    // Mark this failure as already visible, so the status snackbar does not open.
+    // Call only after the screen has rendered the failure itself.
+    const claimApiError = function (error) {
+        if (error && error.config)
+            error.config.handledError = true;
+    };
+
+    // Open one danger snackbar with the sentence this call site already decided to show.
+    // An empty message does nothing, and the status snackbar still runs.
+    const showApiError = function (error, message) {
+        if (typeof message !== 'string' || message === '')
             return;
 
-        if (errorMessage) {
-            app.config.globalProperties.$buefy.snackbar.open({
-                message: tainacanSanitize(errorMessage),
-                type: 'is-danger',
-                duration: 5000,
-                actionText: errorMessageDetail ? i18nGet('label_know_more') : null,
-                onAction: () => {
-                    app.config.globalProperties.$buefy.modal.open({
-                        component: CustomDialog,
-                        props: {
-                            title: i18nGet('label_error') + ' ' + error.response.status + '!',
-                            message: errorMessageDetail,
-                            hideCancel: true
-                        },
-                        ariaRole: 'alertdialog',
-                        ariaModal: true,
-                        customClass: 'tainacan-modal',
-                        canCancel: ['escape', 'outside']
-                    });
-                }
-            });
-        }
-    }
+        claimApiError(error);
+        app.config.globalProperties.$buefy.snackbar.open({
+            message: tainacanSanitize(message),
+            type: 'is-danger',
+            position: 'is-bottom-right',
+            duration: 5000,
+            pauseOnHover: true,
+            queue: false
+        });
+    };
+
+    app.config.globalProperties.$claimApiError = claimApiError;
+    app.config.globalProperties.$showApiError = showApiError;
+
+    const openStatusSnackbar = function ({ message, detail, title }) {
+        app.config.globalProperties.$buefy.snackbar.open({
+            message: tainacanSanitize(message),
+            type: 'is-danger',
+            duration: 5000,
+            actionText: detail ? i18nGet('label_know_more') : null,
+            onAction: () => {
+                app.config.globalProperties.$buefy.modal.open({
+                    component: CustomDialog,
+                    props: {
+                        title: title,
+                        message: detail,
+                        hideCancel: true
+                    },
+                    ariaRole: 'alertdialog',
+                    ariaModal: true,
+                    customClass: 'tainacan-modal',
+                    canCancel: ['escape', 'outside']
+                });
+            }
+        });
+    };
+
+    // Runs after the caller's catch, so claimApiError / showApiError can win.
+    // silentError stays honored for callers that still pass it (item update on pr-1251).
+    const scheduleStatusSnackbar = function ({ error, errorMessage, errorMessageDetail }) {
+        if (!error || !error.config || isCancel(error))
+            return;
+
+        const axiosError = error;
+
+        setTimeout(() => {
+            if (axiosError.config.handledError || axiosError.config.silentError)
+                return;
+
+            const hasResponse = !!(axiosError.response && axiosError.response.status);
+            let message = errorMessage;
+            let detail = errorMessageDetail;
+            let title = hasResponse
+                ? i18nGet('label_error') + ' ' + axiosError.response.status + '!'
+                : i18nGet('error_connectivity_label');
+
+            if (!hasResponse) {
+                if (!axiosError.request)
+                    return;
+
+                message = i18nGet('error_connectivity');
+                detail = i18nGet('error_connectivity_detail');
+            }
+
+            if (!message)
+                return;
+
+            openStatusSnackbar({ message, detail, title });
+        }, 0);
+    };
 
     axios.tainacanApi.interceptors.response.use(
         (response) => response,
         (error) => {
-            // Sends only necessary parts from error object, since we already used errorMessage
-            tainacanVisualErrorHandler(error)
+            scheduleStatusSnackbar(error);
             return Promise.reject(error.error ? error.error : error);
         }
     );
     axios.wpApi.interceptors.response.use(
         (response) => response,
-        (error) =>  {
-            tainacanVisualErrorHandler(error)
-            // Sends only necessary parts from error object, since we already used errorMessage
-            return Promise.reject(error.error ? error.error : error);  
+        (error) => {
+            scheduleStatusSnackbar(error);
+            return Promise.reject(error.error ? error.error : error);
         }
     );
 }
