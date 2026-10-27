@@ -693,7 +693,7 @@ AxiosErrorHandlerPlugin.install = function (app) {
                     return;
 
                 message = i18nGet('error_connectivity');
-                detail = i18nGet('error_connectivity_detail');
+                detail = i18nGet('error_connectivity_request_detail');
             }
 
             if (!message)
