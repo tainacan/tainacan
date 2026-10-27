@@ -1,5 +1,34 @@
 classDiagram
     direction TB
+    class Background_Process {
+        #table : string
+        +ID : false|int
+        #prefix : string
+        #action : string
+        #name : string
+        #default_max_retries : int
+        +__construct()
+        +get_id()
+        +get_name()
+        +set_name(name)
+        +save(priority)
+        +update(key, batch)
+        +open(key)
+        +close(key, status)
+        #get_retry_state(key, status)
+        +delete(key)
+        #is_queue_empty()
+        #get_batch()
+        #get_batch_by_key(key)
+        #handle()
+        +delete_all_batches()
+        +kill_process()
+        #write_log_to_file(key, log, type)
+        #write_log(key, log)
+        #write_error_log(key, log)
+        -recursive_stingify_log_array(log, break)
+        -has_errors(key)
+    }
     class Background_Process_Base {
         #action : string
         #start_time : int
@@ -38,35 +67,6 @@ classDiagram
         #clear_scheduled_event()
         +cancel_process()
         +debug(message)
-    }
-    class Background_Process {
-        #table : string
-        +ID : false|int
-        #prefix : string
-        #action : string
-        #name : string
-        #default_max_retries : int
-        +__construct()
-        +get_id()
-        +get_name()
-        +set_name(name)
-        +save(priority)
-        +update(key, batch)
-        +open(key)
-        +close(key, status)
-        #get_retry_state(key, status)
-        +delete(key)
-        #is_queue_empty()
-        #get_batch()
-        #get_batch_by_key(key)
-        #handle()
-        +delete_all_batches()
-        +kill_process()
-        #write_log_to_file(key, log, type)
-        #write_log(key, log)
-        #write_error_log(key, log)
-        -recursive_stingify_log_array(log, break)
-        -has_errors(key)
     }
     class Async_Request {
         #prefix : string

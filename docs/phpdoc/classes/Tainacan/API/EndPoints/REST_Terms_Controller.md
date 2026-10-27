@@ -43,6 +43,7 @@ classDiagram
         +get_item_permissions_check(request)
         +get_endpoint_args_for_item_schema(method)
         +get_wp_query_params()
+        -terms_batch_exceeds_limit(terms)
         +get_schema()
     }
 ```
@@ -398,6 +399,20 @@ Return the queries supported when getting a collection of objects
 ```php
 public get_wp_query_params(): array
 ```
+
+***
+
+### terms_batch_exceeds_limit
+
+```php
+private terms_batch_exceeds_limit(array $terms): bool
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$terms`  | **array** |             |
 
 ***
 

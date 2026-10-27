@@ -1,16 +1,5 @@
 classDiagram
     direction TB
-    class Dublin_Core {
-        +slug : mixed
-        +name : mixed
-        +allow_extra_metadata : mixed
-        +context_url : mixed
-        +header : mixed
-        +prefixes : mixed
-        +XML_namespace : mixed
-        +XML_append_root : mixed
-        +__construct()
-    }
     class Mapper {
         +slug : mixed
         +name : mixed
@@ -24,6 +13,17 @@ classDiagram
         +show_ui : mixed
         +_toArray()
         +get_url(meta_slug)
+        +__construct()
+    }
+    class Dublin_Core {
+        +slug : mixed
+        +name : mixed
+        +allow_extra_metadata : mixed
+        +context_url : mixed
+        +header : mixed
+        +prefixes : mixed
+        +XML_namespace : mixed
+        +XML_append_root : mixed
         +__construct()
     }
     Mapper <|-- Dublin_Core
