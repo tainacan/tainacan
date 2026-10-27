@@ -15,6 +15,40 @@ an audit trail for entity modifications and system activities.
 ```mermaid
 classDiagram
     direction TB
+    class Log {
+        #title : mixed
+        +post_type : mixed
+        #repository : string
+        +__construct(which)
+        +__toString()
+        +_toArray()
+        +get_capabilities()
+        +set_collection_id(collection_id)
+        +get_collection_id()
+        +get_title()
+        +get_user_name()
+        +get_date()
+        +get_slug()
+        +get_description()
+        +get_user_id()
+        +get_old_value()
+        +get_new_value()
+        +set_title(value)
+        +set_description(value)
+        +set_user_id(value)
+        +set_old_value(value)
+        +set_new_value(value)
+        +get_log_diffs()
+        +get_object_type()
+        +set_object_type(value)
+        +get_object_id()
+        +set_object_id(value)
+        +set_item_id(item_id)
+        +get_item_id()
+        +get_action()
+        +set_action(value)
+        +approve()
+    }
     class Entity {
         #repository : Repository
         -errors : array
@@ -52,40 +86,6 @@ classDiagram
         +can_publish(user)
         +get_capabilities()
         +diff(which)
-    }
-    class Log {
-        #title : mixed
-        +post_type : mixed
-        #repository : string
-        +__construct(which)
-        +__toString()
-        +_toArray()
-        +get_capabilities()
-        +set_collection_id(collection_id)
-        +get_collection_id()
-        +get_title()
-        +get_user_name()
-        +get_date()
-        +get_slug()
-        +get_description()
-        +get_user_id()
-        +get_old_value()
-        +get_new_value()
-        +set_title(value)
-        +set_description(value)
-        +set_user_id(value)
-        +set_old_value(value)
-        +set_new_value(value)
-        +get_log_diffs()
-        +get_object_type()
-        +set_object_type(value)
-        +get_object_id()
-        +set_object_id(value)
-        +set_item_id(item_id)
-        +get_item_id()
-        +get_action()
-        +set_action(value)
-        +approve()
     }
     Entity ..> Entity
     Entity <|-- Log
