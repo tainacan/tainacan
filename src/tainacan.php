@@ -26,9 +26,8 @@ const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
 $TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : get_option('tainacan_option_search_results_per_page', 96);
 
-// Maximum number of terms that can be created/edited in a single batch request
-// (see create_multiples_items, delete_items_permissions_check and
-// update_parent_terms_permissions_check on the terms REST controller).
+// Maximum number of terms that can be created, deleted or reparented in a single batch request
+// (see create_multiples_items, delete_items and update_parent_terms on the terms REST controller).
 if ( !defined( 'TAINACAN_API_MAX_BATCH_TERMS' ) ) {
 	define( 'TAINACAN_API_MAX_BATCH_TERMS', 200 );
 }
