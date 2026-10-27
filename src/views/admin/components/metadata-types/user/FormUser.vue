@@ -1,6 +1,9 @@
 <template>
     <section>
-        <b-field :addons="false">
+        <b-field
+                :addons="false"
+                :type="fieldMessage('default_author') ? 'is-danger' : ''"
+                :message="fieldMessage('default_author')">
             <label class="label is-inline">
                 {{ $i18n.getHelperTitle('tainacan-user', 'default_author') }}<span>&nbsp;*&nbsp;</span>
                 <help-button
@@ -21,7 +24,8 @@
 <script>
     export default {
         props: {
-            value: [ String, Object, Array ]
+            value: [ String, Object, Array ],
+            errors: [ String, Object, Array ]
         },
         emits: [
             'update:value',
@@ -35,6 +39,10 @@
             this.defaultAuthor = this.value && this.value.default_author ? this.value.default_author : 'no';
         },
         methods: {
+            fieldMessage(key) {
+                const message = this.errors && this.errors[key];
+                return typeof message === 'string' ? message : '';
+            },
             onUpdateDefaultAuthor(value) {
                 this.$emit('update:value', { default_author: value });
             }

@@ -267,11 +267,11 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <p 
-                        style="margin: 0 12px;"
-                        class="help is-danger">
+                <span
+                        class="help is-danger"
+                        style="margin: 0 12px;">
                     {{ formErrorMessage }}
-                </p>
+                </span>
                 <p 
                         v-if="updatedAt != undefined"
                         class="updated-at">
@@ -518,13 +518,16 @@
                             this.$router.push(this.$routerHelper.getTaxonomyEditPath(this.taxonomyId, true));
                         }
                     })
-                    .catch((errors) => {
-                        for (let error of errors.errors) {
-                            for (let attribute of Object.keys(error)) {
-                                this.editFormErrors[attribute] = error[attribute];
+                    .catch((error) => {
+                        const errors = error.response && error.response.data;
+                        if (errors && errors.errors) {
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let attribute of Object.keys(fieldError))
+                                    this.editFormErrors[attribute] = fieldError[attribute];
                             }
+                            this.formErrorMessage = errors.error_message;
                         }
-                        this.formErrorMessage = errors.error_message;
 
                         this.isLoadingTaxonomy = false;
                     });
@@ -586,6 +589,10 @@
 
                     })
                     .catch((error) => {
+                        const data = error.response && error.response.data;
+                        if (data && data.error_message)
+                            this.$showApiError(error, data.error_message);
+
                         this.$console.error(error)
                         this.isLoadingTaxonomy = false;
                     });
@@ -738,7 +745,7 @@
 
         .help {
             display: inline-flex;
-            font-size: 1.0em;
+            font-size: 0.813em;
             margin-top: 0;
             margin-inline-start: 24px;
 

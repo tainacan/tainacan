@@ -21,11 +21,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
                 resolve(itemMetadatum)
             })
             .catch( error => {
-                reject({
-                    error: error.response.data.errors,
-                    error_message: error.response.data.error_message,
-                    item_metadata: error.response.data.item_metadata
-                });
+                reject(error);
             })
     });
 };
@@ -230,20 +226,18 @@ export const sendItem = ( { commit }, item) => {
 /**
  * Updates an existing item and syncs the cached item state.
  * Dispatches `item/updateItem`.
- * Pass `silentError: true` when the caller renders the validation errors itself,
- * so the global error handler does not show its generic feedback.
- * @returns {Promise<Object>} Resolves with updated item data; rejects with API error_message and errors.
+ * @returns {Promise<Object>} Resolves with updated item data; rejects with the request error.
  */
-export const updateItem = ({ commit }, { silentError, ...item }) => {
+export const updateItem = ({ commit }, item) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item, { silentError: !!silentError })
+        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item)
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
                 resolve( res.data );
             }).catch( error => { 
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
 
     }); 
@@ -270,9 +264,9 @@ export const duplicateItem = ({}, { collectionId, itemId, copies }) => {
 /**
  * Updates the item document payload and optional document options.
  * Dispatches `item/updateItemDocument`.
- * @returns {Promise<Object>} Resolves with updated item data; rejects with API error_message and errors.
+ * @returns {Promise<Object>} Resolves with updated item data; rejects with the request error.
  */
-export const updateItemDocument = ({ commit }, { item_id, document, document_type, document_options, silentError }) => {
+export const updateItemDocument = ({ commit }, { item_id, document, document_type, document_options }) => {
     let params = {
         document: document,
         document_type: document_type,
@@ -281,14 +275,14 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
         params['document_options'] = document_options;
         
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item_id, params, { silentError: !!silentError }).then( res => {
+        axios.tainacanApi.put('/items/' + item_id, params).then( res => {
             let item = res.data;
 
             commit('setItem', item);
             commit('setLastUpdated');
             resolve( res.data );
         }).catch( error => { 
-            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            reject(error);
         });
 
     }); 
@@ -363,11 +357,7 @@ export const extractItemDocumentContentIndex = ({}, { itemId }) => {
                 });
             })
             .catch(error => {
-                reject({
-                    error_message: error.response && error.response.data && error.response.data.error_message
-                        ? error.response.data.error_message
-                        : error
-                });
+                reject(error);
             });
     });
 };
@@ -394,14 +384,7 @@ export const updateItemDocumentContentIndex = ({}, { itemId, documentContentInde
                 });
             })
             .catch(error => {
-                reject({
-                    error_message: error.response && error.response.data && error.response.data.error_message
-                        ? error.response.data.error_message
-                        : error,
-                    errors: error.response && error.response.data && error.response.data.errors
-                        ? error.response.data.errors
-                        : {}
-                });
+                reject(error);
             });
     });
 };

@@ -145,10 +145,7 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
                 resolve(metadatum);
             })
             .catch(error => {
-                reject({
-                    error_message: error['response']['data'].error_message,
-                    errors: error['response']['data'].errors
-                });
+                reject(error);
             });
     });
 };
@@ -416,10 +413,7 @@ export const updateMetadataSection = ({commit}, {collectionId, metadataSectionId
                 resolve(metadataSection);
             })
             .catch(error => {
-                reject({
-                    error_message: error['response']['data'].error_message,
-                    errors: error['response']['data'].errors
-                });
+                reject(error);
             });
     });
 };

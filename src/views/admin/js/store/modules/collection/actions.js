@@ -406,7 +406,7 @@ export const updateCollection = ({ commit }, { collection_id, collection }) => {
             commit('setCollection', collection);
             resolve( collection );
         }).catch( error => { 
-            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            reject(error);
         });
 
     });

@@ -1,5 +1,8 @@
 <template>
-    <b-field :addons="false">
+    <b-field
+            :addons="false"
+            :type="fieldMessage('max_view_more_pages') ? 'is-danger' : ''"
+            :message="fieldMessage('max_view_more_pages')">
         <label class="label is-inline">
             {{ $i18n.getHelperTitle('tainacan-filter-checkbox', 'max_view_more_pages') }}
             <help-button
@@ -21,7 +24,8 @@
 <script>
     export default {
         props: {
-            modelValue: Object
+            modelValue: Object,
+            errors: [ String, Object, Array ]
         },
         emits: [
             'update:model-value',
@@ -39,6 +43,10 @@
             this.maxViewMorePages = isNaN(parsed) || parsed < 0 ? 0 : parsed;
         },
         methods: {
+            fieldMessage(key) {
+                const message = this.errors && this.errors[key];
+                return typeof message === 'string' ? message : '';
+            },
             emitValues() {
                 const parsed = parseInt(this.maxViewMorePages, 10);
                 this.$emit('update:model-value', {

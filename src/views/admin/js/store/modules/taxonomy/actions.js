@@ -16,7 +16,7 @@ export const createTaxonomy = ({commit}, taxonomy) => {
                 resolve( taxonomy );
             })
             .catch(error => {
-                reject( error.response );
+                reject(error);
             });
     });
 };
@@ -52,7 +52,7 @@ export const updateTaxonomy = ({ commit }, taxonomy) => {
                 resolve( taxonomy );
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };
@@ -215,7 +215,7 @@ export const sendChildTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => 
                 resolve( newTerm );
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };
@@ -239,7 +239,7 @@ export const updateTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
                resolve( updatedTerm );
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };
@@ -261,7 +261,7 @@ export const deleteTerm = ({}, { taxonomyId, termId, deleteChildTerms = false })
                 resolve( term );
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };
@@ -289,7 +289,7 @@ export const deleteTerms = ({}, { taxonomyId, terms, parent, deleteChildTerms = 
                 resolve( terms );
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };
@@ -314,7 +314,7 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
                 resolve( terms );
             })
             .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
     });
 };
@@ -379,14 +379,12 @@ export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) =
     });
 
     return new Promise((resolve, reject) => {
-        // silentError: the caller (terms list) renders the detailed per-term
-        // validation errors itself, so the global handler must not duplicate it.
-        axios.tainacanApi.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms, { silentError: true } )
+        axios.tainacanApi.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms)
         .then(res => {
             resolve( res.data );
         })
         .catch(error => {
-            reject(error['response']['data']);
+            reject(error);
         });
     });
 };

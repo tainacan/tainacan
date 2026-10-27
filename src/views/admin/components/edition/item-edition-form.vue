@@ -1319,7 +1319,7 @@ export default {
 
             const promise = status == 'trash'
                 ? this.deleteItem({ itemId: this.itemId, isPermanently: false })
-                : this.updateItem({ ...data, silentError: true });
+                : this.updateItem(data);
 
             // Clear errors so we don't have them duplicated from api
             this.errors = [];
@@ -1393,38 +1393,35 @@ export default {
                 if ( !this.item.current_user_can_edit )
                     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
-            .catch((errors) => {
+            .catch((error) => {
 
-                this.prepareErrors(errors);
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
-                // The update request is silent, so we show the API validation errors here instead of the generic feedback
-                if (status != 'trash')
-                    this.showSubmitErrorsSnackbar(errors);
+                if (status != 'trash') {
+                    const data = error.response && error.response.data;
+                    if (data && data.errors)
+                        this.prepareErrors(data);
+                    this.showSubmitErrorsSnackbar(error);
+                }
 
                 this.isLoading = false;
             });
         },
-        showSubmitErrorsSnackbar(errors) {
+        showSubmitErrorsSnackbar(error) {
             const errorMessages = this.errors
-                .map((error) => [].concat(error.errors)
+                .map((fieldError) => [].concat(fieldError.errors)
                     .map((singleError) => typeof singleError == 'string' ? singleError : Object.values(singleError).join(' '))
                     .join(' ')
                 )
                 .filter((errorMessage) => errorMessage);
 
+            const data = error.response && error.response.data;
             const message = errorMessages.length
                 ? this.$i18n.get('info_errors_in_form') + ': ' + errorMessages.join(' ')
-                : (errors && errors.error_message ? errors.error_message : this.$i18n.get('error_other'));
+                : (data && typeof data.error_message === 'string' ? data.error_message : '');
 
-            this.$buefy.snackbar.open({
-                message: this.$htmlSanitizer.sanitize(message),
-                type: 'is-danger',
-                position: 'is-bottom-right',
-                pauseOnHover: true,
-                queue: false
-            });
+            this.$showApiError(error, message);
         },
         hasErrorsOnForm(hasErrors) {
             if (hasErrors)
@@ -1657,7 +1654,7 @@ export default {
             this.isLoading = true;
             this.form.document_type = 'text';
             this.form.document = newTextContent;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type, silentError: true })
+            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
@@ -1666,8 +1663,8 @@ export default {
                     this.clearDocumentError();
                     this.isLoading = false;
                 })
-                .catch((errors) => {
-                    this.prepareErrors(errors);
+                .catch((error) => {
+                    this.applyDocumentApiError(error);
                     this.isLoading = false;
                 });
         },
@@ -1713,8 +1710,7 @@ export default {
                     item_id: this.itemId,
                     document: this.form.document,
                     document_type: this.form.document_type,
-                    document_options: this.form.document_options,
-                    silentError: true
+                    document_options: this.form.document_options
                 })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
@@ -1746,8 +1742,8 @@ export default {
                         this.item.thumbnail_id = item.thumbnail_id;
                     }
                 })
-                .catch((errors) => {
-                    this.prepareErrors(errors);
+                .catch((error) => {
+                    this.applyDocumentApiError(error);
                     this.isLoading = false;
                 });
         },
@@ -1759,15 +1755,14 @@ export default {
             this.updateItemDocument({
                 item_id: this.itemId,
                 document: this.form.document,
-                document_type: this.form.document_type,
-                silentError: true
+                document_type: this.form.document_type
             })
             .then(() => {
                 this.item.document_mimetype = 'empty';
                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
-            .catch((errors) => {
-                this.prepareErrors(errors);
+            .catch((error) => {
+                this.applyDocumentApiError(error);
             });
         },
         deleteThumbnail() {
@@ -1845,7 +1840,7 @@ export default {
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
                         
-                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type, silentError: true })
+                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                             .then((item) => {
                                 this.clearDocumentError();
                                 this.isLoading = false;
@@ -1861,8 +1856,8 @@ export default {
                                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
                             })
-                            .catch((errors) => {
-                                this.prepareErrors(errors);
+                            .catch((error) => {
+                                this.applyDocumentApiError(error);
                                 this.isLoading = false;
                             });
                     }
@@ -2182,6 +2177,14 @@ export default {
             }
 
             return enabledMetadata.indexOf(metadatum.id);
+        },
+        applyDocumentApiError(error) {
+            const data = error.response && error.response.data;
+            if (!data || !data.errors)
+                return;
+
+            this.prepareErrors(data);
+            this.$claimApiError(error);
         },
         prepareErrors(errors) {
             if ( errors.errors ) {

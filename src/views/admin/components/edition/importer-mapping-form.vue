@@ -220,9 +220,9 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <p class="help is-danger">
+                <span class="help is-danger">
                     {{ formErrorMessage }}
-                </p>
+                </span>
                 <div class="control">
                     <button
                             id="button-submit-importer-mapping"
@@ -396,7 +396,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
-
 export default {
     name: 'ImporterEditionForm',
     components: {
@@ -465,7 +464,7 @@ export default {
                     }
                 }
             );
-        });
+        }).catch(() => {});
 
         this.loadImporter();
 
@@ -504,6 +503,13 @@ export default {
         ...mapActions('collection', [
             'fetchCollectionBasics'
         ]),
+        applyApiFormError(error) {
+            const data = error && error.response && error.response.data;
+            const message = data && typeof data.error_message === 'string' ? data.error_message : '';
+            if (message)
+                this.$claimApiError(error);
+            this.formErrorMessage = message;
+        },
         loadImporter() {
             
             // Puts loading on Draft Importer creation
@@ -529,16 +535,15 @@ export default {
                             this.isLoadingSourceInfo = false;
                             this.loadMetadata();
                         })
-                        .catch((errors) => {
+                        .catch((error) => {
                             this.isLoadingSourceInfo = false;
-                            this.formErrorMessage = errors.error_message;
-                            
+                            this.applyApiFormError(error);
                         });
                     
                 })
                 .catch(error => {
+                    this.isLoading = false;
                     this.$console.error(error);
-                    this.formErrorMessage = error.error_message;
                 });
         },
         loadMetadata() {
@@ -568,11 +573,14 @@ export default {
                             .then(res => {
                                 if (res)
                                     this.mappedCollection['mapping'] = res;
+                            })
+                            .catch((error) => {
+                                this.applyApiFormError(error);
                             });
                     })
                     .catch((error) => {
                         this.$console.error(error);
-                        this.formErrorMessage = error.error_message;
+                        this.applyApiFormError(error);
                         this.isFetchingCollectionMetadata = false;
                     });
                     
@@ -660,11 +668,9 @@ export default {
                     this.importer = updatedImporter;
                     this.finishRunImporter();
                 })
-                .catch((errors) => {
+                .catch((error) => {
                     this.isLoadingRun = false;
-                    
-
-                    this.formErrorMessage = errors.error_message;
+                    this.applyApiFormError(error);
                 });
 
         },
@@ -677,11 +683,9 @@ export default {
                     this.isLoadingRun = false;
                     this.$router.push(this.$routerHelper.getProcessesPath());
                 })
-                .catch((errors) => {
+                .catch((error) => {
                     this.isLoadingRun = false;
-                    
-
-                    this.formErrorMessage = errors.error_message;
+                    this.applyApiFormError(error);
                 });
         },
         onSelectCollectionChildMetadata(selectedMetadatum, sourceMetadatum, parentId, parentSource) {

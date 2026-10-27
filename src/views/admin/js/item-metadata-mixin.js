@@ -1,5 +1,4 @@
 import { mapActions } from 'vuex';
-
 export const itemMetadataMixin = {
     created() {
         this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
@@ -64,13 +63,18 @@ export const itemMetadataMixin = {
                         if ( parentId )
                             this.$emitter.emit('updateErrorMessageOf#' + parentId );
                     })
-                    .catch(({ error }) => {
+                    .catch((error) => {
                         this.isUpdatingValues = false;
+                        const fieldErrors = error.response && error.response.data && error.response.data.errors;
+                        if (!fieldErrors)
+                            return;
+
+                        this.$claimApiError(error);
                         let index = this.errors.findIndex( errorItem => ( errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ) ) || ( errorItem.metadatum_id == parentId ) );
                         let messages = [];
 
-                        for (let index in error)
-                            messages.push(error[index]);
+                        for (let fieldIndex in fieldErrors)
+                            messages.push(fieldErrors[fieldIndex]);
                         
                         if ( index >= 0) {
                             Object.assign( this.errors, { [index]: { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } });
