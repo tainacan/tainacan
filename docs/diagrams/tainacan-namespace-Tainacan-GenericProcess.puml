@@ -55,6 +55,11 @@
     +get_process_instance_by_session_id(session_id)
     +delete_process_instance(process)
   }
+  class "Background_Generic_Process" as Background_Generic_Process {
+    #action : string
+    +__construct()
+    +task(batch)
+  }
   class "Generic_Process" as Generic_Process {
     #id : identifier
     #steps : array
@@ -94,11 +99,6 @@
     +_to_Array(short)
     +finished()
     +run()
-  }
-  class "Background_Generic_Process" as Background_Generic_Process {
-    #action : string
-    +__construct()
-    +task(batch)
   }
   Generic_Process <|-- Bulk_Edit_Process
   Generic_Process_Handler ..> Background_Generic_Process

@@ -1,15 +1,15 @@
 classDiagram
     direction TB
+    class Metadatum { }
+    class Metadata_Section { }
+    class Item { }
+    class Entity { }
     class Item_Metadata_Entity { }
+    class Term { }
     class Log { }
     class Taxonomy { }
-    class Term { }
-    class Entity { }
-    class Metadata_Section { }
-    class Metadatum { }
-    class Item { }
-    class Filter { }
     class Collection { }
+    class Filter { }
     Collection ..> Collection
     Collection ..> Metadatum
     Entity ..> Collection

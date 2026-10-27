@@ -31,6 +31,7 @@ classDiagram
         +search_hooks()
         +get_search_terms()
         +init_tainacan_search_vars()
+        -get_searchable_taxonomies(collection_id)
         +get_where_to_title_and_content()
         +get_where_to_term_taxonomies()
         +get_where_to_postmeta()
@@ -164,6 +165,34 @@ public get_search_terms(): mixed
 ```php
 public init_tainacan_search_vars(): mixed
 ```
+
+***
+
+### get_searchable_taxonomies
+
+Lists the taxonomies whose terms the current user may match through the search.
+
+```php
+private get_searchable_taxonomies(int $collection_id): string[]
+```
+
+Only taxonomies used by Taxonomy metadata the user can read are returned, so terms of a
+private metadatum are not matched for users without the read_private_metadata capability
+of the collection (or of the repository, for repository-level metadata). This mirrors the
+post_status check get_where_to_postmeta() applies to text values. Metadata nested in
+compound metadata are included.
+
+Metadata::fetch_by_collection() already restricts statuses by capability.
+
+**Parameters:**
+
+| Parameter        | Type    | Description                |
+|------------------|---------|----------------------------|
+| `$collection_id` | **int** | Collection being searched. |
+
+**Return Value:**
+
+Taxonomy db identifiers.
 
 ***
 
