@@ -214,8 +214,7 @@ export default [
                 mosaicDensity,
                 maxColumnsCount,
                 imageSize,
-                tainacanViewMode,
-                displayedMetadata
+                tainacanViewMode
             } = attributes;
 
             // Gets attributes such as style, that are automatically added by the editor hook
