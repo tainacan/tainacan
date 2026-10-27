@@ -15,44 +15,6 @@ items and their associated metadata, filters, and display settings.
 ```mermaid
 classDiagram
     direction TB
-    class Entity {
-        #repository : Repository
-        -errors : array
-        #post_type : string|false
-        #capability_type : string|false
-        +WP_Post : WP_Post
-        -validated : bool
-        +cap : object
-        +__construct(which)
-        +get_repository()
-        +get_date_i18n(date)
-        +get_mapped_property(prop)
-        #set_mapped_property(prop, value)
-        +set(prop, value)
-        +get(prop)
-        +set_status(value)
-        +validate()
-        +validate_prop(prop)
-        +get_errors()
-        +$get_post_type()
-        +$get_capability_type()
-        +get_status()
-        +get_db_identifier()
-        +get_id()
-        +add_error(type, message)
-        +reset_errors()
-        +get_validated()
-        #set_validated(value)
-        #set_as_valid()
-        +_toArray()
-        +_toJson()
-        +can_read(user)
-        +can_edit(user)
-        +can_delete(user)
-        +can_publish(user)
-        +get_capabilities()
-        +diff(which)
-    }
     class Collection {
         #diplay_name : mixed
         +post_type : string
@@ -108,6 +70,7 @@ classDiagram
         +get_hide_items_thumbnail_on_lists()
         +get_submission_use_recaptcha()
         +get_default_metadata_section_properties()
+        +get_item_require_document()
         +get_item_enabled_document_types()
         +get_item_publication_label()
         +get_item_document_label()
@@ -148,6 +111,7 @@ classDiagram
         +set_hide_items_thumbnail_on_lists(value)
         +set_submission_use_recaptcha(value)
         +set_default_metadata_section_properties(value)
+        +set_item_require_document(value)
         +set_item_enabled_document_types(value)
         +set_item_publication_label(value)
         +set_item_document_label(value)
@@ -163,6 +127,44 @@ classDiagram
         +set_item_enable_document_content_editing(value)
         +validate()
         +user_can(capability, user)
+    }
+    class Entity {
+        #repository : Repository
+        -errors : array
+        #post_type : string|false
+        #capability_type : string|false
+        +WP_Post : WP_Post
+        -validated : bool
+        +cap : object
+        +__construct(which)
+        +get_repository()
+        +get_date_i18n(date)
+        +get_mapped_property(prop)
+        #set_mapped_property(prop, value)
+        +set(prop, value)
+        +get(prop)
+        +set_status(value)
+        +validate()
+        +validate_prop(prop)
+        +get_errors()
+        +$get_post_type()
+        +$get_capability_type()
+        +get_status()
+        +get_db_identifier()
+        +get_id()
+        +add_error(type, message)
+        +reset_errors()
+        +get_validated()
+        #set_validated(value)
+        #set_as_valid()
+        +_toArray()
+        +_toJson()
+        +can_read(user)
+        +can_edit(user)
+        +can_delete(user)
+        +can_publish(user)
+        +get_capabilities()
+        +diff(which)
     }
     Collection ..> Collection
     Entity ..> Collection
@@ -440,6 +442,14 @@ protected $submission_default_status
 
 ```php
 protected $submission_use_recaptcha
+```
+
+***
+
+### item_require_document
+
+```php
+protected $item_require_document
 ```
 
 ***
@@ -1135,6 +1145,20 @@ public get_default_metadata_section_properties(): void
 
 ***
 
+### get_item_require_document
+
+Check if document is required to publish an item in this collection.
+
+```php
+public get_item_require_document(): string
+```
+
+**Return Value:**
+
+'yes' if required, 'no' otherwise.
+
+***
+
 ### get_item_enabled_document_types
 
 Get the enabled document types for this collection.
@@ -1752,6 +1776,22 @@ public set_default_metadata_section_properties(mixed $value): void
 | Parameter | Type      | Description |
 |-----------|-----------|-------------|
 | `$value`  | **mixed** |             |
+
+***
+
+### set_item_require_document
+
+Set if document is required for this collection.
+
+```php
+public set_item_require_document(string $value): void
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description                        |
+|-----------|------------|------------------------------------|
+| `$value`  | **string** | 'yes' if required, 'no' otherwise. |
 
 ***
 
