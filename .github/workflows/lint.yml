@@ -9,7 +9,7 @@ on:
       - 'src/views/**/*.js'
       - '**.vue'
       - 'eslint.config.js'
-      - 'scripts/lint-changed.js'
+      - 'lint-changed.sh'
       - '.github/workflows/lint.yml'
   pull_request:
     paths:
@@ -69,4 +69,4 @@ jobs:
           else
             BASE="origin/develop"
           fi
-          node scripts/lint-changed.js --base="$BASE"
+          ./lint-changed.sh --base="$BASE"
