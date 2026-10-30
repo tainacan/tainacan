@@ -943,6 +943,27 @@ html {
     }
 }
 
+/* Keep the WordPress toolbar visible while hiding only its side menu. */
+.tainacan-pages-container.tainacan-pages-container--toolbar-only {
+    position: fixed;
+    top: var(--wp-admin--admin-bar--height);
+    inset-inline-start: 0;
+    width: 100%;
+    height: calc(100dvh - var(--wp-admin--admin-bar--height));
+
+    #wpwrap {
+        z-index: 1;
+    }
+    #adminmenumain {
+        display: none;
+    }
+    #wpcontent {
+        margin-left: 0;
+    }
+    #wpadminbar {
+        z-index: 99999;
+    }
+}
 
 /* Fullscreen mode */
 .tainacan-pages-container.tainacan-pages-container--fullscreen {
