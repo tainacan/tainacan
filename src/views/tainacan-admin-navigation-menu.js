@@ -335,7 +335,8 @@ function handleUITweakButtons() {
 
     const tainacanMenuToggler = document.getElementById('tainacan-menu-toggler');
     const tainacanMenuCollapser = document.getElementById('tainacan-menu-collapser');
-    const tainacanFullscreenToggler = document.getElementById('tainacan-fullscreen-toggler');
+    const applyBtn = document.getElementById('tainacan-apply-fullscreen-options');
+    const showSettingsLink = document.getElementById('show-settings-link');
     const tainacanNavigationMenu = document.getElementById('tainacan-navigation-menu');
     const tainacanNavigationMenuBackdrop = document.getElementById('tainacan-navigation-menu-backdrop');
 
@@ -390,66 +391,56 @@ function handleUITweakButtons() {
         } );
     }
 
-    if ( tainacanFullscreenToggler ) {
+    if ( applyBtn ) {
 
-        tainacanFullscreenToggler.addEventListener( 'click', function() {
-
-            const extraOptionsForm = document.getElementById('adv-settings');
-            const showSettingsLink = document.getElementById('show-settings-link');
-
-            if ( !extraOptionsForm || !extraOptionsForm['tainacan-fullscreen-state'] || !showSettingsLink )
-               return;
-
-            const isFullscreen = !document.body.classList.contains('tainacan-pages-container--fullscreen');
-
-            if ( extraOptionsForm['tainacan-fullscreen-state'].value != isFullscreen ) {
-                showSettingsLink.click();
-                return; 
+        applyBtn.addEventListener( 'click', function() {
+            if ( document.body.classList.contains('tainacan-pages-container--iframe-mode') ) {
+                return;
             }
 
+            const selectedInput = document.querySelector('input[name="tainacan-fullscreen-state"]:checked');
+            if ( !selectedInput )
+                return;
+
+            const wordpressNavigation = selectedInput.value;
+
+            // Atualiza as preferências
             let currentUserPrefs = parseTainacanUserPrefs();
-            currentUserPrefs['is_fullscreen'] = isFullscreen;
+            currentUserPrefs['wordpress_navigation'] = wordpressNavigation;
+            delete currentUserPrefs['is_fullscreen'];
             tainacan_user.prefs = JSON.stringify(currentUserPrefs);
 
-            let data = { 'meta': { 'tainacan_prefs': tainacan_user.prefs } };
+            // Salva na API do WordPress
+            fetch(tainacan_user.rest_url + 'wp/v2/users/me', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': tainacan_user.nonce
+                },
+                body: JSON.stringify({
+                    meta: {
+                        tainacan_prefs: tainacan_user.prefs
+                    }
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // Alterna as classes do DOM dinamicamente
+                    document.body.classList.toggle('tainacan-pages-container--fullscreen', wordpressNavigation === 'none');
+                    document.body.classList.toggle('tainacan-pages-container--toolbar-only', wordpressNavigation === 'toolbar');
 
-            if ( tainacan_user.nonce && tainacan_user.wp_api_url ) {
-            
-                fetch(tainacan_user.wp_api_url + 'users/me', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-WP-Nonce': tainacan_user.nonce
-                    },
-                    body: JSON.stringify(data)
-                }).then(response => {
-
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                    // Fecha o painel de opções de tela
+                    if (showSettingsLink) {
+                        showSettingsLink.click();
                     }
 
-                    return response.json();
-                    
-                }).then((data) => {
-                    
-                    document.body.classList.toggle('tainacan-pages-container--fullscreen');
-                    tainacanFullscreenToggler.ariaPressed = '' + isFullscreen;
-        
-                    // Emits fullscreen mode change event so that inner components such as Masonry can react to layout change
-                    const fullscreenEvent = new CustomEvent('tainacan_fullscreen_mode_change', {
-                        detail: { isFullscreen: isFullscreen }
-                    });
-                    document.dispatchEvent(fullscreenEvent);
-
-                    if ( data.meta && data.meta.tainacan_prefs)
-                        tainacan_user.prefs = data.meta.tainacan_prefs;
-
-                    showSettingsLink.click();
-
-                }).catch(error => {
-                    console.error('Request to /users/me failed. Maybe you\'re not logged in.', error);
-                });
-            }
+                    // Dispara o evento de recálculo de layout para o Vue
+                    const event = new Event('tainacan_fullscreen_mode_change');
+                    window.dispatchEvent(event);
+                    document.dispatchEvent(event);
+                }
+            }).catch(error => {
+                console.error('Erro ao salvar preferências de tela do Tainacan:', error);
+            });
 
         } );
     }
@@ -513,4 +504,3 @@ handleMenuCollapses();
 handleDynamicMenusAndBreadcrumbs();
 handleUITweakButtons();
 handleHelpTab();
-
