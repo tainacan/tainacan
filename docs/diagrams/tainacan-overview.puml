@@ -57,6 +57,7 @@
     +search_hooks()
     +get_search_terms()
     +init_tainacan_search_vars()
+    -get_searchable_taxonomies(collection_id)
     +get_where_to_title_and_content()
     +get_where_to_term_taxonomies()
     +get_where_to_postmeta()
@@ -491,6 +492,7 @@
       +get_hide_items_thumbnail_on_lists()
       +get_submission_use_recaptcha()
       +get_default_metadata_section_properties()
+      +get_item_require_document()
       +get_item_enabled_document_types()
       +get_item_publication_label()
       +get_item_document_label()
@@ -531,6 +533,7 @@
       +set_hide_items_thumbnail_on_lists(value)
       +set_submission_use_recaptcha(value)
       +set_default_metadata_section_properties(value)
+      +set_item_require_document(value)
       +set_item_enabled_document_types(value)
       +set_item_publication_label(value)
       +set_item_document_label(value)
@@ -602,6 +605,7 @@
       +update(key, batch)
       +open(key)
       +close(key, status)
+      #get_retry_state(key, status)
       +delete(key)
       #is_queue_empty()
       #get_batch()
@@ -1664,6 +1668,7 @@
         +get_item_permissions_check(request)
         +get_endpoint_args_for_item_schema(method)
         +get_wp_query_params()
+        -terms_batch_exceeds_limit(terms)
         +get_schema()
       }
       class "REST_Metadata_Sections_Controller\n<b>REST API controller for managing Tainacan metadata sections.</b>" as api_endpoints_REST_Metadata_Sections_Controller {
@@ -2447,7 +2452,10 @@
   Roles ..> entities_Metadata_Section
   Roles ..> entities_Metadatum
   Search_Engine ..> entities_Collection
+  Search_Engine ..> entities_Metadatum
+  Search_Engine ..> repositories_Collections
   Search_Engine ..> repositories_Metadata
+  Search_Engine ..> repositories_Taxonomies
   __Bulk_Edit ..> entities_Item
   __Bulk_Edit ..> entities_Item_Metadata_Entity
   __Bulk_Edit ..> entities_Metadatum

@@ -106,6 +106,10 @@
             "type": "string",
             "default": ""
         },
+        "randomOrder": {
+            "type": "boolean",
+            "default": false
+        },
         "blockId": {
             "type": "string",
             "default": ""

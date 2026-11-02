@@ -5,12 +5,6 @@ This is an automatically generated documentation for **Documentation**.
 
 ### \
 
-#### Classes
-
-| Class                                                    | Description              |
-|----------------------------------------------------------|--------------------------|
-| [`GeoCoordinate_Helper`](/dev/phpdoc/classes/GeoCoordinate_Helper.md) | Class TainacanFilterType |
-
 #### Functions
 
 | Function                                                                                                                   | Description                                                                                                                                                 |
@@ -176,6 +170,7 @@ classDiagram
     Pages ..> Exposers_Handler
     Pages ..> Mappers_Handler
     Pages ..> Media
+    Pages ..> Settings
     Pages ..> Theme_Helper
     Pages <|-- Admin
     Pages <|-- Dashboard
@@ -646,25 +641,26 @@ http://purl.org/dc/elements/1.1/ |
 
 #### Classes
 
-| Class                                                                                      | Description                 |
-|--------------------------------------------------------------------------------------------|-----------------------------|
-| [`Compound`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Compound.md)                                   | Class TainacanMetadatumType |
-| [`MetadataTypeControlHelper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/MetadataTypeControlHelper.md) |                             |
-| [`Control`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Control.md)                                     | Class TainacanMetadatumType |
-| [`Core_Description`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Description.md)                   | Class TainacanMetadatumType |
-| [`Core_Title`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Title.md)                               | Class TainacanMetadatumType |
-| [`Date`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Date.md)                                           | Class TainacanMetadatumType |
-| [`GeoCoordinate`](/dev/phpdoc/classes/Tainacan/Metadata_Types/GeoCoordinate.md)                         | Class GeoCoordinate         |
-| [`Metadata_Type`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type.md)                         | Class TainacanMetadatumType |
-| [`Metadata_Type_Helper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type_Helper.md)           | Class MetadataTypeHelper    |
-| [`Numeric`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Numeric.md)                                     | Class TainacanMetadatumType |
-| [`Relationship`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Relationship.md)                           | Class TainacanMetadatumType |
-| [`Selectbox`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Selectbox.md)                                 | Class TainacanMetadatumType |
-| [`Taxonomy`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Taxonomy.md)                                   | Class TainacanMetadatumType |
-| [`Text`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Text.md)                                           | Class TainacanMetadatumType |
-| [`Textarea`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Textarea.md)                                   | Class TainacanMetadatumType |
-| [`URL`](/dev/phpdoc/classes/Tainacan/Metadata_Types/URL.md)                                             | Class TainacanMetadatumType |
-| [`User`](/dev/phpdoc/classes/Tainacan/Metadata_Types/User.md)                                           | Class TainacanMetadatumType |
+| Class                                                                                      | Description                                                                    |
+|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`Compound`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Compound.md)                                   | Class TainacanMetadatumType                                                    |
+| [`MetadataTypeControlHelper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/MetadataTypeControlHelper.md) |                                                                                |
+| [`Control`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Control.md)                                     | Class TainacanMetadatumType                                                    |
+| [`Core_Description`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Description.md)                   | Class TainacanMetadatumType                                                    |
+| [`Core_Title`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Core_Title.md)                               | Class TainacanMetadatumType                                                    |
+| [`Date`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Date.md)                                           | Class TainacanMetadatumType                                                    |
+| [`GeoCoordinate_Helper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/GeoCoordinate_Helper.md)           | Joins post meta and appends spatial WHERE clauses for `geoquery` item queries. |
+| [`GeoCoordinate`](/dev/phpdoc/classes/Tainacan/Metadata_Types/GeoCoordinate.md)                         | Class GeoCoordinate                                                            |
+| [`Metadata_Type`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type.md)                         | Class TainacanMetadatumType                                                    |
+| [`Metadata_Type_Helper`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Metadata_Type_Helper.md)           | Class MetadataTypeHelper                                                       |
+| [`Numeric`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Numeric.md)                                     | Class TainacanMetadatumType                                                    |
+| [`Relationship`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Relationship.md)                           | Class TainacanMetadatumType                                                    |
+| [`Selectbox`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Selectbox.md)                                 | Class TainacanMetadatumType                                                    |
+| [`Taxonomy`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Taxonomy.md)                                   | Class TainacanMetadatumType                                                    |
+| [`Text`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Text.md)                                           | Class TainacanMetadatumType                                                    |
+| [`Textarea`](/dev/phpdoc/classes/Tainacan/Metadata_Types/Textarea.md)                                   | Class TainacanMetadatumType                                                    |
+| [`URL`](/dev/phpdoc/classes/Tainacan/Metadata_Types/URL.md)                                             | Class TainacanMetadatumType                                                    |
+| [`User`](/dev/phpdoc/classes/Tainacan/Metadata_Types/User.md)                                           | Class TainacanMetadatumType                                                    |
 
 ### \Tainacan\OAIPMH
 

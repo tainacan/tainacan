@@ -22,6 +22,7 @@ classDiagram
         -init()
         +enqueue_command_palette_scripts()
         -get_command_palette_menu_items()
+        -append_settings_section_commands(commands, page_slug, settings_label)
         -build_hierarchical_label(item_label, parent_label, parent_slug)
         -generate_command_name_slug(page_slug, fallback_label)
         -build_menu_item_url(page_slug, admin_url)
@@ -106,6 +107,28 @@ private get_command_palette_menu_items(): array
 **Return Value:**
 
 Array of menu items with their labels, URLs, and children.
+
+***
+
+### append_settings_section_commands
+
+Adds one command per settings section under the Settings menu command.
+
+```php
+private append_settings_section_commands(array& $commands, string $page_slug, string $settings_label): void
+```
+
+The Settings item is only present when the current user can open that screen,
+so these commands keep the same gate. Section ids match the headings assigned
+by the settings script.
+
+**Parameters:**
+
+| Parameter         | Type       | Description                                 |
+|-------------------|------------|---------------------------------------------|
+| `$commands`       | **array**  | Command list, passed by reference.          |
+| `$page_slug`      | **string** | Menu item slug.                             |
+| `$settings_label` | **string** | Hierarchical label of the Settings command. |
 
 ***
 

@@ -1298,36 +1298,110 @@ return apply_filters( 'tainacan-i18n', [
 	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),
 	'error_connectivity' => __('It is possible that you are disconnected or the server is not working properly.', 'tainacan'),
 	'error_permalinks_label' => __('Permalinks issue', 'tainacan'),
-	'error_400'	  => __('Some request went wrong due to invalid syntax.', 'tainacan'),
+	'error_400'	  => __('The server refused this request.', 'tainacan'),
 	'error_401'	  => __('You must authenticate to access this information. Try logging in again on the WordPress Admin panel.', 'tainacan'),
 	'error_403'	  => __('It seems that you are not allowed to access this content.', 'tainacan'),
-	'error_404'	  => __('A wrong request was made or this information does not exist.', 'tainacan'),
+	'error_404'	  => __('This information was not found.', 'tainacan'),
 	'error_408'	  => __('This request exceeded the server expected timeout.', 'tainacan'),
-	'error_413'	  => __('This request size exceeded the server size limit', 'tainacan'),
+	'error_413'	  => __('This request size exceeded the server size limit.', 'tainacan'),
 	'error_500'	  => __('An internal server error occurred. Try contacting the administrator.', 'tainacan'),
 	'error_502'	  => __('A communication between servers went wrong. Try contacting the administrator.', 'tainacan'),
 	'error_503'	  => __('Some service is not available now. Try again later and if it persists, contact the administrator.', 'tainacan'),
 	'error_504'	  => __('The server communication exceeded the expected timeout. Try contacting the administrator.', 'tainacan'),
-	'error_511'	  => __('You must authenticate to get access this information. Try logging in again on the WordPress Admin panel.', 'tainacan'),
+	'error_511'	  => __('A network login is required to reach the server.', 'tainacan'),
 	'error_other' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan'),
-	'error_connectivity_detail' => __('The WordPress Heartbit API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
+	'error_connectivity_detail' => __('The WordPress Heartbeat API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
+	'error_connectivity_request_detail' => __('The request did not reach the server, so the last change may not have been saved. Try again once the connection is back.', 'tainacan'),
 	/* translators: %s is the link to the permalink settings page */
 	'error_permalinks_detail' => __( 'Tainacan requires your Permalink settings to be configured. Please visit <a href="%s" target="_blank">Permalink settings</a> and define it to an option such as "postname".', 'tainacan' ),
-	'error_400_detail'	 => __('The server could not understand the request due to invalid syntax. This is possibly an issue with Tainacan and should be reported to its developers.', 'tainacan'),
-	'error_401_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_400_detail'	 => __('The server refused this request because the information sent was not accepted. The address of the request is shown below.', 'tainacan'),
+	'error_401_detail'	 => __('You must authenticate to get access to this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
 	'error_403_detail'	 => __('It seems that you are not allowed to access this content. Your user might have a role with insufficient capabilities. If that is not the case, check if you are correctly logged in on the WordPress Admin panel.', 'tainacan'),
-	'error_404_detail'	 => __('A wrong request was made or this information does not exist. This can either mean some connection error occurred just now or the content that you are looking for was requested wrongly. In that case, it might be worth to report the issue to Tainacan developers.', 'tainacan'),
+	'error_404_detail'	 => __('This was not found. It may have been deleted, or the request asked for something that is not there.', 'tainacan'),
 	'error_408_detail'	 => __('This request exceeded the server expected timeout. This can be caused by a slow connection or connectivity issues. If it is not something noticeable in other pages, try contacting the administrator.', 'tainacan'),
 	'error_413_detail'	 => __('This request exceeded the server size limit. This can be caused by lack of configurations in the server side. Try contacting the administrator.', 'tainacan'),
 	'error_500_detail'	 => __('An internal server error occurred. This error can occur for a variety of reasons, and a more detailed description can be found on the server logs. Try contacting the administrator and provide information of the moment when the error occurred.', 'tainacan'),
 	'error_502_detail'	 => __('This error response means that the server, while working as a gateway to get a response needed to handle the request, got an invalid response. Try contacting the administrator.', 'tainacan'),
 	'error_503_detail'	 => __('The server might be unavailable due to multiple access, some instability or connection issues. Try again later and if it persists, contact the administrator.', 'tainacan'),
 	'error_504_detail'	 => __('This error response is given when the server is acting as a gateway and cannot get a response in time. Try contacting the administrator.', 'tainacan'),
-	'error_511_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, your session cookies might have gotten lost. Try reloading the page or logging in again on the WordPress Admin panel.', 'tainacan'),
+	'error_511_detail'	 => __('A network login is required before the server can be reached. This usually comes from a proxy or a captive portal, rather than from the WordPress session. Connect to the network and try again.', 'tainacan'),
 	'error_other_detail' => __('Something went wrong here. Please try again or contact the administrator.', 'tainacan'),
 	'error_thumbnail_alt_ai_failed'                  => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
 	'error_thumbnail_alt_ai_empty_response'          => __( 'The generator did not return alternative text. Please try again or enter it manually.', 'tainacan' ),
 	'error_thumbnail_alt_ai_unavailable'             => __( 'Alt text generation is not available on this site.', 'tainacan' ),
 	'error_thumbnail_alt_ai_failed_detail'           => __( 'Could not generate alternative text. You can try again or enter it manually.', 'tainacan' ),
+
+	'help_tabs' => [
+		'default' => [
+			'title'   => __( 'Tainacan Help', 'tainacan' ),
+			'content' => '<p>' . __( 'This screen has no specific guidance yet. The documentation link lists the available guides.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/'
+		],
+		'collections' => [
+			'title'   => __( 'Collections', 'tainacan' ),
+			'content' => '<p>' . __( 'A collection is a group of items that share one set of metadata. Each item belongs to a single collection. From this list you create a collection and open it to configure its items, metadata and filters.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/collections'
+		],
+		'collection-settings' => [
+			'title'   => __( 'Collection settings', 'tainacan' ),
+			'content' => '<p>' . __( 'These are the settings of this collection: name, description, status, images, address and moderators, and which metadata it inherits from a parent collection. Public collections are visible to visitors; private ones stay limited to their author and moderators.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/collections'
+		],
+		'taxonomies' => [
+			'title'   => __( 'Taxonomies', 'tainacan' ),
+			'content' => '<p>' . __( 'A taxonomy is a vocabulary shared by several collections, such as countries or genres. It is made of terms, which can be nested. A collection uses it through a taxonomy metadata field, so the same term can describe items in different collections.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/taxonomies'
+		],
+		'metadata' => [
+			'title'   => __( 'Metadata', 'tainacan' ),
+			'content' => '<p>' . __( 'Metadata are the fields used to describe items, like the fields of a catalog card. Fields created for the whole repository are inherited by every collection; the others belong only to this collection. The type of a field, such as text, date or taxonomy, cannot be changed after you create it.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/metadata'
+		],
+		'filters' => [
+			'title'   => __( 'Filters', 'tainacan' ),
+			'content' => '<p>' . __( 'A filter lets people narrow the item list by the values of one metadata field. Any metadata field can become a filter, and the filter control depends on that field\'s type. Removing a filter removes the browsing option only; the field and its values remain.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/filters'
+		],
+		'items' => [
+			'title'   => __( 'Items', 'tainacan' ),
+			'content' => '<p>' . __( 'An item is one record: a document (file, URL or text), the metadata that describes it, and any attachments. Here you browse, create and edit items. An item cannot be moved to another collection.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'my-items' => [
+			'title'   => __( 'My items', 'tainacan' ),
+			'content' => '<p>' . __( 'These are the items you created, in this collection or across the repository.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/items'
+		],
+		'activities' => [
+			'title'   => __( 'Activities', 'tainacan' ),
+			'content' => '<p>' . __( 'Activities are the log of creations, edits and deletions, for the repository, for one collection, or for one item. Open an entry to compare the values before and after the change.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/activities'
+		],
+		'capabilities' => [
+			'title'   => __( 'Capabilities', 'tainacan' ),
+			'content' => '<p>' . __( 'Capabilities decide what each WordPress role can do in the whole repository, or in this collection only. A change made for one collection does not apply to the others. Editing which capabilities a role has, for every collection, is done on the User roles page.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/capabilities'
+		],
+		'reports' => [
+			'title'   => __( 'Reports', 'tainacan' ),
+			'content' => '<p>' . __( 'Reports chart how the repository or one collection is filled in: totals by status, how complete the metadata is, how terms are used, and who has been editing. The figures are kept for about a week; reload a chart to recalculate it. Each chart can be exported as an image or a CSV file.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/reports'
+		],
+		'importers' => [
+			'title'   => __( 'Importers', 'tainacan' ),
+			'content' => '<p>' . __( 'Importers bring items or taxonomy terms in from an external file, such as a CSV. You map the file columns to metadata, then run the import as a background process and follow it under Processes. The mapping step can also create metadata that does not exist yet.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/importers'
+		],
+		'exporters' => [
+			'title'   => __( 'Exporters', 'tainacan' ),
+			'content' => '<p>' . __( 'Exporters build a file from a collection or from the whole repository. Choose an exporter, set its options, and follow the file creation under Processes.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/exporters'
+		],
+		'processes' => [
+			'title'   => __( 'Processes', 'tainacan' ),
+			'content' => '<p>' . __( 'Imports, exports and bulk edits run here in the background. Each process stays in the list so you can follow its progress and open its log when it finishes.', 'tainacan' ) . '</p>',
+			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/activities'
+		]
+	]
 ] );
 ?>

@@ -21,11 +21,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
                 resolve(itemMetadatum)
             })
             .catch( error => {
-                reject({
-					error: error.response?.data?.errors || [],
-					error_message: error.response?.data?.error_message || error.message,
-					item_metadata: error.response?.data?.item_metadata
-                });
+                reject(error);
             })
     });
 };
@@ -230,7 +226,7 @@ export const sendItem = ( { commit }, item) => {
 /**
  * Updates an existing item and syncs the cached item state.
  * Dispatches `item/updateItem`.
- * @returns {Promise<Object>} Resolves with updated item data; rejects with API error_message and errors.
+ * @returns {Promise<Object>} Resolves with updated item data; rejects with the request error.
  */
 export const updateItem = ({ commit }, item) => {
 
@@ -241,7 +237,7 @@ export const updateItem = ({ commit }, item) => {
                 commit('setLastUpdated');
                 resolve( res.data );
             }).catch( error => { 
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+                reject(error);
             });
 
     }); 
@@ -268,7 +264,7 @@ export const duplicateItem = ({}, { collectionId, itemId, copies }) => {
 /**
  * Updates the item document payload and optional document options.
  * Dispatches `item/updateItemDocument`.
- * @returns {Promise<Object>} Resolves with updated item data; rejects with API error_message and errors.
+ * @returns {Promise<Object>} Resolves with updated item data; rejects with the request error.
  */
 export const updateItemDocument = ({ commit }, { item_id, document, document_type, document_options }) => {
     let params = {
@@ -286,7 +282,7 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
             commit('setLastUpdated');
             resolve( res.data );
         }).catch( error => { 
-            reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            reject(error);
         });
 
     }); 
@@ -361,11 +357,7 @@ export const extractItemDocumentContentIndex = ({}, { itemId }) => {
                 });
             })
             .catch(error => {
-                reject({
-                    error_message: error.response && error.response.data && error.response.data.error_message
-                        ? error.response.data.error_message
-                        : error
-                });
+                reject(error);
             });
     });
 };
@@ -392,14 +384,7 @@ export const updateItemDocumentContentIndex = ({}, { itemId, documentContentInde
                 });
             })
             .catch(error => {
-                reject({
-                    error_message: error.response && error.response.data && error.response.data.error_message
-                        ? error.response.data.error_message
-                        : error,
-                    errors: error.response && error.response.data && error.response.data.errors
-                        ? error.response.data.errors
-                        : {}
-                });
+                reject(error);
             });
     });
 };

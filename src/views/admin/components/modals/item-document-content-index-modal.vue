@@ -92,7 +92,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-
 export default {
     props: {
         itemId: Number|String,
@@ -223,14 +222,12 @@ export default {
                         });
                     }
                 })
-                .catch((errors) => {
-                    this.$buefy.snackbar.open({
-                        message: errors.error_message || this.$i18n.get('error_document_content_index_extraction_failed'),
-                        type: 'is-danger',
-                        position: 'is-bottom-right',
-                        duration: 6000,
-                        queue: false
-                    });
+                .catch((error) => {
+                    const data = error.response && error.response.data;
+                    const message = data && data.error_message
+                        ? data.error_message
+                        : (error.response ? this.$i18n.get('error_document_content_index_extraction_failed') : '');
+                    this.$showApiError(error, message);
                 })
                 .finally(() => {
                     this.isExtracting = false;
@@ -267,14 +264,12 @@ export default {
 
                     this.closeModal();
                 })
-                .catch((errors) => {
-                    this.$buefy.snackbar.open({
-                        message: errors.error_message || this.$i18n.get('error_document_content_index_save_failed'),
-                        type: 'is-danger',
-                        position: 'is-bottom-right',
-                        duration: 6000,
-                        queue: false
-                    });
+                .catch((error) => {
+                    const data = error.response && error.response.data;
+                    const message = data && data.error_message
+                        ? data.error_message
+                        : (error.response ? this.$i18n.get('error_document_content_index_save_failed') : '');
+                    this.$showApiError(error, message);
                 })
                 .finally(() => {
                     this.isSaving = false;

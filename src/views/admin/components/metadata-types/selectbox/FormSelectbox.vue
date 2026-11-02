@@ -40,7 +40,10 @@
             </div>
         </b-field>
 
-        <b-field :addons="false">
+        <b-field
+                :addons="false"
+                :type="fieldMessage('input_type') ? 'is-danger' : ''"
+                :message="fieldMessage('input_type')">
             <label class="label">
                 {{ $i18n.get('label_input_type') }}
                 <help-button
@@ -122,11 +125,11 @@
                 }
             },
             setError(){
-                if( this.errors && this.errors.options !== '' ){
-                    this.setErrorsAttributes( 'is-danger', this.errors.options )
-                } else {
-                    this.setErrorsAttributes( '', '' )
-                }
+                const message = this.fieldMessage('options');
+                if (message !== '')
+                    this.setErrorsAttributes( 'is-danger', message );
+                else
+                    this.setErrorsAttributes( '', '' );
                 return true;
             }
         },
@@ -177,6 +180,10 @@
                     options_separator: JSON.stringify(this.optionsSeparator),
                     input_type: this.input_type
                 })
+            },
+            fieldMessage(key) {
+                const message = this.errors && this.errors[key];
+                return typeof message === 'string' ? message : '';
             },
             setErrorsAttributes( type, message ){
                 this.optionType = type;

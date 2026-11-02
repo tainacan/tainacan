@@ -989,6 +989,108 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		}
 	}
 
+	/**
+	 * @see https://github.com/tainacan/tainacan/issues/1248
+	 */
+	public function test_create_taxonomy_filters() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Collection with taxonomy filters',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'        => 'Taxonomy filtered',
+				'collections' => [ $collection ],
+				'status'      => 'publish',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                  => 'Taxonomy metadatum filtered',
+				'collection_id'         => $collection->get_id(),
+				'metadata_type'         => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'                => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $taxonomy->get_id(),
+				],
+			),
+			true
+		);
+
+		$filter_types = [
+			'Tainacan\Filter_Types\TaxonomyTaginput',
+			'Tainacan\Filter_Types\TaxonomyCheckbox',
+			'Tainacan\Filter_Types\TaxonomySelectbox',
+		];
+
+		foreach ( $filter_types as $filter_type ) {
+			$request = new \WP_REST_Request( 'POST', $this->namespace . '/collection/' . $collection->get_id() . '/metadatum/' . $metadatum->get_id() . '/filters' );
+			$request->set_body(
+				wp_json_encode(
+					array(
+						'filter_type' => $filter_type,
+						'filter'      => [
+							'name' => $filter_type,
+						],
+					)
+				)
+			);
+
+			$response = $this->server->dispatch( $request );
+			$data     = $response->get_data();
+
+			$this->assertEquals( 200, $response->get_status(), sprintf( 'cannot create a %s filter, response: %s', $filter_type, print_r( $data, true ) ) );
+			$this->assertEquals( $filter_type, $data['filter_type'] );
+		}
+	}
+
+	public function test_create_filter_with_invalid_type_returns_400() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Collection with invalid filter',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Metadatum with invalid filter',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
+				'status'        => 'publish',
+			),
+			true
+		);
+
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/collection/' . $collection->get_id() . '/metadatum/' . $metadatum->get_id() . '/filters' );
+		$request->set_body(
+			wp_json_encode(
+				array(
+					'filter_type' => 'Tainacan\Filter_Types\Not_A_Filter_Type',
+					'filter'      => [
+						'name' => 'Invalid filter',
+					],
+				)
+			)
+		);
+
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 400, $response->get_status() );
+	}
+
 }
 
 ?>

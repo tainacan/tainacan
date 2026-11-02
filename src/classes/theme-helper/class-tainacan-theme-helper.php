@@ -3061,7 +3061,7 @@ class Theme_Helper {
 			$metadatum_title_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-title', $metadatum_title_before, $item_metadatum );
 			$metadatum_title_after = $args['after_title'];
 			$metadatum_title_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-title', $metadatum_title_after, $item_metadatum );
-			$return .= $metadatum_title_before . $metadatum->get_name() . $metadatum_title_after;
+			$return .= $metadatum_title_before . get_the_title( $metadatum->get_id() ) . $metadatum_title_after;
 			
 			// Renders the metadatum value
 			$metadatum_value_before = $args['before_value'];
@@ -3283,8 +3283,11 @@ class Theme_Helper {
 					$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--index-' . $section_index, $after_name, $metadata_section );	
 				}
 
-				// Renders the metadata section name
-				$return .= $before_name . $metadata_section->get_name() . $after_name;
+				// Real sections are posts. The default section is not, so it keeps its stored name.
+				$section_name = is_numeric( $metadata_section->get_id() )
+					? get_the_title( $metadata_section->get_id() )
+					: $metadata_section->get_name();
+				$return .= $before_name . $section_name . $after_name;
 			}
 
 			// Adds section description

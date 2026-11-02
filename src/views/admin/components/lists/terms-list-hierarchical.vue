@@ -344,7 +344,6 @@ import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue
 import TermMultipleInsertionDialog from '../other/term-multiple-insertion-dialog.vue';
 
 import { tainacanApi } from '../../js/axios';
-
 export default {
     name: 'TermsListHierarchical',
     components: {
@@ -597,7 +596,11 @@ export default {
                         .then(() => {
                             this.onTermRemovalFinished(term);
                         })
-                        .catch(() => undefined);
+                        .catch((error) => {
+                            const data = error.response && error.response.data;
+                            if (data && data.error_message)
+                                this.$showApiError(error, data.error_message);
+                        });
                     }
                 },
                 trapFocus: true,
@@ -627,7 +630,11 @@ export default {
                         .then(() => {
                             this.resetTermsListUI();
                         })
-                        .catch(() => undefined);
+                        .catch((error) => {
+                            const data = error.response && error.response.data;
+                            if (data && data.error_message)
+                                this.$showApiError(error, data.error_message);
+                        });
                     }
                 },
                 trapFocus: true,
@@ -656,7 +663,11 @@ export default {
                         .then(() => {
                             this.resetTermsListUI();
                         })
-                        .catch(() => undefined);
+                        .catch((error) => {
+                            const data = error.response && error.response.data;
+                            if (data && data.error_message)
+                                this.$showApiError(error, data.error_message);
+                        });
                     }
                 },
                 trapFocus: true,
@@ -817,30 +828,26 @@ export default {
                                 queue: false
                             });
                         })
-                        .catch((errors) => {
-                            const detail = errors?.[0]?.errors?.[0]?.name
-                                || errors?.[0]?.error_message
+                        .catch((error) => {
+                            const errors = error.response && error.response.data;
+                            if (!Array.isArray(errors))
+                                return;
+
+                            const detail = errors[0]?.errors?.[0]?.name
+                                || errors[0]?.error_message
                                 || '';
-                            const namedErrors = Array.isArray(errors)
-                                ? errors.filter(error => error && error.term_name)
-                                : [];
+                            const namedErrors = errors.filter(termError => termError && termError.term_name);
 
                             let errorMessage = detail;
                             if (namedErrors.length) {
-                                const wrongValues = namedErrors.map(error => error.term_name).join(', ');
+                                const wrongValues = namedErrors.map(termError => termError.term_name).join(', ');
                                 errorMessage = (namedErrors.length > 1
                                     ? this.$i18n.getWithVariables('info_terms_creation_failed_due_to_values_%s', [ wrongValues ])
                                     : this.$i18n.getWithVariables('info_terms_creation_failed_due_to_value_%s', [ wrongValues ]))
                                     + (detail ? ' ' + detail : '');
                             }
 
-                            this.$buefy.snackbar.open({
-                                message: this.$htmlSanitizer.sanitize(errorMessage),
-                                type: 'is-danger',
-                                position: 'is-bottom-right',
-                                pauseOnHover: true,
-                                queue: false
-                            });
+                            this.$showApiError(error, errorMessage);
                         }); 
                     }
                 },

@@ -108,6 +108,7 @@ classDiagram
         +get_hide_items_thumbnail_on_lists()
         +get_submission_use_recaptcha()
         +get_default_metadata_section_properties()
+        +get_item_require_document()
         +get_item_enabled_document_types()
         +get_item_publication_label()
         +get_item_document_label()
@@ -148,6 +149,7 @@ classDiagram
         +set_hide_items_thumbnail_on_lists(value)
         +set_submission_use_recaptcha(value)
         +set_default_metadata_section_properties(value)
+        +set_item_require_document(value)
         +set_item_enabled_document_types(value)
         +set_item_publication_label(value)
         +set_item_document_label(value)
@@ -440,6 +442,14 @@ protected $submission_default_status
 
 ```php
 protected $submission_use_recaptcha
+```
+
+***
+
+### item_require_document
+
+```php
+protected $item_require_document
 ```
 
 ***
@@ -1135,6 +1145,20 @@ public get_default_metadata_section_properties(): void
 
 ***
 
+### get_item_require_document
+
+Check if document is required to publish an item in this collection.
+
+```php
+public get_item_require_document(): string
+```
+
+**Return Value:**
+
+'yes' if required, 'no' otherwise.
+
+***
+
 ### get_item_enabled_document_types
 
 Get the enabled document types for this collection.
@@ -1752,6 +1776,22 @@ public set_default_metadata_section_properties(mixed $value): void
 | Parameter | Type      | Description |
 |-----------|-----------|-------------|
 | `$value`  | **mixed** |             |
+
+***
+
+### set_item_require_document
+
+Set if document is required for this collection.
+
+```php
+public set_item_require_document(string $value): void
+```
+
+**Parameters:**
+
+| Parameter | Type       | Description                        |
+|-----------|------------|------------------------------------|
+| `$value`  | **string** | 'yes' if required, 'no' otherwise. |
 
 ***
 

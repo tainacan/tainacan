@@ -227,37 +227,37 @@ export default {
                 }
             ];
             if (!this.chartOptions.chart) {
-                this.chartOptions = {
-                    ...this.stackedBarChartOptions, 
-                    ...{
-                        title: {},
-                        xaxis: {
-                            type: 'category',
-                            tickPlacement: 'on',
-                            categories: termsLabels,
-                            labels: {
-                                show: true,
-                                trim: true,
-                                hideOverlappingLabels: false
-                            },
-                            tooltip: { enabled: true }
-                        },
-                        yaxis: {
-                            title: {
-                                text: this.$i18n.get('label_number_of_items')
-                            }
-                        },
-                        animations: {
-                            enabled: orderedTerms.length <= 40
-                        },
-                        colors: ['#062a57'],
+                const chartOptions = JSON.parse(JSON.stringify(this.stackedBarChartOptions));
+                chartOptions.title = {};
+                chartOptions.xaxis = {
+                    type: 'category',
+                    tickPlacement: 'on',
+                    categories: termsLabels,
+                    labels: {
+                        show: true,
+                        trim: true,
+                        hideOverlappingLabels: false
+                    },
+                    tooltip: { enabled: true }
+                };
+                chartOptions.yaxis = {
+                    title: {
+                        text: this.$i18n.get('label_number_of_items')
                     }
                 };
+                chartOptions.colors = ['#062a57'];
+                chartOptions.chart.animations.enabled = orderedTerms.length <= 40;
+                this.chartOptions = chartOptions;
             } else if (this.$refs.termsChart && this.$refs.termsChart.updateOptions) {
                 this.$nextTick(() => {
                     if (this.$refs.termsChart && this.$refs.termsChart.updateOptions) {
                         this.$refs.termsChart.updateOptions({
-                            xaxis: { categories: termsLabels }
+                            xaxis: { categories: termsLabels },
+                            chart: {
+                                animations: {
+                                    enabled: orderedTerms.length <= 40
+                                }
+                            }
                         }, false, true);
                     }
                 });

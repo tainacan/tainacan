@@ -574,6 +574,7 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
+                                            :error-message="documentErrorMessage"
                                             @on-set-document="setDocument"
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
@@ -658,6 +659,7 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
+                                    :error-message="documentErrorMessage"
                                     @on-set-document="setDocument"
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
@@ -1033,6 +1035,10 @@ export default {
                 )
             );
         },
+        documentErrorMessage() {
+            const existingError = this.errors.find(error => error.metadatum_id == 'document');
+            return existingError ? existingError.errors : '';
+        },
         shouldDisplayItemEditionThumbnail() {
             return !this.$adminOptions.hideItemEditionThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
         },
@@ -1387,19 +1393,48 @@ export default {
                 if ( !this.item.current_user_can_edit )
                     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
-            .catch((errors) => {
-                
-                this.prepareErrors(errors);
+            .catch((error) => {
+
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
+                if (status != 'trash') {
+                    const data = error.response && error.response.data;
+                    if (data && data.errors)
+                        this.prepareErrors(data);
+                    this.showSubmitErrorsSnackbar(error);
+                }
+
                 this.isLoading = false;
             });
+        },
+        showSubmitErrorsSnackbar(error) {
+            const errorMessages = this.errors
+                .map((fieldError) => [].concat(fieldError.errors)
+                    .map((singleError) => typeof singleError == 'string' ? singleError : Object.values(singleError).join(' '))
+                    .join(' ')
+                )
+                .filter((errorMessage) => errorMessage);
+
+            const data = error.response && error.response.data;
+            const message = errorMessages.length
+                ? this.$i18n.get('info_errors_in_form') + ': ' + errorMessages.join(' ')
+                : (data && typeof data.error_message === 'string' ? data.error_message : '');
+
+            this.$showApiError(error, message);
         },
         hasErrorsOnForm(hasErrors) {
             if (hasErrors)
                 this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else
+                this.formErrorMessage = '';
+        },
+        clearDocumentError() {
+            const index = this.errors.findIndex(errorItem => errorItem.metadatum_id == 'document');
+            if (index >= 0)
+                this.errors.splice(index, 1);
+
+            if (!this.errors.length)
                 this.formErrorMessage = '';
         },
         onDiscard() {
@@ -1625,10 +1660,11 @@ export default {
                     this.item.document_mimetype = item.document_mimetype;
                     if (item.document_type != undefined && item.document_type == 'text')
                         this.textContent = item.document;
+                    this.clearDocumentError();
                     this.isLoading = false;
                 })
-                .catch((errors) => {
-                    this.prepareErrors(errors);
+                .catch((error) => {
+                    this.applyDocumentApiError(error);
                     this.isLoading = false;
                 });
         },
@@ -1697,6 +1733,7 @@ export default {
                     if (item.document_options !== undefined && item.document_options['forced_iframe_allowfullscreen'] !== undefined)
                         this.urlIframeAllowfullscreen = item.document_options['forced_iframe_allowfullscreen'];
 
+                    this.clearDocumentError();
                     this.isLoading = false;
 
                     let oldThumbnail = this.item.thumbnail;
@@ -1705,8 +1742,8 @@ export default {
                         this.item.thumbnail_id = item.thumbnail_id;
                     }
                 })
-                .catch((errors) => {
-                    this.prepareErrors(errors);
+                .catch((error) => {
+                    this.applyDocumentApiError(error);
                     this.isLoading = false;
                 });
         },
@@ -1724,8 +1761,8 @@ export default {
                 this.item.document_mimetype = 'empty';
                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
-            .catch((errors) => {
-                this.prepareErrors(errors);
+            .catch((error) => {
+                this.applyDocumentApiError(error);
             });
         },
         deleteThumbnail() {
@@ -1805,6 +1842,7 @@ export default {
                         
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                             .then((item) => {
+                                this.clearDocumentError();
                                 this.isLoading = false;
                                 this.item.document_as_html = item.document_as_html;
                                 this.item.document_mimetype = item.document_mimetype;
@@ -1818,8 +1856,8 @@ export default {
                                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
                             })
-                            .catch((errors) => {
-                                this.prepareErrors(errors);
+                            .catch((error) => {
+                                this.applyDocumentApiError(error);
                                 this.isLoading = false;
                             });
                     }
@@ -2140,6 +2178,14 @@ export default {
 
             return enabledMetadata.indexOf(metadatum.id);
         },
+        applyDocumentApiError(error) {
+            const data = error.response && error.response.data;
+            if (!data || !data.errors)
+                return;
+
+            this.prepareErrors(data);
+            this.$claimApiError(error);
+        },
         prepareErrors(errors) {
             if ( errors.errors ) {
                 for (let error of errors.errors) {
@@ -2164,10 +2210,19 @@ export default {
                             }
                         }
                         
-                        this.errors.push({
-                            metadatum_id: parentCompoundId ? parentCompoundId : metadatumId,
-                            errors: error[metadatumId]
-                        });
+                        const targetMetadatumId = parentCompoundId ? parentCompoundId : metadatumId;
+                        const existingErrorIndex = this.errors.findIndex(errorItem => errorItem.metadatum_id == targetMetadatumId);
+                        if (existingErrorIndex >= 0) {
+                            this.errors.splice(existingErrorIndex, 1, {
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        } else {
+                            this.errors.push({
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        }
                     }   
                 }
                 this.formErrorMessage = errors.error_message;

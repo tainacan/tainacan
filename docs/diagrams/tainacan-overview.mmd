@@ -120,7 +120,10 @@ classDiagram
     Roles ..> entities_Metadata_Section
     Roles ..> entities_Metadatum
     Search_Engine ..> entities_Collection
+    Search_Engine ..> entities_Metadatum
+    Search_Engine ..> repositories_Collections
     Search_Engine ..> repositories_Metadata
+    Search_Engine ..> repositories_Taxonomies
     __Bulk_Edit ..> entities_Item
     __Bulk_Edit ..> entities_Item_Metadata_Entity
     __Bulk_Edit ..> entities_Metadatum

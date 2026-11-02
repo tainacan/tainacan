@@ -780,7 +780,7 @@ Source: [page.php](https://github.com/tainacan/tainacan/blob/master/src/views/da
 ## `tainacan-enqueue-admin-scripts` <!-- {docsify-ignore} -->
 
 
-Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 301](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L301-L301)
+Source: [class-tainacan-admin.php](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php), [line 338](https://github.com/tainacan/tainacan/blob/master/src/views/admin/class-tainacan-admin.php#L338-L338)
 
 ---------------------------------
 <br>
@@ -852,7 +852,7 @@ Source: [class-tainacan-plugin-hooks.php](https://github.com/tainacan/tainacan/b
 ## `tainacan-enqueue-roles-scripts` <!-- {docsify-ignore} -->
 
 
-Source: [class-tainacan-roles.php](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php), [line 57](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php#L57-L57)
+Source: [class-tainacan-roles.php](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php), [line 88](https://github.com/tainacan/tainacan/blob/master/src/views/roles/class-tainacan-roles.php#L88-L88)
 
 ---------------------------------
 <br>

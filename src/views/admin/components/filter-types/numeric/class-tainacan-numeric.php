@@ -97,19 +97,13 @@ class Numeric extends Filter_Type {
 		$errors = [];
 
 		if ( empty($this->get_option('step')) )
-			$errors[] = [
-				'step' => __('"Step" value is required','tainacan')
-			];
+			$errors['step'] = __('"Step" value is required','tainacan');
 
-		if ( empty($this->get_option('comparators')) )
-			$errors[] = [
-				'comparators' => __('"Comparators" array is required', 'tainacan')
-			];
-		
-		if ( count( $this->get_option('comparators') ) < 1 )
-			$errors[] = [
-				'comparators' => __('At least one comparator should be provided', 'tainacan')
-			];
+		$comparators = $this->get_option('comparators');
+		if ( empty($comparators) )
+			$errors['comparators'] = __('"Comparators" array is required', 'tainacan');
+		else if ( is_array($comparators) && count($comparators) < 1 )
+			$errors['comparators'] = __('At least one comparator should be provided', 'tainacan');
 
 		return count($errors) ? $errors : true;
 	}

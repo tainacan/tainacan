@@ -516,9 +516,9 @@
                     {{ $i18n.get('cancel') }}
                 </button>
             </div>
-            <p class="help is-danger">
+            <span class="help is-danger">
                 {{ formErrorMessage }}
-            </p>
+            </span>
             <div class="control">
                 <b-button
                         :loading="isUpdating"
@@ -647,16 +647,20 @@
 
                             this.$emit('on-edition-finished');
                         })
-                        .catch((errors) => {
+                        .catch((error) => {
                             this.isUpdating = false;
-                            for (let error of errors.errors) {
-                                for (let attribute of Object.keys(error))
-                                    this.formErrors[attribute] = error[attribute];
-                            }
-                            this.formErrorMessage = errors.error_message;
+                            const errors = error.response && error.response.data;
+                            if (errors && errors.errors) {
+                                this.$claimApiError(error);
+                                for (let fieldError of errors.errors) {
+                                    for (let attribute of Object.keys(fieldError))
+                                        this.formErrors[attribute] = fieldError[attribute];
+                                }
+                                this.formErrorMessage = errors.error_message;
 
-                            this.form.formErrors = this.formErrors;
-                            this.form.formErrorMessage = this.formErrorMessage;
+                                this.form.formErrors = this.formErrors;
+                                this.form.formErrorMessage = this.formErrorMessage;
+                            }
                         });
                 } else {
                     let formElement = document.getElementById('metadatumEditForm');
@@ -696,18 +700,21 @@
 
                             this.$emit('on-edition-finished');
                         })
-                        .catch((errors) => {
+                        .catch((error) => {
                             this.isUpdating = false;
+                            const errors = error.response && error.response.data;
+                            if (errors && errors.errors) {
+                                this.$claimApiError(error);
+                                for (let fieldError of errors.errors) {
+                                    for (let attribute of Object.keys(fieldError))
+                                        this.formErrors[attribute] = fieldError[attribute];
+                                }
+                                this.formErrorMessage = errors.error_message;
+                                this.$emit('on-error-found');
 
-                            for (let error of errors.errors) {
-                                for (let attribute of Object.keys(error))
-                                    this.formErrors[attribute] = error[attribute];
+                                this.form.formErrors = this.formErrors;
+                                this.form.formErrorMessage = this.formErrorMessage;
                             }
-                            this.formErrorMessage = errors.error_message;
-                            this.$emit('on-error-found');
-
-                            this.form.formErrors = this.formErrors;
-                            this.form.formErrorMessage = this.formErrorMessage;
                         });
                 }
             },
