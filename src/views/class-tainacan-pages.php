@@ -952,20 +952,20 @@ abstract class Pages {
 					<legend class="screen-reader-text"><?php esc_html_e('Fullscreen mode options', 'tainacan'); ?></legend>
 					<label>
 						<input type="radio" name="tainacan-fullscreen-state" value="menu" <?php checked($wordpress_navigation, 'menu'); ?>>
-						<?php esc_html_e('Exibir o menu e a barra de ferramentas do WordPress', 'tainacan'); ?>
+						<?php esc_html_e('Show WordPress menu and toolbar', 'tainacan'); ?>
 					</label>
 					<label>
 						<input type="radio" name="tainacan-fullscreen-state" value="toolbar" <?php checked($wordpress_navigation, 'toolbar'); ?>>
-						<?php esc_html_e('Exibir apenas a barra de ferramentas do WordPress', 'tainacan'); ?>
+						<?php esc_html_e('Show WordPress toolbar only', 'tainacan'); ?>
 					</label>
 					<label>
 						<input type="radio" name="tainacan-fullscreen-state" value="none" <?php checked($wordpress_navigation, 'none'); ?>>
-						<?php esc_html_e('Ocultar a navegação do WordPress', 'tainacan'); ?>
+						<?php esc_html_e('Hide WordPress navigation', 'tainacan'); ?>
 					</label>
 				</fieldset>
 				<p class="submit">
 					<button type="button" id="tainacan-apply-fullscreen-options" class="button button-primary">
-						<?php esc_html_e('Aplicar', 'tainacan'); ?>
+						<?php esc_html_e('Apply', 'tainacan'); ?>
 					</button>
 				</p>
 			</div>
