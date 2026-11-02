@@ -29,11 +29,10 @@ classDiagram
         +sanitize_datepickers_year_min(value)
         +sanitize_datepickers_year_max(value)
         +search_and_performance_section_description()
-        +text_editing_section_description()
+        +input_fields_section_description()
         +theme_templates_section_description()
         +items_list_defaults_section_description()
         +repository_items_list_section_description()
-        +datepickers_section_description()
         +sanitize_repository_core_display(value)
         +sanitize_repository_core_advanced_search(value)
         +gutenberg_blocks_section_description()
@@ -278,10 +277,10 @@ public search_and_performance_section_description(): mixed
 
 ***
 
-### text_editing_section_description
+### input_fields_section_description
 
 ```php
-public text_editing_section_description(): mixed
+public input_fields_section_description(): mixed
 ```
 
 ***
@@ -306,16 +305,6 @@ public items_list_defaults_section_description(): mixed
 
 ```php
 public repository_items_list_section_description(): mixed
-```
-
-***
-
-### datepickers_section_description
-
-Renders the description of the date selectors settings section.
-
-```php
-public datepickers_section_description(): mixed
 ```
 
 ***
