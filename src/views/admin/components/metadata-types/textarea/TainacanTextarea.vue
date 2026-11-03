@@ -58,12 +58,7 @@
         },
         computed: {
             shouldUseRichTextEditor() {
-                const components = this.$ && this.$.appContext && this.$.appContext.components;
-                const editorIsRegistered = !!(components && (
-                    components.TainacanRichTextEditor || components['tainacan-rich-text-editor']
-                ));
-
-                return editorIsRegistered &&
+                return this.$richTextEditor &&
                     this.itemMetadatum &&
                     this.itemMetadatum.metadatum &&
                     typeof tainacan_plugin !== 'undefined' &&

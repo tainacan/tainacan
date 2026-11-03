@@ -36,7 +36,7 @@ Textarea and Core Description use a plain textarea by default. To edit either wi
 
 `value` remains the stored text. `value_as_html` always runs `wpautop()` and `make_clickable()` on that stored string, including after it has been saved from TinyMCE. The item metadata routes return the usual `value` and `value_as_html` fields.
 
-When the item form sends a value from the rich text editor, markup with no visible text and no media is sent as an empty value. A value sent through the API, including `<p><br></p>`, is stored as received. Bulk editing uses the same item form component, so a Textarea with the option on shows the editor there as well. The public item submission form does not. Its Vue app never registers the editor, so Textarea and Core Description stay plain textareas there even when the metadatum option is on. Copying values stays limited to metadata of the same type and does not convert paragraphs or links during the copy.
+When the item form sends a value from the rich text editor, markup with no visible text and no media is sent as an empty value. A value sent through the API, including `<p><br></p>`, is stored as received. Bulk editing uses the same item form component, so a Textarea with the option on shows the editor there as well. The public item submission form does not. Only the admin app sets `$richTextEditor`, so Textarea and Core Description stay plain textareas there even when the metadatum option is on. Copying values stays limited to metadata of the same type and does not convert paragraphs or links during the copy.
 
 ## Conditional link sanitization for developers
 

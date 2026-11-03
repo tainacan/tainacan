@@ -101,6 +101,7 @@ export default (element) => {
 
             const emitter = mitt();
             app.config.globalProperties.$emitter = emitter;
+            app.config.globalProperties.$richTextEditor = true;
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
