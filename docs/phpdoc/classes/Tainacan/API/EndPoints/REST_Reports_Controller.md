@@ -570,10 +570,10 @@ public add_support_to_tax_query_like(mixed $args): mixed
 
 ### sanitize_value
 
-Sanitize query values as post HTML, optionally removing anchor tags.
+Sanitize query values as post HTML. Anchor tags are removed unless the field stores rich text.
 
 ```php
-protected sanitize_value(mixed $value, bool $remove_links = false): mixed
+protected sanitize_value(mixed $value, bool $remove_links = true): mixed
 ```
 
 **Parameters:**

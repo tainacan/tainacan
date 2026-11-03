@@ -1062,7 +1062,7 @@ Object with all the capabilities as member variables.
 Sanitize post HTML, optionally removing anchor tags while keeping their text.
 
 ```php
-protected sanitize_value(mixed $content, bool $remove_links = false): mixed
+protected sanitize_value(mixed $content, bool $remove_links = true): mixed
 ```
 
 **Parameters:**

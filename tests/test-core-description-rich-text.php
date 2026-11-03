@@ -161,6 +161,25 @@ class Core_Description_Rich_Text extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( 'Public', get_post( $item->get_id() )->post_content );
 	}
 
+	public function test_edit_context_reports_delete_permission_separately_from_edit() {
+		[ $collection, $item, $metadatum ] = $this->create_item_with_core_description( 'Visible' );
+		$capabilities = $collection->get_items_capabilities();
+		$editor_id = $this->factory()->user->create( [ 'role' => 'subscriber' ] );
+		$editor = get_userdata( $editor_id );
+		$editor->add_cap( $capabilities->edit_published_posts );
+		$editor->add_cap( $capabilities->edit_others_posts );
+		wp_set_current_user( $editor_id );
+
+		$this->assertTrue( $item->can_edit() );
+		$this->assertFalse( $item->can_delete() );
+
+		$response = $this->read_description( $item, $metadatum, 'edit' );
+		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertTrue( $data['current_user_can_edit'] );
+		$this->assertFalse( $data['current_user_can_delete'] );
+	}
+
 	public function test_unsafe_markup_is_sanitized() {
 		[ , $item, $metadatum ] = $this->create_item_with_core_description( 'Before' );
 		$this->enable_rich_text_editor( $metadatum );

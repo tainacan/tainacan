@@ -26,7 +26,7 @@ The switch defaults to `no`, so enabling the setting or constant does not change
 
 When the setting is disabled, or the constant has any value other than boolean `true`, Tainacan does not use the rich text editor for the fields controlled by this setting. It hides those switches and uses the original textarea even when a metadatum was previously configured to use rich text. The saved option is retained, ready to be used again when rich text is enabled.
 
-Non-title content retains WordPress-safe HTML, including links, even when the rich text editor is disabled. This includes Text and Textarea metadata values and item text-document content; plain inputs still display the stored HTML as text. Item titles, entity names used as titles (collections, taxonomies, metadata definitions, filters, and metadata sections), log titles, log descriptions, and taxonomy term names remove anchor tags while retaining their text. Existing type validation and removal of executable markup or unsafe link protocols still apply.
+Non-title content retains WordPress-safe HTML, including links, even when the rich text editor is disabled. Textarea and Core Description values, entity descriptions, and item text-document content keep anchors. Plain Text metadata removes anchor tags and keeps their text, and plain inputs still display the remaining HTML as text. Item titles, entity names used as titles (collections, taxonomies, metadata definitions, filters, and metadata sections), log titles, log descriptions, and taxonomy term names remove anchor tags while retaining their text. Existing type validation and removal of executable markup or unsafe link protocols still apply.
 
 When `TAINACAN_ALLOW_RICH_TEXT_EDITOR` is defined, it overrides the saved setting and disables its control in the Tainacan settings page. This lets host managers keep the global choice over administrator preferences. Reload the Tainacan admin page after changing the setting or constant.
 
@@ -36,7 +36,7 @@ Textarea and Core Description use a plain textarea by default. To edit either wi
 
 `value` remains the stored text. `value_as_html` always runs `wpautop()` and `make_clickable()` on that stored string, including after it has been saved from TinyMCE. The item metadata routes return the usual `value` and `value_as_html` fields.
 
-When the item form sends a value from the rich text editor, markup with no visible text and no media is sent as an empty value. A value sent through the API, including `<p><br></p>`, is stored as received. Bulk editing uses the same item form component, so a Textarea with the option on shows the editor there as well. Copying values stays limited to metadata of the same type and does not convert paragraphs or links during the copy.
+When the item form sends a value from the rich text editor, markup with no visible text and no media is sent as an empty value. A value sent through the API, including `<p><br></p>`, is stored as received. Bulk editing uses the same item form component, so a Textarea with the option on shows the editor there as well. The public item submission form does not. Its Vue app never registers the editor, so Textarea and Core Description stay plain textareas there even when the metadatum option is on. Copying values stays limited to metadata of the same type and does not convert paragraphs or links during the copy.
 
 ## Conditional link sanitization for developers
 
