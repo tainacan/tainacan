@@ -15,6 +15,37 @@ specific categories or classifications for organizing items.
 ```mermaid
 classDiagram
     direction TB
+    class Term {
+        +WP_Term : mixed
+        #term_id : mixed
+        +post_type : mixed
+        #repository : string
+        +__construct(which, taxonomy)
+        +__toString()
+        +_toArray()
+        +get_id()
+        +get_term_id()
+        +get_name()
+        +get_parent()
+        +get_description()
+        +get_user()
+        +get_taxonomy()
+        +get_header_image_id()
+        +get_cover_page_id()
+        +get_header_image()
+        +get_url()
+        +get_thumbnail()
+        +get_thumbnail_blurhash()
+        +set_name(value)
+        +set_parent(value)
+        +set_description(value)
+        +set_user(value)
+        +set_taxonomy(value)
+        +set_header_image_id(value)
+        +set_cover_page_id(value)
+        +validate()
+        +_toHtml()
+    }
     class Entity {
         #repository : Repository
         -errors : array
@@ -52,37 +83,6 @@ classDiagram
         +can_publish(user)
         +get_capabilities()
         +diff(which)
-    }
-    class Term {
-        +WP_Term : mixed
-        #term_id : mixed
-        +post_type : mixed
-        #repository : string
-        +__construct(which, taxonomy)
-        +__toString()
-        +_toArray()
-        +get_id()
-        +get_term_id()
-        +get_name()
-        +get_parent()
-        +get_description()
-        +get_user()
-        +get_taxonomy()
-        +get_header_image_id()
-        +get_cover_page_id()
-        +get_header_image()
-        +get_url()
-        +get_thumbnail()
-        +get_thumbnail_blurhash()
-        +set_name(value)
-        +set_parent(value)
-        +set_description(value)
-        +set_user(value)
-        +set_taxonomy(value)
-        +set_header_image_id(value)
-        +set_cover_page_id(value)
-        +validate()
-        +_toHtml()
     }
     Entity ..> Entity
     Entity <|-- Term

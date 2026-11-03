@@ -33,6 +33,6 @@ public static make_clickable_links(mixed $text): string
 
 **Return Value:**
 
-Texts with url's transformed in html tag <a>
+Texts with url's and emails transformed in html tag <a>. It uses WordPress function make_clickable() to do this.
 
 ***

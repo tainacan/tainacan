@@ -15,6 +15,43 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
+    class Repository {
+        +entities_type : string
+        #use_logs : bool
+        #logs_repository : Logs
+        -map : array
+        +disable_logs()
+        +enable_logs()
+        +get_enabled_logs()
+        #__construct()
+        +init_objects()
+        +get_map()
+        +get_name()
+        +insert(obj)
+        +insert_metadata(obj, prop, diffs)
+        +maybe_add_slashes(value, remove_links)
+        +fetch_output(WP_Query, output)
+        +parse_fetch_args(args)
+        +get_default_properties(map)
+        +get_mapped_property(entity, prop)
+        +$get_collections_db_identifiers()
+        +$get_entity_by_post(post)
+        +$get_entity_by_post_type(post_type, post)
+        +$get_repository(entity)
+        +fetch_one(args)
+        +trash(entity)
+        +delete(entity, permanent)
+        -delete_attachments(entity)
+        +can_edit(entity, user)
+        +can_read(entity, user)
+        +can_delete(entity, user)
+        +can_publish(entity, user)
+        +unique_multidimensional_array(array, key)
+        -insert_thumbnail(obj, diffs)
+        +get_descendants_ids(id, depth)
+        +get_capabilities()
+        #sanitize_value(content, remove_links)
+    }
     class Items {
         +entities_type : mixed
         -fetching_from_collections : mixed
@@ -42,43 +79,6 @@ classDiagram
         -parse_relationship_metaquery(args)
         +posts_where_relationship_metaquery(where)
         -parse_core_metadata_for_advanced_search(args, collections)
-    }
-    class Repository {
-        +entities_type : string
-        #use_logs : bool
-        #logs_repository : Logs
-        -map : array
-        +disable_logs()
-        +enable_logs()
-        +get_enabled_logs()
-        #__construct()
-        +init_objects()
-        +get_map()
-        +get_name()
-        +insert(obj)
-        +insert_metadata(obj, prop, diffs)
-        +maybe_add_slashes(value)
-        +fetch_output(WP_Query, output)
-        +parse_fetch_args(args)
-        +get_default_properties(map)
-        +get_mapped_property(entity, prop)
-        +$get_collections_db_identifiers()
-        +$get_entity_by_post(post)
-        +$get_entity_by_post_type(post_type, post)
-        +$get_repository(entity)
-        +fetch_one(args)
-        +trash(entity)
-        +delete(entity, permanent)
-        -delete_attachments(entity)
-        +can_edit(entity, user)
-        +can_read(entity, user)
-        +can_delete(entity, user)
-        +can_publish(entity, user)
-        +unique_multidimensional_array(array, key)
-        -insert_thumbnail(obj, diffs)
-        +get_descendants_ids(id, depth)
-        +get_capabilities()
-        #sanitize_value(content, remove_links)
     }
     Repository ..> Items
     Repository ..> Repository
@@ -713,14 +713,15 @@ on error
 ### maybe_add_slashes
 
 ```php
-public maybe_add_slashes(mixed $value): mixed
+public maybe_add_slashes(mixed $value, mixed $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description |
+|-----------------|-----------|-------------|
+| `$value`        | **mixed** |             |
+| `$remove_links` | **mixed** |             |
 
 ***
 
