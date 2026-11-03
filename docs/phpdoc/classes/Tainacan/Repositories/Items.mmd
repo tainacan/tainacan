@@ -63,7 +63,7 @@ classDiagram
         -insert_thumbnail(obj, diffs)
         +get_descendants_ids(id, depth)
         +get_capabilities()
-        #sanitize_value(content)
+        #sanitize_value(content, remove_links)
     }
     Repository ..> Items
     Repository ..> Repository

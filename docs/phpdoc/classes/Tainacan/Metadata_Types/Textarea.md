@@ -59,7 +59,7 @@ public get_multivalue_suffix(): mixed
 
 ### get_value_as_html
 
-Get the value as a HTML string with links and breakline tag.
+Render stored text as HTML with links and paragraphs.
 
 ```php
 public get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata): string
