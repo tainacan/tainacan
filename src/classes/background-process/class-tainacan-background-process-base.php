@@ -578,6 +578,26 @@ abstract class Background_Process_Base extends Async_Request {
 	}
 
 	/**
+	 * Current UTC time, in the format used by the DATETIME columns.
+	 *
+	 * Every timestamp written by a background process (queued_on, processed_last)
+	 * and every comparison against those columns must go through this method.
+	 * Before 1.4.2 record_heartbeat() used current_time( 'mysql' ), which returns
+	 * the site's local time, while the watchdog compared it against gmdate().
+	 * On any site west of UTC a heartbeat written right now was already older than
+	 * the stale timeout, so the watchdog closed live processes and they were
+	 * re-dispatched while the original worker kept running.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/1285
+	 *
+	 * @since 1.4.2
+	 * @return string
+	 */
+	protected function utc_now() {
+		return gmdate( 'Y-m-d H:i:s' );
+	}
+
+	/**
 	 * Detect and clean up stale processes.
 	 *
 	 * A stale process is one whose status is 'running' in the database but
@@ -603,6 +623,13 @@ abstract class Background_Process_Base extends Async_Request {
 		$stale_timeout = apply_filters( $this->identifier . '_stale_process_timeout', $this->stale_process_timeout );
 		$cutoff_date = gmdate( 'Y-m-d H:i:s', time() - $stale_timeout );
 
+		// A heartbeat cannot legitimately be in the future, so a processed_last
+		// ahead of UTC now comes from a version that stored it in local time
+		// (Tainacan <= 1.4.1 on a site east of UTC). Such a row is alive and must
+		// never be treated as stale, otherwise this watchdog would kill healthy
+		// processes on those sites. See issue #1285.
+		$future_limit = gmdate( 'Y-m-d H:i:s', time() + ( 5 * MINUTE_IN_SECONDS ) );
+
 		// Find processes that are still marked as 'running' but haven't updated recently.
 		$stale_processes = $wpdb->get_results(
 			$wpdb->prepare(
@@ -611,15 +638,23 @@ abstract class Background_Process_Base extends Async_Request {
 				 AND status = 'running'
 				 AND done = 0
 				 AND processed_last IS NOT NULL
-				 AND processed_last < %s",
+				 AND processed_last < %s
+				 AND processed_last <= %s",
 				$this->action,
-				$cutoff_date
+				$cutoff_date,
+				$future_limit
 			)
 		);
 
 		if ( empty( $stale_processes ) ) {
 			return;
 		}
+
+		// Release the process lock before closing. close() re-queues the process and
+		// re-dispatches it immediately; that new request has to be able to take the
+		// lock, otherwise it bails out in handle() ("New request has ignored") and
+		// the retry only restarts on the next cron tick.
+		$this->unlock_process();
 
 		foreach ( $stale_processes as $stale ) {
 			$this->debug( sprintf( 'Watchdog: marking stale process ID %d as errored', $stale->ID ) );
@@ -631,9 +666,6 @@ abstract class Background_Process_Base extends Async_Request {
 				],
 			] );
 		}
-
-		// Release the process lock so new dispatches can proceed.
-		$this->unlock_process();
 	}
 
 	/**
@@ -654,9 +686,11 @@ abstract class Background_Process_Base extends Async_Request {
 			return;
 		}
 
+		// UTC, like queued_on, update() and the watchdog cutoff. Never
+		// current_time( 'mysql' ), which is the site's local time. See #1285.
 		$wpdb->update(
 			$this->table,
-			[ 'processed_last' => current_time( 'mysql' ) ],
+			[ 'processed_last' => $this->utc_now() ],
 			[ 'ID' => $this->ID ],
 			[ '%s' ],
 			[ '%d' ]
