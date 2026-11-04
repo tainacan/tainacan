@@ -15,26 +15,6 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
-    class Item_Metadata {
-        +entities_type : mixed
-        #init()
-        +insert(item_metadata)
-        +save_core_metadatum_value(item_metadata)
-        +save_terms_metadatum_value(item_metadata)
-        +upclean_compound_value(item_metadata)
-        +add_compound_value(item_metadata, meta_id)
-        +delete_metadata(item_metadata)
-        +remove_compound_value(parent_meta_id)
-        +fetch(object, output, args)
-        +get_value(item_metadata)
-        +create_default_value_metadata(item)
-        -extract_compound_value(ids, item, compound_meta_id)
-        +register_post_type()
-        #_get_map()
-        +get_default_properties(map)
-        +update(object, new_values)
-        +suggest(item_metadata)
-    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -49,7 +29,7 @@ classDiagram
         +get_name()
         +insert(obj)
         +insert_metadata(obj, prop, diffs)
-        +maybe_add_slashes(value)
+        +maybe_add_slashes(value, remove_links)
         +fetch_output(WP_Query, output)
         +parse_fetch_args(args)
         +get_default_properties(map)
@@ -71,6 +51,27 @@ classDiagram
         +get_descendants_ids(id, depth)
         +get_capabilities()
         #sanitize_value(content, remove_links)
+    }
+    class Item_Metadata {
+        +entities_type : mixed
+        #init()
+        +insert(item_metadata)
+        +save_core_metadatum_value(item_metadata)
+        #sanitize_item_metadata_value(item_metadata, value)
+        +save_terms_metadatum_value(item_metadata)
+        +upclean_compound_value(item_metadata)
+        +add_compound_value(item_metadata, meta_id)
+        +delete_metadata(item_metadata)
+        +remove_compound_value(parent_meta_id)
+        +fetch(object, output, args)
+        +get_value(item_metadata)
+        +create_default_value_metadata(item)
+        -extract_compound_value(ids, item, compound_meta_id)
+        +register_post_type()
+        #_get_map()
+        +get_default_properties(map)
+        +update(object, new_values)
+        +suggest(item_metadata)
     }
     Repository ..> Item_Metadata
     Repository ..> Repository
@@ -132,6 +133,21 @@ public save_core_metadatum_value(\Tainacan\Entities\Item_Metadata_Entity $item_m
 **Throws:**
 
 - [`Exception`](../../Exception)
+
+***
+
+### sanitize_item_metadata_value
+
+```php
+protected sanitize_item_metadata_value(\Tainacan\Entities\Item_Metadata_Entity $item_metadata, mixed $value): mixed
+```
+
+**Parameters:**
+
+| Parameter        | Type                                        | Description |
+|------------------|---------------------------------------------|-------------|
+| `$item_metadata` | **\Tainacan\Entities\Item_Metadata_Entity** |             |
+| `$value`         | **mixed**                                   |             |
 
 ***
 
@@ -546,14 +562,15 @@ on error
 ### maybe_add_slashes
 
 ```php
-public maybe_add_slashes(mixed $value): mixed
+public maybe_add_slashes(mixed $value, mixed $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description |
+|-----------------|-----------|-------------|
+| `$value`        | **mixed** |             |
+| `$remove_links` | **mixed** |             |
 
 ***
 

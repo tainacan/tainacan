@@ -47,7 +47,7 @@ classDiagram
         +get_name()
         +insert(obj)
         +insert_metadata(obj, prop, diffs)
-        +maybe_add_slashes(value)
+        +maybe_add_slashes(value, remove_links)
         +fetch_output(WP_Query, output)
         +parse_fetch_args(args)
         +get_default_properties(map)
@@ -529,14 +529,15 @@ on error
 ### maybe_add_slashes
 
 ```php
-public maybe_add_slashes(mixed $value): mixed
+public maybe_add_slashes(mixed $value, mixed $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description |
+|-----------------|-----------|-------------|
+| `$value`        | **mixed** |             |
+| `$remove_links` | **mixed** |             |
 
 ***
 

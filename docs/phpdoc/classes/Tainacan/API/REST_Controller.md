@@ -170,7 +170,7 @@ protected sanitize_value(mixed $value, bool $remove_links = true): mixed
 
 ### get_query_value_sanitizer
 
-Select link removal from the actual field represented by a query clause.
+Keep anchors in a query value only when the targeted metadata type allows them.
 
 ```php
 private get_query_value_sanitizer(string $mapped, array $clause): \Closure

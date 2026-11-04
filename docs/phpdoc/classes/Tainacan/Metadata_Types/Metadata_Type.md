@@ -62,6 +62,7 @@ classDiagram
         +set_sortable(sortable)
         +get_manage_multiple_input()
         +set_manage_multiple_input(manage_multiple_input)
+        +allows_links()
         +get_slug()
         +_toArray()
     }
@@ -640,6 +641,16 @@ public set_manage_multiple_input(mixed $manage_multiple_input): mixed
 | Parameter                | Type      | Description |
 |--------------------------|-----------|-------------|
 | `$manage_multiple_input` | **mixed** |             |
+
+***
+
+### allows_links
+
+Whether stored values and queries for this type may keep anchor tags.
+
+```php
+public allows_links(): bool
+```
 
 ***
 
