@@ -34,6 +34,18 @@ class Term_Exporter extends Exporter {
         ]);
     }
 
+    public function validate_options() {
+        if ( $this->get_option('select_taxonomy') == '' ) {
+            return __('The source taxonomy is required.', 'tainacan');
+        }
+
+        if ( ! \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_option('select_taxonomy') ) ) {
+            return __('The selected taxonomy was not found.', 'tainacan');
+        }
+
+        return true;
+    }
+
     /**
      * When exporter is finished, gets the final output
      */
@@ -127,7 +139,8 @@ class Term_Exporter extends Exporter {
             </label>
             <div class="control is-clearfix">
                 <div class="select">
-                    <select name="select_taxonomy" class="select_taxonomy">
+                    <select name="select_taxonomy" class="select_taxonomy" required>
+                        <option value="" selected><?php esc_html_e('Select a taxonomy', 'tainacan'); ?></option>
                         <?php
                         $Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
                         $taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );

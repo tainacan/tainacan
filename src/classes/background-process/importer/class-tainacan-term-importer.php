@@ -39,6 +39,14 @@ class Term_Importer extends Importer {
 		]);
 	}
 
+	public function validate_options() {
+		if ( $this->get_option('select_taxonomy') == '' && $this->get_option('new_taxonomy') == '' ) {
+			return __('Select an existing taxonomy or enter a name for the new one.', 'tainacan');
+		}
+
+		return true;
+	}
+
 	/**
 	 * Opens the temporary CSV file for reading, skipping a UTF-8 BOM when present.
 	 *
