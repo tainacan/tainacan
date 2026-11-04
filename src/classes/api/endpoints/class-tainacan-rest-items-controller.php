@@ -845,20 +845,16 @@ class REST_Items_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		$collection = $this->collections_repository->fetch($request['collection_id']);
-
 		if ( isset($request['taxquery']) && !$this->get_items_permissions_check_for_taxonomy($request['taxquery']) ) {
 			return false;
 		}
 
-		if( $collection instanceof Entities\Collection ) {
-			if(!$collection->can_read()) {
-				return false;
-			}
-			return true;
-		} else {
-			return true;
+		if ( isset($request['collection_id']) ) {
+			$collection = $this->collections_repository->fetch($request['collection_id']);
+			return $collection instanceof Entities\Collection && $collection->can_read();
 		}
+
+		return true;
 	}
 
 	private function get_items_permissions_check_for_taxonomy($taxonomies) {
