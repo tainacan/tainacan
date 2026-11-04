@@ -52,8 +52,8 @@ class Exporter_Handler {
 		}
 
 		$this->register_exporter([
-			'name' => __('Activities CSV', 'tainacan'),
-			'description' => __('Export the complete activity history to a CSV file', 'tainacan'),
+			'name' => __('Activity History (CSV or JSON)', 'tainacan'),
+			'description' => __('Export the complete activity history to a CSV or JSON file.', 'tainacan'),
 			'slug' => 'logscsv',
 			'class_name' => '\Tainacan\Exporter\Logs_Exporter',
 			'manual_mapping' => false,

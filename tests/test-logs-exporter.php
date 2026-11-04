@@ -207,6 +207,150 @@ class TAINACAN_Logs_Exporter extends TAINACAN_UnitTestCase {
 			$matching_rows[0]['title']
 		);
 	}
+
+	public function test_empty_history_exports_valid_json() {
+		$administrator = self::factory()->user->create(
+			[ 'role' => 'administrator' ]
+		);
+		wp_set_current_user( $administrator );
+
+		$user = new \WP_User( $administrator );
+		$user->add_cap( 'manage_tainacan' );
+		$user->add_cap( 'tnc_rep_read_logs' );
+
+		$logs = \Tainacan\Repositories\Logs::get_instance()->fetch(
+			[ 'posts_per_page' => 1 ],
+			'OBJECT'
+		);
+		$this->assertEmpty( $logs );
+
+		$exporter = \Tainacan\Exporter_Handler::get_instance()
+			->initialize_exporter( 'logscsv' );
+
+		$exporter->set_options( [ 'format' => 'json' ] );
+
+		$iterations = 0;
+		do {
+			$result = $exporter->run( 123 );
+			$this->assertLessThan( 20, ++$iterations );
+		} while ( $result !== false );
+
+		$this->assertFalse( $exporter->get_abort() );
+
+		$data = $exporter->_to_Array( true );
+		$files = $data['output_files'];
+
+		$this->assertArrayHasKey( 'logs-export.json', $files );
+
+		$file = $files['logs-export.json'];
+		$this->paths[] = $file['filename'];
+
+		$this->assertArrayNotHasKey(
+			\Tainacan\Exporter\Logs_Exporter::FILE_KEY,
+			$files
+		);
+		$this->assertFileExists( $file['filename'] );
+
+		$content = file_get_contents( $file['filename'] );
+		$this->assertNotFalse( $content );
+
+		$decoded = json_decode( $content, true );
+
+		$this->assertSame(
+			JSON_ERROR_NONE,
+			json_last_error(),
+			json_last_error_msg()
+		);
+		$this->assertSame( [], $decoded );
+
+		$this->assertArrayHasKey( 'expires_at', $file );
+		$this->assertGreaterThan( time(), $file['expires_at'] );
+		$this->assertStringContainsString(
+			'process_id=123',
+			$file['url']
+		);
+
+		$this->assertStringContainsString(
+			'#/processes',
+			$exporter->get_output( true )
+		);
+	}
+
+	public function test_json_export_resumes_and_preserves_structured_values() {
+		$administrator = self::factory()->user->create(
+			[ 'role' => 'administrator' ]
+		);
+		wp_set_current_user( $administrator );
+
+		$user = new \WP_User( $administrator );
+		$user->add_cap( 'manage_tainacan' );
+		$user->add_cap( 'tnc_rep_read_logs' );
+
+		$old_value = [ 'status' => 'draft', 'tags' => [ 'Ação' ] ];
+		$new_value = [ 'status' => 'publish', 'tags' => [ 'Ação', 'Revisão' ] ];
+		$expected_ids = [];
+
+		for ( $i = 0; $i < 105; $i++ ) {
+			$log = $this->tainacan_entity_factory->create_entity(
+				'log',
+				[
+					'title' => 'JSON log ' . $i,
+					'old_value' => $old_value,
+					'new_value' => $new_value,
+				],
+				true
+			);
+			$expected_ids[] = (int) $log->get_id();
+		}
+
+		$exporter = \Tainacan\Exporter_Handler::get_instance()
+			->initialize_exporter( 'logscsv' );
+		$exporter->set_options( [ 'format' => 'json' ] );
+
+		$this->assertGreaterThan( 0, $exporter->run() );
+
+		$data = $exporter->_to_Array( true );
+		$this->assertArrayHasKey( 'logs-export.json', $data['output_files'] );
+
+		$path = $data['output_files']['logs-export.json']['filename'];
+		$this->paths[] = $path;
+
+		$first_batch = json_decode(
+			file_get_contents( $path ),
+			true,
+			512,
+			JSON_THROW_ON_ERROR
+		);
+		$this->assertCount( 100, $first_batch );
+
+		$this->assertNotFalse(
+			file_put_contents( $path, "\nUncommitted retry tail", FILE_APPEND )
+		);
+
+		$late = $this->tainacan_entity_factory->create_entity(
+			'log',
+			[ 'title' => 'Created after JSON export started' ],
+			true
+		);
+
+		$exporter = new \Tainacan\Exporter\Logs_Exporter( $data );
+		$this->assertFalse( $exporter->run() );
+		$this->assertFalse( $exporter->get_abort() );
+
+		$records = json_decode(
+			file_get_contents( $path ),
+			true,
+			512,
+			JSON_THROW_ON_ERROR
+		);
+
+		$actual_ids = array_map( 'intval', array_column( $records, 'ID' ) );
+
+		$this->assertSame( $expected_ids, $actual_ids );
+		$this->assertNotContains( (int) $late->get_id(), $actual_ids );
+		$this->assertSame( $old_value, $records[0]['old_value'] );
+		$this->assertSame( $new_value, $records[104]['new_value'] );
+	}
 	public function test_completion_prepares_expiration_and_email_link() {
 		$administrator = self::factory()->user->create( [ 'role' => 'administrator' ] );
 		wp_set_current_user( $administrator );
