@@ -221,11 +221,43 @@ Large features should be discussed in an issue before starting development to av
 
 ## Coding Guidelines
 
-We're still working on adopting more strong rulesets for our coding guidelines. The adoption of automation tools is under implementation as of https://github.com/tainacan/tainacan/issues/1052.
+We're still working on adopting more strong rulesets for our coding guidelines.
+The adoption of automation tools is under implementation as of
+https://github.com/tainacan/tainacan/issues/1052.
 
-- **PHP:** Follow the [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/). Lint with PHPCS using the ruleset in `phpcs.xml.dist` (`WordPress-Core` and `WordPress-Docs`).
-- **JavaScript / Vue:** Follow the project's ESLint configuration in `eslint.config.js`. ESLint also runs during the webpack build.
+- **PHP:** Follow the WordPress Coding Standards.
+- **JavaScript / Vue:** Follow the project's ESLint configuration.
 - Prefer matching the style of the surrounding code when editing an existing file.
+
+### Git pre-push hook
+
+To enable the repository hooks, run this command from the repository root
+on your host machine:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook runs incremental lint checks before pushing. It checks PHP syntax
+when PHP is available and runs ESLint for changed JavaScript and Vue files
+under `src/views/`. Node.js and the npm dependencies are required for ESLint.
+
+To run the check manually:
+
+```bash
+./lint-changed.sh
+```
+
+To bypass the hook for a push:
+
+```bash
+git push --no-verify
+```
+
+Setting `core.hooksPath` replaces any previously configured hooks path for
+this repository.
+
+For local setup details, see the Developers Wiki.
 
 For local setup details, see the [Developers Wiki](https://tainacan.github.io/tainacan-wiki/#/dev/setup-local).
 
