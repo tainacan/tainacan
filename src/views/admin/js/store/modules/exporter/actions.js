@@ -10,9 +10,6 @@ export const fetchAvailableExporters = () => {
         .then(response => {
             return response.data;
         })
-        .catch(error => {
-            console.error(error.response.data);
-        })
 };
 
 /**
@@ -26,10 +23,7 @@ export const createExporterSession = ({commit}, slug) => {
             commit('setExporterSession', response.data);
 
             return response.data;
-        })
-        .catch(error => {
-            console.error(error.response.data);
-        })
+        });
 };
 
 /**
@@ -45,7 +39,7 @@ export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
                 resolve( response.data );
             })
             .catch(error => {
-                reject( error.response.data );
+                reject(error);
             });
     });
 };
@@ -63,7 +57,7 @@ export const runExporterSession = ({commit}, exporterSessionID) => {
                 resolve(response.data);
             })
             .catch(error => {
-                reject( error.response.data );
+                reject(error);
             })
         });
 };

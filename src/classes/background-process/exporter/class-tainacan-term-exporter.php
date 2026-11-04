@@ -153,9 +153,6 @@ class Term_Exporter extends Exporter {
         return true;
     }
 
-    /**
-     *
-     */
     public function exporting_terms(){
 
         if ( $this->get_option('select_taxonomy') == '' ) {

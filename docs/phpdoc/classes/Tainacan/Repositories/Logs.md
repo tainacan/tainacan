@@ -59,7 +59,7 @@ classDiagram
         +get_name()
         +insert(obj)
         +insert_metadata(obj, prop, diffs)
-        +maybe_add_slashes(value)
+        +maybe_add_slashes(value, remove_links)
         +fetch_output(WP_Query, output)
         +parse_fetch_args(args)
         +get_default_properties(map)
@@ -80,7 +80,7 @@ classDiagram
         -insert_thumbnail(obj, diffs)
         +get_descendants_ids(id, depth)
         +get_capabilities()
-        #sanitize_value(content)
+        #sanitize_value(content, remove_links)
     }
     class Logs {
         +entities_type : mixed
@@ -769,14 +769,15 @@ on error
 ### maybe_add_slashes
 
 ```php
-public maybe_add_slashes(mixed $value): mixed
+public maybe_add_slashes(mixed $value, mixed $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description |
+|-----------------|-----------|-------------|
+| `$value`        | **mixed** |             |
+| `$remove_links` | **mixed** |             |
 
 ***
 
@@ -1191,15 +1192,18 @@ Object with all the capabilities as member variables.
 
 ### sanitize_value
 
+Sanitize post HTML, optionally removing anchor tags while keeping their text.
+
 ```php
-protected sanitize_value(mixed $content): mixed
+protected sanitize_value(mixed $content, bool $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$content` | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$content`      | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
 
 ***
 

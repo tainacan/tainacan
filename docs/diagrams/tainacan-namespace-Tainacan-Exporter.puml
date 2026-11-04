@@ -1,4 +1,9 @@
 @startuml class-diagram
+  class "Background_Exporter" as Background_Exporter {
+    #action : string
+    +__construct()
+    +task(batch)
+  }
   class "CSV" as CSV {
     -collection_name : 
     +__construct(attributes)
@@ -9,6 +14,30 @@
     +output_footer()
     -get_collections_names()
     +get_output()
+    +options_form()
+  }
+  class "XLSX_Exporter" as XLSX_Exporter {
+    -collection_name : 
+    -spreadsheet : 
+    -filePath : 
+    -tempFilePath : 
+    +__construct(attributes)
+    +initialize_writer()
+    +finalize_writer()
+    +process_collections()
+    -process_header(current_collection_item, collection_definition)
+    -process_footer(current_collection_item, collection_definition)
+    -get_items(index, collection_definition)
+    +process_item(item, metadata)
+    +addRowToSheet(rowData, sheetIndex)
+    +get_file_path()
+    +get_file_name()
+    +get_content_type()
+    +filter_multivalue_separator(separator)
+    +filter_hierarchy_separator(separator)
+    -get_collections_names()
+    +get_output()
+    +output_header()
     +options_form()
   }
   class "Term_Exporter" as Term_Exporter {
@@ -39,35 +68,6 @@
     +save_exporter_instance(exporter)
     +get_exporter_instance_by_session_id(session_id)
     +delete_exporter_instance(exporter)
-  }
-  class "Background_Exporter" as Background_Exporter {
-    #action : string
-    +__construct()
-    +task(batch)
-  }
-  class "XLSX_Exporter" as XLSX_Exporter {
-    -collection_name : 
-    -spreadsheet : 
-    -filePath : 
-    -tempFilePath : 
-    +__construct(attributes)
-    +initialize_writer()
-    +finalize_writer()
-    +process_collections()
-    -process_header(current_collection_item, collection_definition)
-    -process_footer(current_collection_item, collection_definition)
-    -get_items(index, collection_definition)
-    +process_item(item, metadata)
-    +addRowToSheet(rowData, sheetIndex)
-    +get_file_path()
-    +get_file_name()
-    +get_content_type()
-    +filter_multivalue_separator(separator)
-    +filter_hierarchy_separator(separator)
-    -get_collections_names()
-    +get_output()
-    +output_header()
-    +options_form()
   }
   class "Exporter" as Exporter {
     #id : identifier

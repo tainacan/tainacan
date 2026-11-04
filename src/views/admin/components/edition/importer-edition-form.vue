@@ -222,7 +222,6 @@
 <script>
 import { mapActions } from 'vuex';
 import { tainacanApi, CancelToken, isCancel } from '../../js/axios';
-
 export default {
     name: 'ImporterEditionForm',
     data(){
@@ -291,7 +290,7 @@ export default {
                     }
                 }
             );
-        });
+        }).catch(() => {});
 
         if (this.sessionId != undefined)
             this.loadImporter();
@@ -314,6 +313,13 @@ export default {
             'updateImporterCollection',
             'runImporter'
         ]),
+        applyApiFormError(error) {
+            const data = error && error.response && error.response.data;
+            const message = data && typeof data.error_message === 'string' ? data.error_message : '';
+            if (message)
+                this.$claimApiError(error);
+            this.formErrorMessage = message;
+        },
         createImporter() {
             // Puts loading on Draft Importer creation
             this.isLoading = true;
@@ -332,7 +338,10 @@ export default {
                         this.browseCollections();
                     
                 })
-                .catch(error => this.$console.error(error));
+                .catch(error => {
+                    this.isLoading = false;
+                    this.$console.error(error);
+                });
         },
         loadImporter() {
             // Puts loading on Draft Importer creation
@@ -352,7 +361,10 @@ export default {
                         this.browseCollections();
                     
                 })
-                .catch(error => this.$console.error(error));
+                .catch(error => {
+                    this.isLoading = false;
+                    this.$console.error(error);
+                });
         },
         cancelBack(){
             this.$router.go(-1);
@@ -364,10 +376,10 @@ export default {
                     this.importer = updatedImporter;
                     resolve();
                 })
-                .catch((errors) => {
-                    this.formErrorMessage = errors.error_message;
-                    this.$console.error(errors);
-                    reject(errors);
+                .catch((error) => {
+                    this.applyApiFormError(error);
+                    this.$console.error(error);
+                    reject(error);
                 });
             });
         },
@@ -378,10 +390,10 @@ export default {
                         this.importer = updatedImporter;
                         resolve();
                     })
-                    .catch((errors) => {
-                        this.formErrorMessage = errors.error_message;
-                        this.$console.error(errors);
-                        reject(errors);
+                    .catch((error) => {
+                        this.applyApiFormError(error);
+                        this.$console.error(error);
+                        reject(error);
                     });
             });
         },
@@ -401,10 +413,9 @@ export default {
                             this.importer = updatedImporter;
                             resolve();
                         })
-                        .catch((errors) => {
-                            this.formErrorMessage = errors.error_message;
-                            
-                            reject(errors);
+                        .catch((error) => {
+                            this.applyApiFormError(error);
+                            reject(error);
                         });
 
                 } else {
@@ -471,9 +482,9 @@ export default {
                     this.isLoadingRun = false;
                     this.$router.push(this.$routerHelper.getProcessesPath(backgroundProcess.bg_process_id));
                 })
-                .catch(() => {
+                .catch((error) => {
+                    this.applyApiFormError(error);
                     this.isLoadingRun = false;
-                    
                 });
         },
         goToMappingPage() {

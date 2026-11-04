@@ -15,6 +15,26 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
+    class Taxonomies {
+        +entities_type : mixed
+        #init()
+        #_get_map()
+        +get_cpt_labels()
+        +register_post_type()
+        +insert(taxonomy)
+        +fetch(args, output)
+        +fetch_by_collection(collection, args, output)
+        +fetch_by_db_identifier(db_identifier)
+        +update(object, new_values)
+        +delete(taxonomy, permanent)
+        +added_collection(taxonomy_id, collection_id)
+        +removed_collection(taxonomy_id, collection_id)
+        +update_taxonomy_registry_for_collection(taxonomy_id, collection_id)
+        +register_taxonomies_for_all_collections(all_collections)
+        +get_db_identifier_by_id(id)
+        +get_id_by_db_identifier(db_identifier)
+        +term_exists(taxonomy, term_name, parent, return_term)
+    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -29,7 +49,7 @@ classDiagram
         +get_name()
         +insert(obj)
         +insert_metadata(obj, prop, diffs)
-        +maybe_add_slashes(value)
+        +maybe_add_slashes(value, remove_links)
         +fetch_output(WP_Query, output)
         +parse_fetch_args(args)
         +get_default_properties(map)
@@ -50,27 +70,7 @@ classDiagram
         -insert_thumbnail(obj, diffs)
         +get_descendants_ids(id, depth)
         +get_capabilities()
-        #sanitize_value(content)
-    }
-    class Taxonomies {
-        +entities_type : mixed
-        #init()
-        #_get_map()
-        +get_cpt_labels()
-        +register_post_type()
-        +insert(taxonomy)
-        +fetch(args, output)
-        +fetch_by_collection(collection, args, output)
-        +fetch_by_db_identifier(db_identifier)
-        +update(object, new_values)
-        +delete(taxonomy, permanent)
-        +added_collection(taxonomy_id, collection_id)
-        +removed_collection(taxonomy_id, collection_id)
-        +update_taxonomy_registry_for_collection(taxonomy_id, collection_id)
-        +register_taxonomies_for_all_collections(all_collections)
-        +get_db_identifier_by_id(id)
-        +get_id_by_db_identifier(db_identifier)
-        +term_exists(taxonomy, term_name, parent, return_term)
+        #sanitize_value(content, remove_links)
     }
     Repository ..> Repository
     Repository ..> Taxonomies
@@ -548,14 +548,15 @@ on error
 ### maybe_add_slashes
 
 ```php
-public maybe_add_slashes(mixed $value): mixed
+public maybe_add_slashes(mixed $value, mixed $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description |
+|-----------------|-----------|-------------|
+| `$value`        | **mixed** |             |
+| `$remove_links` | **mixed** |             |
 
 ***
 
@@ -970,15 +971,18 @@ Object with all the capabilities as member variables.
 
 ### sanitize_value
 
+Sanitize post HTML, optionally removing anchor tags while keeping their text.
+
 ```php
-protected sanitize_value(mixed $content): mixed
+protected sanitize_value(mixed $content, bool $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$content` | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$content`      | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
 
 ***
 
