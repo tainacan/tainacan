@@ -73,6 +73,14 @@ class Search_Engine {
 	private $relationships = [];
 
 	/**
+	 * Ids of the metadata the current user can read in the collections being searched. Anonymous
+	 * searches only match the values of these metadata.
+	 *
+	 * @var int[]
+	 */
+	private $metadata_ids = [];
+
+	/**
 	 * Whether this is a Tainacan-specific search.
 	 *
 	 * @since 0.1.0
@@ -170,6 +178,7 @@ class Search_Engine {
 
 		$taxonomies = [];
 		$relationships = [];
+		$metadata_ids = [];
 
 		if (!$post_types || empty($post_types) || !is_array($post_types)) {
 			$this->is_tainacan_search = false;
@@ -179,8 +188,15 @@ class Search_Engine {
 				if ( preg_match_all($pattern, $pt, $matches) ) {
 					if (isset($matches[1][0])) {
 						$this->is_inner_query = true;
-						$taxonomies = array_merge( $taxonomies, $this->get_searchable_taxonomies( (int) $matches[1][0] ) );
-						$relationships = array_merge( $relationships, \Tainacan\Repositories\Metadata::get_instance()->fetch_ids_by_collection( (int) $matches[1][0], ['metadata_type' => 'Tainacan\Metadata_Types\Relationship'] ) );
+						$metadata = $this->get_searchable_metadata( (int) $matches[1][0] );
+						$taxonomies = array_merge( $taxonomies, $this->get_searchable_taxonomies( $metadata ) );
+						$readable_ids = [];
+						foreach ( $metadata as $metadatum ) {
+							$readable_ids[] = (int) $metadatum->get_id();
+						}
+						$metadata_ids = array_merge( $metadata_ids, $readable_ids );
+						// fetch_ids_by_collection() does not look at the section of the metadatum.
+						$relationships = array_merge( $relationships, array_intersect( \Tainacan\Repositories\Metadata::get_instance()->fetch_ids_by_collection( (int) $matches[1][0], ['metadata_type' => 'Tainacan\Metadata_Types\Relationship'] ), $readable_ids ) );
 						$this->is_inner_query = false;
 					}
 					$this->is_tainacan_search = true;
@@ -195,32 +211,29 @@ class Search_Engine {
 			$relationships = array_unique($relationships);
 			$this->taxonomies = $taxonomies;
 			$this->relationships = $relationships;
+			$this->metadata_ids = array_unique($metadata_ids);
 		}
 	}
 
 	/**
-	 * Lists the taxonomies whose terms the current user may match through the search.
+	 * Lists the metadata whose values the current user may match through the search.
 	 *
-	 * Only taxonomies used by Taxonomy metadata the user can read are returned, so terms of a
-	 * private metadatum are not matched for users without the read_private_metadata capability
-	 * of the collection (or of the repository, for repository-level metadata). This mirrors the
-	 * post_status check get_where_to_postmeta() applies to text values. Metadata nested in
-	 * compound metadata are included.
-	 *
-	 * Metadata::fetch_by_collection() already restricts statuses by capability.
+	 * Metadata::fetch_by_collection() already restricts them by capability: a private metadatum
+	 * and a metadatum in a private section are only returned to users who can read them, and
+	 * the children of a compound are only reached through a compound the user can read.
+	 * Disabled metadata are included, as their values were always searchable.
 	 *
 	 * @param int $collection_id Collection being searched.
-	 * @return string[] Taxonomy db identifiers.
+	 * @return \Tainacan\Entities\Metadatum[]
 	 */
-	private function get_searchable_taxonomies( $collection_id ) {
+	private function get_searchable_metadata( $collection_id ) {
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( $collection_id );
 		if ( ! $collection instanceof \Tainacan\Entities\Collection ) {
 			return [];
 		}
 
-		$metadata_repository   = \Tainacan\Repositories\Metadata::get_instance();
-		$taxonomies_repository = \Tainacan\Repositories\Taxonomies::get_instance();
-		$taxonomies            = [];
+		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
+		$metadata            = [];
 
 		$queue = $metadata_repository->fetch_by_collection( $collection, [ 'include_disabled' => true ] );
 		while ( ! empty( $queue ) ) {
@@ -229,8 +242,8 @@ class Search_Engine {
 				continue;
 			}
 
-			$type = $metadatum->get_metadata_type();
-			if ( 'Tainacan\Metadata_Types\Compound' === $type ) {
+			$metadata[] = $metadatum;
+			if ( 'Tainacan\Metadata_Types\Compound' === $metadatum->get_metadata_type() ) {
 				$children = $metadata_repository->fetch_by_collection(
 					$collection,
 					[
@@ -239,9 +252,25 @@ class Search_Engine {
 					]
 				);
 				$queue    = array_merge( $queue, is_array( $children ) ? $children : [] );
-				continue;
 			}
-			if ( 'Tainacan\Metadata_Types\Taxonomy' !== $type ) {
+		}
+
+		return $metadata;
+	}
+
+	/**
+	 * Lists the taxonomies whose terms the current user may match through the search: those
+	 * used by Taxonomy metadata the user can read.
+	 *
+	 * @param \Tainacan\Entities\Metadatum[] $metadata Metadata the user can read.
+	 * @return string[] Taxonomy db identifiers.
+	 */
+	private function get_searchable_taxonomies( $metadata ) {
+		$taxonomies_repository = \Tainacan\Repositories\Taxonomies::get_instance();
+		$taxonomies            = [];
+
+		foreach ( $metadata as $metadatum ) {
+			if ( 'Tainacan\Metadata_Types\Taxonomy' !== $metadatum->get_metadata_type() ) {
 				continue;
 			}
 
@@ -321,7 +350,7 @@ class Search_Engine {
 
 			$join = \is_user_logged_in() 
 				? ''
-				: " INNER JOIN $wpdb->posts pmeta ON (m.meta_key = pmeta.ID AND pmeta.post_status = 'publish') $content_index_meta";
+				: " INNER JOIN $wpdb->posts pmeta ON (m.meta_key = pmeta.ID AND pmeta.post_status = 'publish' AND pmeta.ID IN (" . implode( ',', $this->metadata_ids ?: [ 0 ] ) . ")) $content_index_meta";
 			return "EXISTS (
 				SELECT m.post_id
 				FROM $wpdb->postmeta m $join

@@ -347,6 +347,169 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 	}
 
 	/**
+	 * Values of a public metadatum that a visitor cannot read, because its section or its
+	 * compound parent is private, must not be matched by that visitor's search.
+	 *
+	 * Metadata::fetch_by_collection() already leaves these metadata out, which is why the
+	 * item page does not show the values and why taxonomy terms in the same situation are
+	 * not matched. Only the text values were still being found.
+	 */
+	public function test_metadata_hidden_by_section_or_parent_is_not_searched_anonymously() {
+		$soneto    = $this->item_titled( 'Soneto de fidelidade' );
+		$dialetica = $this->item_titled( 'Dialética' );
+
+		$private_section = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			[
+				'name'       => 'Internal',
+				'collection' => $this->collection_poemas,
+				'status'     => 'private',
+			],
+			true
+		);
+		$in_section      = $this->create_text_metadatum( 'In private section', [ 'metadata_section_id' => $private_section->get_id() ] );
+		$this->set_text_value( $soneto, $in_section, 'Section value 001' );
+
+		$private_compound = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			[
+				'name'          => 'Private compound',
+				'collection'    => $this->collection_poemas,
+				'metadata_type' => 'Tainacan\Metadata_Types\Compound',
+				'status'        => 'private',
+			],
+			true
+		);
+		$child            = $this->create_text_metadatum( 'Child of private compound', [ 'parent' => $private_compound->get_id() ] );
+		// The value is written directly: only its presence in the postmeta matters to the search.
+		add_post_meta( $soneto->get_id(), (string) $child->get_id(), 'Compound value 001' );
+
+		$public_compound = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			[
+				'name'          => 'Public compound',
+				'collection'    => $this->collection_poemas,
+				'metadata_type' => 'Tainacan\Metadata_Types\Compound',
+				'status'        => 'publish',
+			],
+			true
+		);
+		$public_child    = $this->create_text_metadatum( 'Child of public compound', [ 'parent' => $public_compound->get_id() ] );
+		add_post_meta( $dialetica->get_id(), (string) $public_child->get_id(), 'Public child value 001' );
+
+		$public = $this->create_text_metadatum( 'Public', [] );
+		$this->set_text_value( $dialetica, $public, 'Public value 001' );
+
+		// A relationship in a private section must not match through the title of the related item.
+		$related = $this->tainacan_entity_factory->create_entity(
+			'item',
+			[
+				'title'      => 'Related title 001',
+				'status'     => 'publish',
+				'collection' => $this->collection_poemas,
+			],
+			true
+		);
+		$relationship = $this->create_text_metadatum(
+			'Relationship in private section',
+			[
+				'metadata_type'         => 'Tainacan\Metadata_Types\Relationship',
+				'metadata_section_id'   => $private_section->get_id(),
+				'metadata_type_options' => [ 'collection_id' => $this->collection_poemas->get_id() ],
+			]
+		);
+		add_post_meta( $soneto->get_id(), (string) $relationship->get_id(), (string) $related->get_id() );
+
+		// Metadata that do not belong to the collection itself must keep being searched.
+		$repository_level = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			[
+				'name'          => 'Repository level',
+				'collection_id' => 'default',
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+			],
+			true
+		);
+		add_post_meta( $dialetica->get_id(), (string) $repository_level->get_id(), 'Repository value 001' );
+
+		$child_collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			[
+				'name'   => 'Child of poems',
+				'status' => 'publish',
+				'parent' => $this->collection_poemas->get_id(),
+			],
+			true
+		);
+		$child_item       = $this->tainacan_entity_factory->create_entity(
+			'item',
+			[
+				'title'      => 'Item of the child collection',
+				'status'     => 'publish',
+				'collection' => $child_collection,
+			],
+			true
+		);
+		add_post_meta( $child_item->get_id(), (string) $public->get_id(), 'Inherited value 001' );
+
+		wp_set_current_user( 0 );
+		$this->assertCount( 0, $this->search_poemas( 'Section value 001' ), 'Value in a private section leaked to an anonymous search' );
+		$this->assertCount( 0, $this->search_poemas( 'Compound value 001' ), 'Value under a private compound leaked to an anonymous search' );
+		$this->assertCount( 1, $this->search_poemas( 'Public value 001' ), 'Value of a public metadatum must still be searchable' );
+		$this->assertCount( 1, $this->search_poemas( 'Public child value 001' ), 'Value under a public compound must still be searchable' );
+		$this->assertCount( 1, $this->search_poemas( 'Soneto de fidelidade' ) );
+		$this->assertSame( [ 'Related title 001' ], wp_list_pluck( $this->search_poemas( 'Related title 001' ), 'title' ), 'Relationship in a private section leaked to an anonymous search' );
+		$this->assertCount( 1, $this->search_poemas( 'Repository value 001' ), 'Value of a repository-level metadatum must still be searchable' );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $child_collection->get_id() . '/items' );
+		$request->set_query_params( [ 'search' => 'Inherited value 001', 'sentence' => true ] );
+		$this->assertCount( 1, $this->server->dispatch( $request )->get_data()['items'], 'Value of a metadatum inherited from the parent collection must still be searchable' );
+
+		wp_set_current_user( $this->user_id );
+		$this->assertCount( 2, $this->search_poemas( 'Related title 001' ), 'Users who can read private sections still find the item through the relationship' );
+		$this->assertCount( 1, $this->search_poemas( 'Section value 001' ), 'Users who can read private sections still find the value' );
+		$this->assertCount( 1, $this->search_poemas( 'Compound value 001' ), 'Users who can read private metadata still find the value' );
+	}
+
+	/**
+	 * Creates a text metadatum in the poems collection.
+	 *
+	 * @param string $name Metadatum name.
+	 * @param array  $args Other attributes.
+	 * @return \Tainacan\Entities\Metadatum
+	 */
+	private function create_text_metadatum( $name, $args ) {
+		return $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array_merge(
+				[
+					'name'          => $name,
+					'collection'    => $this->collection_poemas,
+					'metadata_type' => 'Tainacan\Metadata_Types\Text',
+					'status'        => 'publish',
+				],
+				$args
+			),
+			true
+		);
+	}
+
+	/**
+	 * Sets the value of a text metadatum.
+	 *
+	 * @param \Tainacan\Entities\Item      $item      Item.
+	 * @param \Tainacan\Entities\Metadatum $metadatum Text metadatum.
+	 * @param string                       $value     Value.
+	 */
+	private function set_text_value( $item, $metadatum, $value ) {
+		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity( $item, $metadatum );
+		$item_metadata->set_value( $value );
+		$this->assertTrue( $item_metadata->validate(), 'Could not set value: ' . print_r( $item_metadata->get_errors(), true ) );
+		\Tainacan\Repositories\Item_Metadata::get_instance()->insert( $item_metadata );
+	}
+
+	/**
 	 * Creates a taxonomy plus a taxonomy metadatum (accepting new terms) in the poems collection.
 	 *
 	 * @param string $name   Taxonomy and metadatum name.
