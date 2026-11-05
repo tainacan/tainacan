@@ -23,7 +23,7 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > - [CSV Importer](/dev/csv-importer.md)
 > - [Vocabulary Importer](/dev/vocabulary-importer.md)
 > - [Mapping Standards](/dev/mapping-standards.md)
-> - [Repository Methods](/dev/repository-methods.md)
+> - [Entities](/dev/internal-api.md#entities)
 > - [The Vue Items List Component](/dev/the-vue-items-list-component.md)
 > 
 > </div>
