@@ -15,9 +15,31 @@ Tainacan is developed as a WordPress plugin, leveraging its native structure and
 
 There are other parts of the code that leverage functionality related to consuming and manipulating data but these three are the most relevant.
 
-Where each entity is stored, and which repository owns it, is in [Key concepts](key-concepts.md). The class reference generated from the source is the [code reference](phpdoc/Home.md).
+### 1.1 Where the code lives
 
+From Tainacan source code, the content on `src/` holds the portion of the code that WordPress loads. Everything outside it is the development workspace (`tests`, `wp-repo-assets`, etc).
 
+| Path | What it holds |
+| --- | --- |
+| `src/tainacan.php` | Plugin header, constants, and the first `require` |
+| `src/classes/tainacan-creator.php` | Autoloader and the handlers started at boot |
+| `src/classes/entities/` | Entity classes |
+| `src/classes/repositories/` | Persistence |
+| `src/classes/api/` | REST controllers |
+| `src/classes/background-process/` | Importers, exporters, and other background jobs |
+| `src/classes/mappers/` | Metadata standards, such as Dublin Core |
+| `src/classes/exposers/` | Alternative API response formats |
+| `src/classes/oaipmh/` | OAI-PMH protocol support |
+| `src/classes/theme-helper/` | Template tags for themes |
+| `src/views/admin/` | Admin application |
+| `src/views/gutenberg-blocks/` | Block editor blocks |
+| `src/migrations.php` | Upgrades for existing installs |
+
+Where each record is stored is in [Key concepts](key-concepts.md). How to create and read one is the [internal API](internal-api.md). The class reference generated from the source is the [code reference](phpdoc/Home.md).
+
+### 1.2 How the plugin starts
+
+`src/tainacan.php` defines the constants and loads `src/classes/tainacan-creator.php`, then `src/migrations.php`. The creator file loads the background-process handlers and calls `get_instance()` on `Importer_Handler`, `Exporter_Handler`, and `Generic_Process_Handler`. It then registers `tainacan_autoload()`. A class named `Tainacan\Some_Class` is loaded from a file named `class-tainacan-some-class.php` in one of the directories that file lists.
 
 ## 2. REST API
 
@@ -117,7 +139,20 @@ For more complex scenarios or when dealing with custom database tables (e.g., ba
 
 Tainacan features a flexible structure for data import and export. Operations are performed through sessions and executed asynchronously.
 
-### 5.1 Import
+### 5.1 How records leave the repository
+
+Four mechanisms are easy to mix up:
+
+| Mechanism | What it does |
+| --- | --- |
+| Mapper | Renames a collection's metadata to a standard, such as Dublin Core. It does not write a file or change the response format. |
+| Exposer | Changes the REST response for a request, for example to XML or CSV. A request can ask for a mapper the exposer supports. |
+| Exporter | Builds a downloadable file in the background. The file can use the collection's own metadata or a mapped standard. |
+| OAI-PMH | An exposer with a fixed mapper. `Tainacan\Exposers\OAI_PMH` accepts only Dublin Core. |
+
+See [Exporting and exposing](exporting-and-exposing.md), [Mapping standards](mapping-standards.md), and [Exposers](exposers.md).
+
+### 5.2 Import
 
 * Available importers: CSV, Flickr, YouTube, etc.
 * Sessions created via `/importers/session`
@@ -125,7 +160,7 @@ Tainacan features a flexible structure for data import and export. Operations ar
 * Base class: `class-tainacan-importer.php`
 * Manager: `class-tainacan-importer-handler.php`
 
-### 5.2 Export
+### 5.3 Export
 
 * Exporters: CSV, Vocabulary CSV.
 * Customizable sessions
@@ -133,6 +168,9 @@ Tainacan features a flexible structure for data import and export. Operations ar
 * Asynchronous execution with access to logs/results via endpoint
 * Manager: `class-tainacan-exporter-handler.php`
 
+### 5.4 Other background work
+
+Bulk edit is not an importer or an exporter. `Generic_Process_Handler` registers it as `Tainacan\GenericProcess\Bulk_Edit_Process` and runs it on the same background-process queue. Plugins can register further processes on the `tainacan-register-generic_process` action.
 
 ## 6. Frontend Architecture
 
