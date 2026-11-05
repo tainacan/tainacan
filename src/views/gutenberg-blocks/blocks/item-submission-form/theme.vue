@@ -829,6 +829,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import { formHooks } from '../../../admin/js/mixins';
 import { itemMetadataMixin } from '../../../admin/js/item-metadata-mixin';
+import { conditionalSectionsFrom } from '../../../admin/js/conditional-sections';
 
 export default {
     name: 'ItemSubmissionForm',
@@ -1009,20 +1010,7 @@ export default {
                  * Creates the conditional metadata set to later watch values
                  * of certain metadata that control sections visibility.
                  */
-                this.conditionalSections = {};
-                for (let metadataSection of metadataSections) {
-                    if ( metadataSection.is_conditional_section == 'yes') { 
-                        const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
-                        if ( conditionalSectionId.length ) {
-                            this.conditionalSections[metadataSection.id] = {
-                                sectionId: metadataSection.id,
-                                metadatumId: conditionalSectionId[0],
-                                metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
-                                hide: true
-                            };
-                        }
-                    }
-                }
+                this.conditionalSections = conditionalSectionsFrom(metadataSections);
             })
             .catch((error) => {
                 this.isLoadingMetadataSections = false;

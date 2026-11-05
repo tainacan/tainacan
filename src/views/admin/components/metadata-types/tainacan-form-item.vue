@@ -201,6 +201,7 @@
 
 <script>
     import { nextTick, defineAsyncComponent } from 'vue';
+    import { rememberTerms } from '../../js/conditional-sections';
 
     export default {
         name: 'TainacanFormItem',
@@ -345,6 +346,8 @@
                         this.values = this.itemMetadatum.value.slice(0); // This way we garantee this.values is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
                     else
                         this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
+
+                    rememberTerms(this.values);
                 }
             },
             performValueChange() {

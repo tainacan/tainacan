@@ -265,6 +265,13 @@ class REST_Facets_Controller extends REST_Controller {
 								'type' => 'string',
 								'description' => __( 'Parent term id, if coming from a Taxonomy metadata type that has hierarchy.', 'tainacan' ),
 							],
+							'ancestors' => [
+								'type' => 'array',
+								'description' => __( 'Ancestor term ids, nearest parent first, when the facet comes from a hierarchical taxonomy.', 'tainacan' ),
+								'items' => [
+									'type' => 'integer',
+								],
+							],
 							'total_items' => [
 								'type' => 'integer',
 								'description' => __( 'Total of items of the facet', 'tainacan' ),

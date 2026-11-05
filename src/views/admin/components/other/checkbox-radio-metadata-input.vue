@@ -415,6 +415,7 @@
     import { nextTick } from 'vue';
     import qs from 'qs';
     import { tainacanApi, isCancel } from '../../js/axios';
+    import { rememberTerms } from '../../js/conditional-sections';
     import { dynamicFilterTypeMixin } from '../../js/filter-types-mixin';
 
     export default {
@@ -583,6 +584,7 @@
                         this.isSelectedTermsLoading = true;
                         tainacanApi.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                             .then((res) => {
+                                rememberTerms(res.data);
                                 for (const term of res.data)
                                     this.saveSelectedTagName(
                                         term.id,
@@ -736,6 +738,7 @@
 
                     tainacanApi.get(route)
                         .then((res) => {
+                            rememberTerms(res.data.values);
                             this.searchResults = res.data.values;
                             this.isLoadingSearch = false;
 
@@ -808,6 +811,7 @@
             },
             createColumn(res, column, label) {
                 let children = res.data.values;
+                rememberTerms(children);
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column + 1}`]: {
@@ -876,6 +880,7 @@
                 }); 
             },
             appendMore(options, key, lastTerm) {
+                rememberTerms(options);
                 for (let option of options)
                     this.finderColumns[key].children.push(option);
                 

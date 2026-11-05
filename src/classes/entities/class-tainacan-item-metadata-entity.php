@@ -469,6 +469,64 @@ class Item_Metadata_Entity extends Entity {
 		$this->has_value = (is_array($value)) ? !empty(array_filter($value)) : (is_numeric($value) || !empty($value));
 		return $this->has_value;
 	}
+
+	/**
+	 * Whether the stored values satisfy one conditional-section rule.
+	 *
+	 * A hierarchical taxonomy term matches a rule term when it is that term or
+	 * a descendant of it. Other metadata match the stored value exactly.
+	 *
+	 * @param array $rule_values Values configured on the section for this metadatum.
+	 * @return bool
+	 */
+	function matches_conditional_values( $rule_values ) {
+		$rule_values   = (array) $rule_values;
+		$stored_values = $this->get_value();
+
+		if ( $stored_values instanceof Term ) {
+			$stored_values = [ $stored_values->get_id() ];
+		} elseif ( is_array( $stored_values ) ) {
+			$stored_values = array_map( function( $value ) {
+				return $value instanceof Term ? $value->get_id() : $value;
+			}, $stored_values );
+		} elseif ( $stored_values === null || $stored_values === false || $stored_values === '' ) {
+			$stored_values = [];
+		} else {
+			$stored_values = [ $stored_values ];
+		}
+
+		$metadatum_type = $this->get_metadatum()->get_metadata_type_object();
+
+		if ( ! $metadatum_type || $metadatum_type->get_primitive_type() != 'term' ) {
+			return (bool) array_intersect( $stored_values, $rule_values );
+		}
+
+		$taxonomy_id = $metadatum_type->get_option( 'taxonomy_id' );
+		if ( ! is_numeric( $taxonomy_id ) ) {
+			return (bool) array_intersect( $stored_values, $rule_values );
+		}
+
+		$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( (int) $taxonomy_id );
+		if ( ! is_taxonomy_hierarchical( $taxonomy_slug ) ) {
+			return (bool) array_intersect( $stored_values, $rule_values );
+		}
+
+		$rules = array_map( 'intval', $rule_values );
+		foreach ( $stored_values as $stored_id ) {
+			$stored_id = (int) $stored_id;
+			if ( $stored_id <= 0 ) {
+				continue;
+			}
+			if ( in_array( $stored_id, $rules, true ) ) {
+				return true;
+			}
+			if ( array_intersect( get_ancestors( $stored_id, $taxonomy_slug, 'taxonomy' ), $rules ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	/**
 	 * Return true if metadatum is multiple, else return false
