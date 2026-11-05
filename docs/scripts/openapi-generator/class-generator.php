@@ -89,7 +89,16 @@ class Generator {
 
 	public function generateServers() {
 		return [
-			[ 'url' => rest_url( $this->namespace ) ],
+			[
+				'url'         => 'https://{host}/' . rest_get_url_prefix() . '/' . $this->namespace,
+				'description' => esc_html__( 'WordPress site with pretty permalinks.', 'document-generator-for-openapi' ),
+				'variables'   => [
+					'host' => [
+						'default'     => 'example.org',
+						'description' => esc_html__( 'Hostname of the WordPress site, without a scheme or path.', 'document-generator-for-openapi' ),
+					],
+				],
+			],
 		];
 	}
 
