@@ -870,6 +870,14 @@ class REST_Terms_Controller extends REST_Controller {
 			$permissions_schema
 		);
 
+		$schema['properties']['ancestors'] = [
+			'type'        => 'array',
+			'description' => __( 'Ancestor term ids, nearest parent first.', 'tainacan' ),
+			'items'       => [
+				'type' => 'integer',
+			],
+		];
+
 		return $schema;
 	}
 }

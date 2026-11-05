@@ -617,4 +617,79 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$this->assertSame( array(), $flat_a->_toArray()['ancestors'] );
 	}
 
+	/**
+	 * A select matches the stored option exactly, and every rule must match.
+	 */
+	function test_conditional_section_select_matches_exactly_and_requires_every_rule() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Conditional select',
+				'status' => 'publish',
+			),
+			true
+		);
+		$code = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Code',
+				'status'        => 'publish',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Selectbox',
+				'metadata_type_options' => array(
+					'options' => array( '7', '42' ),
+				),
+			),
+			true
+		);
+		$room = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Room',
+				'status'        => 'publish',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Selectbox',
+				'metadata_type_options' => array(
+					'options' => array( 'A', 'B' ),
+				),
+			),
+			true
+		);
+		$section = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'       => 'Code details',
+				'status'     => 'publish',
+				'collection' => $collection,
+			),
+			true
+		);
+		$section->set_is_conditional_section( 'yes' );
+		$section->set_conditional_section_rules( array(
+			$code->get_id() => array( '7' ),
+			$room->get_id() => array( 'A' ),
+		) );
+		$this->assertTrue( $section->validate(), json_encode( $section->get_errors() ) );
+		\Tainacan\Repositories\Metadata_Sections::get_instance()->update( $section );
+
+		$render = function( $code_value, $room_value ) use ( $collection, $code, $room, $section ) {
+			$item = $this->tainacan_entity_factory->create_entity(
+				'item',
+				array(
+					'title'      => 'Select item',
+					'collection' => $collection,
+					'status'     => 'publish',
+				),
+				true
+			);
+			$this->tainacan_item_metadata_factory->create_item_metadata( $item, $code, $code_value );
+			$this->tainacan_item_metadata_factory->create_item_metadata( $item, $room, $room_value );
+			return $item->get_metadata_section_as_html( $section, array( 'hide_empty' => false ) );
+		};
+
+		$this->assertSame( '', $render( '42', 'A' ) );
+		$this->assertSame( '', $render( '7', 'B' ) );
+		$this->assertNotFalse( strpos( $render( '7', 'A' ), 'Code details' ) );
+	}
+
 }

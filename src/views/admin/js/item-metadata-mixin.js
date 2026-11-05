@@ -120,9 +120,17 @@ export const itemMetadataMixin = {
              */
             let updatedConditionalSections = JSON.parse(JSON.stringify(this.conditionalSections));
             for (let conditionalSectionId in updatedConditionalSections) {
-                if ( updatedConditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
-                    updatedConditionalSections[conditionalSectionId].hide = conditionalSectionShouldHide(values, updatedConditionalSections[conditionalSectionId].metadatumValues);
-                }
+                const record = updatedConditionalSections[conditionalSectionId];
+                const rules = Array.isArray(record.rules) ? record.rules : [];
+                let touched = false;
+                rules.forEach(rule => {
+                    if (rule.metadatumId == metadatumId) {
+                        rule.matched = !conditionalSectionShouldHide(values, rule.metadatumValues, rule.hierarchical);
+                        touched = true;
+                    }
+                });
+                if (touched)
+                    record.hide = rules.some(rule => !rule.matched);
             }
             this.conditionalSections = updatedConditionalSections;
         },

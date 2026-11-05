@@ -45,7 +45,7 @@ function ancestorIdsFor(value) {
     return ancestorsByTermId.get(String(id)) || [];
 }
 
-function valueMatchesRule(value, rules) {
+function valueMatchesRule(value, rules, hierarchical) {
     const id = value && typeof value === 'object'
         ? (value.id != null ? value.id : value.value)
         : value;
@@ -53,7 +53,43 @@ function valueMatchesRule(value, rules) {
     if (rules.some(rule => rule == id))
         return true;
 
+    if (!hierarchical)
+        return false;
+
     return ancestorIdsFor(value).some(ancestor => rules.some(rule => rule == ancestor));
+}
+
+/**
+ * A taxonomy metadatum whose taxonomy is hierarchical.
+ * A missing option follows the taxonomy input and is treated as hierarchical.
+ *
+ * @param {object} metadatum
+ * @return {boolean}
+ */
+function isHierarchicalTaxonomy(metadatum) {
+    if (!metadatum || metadatum.metadata_type !== 'Tainacan\\Metadata_Types\\Taxonomy')
+        return false;
+
+    const options = metadatum.metadata_type_object && metadatum.metadata_type_object.options;
+    const hierarchical = options && options.hierarchical;
+    return hierarchical !== 'no';
+}
+
+function metadataById(metadataSections) {
+    const byId = {};
+
+    (metadataSections || []).forEach(section => {
+        const list = section && section.metadata_object_list;
+        if (!Array.isArray(list))
+            return;
+
+        list.forEach(metadatum => {
+            if (metadatum && metadatum.id != null)
+                byId[String(metadatum.id)] = metadatum;
+        });
+    });
+
+    return byId;
 }
 
 /**
@@ -78,11 +114,12 @@ function storedValuesForMetadatum(itemMetadata, metadatumId) {
  * Whether a conditional section stays hidden for the given metadatum values.
  * A term matches a rule term when it is that term or a descendant of it.
  *
- * @param {Array|*} values     Current metadatum values. Term objects or ids.
- * @param {Array|*} ruleValues Values configured on the section.
+ * @param {Array|*} values        Current metadatum values. Term objects or ids.
+ * @param {Array|*} ruleValues    Values configured on the section.
+ * @param {boolean} hierarchical  Walk ancestors only for a hierarchical taxonomy.
  * @return {boolean}
  */
-export function conditionalSectionShouldHide(values, ruleValues) {
+export function conditionalSectionShouldHide(values, ruleValues, hierarchical) {
     const rules = (Array.isArray(ruleValues) ? ruleValues : [ruleValues])
         .filter(rule => rule !== undefined && rule !== null && rule !== '');
     const list = Array.isArray(values) ? values : [values];
@@ -91,18 +128,35 @@ export function conditionalSectionShouldHide(values, ruleValues) {
     if (!present.length)
         return true;
 
-    return present.every(value => !valueMatchesRule(value, rules));
+    return present.every(value => !valueMatchesRule(value, rules, hierarchical));
+}
+
+/**
+ * One conditional rule, with the flag that decides whether ancestors count.
+ *
+ * @param {string} metadatumId
+ * @param {*} ruleValues
+ * @param {object} metadatum
+ * @return {object}
+ */
+function conditionalRule(metadatumId, ruleValues, metadatum) {
+    return {
+        metadatumId: metadatumId,
+        metadatumValues: ruleValues,
+        hierarchical: isHierarchicalTaxonomy(metadatum)
+    };
 }
 
 /**
  * Form records for the conditional sections in a sections payload.
- * Each record watches the first rule. Sections start hidden.
+ * Every rule must match, as on the public HTML path. Sections start hidden.
  *
  * @param {Array} metadataSections
  * @return {Object}
  */
 export function conditionalSectionsFrom(metadataSections) {
     const conditionalSections = {};
+    const metadata = metadataById(metadataSections);
 
     if (!Array.isArray(metadataSections))
         return conditionalSections;
@@ -115,11 +169,9 @@ export function conditionalSectionsFrom(metadataSections) {
         if (!rules || typeof rules !== 'object' || !Object.keys(rules).length)
             return;
 
-        const metadatumId = Object.keys(rules)[0];
         conditionalSections[metadataSection.id] = {
             sectionId: metadataSection.id,
-            metadatumId: metadatumId,
-            metadatumValues: rules[metadatumId],
+            rules: Object.keys(rules).map(metadatumId => conditionalRule(metadatumId, rules[metadatumId], metadata[String(metadatumId)])),
             hide: true
         };
     });
@@ -129,7 +181,7 @@ export function conditionalSectionsFrom(metadataSections) {
 
 /**
  * Whether the section is hidden for the item's current metadata.
- * A section that is not conditional stays visible.
+ * A section that is not conditional stays visible. Every rule must match.
  *
  * @param {object} metadataSection
  * @param {Array} itemMetadata
@@ -143,8 +195,13 @@ export function conditionalSectionIsHidden(metadataSection, itemMetadata) {
     if (!rules || typeof rules !== 'object' || !Object.keys(rules).length)
         return false;
 
-    const metadatumId = Object.keys(rules)[0];
-    return conditionalSectionShouldHide(storedValuesForMetadatum(itemMetadata, metadatumId), rules[metadatumId]);
+    return Object.keys(rules).some(metadatumId => {
+        const current = Array.isArray(itemMetadata)
+            ? itemMetadata.find(anItemMetadatum => anItemMetadatum && anItemMetadatum.metadatum && anItemMetadatum.metadatum.id == metadatumId)
+            : undefined;
+        const hierarchical = isHierarchicalTaxonomy(current && current.metadatum);
+        return conditionalSectionShouldHide(storedValuesForMetadatum(itemMetadata, metadatumId), rules[metadatumId], hierarchical);
+    });
 }
 
 /**
@@ -160,10 +217,17 @@ export function conditionalSectionsForItemMetadata(conditionalSections, itemMeta
 
     Object.keys(conditionalSections || {}).forEach(sectionId => {
         const record = conditionalSections[sectionId];
-        const values = storedValuesForMetadatum(itemMetadata, record.metadatumId);
-        rememberTerms(values);
+        const rules = (record.rules || []).map(rule => {
+            const values = storedValuesForMetadatum(itemMetadata, rule.metadatumId);
+            if (rule.hierarchical)
+                rememberTerms(values);
+            return Object.assign({}, rule, {
+                matched: !conditionalSectionShouldHide(values, rule.metadatumValues, rule.hierarchical)
+            });
+        });
         next[sectionId] = Object.assign({}, record, {
-            hide: conditionalSectionShouldHide(values, record.metadatumValues)
+            rules: rules,
+            hide: rules.some(rule => !rule.matched)
         });
     });
 
