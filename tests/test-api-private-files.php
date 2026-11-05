@@ -200,10 +200,10 @@ PHP;
 		}
 	}
 
-	private function request($folder, $method = 'GET', $headers = [], $filename = 'fixture.mp4') {
+	private function request($folder, $method = 'GET', $headers = [], $filename = 'fixture.mp4', $authorized = true) {
 		$context = stream_context_create(['http' => [
 			'method' => $method,
-			'header' => implode("\r\n", array_merge(['X-Test-Authorized: yes'], $headers)),
+			'header' => implode("\r\n", array_merge(['X-Test-Authorized: ' . ($authorized ? 'yes' : 'no')], $headers)),
 			'ignore_errors' => true,
 			'timeout' => 5,
 		]]);
@@ -324,7 +324,7 @@ PHP;
 		foreach (['101/201', '102/202', '103/203'] as $folder) {
 			foreach (['GET', 'HEAD'] as $method) {
 				foreach ([[], ['Range: bytes=0-1'], ['Range: bytes=131072-']] as $range) {
-					list($status, $headers, $body) = $this->request($folder, $method, array_merge(['X-Test-Authorized: no'], $range));
+					list($status, $headers, $body) = $this->request($folder, $method, $range, 'fixture.mp4', false);
 					$this->assertSame(404, $status);
 					$this->assertSame($method === 'HEAD' ? '' : 'not found', $body);
 					$this->assertArrayNotHasKey('content-range', $headers);
