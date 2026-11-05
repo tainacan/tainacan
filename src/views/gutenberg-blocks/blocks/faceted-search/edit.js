@@ -396,6 +396,7 @@ export default function({ attributes, setAttributes }) {
                                         options={
                                             [
                                                 { value: 'date', label: __('Creation date', 'tainacan') },
+                                                { value: 'modified', label: __('Modification date', 'tainacan') },
                                                 { value: 'title', label: __('Title', 'tainacan') }
                                             ]
                                         }

@@ -988,6 +988,8 @@
                                 Object.keys(orderBy).forEach((paramKey) => {
                                     this.$route.query[paramKey] = orderBy[paramKey];
                                 });
+                            else if (typeof orderBy == 'string')
+                                this.$route.query.orderby = orderBy;
                             else
                                 this.$route.query.orderby = 'date'
                             
@@ -1000,6 +1002,8 @@
                         }
                     } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
                         this.$route.query.orderby = 'date'
+                    } else if ( this.$route.query.orderby == 'modification_date' ) {
+                        this.$route.query.orderby = 'modified'
                     }
                     
                     // Admin View Modes
