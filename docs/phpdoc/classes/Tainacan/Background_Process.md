@@ -57,7 +57,7 @@ classDiagram
     }
     class Background_Process {
         #table : string
-        +ID : false|int
+        +ID : false
         #prefix : string
         #action : string
         #name : string

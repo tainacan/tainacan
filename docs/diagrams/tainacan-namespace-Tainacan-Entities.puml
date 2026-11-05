@@ -445,6 +445,7 @@
     +get_parent_meta_id()
     +get_value()
     +has_value()
+    +matches_conditional_values(rule_values)
     +is_multiple()
     +is_collection_key()
     +is_required()
