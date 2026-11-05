@@ -321,7 +321,7 @@
                                     v-if="metadatum != undefined"
                                     aria-controls="items-list-results"
                                     role="button"
-                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && (orderBy == metadatum.slug || (metadatum.metadata_type_object && orderBy == metadatum.metadata_type_object.related_mapped_prop))) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && (orderBy == metadatum.slug || (orderBy == 'date' && metadatum.slug == 'creation_date') || (orderBy == 'modified' && metadatum.slug == 'modification_date') || (metadatum.metadata_type_object && orderBy == metadatum.metadata_type_object.related_mapped_prop))) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     :value="metadatum"
                                     :data-metadatum-slug="metadatum.slug ? metadatum.slug : ''">
                                 {{ metadatum.name }}
@@ -1017,7 +1017,7 @@
                         // Order By (required extra work to deal with custom metadata ordering)
                         if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
-                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
+                            let orderBy = this.initialOrderBy(this.$userPrefs.get(orderByKey));
                         
                             if (orderBy && orderBy != 'name') {
                             
@@ -1029,6 +1029,8 @@
                                     Object.keys(orderBy).forEach((paramKey) => {
                                         this.$route.query[paramKey] = orderBy[paramKey];
                                     });
+                                else if (typeof orderBy == 'string')
+                                    this.$route.query.orderby = orderBy;
                                 else
                                     this.$route.query.orderby = 'date'
                                 
@@ -1041,6 +1043,8 @@
                             }
                         } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
                             this.$route.query.orderby = 'date'
+                        } else if ( this.$route.query.orderby == 'modification_date' ) {
+                            this.$route.query.orderby = 'modified'
                         }
                         
                         // Theme View Modes
@@ -1200,8 +1204,11 @@
                     currentQuery[key] = false;
             }
 
-            // Passes the current URL to store
+            // Passes the current URL to store. setOrderBy above is cleared by this
+            // replacement when the URL itself has no orderby, so put the block default back.
             this.$store.dispatch('search/setPostQuery', currentQuery )
+            if (!currentQuery.orderby && this.defaultOrderBy)
+                this.$store.dispatch('search/setOrderBy', this.defaultOrderBy);
             this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
 
             // Sets advanced search
@@ -1499,6 +1506,18 @@
 
                 return terms.join(' ' + this.$i18n.get('label_or') + ' ');
             },  
+            initialOrderBy(prefOrderBy) {
+                if (this.collectionId || !this.defaultOrderBy || this.defaultOrderBy === 'date')
+                    return prefOrderBy || this.defaultOrderBy;
+
+                const prefIsCreationDate = !prefOrderBy
+                    || prefOrderBy === 'date'
+                    || prefOrderBy === 'creation_date'
+                    || prefOrderBy.slug === 'creation_date'
+                    || prefOrderBy.orderby === 'date';
+
+                return prefIsCreationDate ? this.defaultOrderBy : prefOrderBy;
+            },
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
                 this.showItemsHiddingDueSortingDialog();
@@ -1542,6 +1561,7 @@
                     }
                 }
                 let thumbnailMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'thumbnail');
+                let modificationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'modification_date');
                 let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 
                 let titleMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'title' : false);
@@ -1550,6 +1570,7 @@
                 // Updates Search
                 let fetchOnlyArray = [
                     ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null),
+                    ((modificationDateMetadatum != undefined && modificationDateMetadatum.display) ? 'modification_date' : null),
                     ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
                     (this.isRepositoryLevel && titleMetadatum && titleMetadatum.display ? 'title' : null),
                     (this.isRepositoryLevel && descriptionMetadatum && descriptionMetadatum.display ? 'description' : null)
@@ -1691,10 +1712,12 @@
                                         
                                     }
 
+                                    let modificationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject)) ? (prefsFetchOnlyObject.indexOf('modification_date') >= 0) : true;
                                     let creationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject)) ? (prefsFetchOnlyObject.indexOf('creation_date') >= 0) : true;
                                 
                                     let fetchOnlyArray = [
                                         (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                        (modificationDateMetadatumDisplay ? 'modification_date' : null),
                                         (creationDateMetadatumDisplay ? 'creation_date' : null),
                                         (this.isRepositoryLevel && repositoryTitleDisplay ? 'title' : null),
                                         (this.isRepositoryLevel && repositoryDescriptionDisplay ? 'description' : null)
@@ -1714,6 +1737,14 @@
                                         });
                                     }
                                     this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: modificationDateMetadatumDisplay
+                                    });
+                                    this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
                                         metadata_type: undefined,
@@ -1725,7 +1756,7 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
                             
-                                    const basicAttributes = this.effectiveHideItemsThumbnail ? 'creation_date,title,description' : 'thumbnail,creation_date,title,description';
+                                    const basicAttributes = this.effectiveHideItemsThumbnail ? 'modification_date,creation_date,title,description' : 'thumbnail,modification_date,creation_date,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
                                     
                                     if (this.isRepositoryLevel) {
@@ -1745,6 +1776,14 @@
                                             this.sortingMetadata.push(metadatum);
                                     }
                                     
+                                    this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: true
+                                    });
                                     this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',

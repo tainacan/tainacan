@@ -429,6 +429,7 @@ class Settings extends Pages {
 		$orderby_options = array(
 			'title' => __( 'Title', 'tainacan' ),
 			'date' => __( 'Creation date', 'tainacan' ),
+			'modified' => __( 'Modification date', 'tainacan' ),
 		);
 		$orderby_options_html = '';
 		foreach( $orderby_options as $key => $label ) {
