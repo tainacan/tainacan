@@ -54,6 +54,7 @@
 
 <script>
     import { mapActions } from 'vuex';
+    import { rememberTermAncestors } from '../../../js/conditional-sections';
 
     export default {
         props: {
@@ -160,8 +161,10 @@
 
                 this.fetchTerms(fetchParams).then((res) => {
                     
-                    for (let term of res.terms)
+                    for (let term of res.terms) {
+                        rememberTermAncestors(term);
                         this.options.push({ label: term.name, value: term.id, hierarchy_path: term.hierarchy_path ? term.hierarchy_path.replace('>', ' > ') : false });
+                    }
 
                     this.offset += 12;
                     this.totalTerms = res.total;

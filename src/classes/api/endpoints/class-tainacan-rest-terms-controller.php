@@ -610,6 +610,12 @@ class REST_Terms_Controller extends REST_Controller {
 				}
 			}
 
+			if ( ! isset( $item_arr['ancestors'] ) ) {
+				$term_id  = isset( $item_arr['id'] ) ? $item_arr['id'] : $item->get_id();
+				$taxonomy = isset( $item_arr['taxonomy'] ) ? $item_arr['taxonomy'] : $item->get_taxonomy();
+				$item_arr['ancestors'] = get_ancestors( (int) $term_id, $taxonomy, 'taxonomy' );
+			}
+
 			if(isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0) {
 				$item_arr['preview_image_items'] = $this->get_preview_image_items($item, $request['fetch_preview_image_items']);
 			}

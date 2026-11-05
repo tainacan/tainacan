@@ -1,4 +1,5 @@
 import { mapActions } from 'vuex';
+import { conditionalSectionShouldHide } from './conditional-sections';
 export const itemMetadataMixin = {
     created() {
         this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
@@ -120,8 +121,7 @@ export const itemMetadataMixin = {
             let updatedConditionalSections = JSON.parse(JSON.stringify(this.conditionalSections));
             for (let conditionalSectionId in updatedConditionalSections) {
                 if ( updatedConditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
-                    const conditionalValues = Array.isArray(updatedConditionalSections[conditionalSectionId].metadatumValues) ? updatedConditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
-                    updatedConditionalSections[conditionalSectionId].hide = Array.isArray(values) ? values.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(values) < 0 ;
+                    updatedConditionalSections[conditionalSectionId].hide = conditionalSectionShouldHide(values, updatedConditionalSections[conditionalSectionId].metadatumValues);
                 }
             }
             this.conditionalSections = updatedConditionalSections;

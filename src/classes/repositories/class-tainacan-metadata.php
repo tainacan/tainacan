@@ -1471,6 +1471,7 @@ class Metadata extends Repository {
 					'taxonomy' => $taxonomy_slug,
 					'taxonomy_id' => $taxonomy_id,
 					'parent' => $r->parent,
+					'ancestors' => get_ancestors( (int) $r->term_id, $taxonomy_slug, 'taxonomy' ),
 					'total_items' => $total_items,
 					'type' => 'Taxonomy',
 					'description' => term_description($r->term_id),
