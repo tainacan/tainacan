@@ -18,8 +18,8 @@ classDiagram
     class Entity {
         #repository : Repository
         -errors : array
-        #post_type : string|false
-        #capability_type : string|false
+        #post_type : string
+        #capability_type : string
         +WP_Post : WP_Post
         -validated : bool
         +cap : object
@@ -76,6 +76,7 @@ classDiagram
         +get_parent_meta_id()
         +get_value()
         +has_value()
+        +matches_conditional_values(rule_values)
         +is_multiple()
         +is_collection_key()
         +is_required()
@@ -411,6 +412,25 @@ Check whether the item has a value stored in the database or not
 ```php
 public has_value(): bool
 ```
+
+***
+
+### matches_conditional_values
+
+Whether the stored values satisfy one conditional-section rule.
+
+```php
+public matches_conditional_values(array $rule_values): bool
+```
+
+A hierarchical taxonomy term matches a rule term when it is that term or
+a descendant of it. Other metadata match the stored value exactly.
+
+**Parameters:**
+
+| Parameter      | Type      | Description                                          |
+|----------------|-----------|------------------------------------------------------|
+| `$rule_values` | **array** | Values configured on the section for this metadatum. |
 
 ***
 
