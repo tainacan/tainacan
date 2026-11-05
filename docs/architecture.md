@@ -208,16 +208,3 @@ Tainacan uses Vuex for centralized state management. The main state modules incl
 - **Metadata**: State related to available metadata
 
 
-## 7. References and Contribution
-
-* 📚 **Official Wiki**: [https://tainacan.github.io/tainacan-wiki/](https://tainacan.github.io/tainacan-wiki/)
-* 💻 **Source Code**: [https://github.com/tainacan/tainacan](https://github.com/tainacan/tainacan)
-* 💬 **Community Forum**: [https://tainacan.discourse.group/](https://tainacan.discourse.group/)
-* ✉️ **Mailing List**: [https://groups.google.com/g/tainacan](https://groups.google.com/g/tainacan)
-
-
-
-
-
-
-
