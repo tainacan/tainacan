@@ -1,6 +1,6 @@
 # Tainacan internal API
 
-This page describes the PHP API used inside WordPress to create and read Tainacan entities. The [REST API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json ":ignore") is a separate interface. The names used below (collection, item, metadatum, filter, taxonomy, term) are defined in [Key concepts](key-concepts.md).
+This page describes the PHP API used inside WordPress to create and read Tainacan entities. The [REST API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json ":ignore") is a separate interface. The names used below (collection, item, metadatum, filter, taxonomy, term) are introduced in [General concepts](/general-concepts) and mapped to code in [Key concepts](key-concepts.md).
 
 Method lists live in the [code reference](phpdoc/Home.md). This page describes the shared routine. Each entity page describes only the calls that differ from it. Longer sequences are in [Examples](#examples).
 

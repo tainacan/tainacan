@@ -1,6 +1,6 @@
 # Reloading the Item Editing Form
 
-If your plugin live updates an item or its metadata from outside the Tainacan Admin Vue app — for example via the [REST API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json ":ignore") or the [internal PHP API](/dev/internal-api.md) — the Item Editing Form will not notice by itself. Dispatch the `TainacanReloadItemMetadataForm` event on `window` so the form refetches and re-renders.
+If your plugin live updates an item or its metadata from outside the Tainacan Admin Vue app — for example via the [REST API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json ":ignore") or the [internal PHP API](internal-api.md) — the Item Editing Form will not notice by itself. Dispatch the `TainacanReloadItemMetadataForm` event on `window` so the form refetches and re-renders.
 
 Do this instead of manipulating the form DOM. The listener is only active while the item edition screen is open.
 
@@ -35,5 +35,5 @@ The value must already be persisted before you dispatch. This event only refresh
 
 ## See also
 
-- [Plugin Development Guidelines](/dev/plugin-development-guidelines.md) — when to use this instead of other extension APIs
-- [Using Admin Form Hooks](/dev/admin-form-hooks.md) — adding extra fields to the item form itself
+- [Plugin Development Guidelines](plugin-development-guidelines.md) — when to use this instead of other extension APIs
+- [Using Admin Form Hooks](admin-form-hooks.md) — adding extra fields to the item form itself

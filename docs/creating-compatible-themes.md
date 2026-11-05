@@ -41,6 +41,6 @@ The last one is the most important, as it should correspond to the parent theme 
 
 But there is a lot more that can be done. So if you are interested on getting to know the details, here is a summary of how you can make your theme trully compatible with Tainacan:
 
-- [Creating custom templates](/dev/custom-templates.md) to one of [Tainacan pages](tainacan-pages.md);
-- [Adapting the Vue Items List Component](/dev/the-vue-items-list-component.md);
-- [Registering custom Extra View Modes](/dev/extra-view-modes.md);
+- [Creating custom templates](custom-templates.md) to one of [Tainacan pages](/tainacan-pages.md);
+- [Adapting the Vue Items List Component](the-vue-items-list-component.md);
+- [Registering custom Extra View Modes](extra-view-modes.md);

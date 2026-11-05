@@ -12,7 +12,7 @@ Assuming:
 
 ## Pre-release
 
-Before we publish a new version, we always release one or more Release Candidates so the community has time to [test and make sure](/dev/tests-script) the new version of Tainacan is clean and ready to reach the world.
+Before we publish a new version, we always release one or more Release Candidates so the community has time to [test and make sure](tests-script) the new version of Tainacan is clean and ready to reach the world.
 
 ### Start in the git repository
 

@@ -10,7 +10,7 @@ With Tainacan you have the possibility to map your collection structure to one o
 
 You do it by informing, for each metadatum you create, what is it relative in each format you want to map your collection too. You may say for example, that you "Name" Metadatum is the equivalent to the dc:Title attribute in Dublin Core and some another attribute in other formats you choose.
 
-Tainacan is shipped with some Mapping standards that implement popular metadata standards. And it will be easy to create new standards.  See more [details about mapping standards](/dev/mapping-standards.md). 
+Tainacan is shipped with some Mapping standards that implement popular metadata standards. And it will be easy to create new standards.  See more [details about mapping standards](mapping-standards.md). 
 
 You can also use these mapping standards as a preset when you create a new Collection.
 
@@ -28,7 +28,7 @@ Tainacan is powered with an API that allows other applications to search and con
 
 In the same way, you can choose the format of the file when you export your collection, one can choose the format he/she wants to consume your content in. This is what exposers are for.
 
-Each exposer implements a different way of presenting your data in the API response, and may support one or many mappings. See more [details about exposers](/dev/exposers.md).
+Each exposer implements a different way of presenting your data in the API response, and may support one or many mappings. See more [details about exposers](exposers.md).
 
 For example, the default JSON exposer supports any mapping and can serve your content exposing any metadata standard you mapped your content to. The decision is in the hands of the application that requests your API.
 

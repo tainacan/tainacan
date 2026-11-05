@@ -15,31 +15,7 @@ Tainacan is developed as a WordPress plugin, leveraging its native structure and
 
 There are other parts of the code that leverage functionality related to consuming and manipulating data but these three are the most relevant.
 
-### 1.1 Main Entities and Repositories
-
-The following table shows the main entities of the system, their corresponding repositories, and the location of implementation files. Each entity has a dedicated repository that manages its persistence and retrieval operations.
-
-| Entity                             | Repository                                | Code Location                            |
-| ---------------------------------- | ----------------------------------------- | ---------------------------------------- |
-| Collection (`tainacan-collection`) | `Tainacan\Repositories\Collections`       | `class-tainacan-collections.php`         |
-| Item (`tainacan-item`)             | `Tainacan\Repositories\Items`             | `class-tainacan-items.php`               |
-| Metadatum (`tainacan-metadatum`)   | `Tainacan\Repositories\Metadata`          | `class-tainacan-metadata.php`            |
-| Metadata Section                   | `Tainacan\Repositories\Metadata_Sections` | `class-tainacan-metadata-sections.php`   |
-| Filter                             | `Tainacan\Repositories\Filters`           | `class-tainacan-filters.php`             |
-| Taxonomy                           | `Tainacan\Repositories\Taxonomies`        | `class-tainacan-taxonomies.php`          |
-| Term                               | `Tainacan\Repositories\Terms`             | `class-tainacan-terms.php`               |
-
-### 1.2 Detailed Code Locations for Entities
-
-| Entity           | File (Path)                                                |
-| ---------------- | ---------------------------------------------------------- |
-| Collection       | `src/classes/entities/class-tainacan-collection.php`       |
-| Item             | `src/classes/entities/class-tainacan-item.php`             |
-| Metadatum        | `src/classes/entities/class-tainacan-metadatum.php`        |
-| Metadata Section | `src/classes/entities/class-tainacan-metadata-section.php` |
-| Filter           | `src/classes/entities/class-tainacan-filter.php`           |
-| Taxonomy         | `src/classes/entities/class-tainacan-taxonomy.php`         |
-| Term             | `src/classes/entities/class-tainacan-term.php`             |
+Where each entity is stored, and which repository owns it, is in [Key concepts](key-concepts.md). The class reference generated from the source is the [code reference](phpdoc/Home.md).
 
 
 
@@ -108,19 +84,17 @@ Tainacan's data architecture is based on WordPress infrastructure, using and ext
 | Taxonomies and Terms         | `wp_terms`, `wp_term_taxonomy`,  `wp_term_relationships`  | Used for categorization        |
 | Background Processes         | `wp_tnc_bg_process`            | Import, export, bulk edition etc. |
 
+The `post_type` value for each entity is in [Key concepts](key-concepts.md#storage). An item is a post of type `tnc_col_{id}_item`, not a single shared post type.
 
-### 4.2 Domain Relationships
+### 4.2 Domain relationships
 
-* A collection contains multiple metadata and sections.
-* An item belongs to a single collection and may be classified by terms from different taxonomies.
-* Taxonomy-type metadata acts as a bridge to terms.
-* Users have differentiated permissions via WordPress roles and capabilities.
+How collections, items, metadata, taxonomies, and filters relate is described in [Key concepts](key-concepts.md#relationships).
 
-# 4.3 Data Handling and WordPress Database Access
+### 4.3 Data Handling and WordPress Database Access
 
 Data manipulation in the Tainacan plugin is performed using a combination of native WordPress functions and direct database access when needed.
 
-### WordPress Native Functions
+#### WordPress Native Functions
 
 For most standard operations, Tainacan relies on WordPress native functions such as:
 
@@ -132,7 +106,7 @@ For most standard operations, Tainacan relies on WordPress native functions such
 
 These functions ensure compatibility with the WordPress ecosystem and benefit from built-in features like caching and hooks.
 
-### Direct Database Access with `$wpdb`
+#### Direct Database Access with `$wpdb`
 
 For more complex scenarios or when dealing with custom database tables (e.g., background processes), Tainacan uses direct SQL access via the `$wpdb` object:
 
