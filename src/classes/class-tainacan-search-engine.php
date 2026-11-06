@@ -128,6 +128,86 @@ class Search_Engine {
 		add_filter( 'posts_search', array( &$this, 'search_where' ), 10, 2 );
 		add_filter( 'posts_request', array( &$this, 'distinct' ) );
 		//add_filter( 'posts_request', array( &$this, 'log_query' ), 10, 2 );
+
+		/*
+		 * Hybrid reordering is opt-in and touches only Tainacan item searches. It
+		 * reorders the page WordPress already selected, never changes which page a
+		 * result belongs to, so `found_posts` and pagination stay WordPress's.
+		 */
+		add_filter( 'the_posts', array( &$this, 'hybrid_reorder' ), 10, 2 );
+	}
+
+	/**
+		* Reorder a Tainacan search page by keyword + vector rank.
+		*
+		* Off unless a site enables it through `tainacan_rag_hybrid_search_enabled`,
+		* because it changes result order on every Tainacan search and that should be a
+		* decision, not an upgrade side effect.
+		*
+		* @param array|null $posts Posts found by the query.
+		* @param \WP_Query  $query The query.
+		* @return array|null
+		*/
+	function hybrid_reorder( $posts, $query ) {
+		if ( ! is_array( $posts ) || count( $posts ) < 2 || ! $query instanceof \WP_Query ) {
+			return $posts;
+		}
+
+		$sentence = (string) $query->get( 's' );
+
+		if ( '' === trim( $sentence ) || ! $query->is_search() ) {
+			return $posts;
+		}
+
+		$collection_ids = self::collection_ids_from_post_types( $query->get( 'post_type' ) );
+
+		if ( empty( $collection_ids ) ) {
+			return $posts;
+		}
+
+		/**
+		 * Filters whether hybrid ranking reorders Tainacan search results.
+		 *
+		 * @param bool      $enabled Whether to reorder.
+		 * @param \WP_Query $query   The query being run.
+		 */
+		if ( ! apply_filters( 'tainacan_rag_hybrid_search_enabled', false, $query ) ) {
+			return $posts;
+		}
+
+		return \Tainacan\Rag\Hybrid_Ranking::get_instance()->rerank_posts( $sentence, $posts, $collection_ids );
+	}
+
+	/**
+		* Collections covered by a query's post types.
+		*
+		* Returns an empty array when any post type is not a Tainacan item type, because
+		* a mixed query (items plus pages, say) must not be reordered as if it were all
+		* items.
+		*
+		* @param mixed $post_types Query post types.
+		* @return int[]
+		*/
+	private static function collection_ids_from_post_types( $post_types ) {
+		if ( empty( $post_types ) ) {
+			return [];
+		}
+
+		$post_types = (array) $post_types;
+		$collections = \Tainacan\Repositories\Collections::get_instance();
+		$ids         = [];
+
+		foreach ( $post_types as $post_type ) {
+			$collection_id = (int) $collections->get_id_by_db_identifier( $post_type );
+
+			if ( $collection_id <= 0 ) {
+				return [];
+			}
+
+			$ids[] = $collection_id;
+		}
+
+		return array_values( array_unique( $ids ) );
 	}
 
 	// creates the list of search keywords from the 's' parameters.

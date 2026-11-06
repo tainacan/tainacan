@@ -22,6 +22,9 @@ $Tainacan_System_Check_Page = \Tainacan\System_Check::get_instance();
 require_once(__DIR__ . '/mobile-app/class-tainacan-mobile-app.php');
 $Tainacan_Mobile_App_Page = \Tainacan\Mobile_App::get_instance();
 
+require_once(__DIR__ . '/rag/class-tainacan-rag-console.php');
+$Tainacan_Rag_Console_Page = \Tainacan\Rag_Console::get_instance();
+
 require_once(__DIR__ . '/class-tainacan-admin-commands.php');
 $Tainacan_Admin_Commands_Page = \Tainacan\Admin_Commands::get_instance();
 
