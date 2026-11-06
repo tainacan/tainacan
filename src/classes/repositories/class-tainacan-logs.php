@@ -335,6 +335,16 @@ class Logs extends Repository {
 		$wheres = [];
 		$params = [];
 
+		// Cursor bounds used by background activity exports.
+		if ( isset( $args['id_after'] ) ) {
+			$wheres[] = '`ID` > %d';
+			$params[] = absint( $args['id_after'] );
+		}
+		if ( isset( $args['id_before'] ) ) {
+			$wheres[] = '`ID` <= %d';
+			$params[] = absint( $args['id_before'] );
+		}
+
 		foreach ( [ 'item_id', 'user_id' ] as $col ) {
 			if ( isset( $args[ $col ] ) ) {
 				$wheres[] = "`$col` = %d";
