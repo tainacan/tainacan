@@ -634,4 +634,26 @@ class Migrations {
 			);
 		}
 	}
+
+	/**
+		* Create the vector space registry table.
+		*
+		* The DDL lives in the repository rather than here on purpose: run_migrations()
+		* treats every method on this class as a migration and calls it, so a helper
+		* method placed here would be invoked as one.
+		*
+		* @return void
+		*/
+	static function tainacan_create_rag_spaces_table() {
+		\Tainacan\Rag\Space_Repository::get_instance()->create_registry_table();
+	}
+
+	/**
+	 * Create the embedding queue table.
+	 *
+	 * @return void
+	 */
+	static function tainacan_create_rag_queue_table() {
+		\Tainacan\Rag\Index_Queue::get_instance()->create_table();
+	}
 }

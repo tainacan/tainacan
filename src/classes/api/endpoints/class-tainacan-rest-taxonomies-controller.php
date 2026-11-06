@@ -238,6 +238,17 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @return object|void|\WP_Error
 	 */
 	public function prepare_item_for_database( $request ) {
+		/*
+		 * Start from a fresh entity. $this->taxonomy is created once on init and
+		 * this method used to mutate it in place, so a second taxonomy created in
+		 * the same PHP process reused an entity that already carried an ID, and
+		 * parent::insert() returned false while create_item() then called
+		 * tainacan_register_taxonomy() on that false. Invisible over HTTP, where
+		 * every request is a new process; it breaks persistent workers, WP-CLI
+		 * loops and the test suite.
+		 */
+		$this->taxonomy = new Entities\Taxonomy();
+
 		$readonly = $this->get_readonly_fields();
 		foreach ($request as $key => $value){
 			if ( in_array($key, $readonly, true) ) {
