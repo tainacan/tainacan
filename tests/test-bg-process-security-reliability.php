@@ -30,11 +30,21 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 
 	public $items_ids = [];
 
+	/**
+	 * The site timezone before the test ran, so a test that changes it does not
+	 * leak into the next one.
+	 *
+	 * @var string
+	 */
+	protected $original_timezone_string;
+
 	public function setUp(): void {
 		parent::setUp();
 
 		// Store the admin user ID created by the parent setUp().
 		$this->admin_user_id = $this->user_id;
+
+		$this->original_timezone_string = get_option( 'timezone_string' );
 
 		// Ensure the retry columns exist (the migration may not have run in the test environment).
 		\Tainacan\Migrations::alter_table_tnc_bg_process_add_retry_columns();
@@ -423,7 +433,8 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 		$table = $wpdb->prefix . 'tnc_bg_process';
 
 		// Insert a process that is "running" but hasn't been updated in a long time.
-		$old_date = date( 'Y-m-d H:i:s', time() - 3600 ); // 1 hour ago.
+		// The column is UTC, so the fixture must be UTC too (see #1285).
+		$old_date = gmdate( 'Y-m-d H:i:s', time() - 3600 ); // 1 hour ago.
 		$wpdb->insert(
 			$table,
 			[
@@ -470,7 +481,7 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 		$table = $wpdb->prefix . 'tnc_bg_process';
 
 		// Insert a process that is "running" and was updated recently.
-		$recent_date = date( 'Y-m-d H:i:s' ); // now.
+		$recent_date = gmdate( 'Y-m-d H:i:s' ); // now, in UTC.
 		$wpdb->insert(
 			$table,
 			[
@@ -514,7 +525,7 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 
 		$table = $wpdb->prefix . 'tnc_bg_process';
 
-		$old_date = date( 'Y-m-d H:i:s', time() - 3600 );
+		$old_date = gmdate( 'Y-m-d H:i:s', time() - 3600 );
 		$wpdb->insert(
 			$table,
 			[
@@ -549,6 +560,196 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 
 		$this->assertNotEquals( $before, $after, 'processed_last should be updated by record_heartbeat' );
 		$this->assertGreaterThan( $before, $after, 'processed_last should be more recent after heartbeat' );
+	}
+
+	// ─── Heartbeat timezone / UTC tests (issue #1285) ──────────────
+
+	/**
+	 * record_heartbeat() must store UTC, like queued_on, update() and the
+	 * watchdog cutoff. On a site west of UTC current_time( 'mysql' ) produced a
+	 * value 3 hours in the past and the watchdog killed live processes.
+	 *
+	 * @group bg-process-security
+	 */
+	public function test_record_heartbeat_stores_utc() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'tnc_bg_process';
+
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+
+		$process_id = $this->insert_bg_process_row( $table, 'running', gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ) );
+
+		$bg_generic = new \Tainacan\Background_Generic_Process();
+		$bg_generic->ID = $process_id;
+		$bg_generic->record_heartbeat();
+
+		$stored = $wpdb->get_var(
+			$wpdb->prepare( "SELECT processed_last FROM {$table} WHERE ID = %d", $process_id )
+		);
+
+		$this->assertEqualsWithDelta(
+			time(),
+			strtotime( $stored . ' UTC' ),
+			5,
+			'processed_last must be stored in UTC so it can be compared with the watchdog cutoff'
+		);
+	}
+
+	/**
+	 * A live process must never be considered stale on a site west of UTC.
+	 *
+	 * Regression test for https://github.com/tainacan/tainacan/issues/1285.
+	 *
+	 * @group bg-process-security
+	 */
+	public function test_watchdog_does_not_touch_live_process_with_negative_utc_offset() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'tnc_bg_process';
+
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+
+		$process_id = $this->insert_bg_process_row( $table, 'running', gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ), 0, 3 );
+
+		$bg_generic = new \Tainacan\Background_Generic_Process();
+		$bg_generic->ID = $process_id;
+		$bg_generic->record_heartbeat(); // a heartbeat written right now.
+
+		$this->invoke_watchdog( $bg_generic );
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare( "SELECT status, retry_count FROM {$table} WHERE ID = %d", $process_id )
+		);
+
+		$this->assertEquals( 'running', $row->status, 'A live process must not be re-queued on sites west of UTC' );
+		$this->assertEquals( '0', $row->retry_count, 'A live process must not consume a retry' );
+	}
+
+	/**
+	 * The watchdog must still work on a site west of UTC: a process that stopped
+	 * sending heartbeats for longer than the stale timeout is marked as errored.
+	 *
+	 * @group bg-process-security
+	 */
+	public function test_watchdog_marks_stale_process_in_negative_offset_timezone() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'tnc_bg_process';
+
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+
+		// No retries left, so close() finalises the row instead of re-queueing it.
+		$process_id = $this->insert_bg_process_row( $table, 'running', gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ), 3, 3 );
+
+		$this->invoke_watchdog( new \Tainacan\Background_Generic_Process() );
+
+		$status = $wpdb->get_var(
+			$wpdb->prepare( "SELECT status FROM {$table} WHERE ID = %d", $process_id )
+		);
+
+		$this->assertEquals( 'errored', $status, 'A process silent for longer than the timeout must be marked as errored' );
+	}
+
+	/**
+	 * Tainacan <= 1.4.1 stored heartbeats in local time, so on a site east of UTC
+	 * processed_last is ahead of UTC now. Such a row is alive and must be left
+	 * alone until it is old enough, otherwise the fix for #1285 would start
+	 * killing processes on the sites the old code handled by accident.
+	 *
+	 * @group bg-process-security
+	 */
+	public function test_watchdog_ignores_future_processed_last() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'tnc_bg_process';
+
+		// Legacy UTC+9 heartbeat: 9 hours ahead of UTC now.
+		$process_id = $this->insert_bg_process_row( $table, 'running', gmdate( 'Y-m-d H:i:s', time() + ( 9 * HOUR_IN_SECONDS ) ), 0, 3 );
+
+		$this->invoke_watchdog( new \Tainacan\Background_Generic_Process() );
+
+		$status = $wpdb->get_var(
+			$wpdb->prepare( "SELECT status FROM {$table} WHERE ID = %d", $process_id )
+		);
+
+		$this->assertEquals( 'running', $status, 'A heartbeat in the future cannot be stale' );
+	}
+
+	// ─── Worker ownership tests (issue #1285 hardening) ────────────
+
+	/**
+	 * A worker owns its process while the row is running and the lock still holds
+	 * the value this request wrote.
+	 *
+	 * @group bg-process-security
+	 */
+	public function test_worker_owns_process_while_running_and_locked() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'tnc_bg_process';
+		$process_id = $this->insert_bg_process_row( $table, 'running', gmdate( 'Y-m-d H:i:s' ), 0, 3 );
+
+		$bg_generic = $this->lock_test_process( $process_id );
+
+		$this->assertTrue(
+			$this->invoke_owns_process( $bg_generic, $process_id ),
+			'The worker that holds the lock must own a running process'
+		);
+
+		$this->unlock_test_process( $bg_generic );
+		$wpdb->delete( $table, [ 'ID' => $process_id ] );
+	}
+
+	/**
+	 * When the watchdog or another request re-queues the process, status is no
+	 * longer 'running' and the original worker must stop.
+	 *
+	 * @group bg-process-security
+	 */
+	public function test_worker_loses_ownership_when_process_is_requeued() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'tnc_bg_process';
+		$process_id = $this->insert_bg_process_row( $table, 'running', gmdate( 'Y-m-d H:i:s' ), 0, 3 );
+
+		$bg_generic = $this->lock_test_process( $process_id );
+
+		$wpdb->update( $table, [ 'status' => 'waiting', 'retry_count' => 1 ], [ 'ID' => $process_id ] );
+
+		$this->assertFalse(
+			$this->invoke_owns_process( $bg_generic, $process_id ),
+			'A re-queued process belongs to the retried worker, not to this one'
+		);
+
+		$this->unlock_test_process( $bg_generic );
+		$wpdb->delete( $table, [ 'ID' => $process_id ] );
+	}
+
+	/**
+	 * When another request takes the lock (after the watchdog released it), the
+	 * original worker must stop even if the row still says 'running'.
+	 *
+	 * @group bg-process-security
+	 */
+	public function test_worker_loses_ownership_when_lock_is_taken_over() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'tnc_bg_process';
+		$process_id = $this->insert_bg_process_row( $table, 'running', gmdate( 'Y-m-d H:i:s' ), 0, 3 );
+
+		$bg_generic = $this->lock_test_process( $process_id );
+
+		// Another worker acquired the lock.
+		set_site_transient( $this->get_bg_property( $bg_generic, 'identifier' ) . '_process_lock', 'another-request' );
+
+		$this->assertFalse(
+			$this->invoke_owns_process( $bg_generic, $process_id ),
+			'A worker that no longer holds the lock must stop'
+		);
+
+		$this->unlock_test_process( $bg_generic );
+		$wpdb->delete( $table, [ 'ID' => $process_id ] );
 	}
 
 	// ─── Log File Ownership Tests ──────────────────────────────────
@@ -668,5 +869,126 @@ class BGProcessSecurityReliability extends TAINACAN_UnitApiTestCase {
 		// Cleanup.
 		unlink( $logs_dir . '/' . $log_filename );
 		$wpdb->delete( $table, [ 'ID' => $process_id ] );
+	}
+
+	// ─── Helpers ───────────────────────────────────────────────────
+
+	/**
+	 * Insert a row in the background process table.
+	 *
+	 * @param string $table      Table name.
+	 * @param string $status     Process status.
+	 * @param string $processed  processed_last value, in UTC.
+	 * @param int    $retry_count Current retry count.
+	 * @param int    $max_retries Maximum retries.
+	 * @return int The inserted ID.
+	 */
+	private function insert_bg_process_row( $table, $status, $processed, $retry_count = 0, $max_retries = 3 ) {
+		global $wpdb;
+
+		$wpdb->insert(
+			$table,
+			[
+				'data'           => maybe_serialize( [ 'test' => true ] ),
+				'progress_value' => 0,
+				'user_id'        => $this->admin_user_id,
+				'priority'       => 10,
+				'action'         => 'generic_process',
+				'name'           => 'Watchdog Test',
+				'queued_on'      => $processed,
+				'processed_last' => $processed,
+				'status'         => $status,
+				'bg_uuid'        => uniqid(),
+				'retry_count'    => $retry_count,
+				'max_retries'    => $max_retries,
+			]
+		);
+
+		return (int) $wpdb->insert_id;
+	}
+
+	/**
+	 * Run the watchdog, which is protected.
+	 *
+	 * @param \Tainacan\Background_Process $bg Process instance.
+	 * @return void
+	 */
+	private function invoke_watchdog( $bg ) {
+		$method = ( new \ReflectionClass( $bg ) )->getMethod( 'detect_and_cleanup_stale_processes' );
+		$method->setAccessible( true );
+		$method->invoke( $bg );
+	}
+
+	/**
+	 * Call the protected owns_process() predicate.
+	 *
+	 * @param \Tainacan\Background_Process $bg  Process instance.
+	 * @param int                          $key Process ID.
+	 * @return bool
+	 */
+	private function invoke_owns_process( $bg, $key ) {
+		$method = ( new \ReflectionClass( $bg ) )->getMethod( 'owns_process' );
+		$method->setAccessible( true );
+		return $method->invoke( $bg, $key );
+	}
+
+	/**
+	 * Simulate the lock that handle() stores before processing a batch.
+	 *
+	 * @param int $process_id Process ID.
+	 * @return \Tainacan\Background_Process
+	 */
+	private function lock_test_process( $process_id ) {
+		$bg_generic = new \Tainacan\Background_Generic_Process();
+		$bg_generic->ID = $process_id;
+
+		$lock_value = 'test-lock-' . $process_id;
+		$this->set_bg_property( $bg_generic, 'process_lock_in_time', $lock_value );
+		set_site_transient( $this->get_bg_property( $bg_generic, 'identifier' ) . '_process_lock', $lock_value );
+
+		return $bg_generic;
+	}
+
+	/**
+	 * Release the lock created by lock_test_process().
+	 *
+	 * @param \Tainacan\Background_Process $bg Process instance.
+	 * @return void
+	 */
+	private function unlock_test_process( $bg ) {
+		delete_site_transient( $this->get_bg_property( $bg, 'identifier' ) . '_process_lock' );
+	}
+
+	/**
+	 * Read a protected/private property.
+	 *
+	 * @param object $object Object instance.
+	 * @param string $name   Property name.
+	 * @return mixed
+	 */
+	private function get_bg_property( $object, $name ) {
+		$property = new \ReflectionProperty( $object, $name );
+		$property->setAccessible( true );
+		return $property->getValue( $object );
+	}
+
+	/**
+	 * Write a protected/private property.
+	 *
+	 * @param object $object Object instance.
+	 * @param string $name   Property name.
+	 * @param mixed  $value  Value.
+	 * @return void
+	 */
+	private function set_bg_property( $object, $name, $value ) {
+		$property = new \ReflectionProperty( $object, $name );
+		$property->setAccessible( true );
+		$property->setValue( $object, $value );
+	}
+
+	public function tearDown(): void {
+		update_option( 'timezone_string', $this->original_timezone_string );
+
+		parent::tearDown();
 	}
 }

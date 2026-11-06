@@ -189,6 +189,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
             }
         }
 
+        // queued_on and processed_last are stored in UTC, so any comparison must
+        // be made against UTC as well. See https://github.com/tainacan/tainacan/issues/1285.
         if (isset($request['datequery'])) {
             $from = $request['datequery'][0]['after'];
             $to = $request['datequery'][0]['before'];
@@ -204,7 +206,9 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
 		$recent_q = '';
 		if ( isset($request['recent']) && $request['recent'] !== false ) {
-            $recent_q = "AND (processed_last >= NOW() - INTERVAL 10 MINUTE OR queued_on >= NOW() - INTERVAL 10 MINUTE)";
+            // UTC_TIMESTAMP(), not NOW(): NOW() is the MySQL session timezone,
+            // which is not guaranteed to be UTC on shared hosting.
+            $recent_q = "AND (processed_last >= UTC_TIMESTAMP() - INTERVAL 10 MINUTE OR queued_on >= UTC_TIMESTAMP() - INTERVAL 10 MINUTE)";
         }
 
         $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q $date_range $process_type ORDER BY priority DESC, queued_on DESC";
