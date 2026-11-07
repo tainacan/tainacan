@@ -469,7 +469,7 @@ class Bulk_Edit_Process extends Generic_Process {
 					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
 					return $this->save_item_metadata($item_metadata, $item);
 				} else {
-					$pos = array_search($value, $values);
+					$pos = array_search( is_string( $value ) ? wp_kses_normalize_entities( $value ) : $value, $values );
 					if ($pos !== false) {
 						unset($values[$pos]);
 						$item_metadata->set_value( $values );
@@ -515,7 +515,7 @@ class Bulk_Edit_Process extends Generic_Process {
 					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
 					return $this->save_item_metadata($item_metadata, $item);
 				} else {
-					$pos = array_search($old_value, $values);
+					$pos = array_search( is_string( $old_value ) ? wp_kses_normalize_entities( $old_value ) : $old_value, $values );
 					if ($pos !== false) {
 						$values[$pos] = $new_value;
 						$item_metadata->set_value( $metadatum->is_multiple() ? $values : $values[$pos] );

@@ -1,0 +1,220 @@
+<?php
+
+namespace Tainacan\Tests;
+
+use Tainacan\Entities\Item_Metadata_Entity;
+use Tainacan\Repositories;
+
+/**
+ * Item metadata values containing "&" are stored HTML-encoded ("&amp;") by wp_kses().
+ * Plain-text outputs must return the "&" as entered, while the stored value and the
+ * HTML outputs stay unchanged (issue #1286).
+ *
+ * @group api
+ */
+class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
+
+	private $amp_collection;
+	private $amp_item;
+
+	public function setUp(): void {
+		parent::setUp();
+		$this->amp_collection = $this->tainacan_entity_factory->create_entity( 'collection', [
+			'name' => 'Ampersand collection',
+			'status' => 'publish',
+		], true );
+		$this->amp_item = $this->tainacan_entity_factory->create_entity( 'item', [
+			'title' => 'Ampersand item',
+			'description' => 'Ampersand description',
+			'collection' => $this->amp_collection,
+			'status' => 'publish',
+		], true );
+	}
+
+	private function create_metadatum( $type, $extra = [] ) {
+		return $this->tainacan_entity_factory->create_entity( 'metadatum', array_merge( [
+			'name' => 'Ampersand ' . $type . ' ' . uniqid(),
+			'collection_id' => $this->amp_collection->get_id(),
+			'metadata_type' => 'Tainacan\Metadata_Types\\' . $type,
+			'status' => 'publish',
+		], $extra ), true );
+	}
+
+	private function save_value( $metadatum, $value ) {
+		$item_metadata = $this->tainacan_item_metadata_factory->create_item_metadata( $this->amp_item, $metadatum, $value );
+		$this->assertInstanceOf( Item_Metadata_Entity::class, $item_metadata );
+		return new Item_Metadata_Entity( $this->amp_item, $metadatum );
+	}
+
+	private function read_rest( $metadatum ) {
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/item/' . $this->amp_item->get_id() . '/metadata/' . $metadatum->get_id() );
+		$request->set_param( 'context', 'edit' );
+		$response = $this->server->dispatch( $request );
+		$this->assertSame( 200, $response->get_status() );
+		return $response->get_data();
+	}
+
+	public function test_rest_value_returns_ampersand_for_text_metadata() {
+		$text = $this->create_metadatum( 'Text' );
+		$this->save_value( $text, 'Smith & Jones' );
+		$this->assertSame( 'Smith & Jones', $this->read_rest( $text )['value'] );
+
+		$url = $this->create_metadatum( 'Text' );
+		$this->save_value( $url, 'https://example.org/page?p=1&id=2' );
+		$this->assertSame( 'https://example.org/page?p=1&id=2', $this->read_rest( $url )['value'] );
+
+		$textarea = $this->create_metadatum( 'Textarea' );
+		$this->save_value( $textarea, 'Humb. & Bonpl.' );
+		$this->assertSame( 'Humb. & Bonpl.', $this->read_rest( $textarea )['value'] );
+
+		$multiple = $this->create_metadatum( 'Text', [ 'multiple' => 'yes' ] );
+		$this->save_value( $multiple, [ 'A & B', 'C & D' ] );
+		$this->assertSame( [ 'A & B', 'C & D' ], $this->read_rest( $multiple )['value'] );
+	}
+
+	public function test_rest_value_returns_ampersand_for_core_metadata() {
+		$title = $this->amp_collection->get_core_title_metadatum();
+		$description = $this->amp_collection->get_core_description_metadatum();
+		$this->save_value( $title, 'Smith & Jones' );
+		$this->save_value( $description, 'Humb. & Bonpl.' );
+
+		$this->assertSame( 'Smith & Jones', $this->read_rest( $title )['value'] );
+		$this->assertSame( 'Humb. & Bonpl.', $this->read_rest( $description )['value'] );
+	}
+
+	public function test_rest_value_returns_ampersand_for_compound_children() {
+		$compound = $this->create_metadatum( 'Compound' );
+		$child = $this->create_metadatum( 'Text', [ 'parent' => $compound->get_id() ] );
+
+		$child_metadata = new Item_Metadata_Entity( $this->amp_item, $child );
+		$child_metadata->set_value( 'Smith & Jones' );
+		$this->assertTrue( $child_metadata->validate() );
+		Repositories\Item_Metadata::get_instance()->insert( $child_metadata );
+
+		$values = $this->read_rest( $compound )['value'];
+		$child_values = array_values( array_filter( $values, function( $v ) use ( $child ) {
+			return is_array( $v ) && isset( $v['metadatum_id'] ) && (int) $v['metadatum_id'] === (int) $child->get_id();
+		} ) );
+		$this->assertCount( 1, $child_values );
+		$this->assertSame( 'Smith & Jones', $child_values[0]['value'] );
+		$this->assertSame( 'Smith &amp; Jones', $child_values[0]['value_as_html'] );
+	}
+
+	public function test_rich_text_value_stays_html() {
+		update_option( 'tainacan_option_allow_rich_text_editor', true );
+		$rich = $this->create_metadatum( 'Textarea', [ 'metadata_type_options' => [ 'use_rich_text_editor' => 'yes' ] ] );
+		$this->save_value( $rich, '<p>Smith &amp; Jones</p>' );
+
+		$data = $this->read_rest( $rich );
+		$this->assertSame( '<p>Smith &amp; Jones</p>', $data['value'] );
+		$this->assertSame( 'Smith & Jones', trim( $data['value_as_string'] ) );
+	}
+
+	public function test_stored_value_and_html_output_are_unchanged() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		$item_metadata = $this->save_value( $metadatum, 'Smith & Jones' );
+		$this->assertSame( 'Smith &amp; Jones', get_post_meta( $this->amp_item->get_id(), $metadatum->get_id(), true ) );
+		$this->assertSame( 'Smith &amp; Jones', $item_metadata->get_value() );
+		$this->assertSame( 'Smith &amp; Jones', $item_metadata->get_value_as_html() );
+
+		$legacy = $this->create_metadatum( 'Text' );
+		$legacy_metadata = $this->save_value( $legacy, 'Smith&notes' );
+		$this->assertSame( 'Smith&amp;notes', $legacy_metadata->get_value_as_html() );
+		$this->assertSame( 'Smith&amp;notes', $this->read_rest( $legacy )['value_as_html'] );
+	}
+
+	public function test_value_as_string_returns_ampersand() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		$item_metadata = $this->save_value( $metadatum, 'Smith & Jones' );
+		$this->assertSame( 'Smith & Jones', $item_metadata->get_value_as_string() );
+		$this->assertSame( 'Smith & Jones', $this->read_rest( $metadatum )['value_as_string'] );
+
+		$url = $this->create_metadatum( 'Text' );
+		$url_metadata = $this->save_value( $url, 'https://example.org/page?p=1&id=2' );
+		$this->assertSame( 'https://example.org/page?p=1&id=2', $url_metadata->get_value_as_string() );
+
+		$url_type = $this->create_metadatum( 'URL' );
+		$url_type_metadata = $this->save_value( $url_type, 'https://example.org/page?p=1&id=2' );
+		$this->assertSame( 'https://example.org/page?p=1&id=2', $url_type_metadata->get_value_as_string() );
+	}
+
+	public function test_escaped_markup_is_never_decoded() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		$item_metadata = $this->save_value( $metadatum, '&lt;script&gt;alert(1)&lt;/script&gt;' );
+		$data = $this->read_rest( $metadatum );
+
+		foreach ( [ $data['value'], $data['value_as_string'], $data['value_as_html'], $item_metadata->get_value_as_string() ] as $output ) {
+			$this->assertStringNotContainsString( '<script', $output );
+			$this->assertStringContainsString( '&lt;script&gt;', $output );
+		}
+	}
+
+	public function test_values_already_stored_encoded_are_decoded_on_output() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		update_post_meta( $this->amp_item->get_id(), $metadatum->get_id(), 'Smith &amp; Jones' );
+
+		$data = $this->read_rest( $metadatum );
+		$this->assertSame( 'Smith & Jones', $data['value'] );
+		$this->assertSame( 'Smith & Jones', $data['value_as_string'] );
+	}
+
+	public function test_facet_label_is_decoded_but_value_matches_stored_data() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		$this->save_value( $metadatum, 'Smith & Jones' );
+
+		$response = Repositories\Metadata::get_instance()->fetch_all_metadatum_values( $metadatum->get_id(), [
+			'collection_id' => $this->amp_collection->get_id(),
+			'count_items' => true,
+		] );
+
+		$this->assertCount( 1, $response['values'] );
+		$facet = $response['values'][0];
+		$this->assertSame( 'Smith & Jones', $facet['label'] );
+		$this->assertSame( 'Smith &amp; Jones', $facet['value'] );
+		$this->assertSame( 1, (int) $facet['total_items'] );
+	}
+
+	private function run_bulk_edit( $bulk_edit_data ) {
+		$handler = \Tainacan\Generic_Process_Handler::get_instance();
+		$process = $handler->initialize_generic_process( 'bulk_edit' );
+		$process->create_bulk_edit( [
+			'items_ids' => [ $this->amp_item->get_id() ],
+			'collection_id' => $this->amp_collection->get_id(),
+		] );
+		$handler->save_process_instance( $process );
+		$process->set_bulk_edit_data( $bulk_edit_data );
+
+		$steps = 0;
+		while ( false !== $process->run() && $steps < 100 ) {
+			$steps++;
+		}
+	}
+
+	public function test_bulk_edit_replace_matches_decoded_old_value() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		$this->save_value( $metadatum, 'Smith & Jones' );
+
+		$this->run_bulk_edit( [
+			'method' => 'replace_value',
+			'old_value' => 'Smith & Jones',
+			'value' => 'Doe & Co',
+			'metadatum_id' => $metadatum->get_id(),
+		] );
+
+		$this->assertSame( 'Doe &amp; Co', get_post_meta( $this->amp_item->get_id(), $metadatum->get_id(), true ) );
+	}
+
+	public function test_bulk_edit_remove_matches_decoded_value() {
+		$metadatum = $this->create_metadatum( 'Text', [ 'multiple' => 'yes' ] );
+		$this->save_value( $metadatum, [ 'A & B', 'C & D' ] );
+
+		$this->run_bulk_edit( [
+			'method' => 'remove_value',
+			'old_value' => null,
+			'value' => 'A & B',
+			'metadatum_id' => $metadatum->get_id(),
+		] );
+
+		$this->assertSame( [ 'C &amp; D' ], get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
+	}
+}
