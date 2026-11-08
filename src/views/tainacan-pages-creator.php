@@ -7,6 +7,9 @@ require_once(__DIR__ . '/class-tainacan-pages.php');
 require_once(__DIR__ . '/dashboard/class-tainacan-dashboard.php');
 $Tainacan_Dashboard_Page = \Tainacan\Dashboard::get_instance();
 
+require_once(__DIR__ . '/dashboard/class-tainacan-dashboard-theme-notice.php');
+$Tainacan_Dashboard_Theme_Notice = \Tainacan\Dashboard_Theme_Notice::get_instance();
+
 require_once(__DIR__ . '/admin/class-tainacan-admin.php');
 $Tainacan_Admin_Page = \Tainacan\Admin::get_instance();
 

@@ -10,7 +10,45 @@ const tainacanDashboardPerformWhenDocumentIsLoaded = callback => {
 tainacanDashboardPerformWhenDocumentIsLoaded(() => {
     tainacanSetupDashboardSettings();
     tainacanAjaxFetchNews();
+    tainacanSetupThemeSupportNotice();
 });
+
+function tainacanSetupThemeSupportNotice() {
+    const notice = document.getElementById('tainacan-theme-support-notice');
+    if ( !notice )
+        return;
+
+    const dismissButton = notice.querySelector('.tainacan-theme-support-notice__dismiss');
+    if ( !dismissButton )
+        return;
+
+    dismissButton.addEventListener('click', () => {
+        dismissButton.disabled = true;
+
+        const data = new URLSearchParams();
+        data.append('action', 'tainacan_dismiss_theme_support_notice');
+        data.append('_nonce', dismissButton.dataset.nonce);
+
+        fetch(tainacan_dashboard.ajax_url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: data
+        })
+            .then(response => response.json())
+            .then(response => {
+                if (response.success)
+                    notice.remove();
+                else
+                    dismissButton.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error dismissing theme support notice:', error);
+                dismissButton.disabled = false;
+            });
+    });
+}
 
 function tainacanSetupDashboardSettings() {
     if ( tainacan_dashboard.disable_cards_sorting ) {
