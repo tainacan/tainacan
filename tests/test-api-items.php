@@ -1296,6 +1296,266 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertCount( 1, $response->get_data()['items'] );
 	}
+
+	/**
+	 * Creates a published collection with three text metadata and four items whose values are:
+	 *
+	 *  item | color | shape  | size
+	 *  -----|-------|--------|------
+	 *  1    | red   | -      | big
+	 *  2    | -     | square | big
+	 *  3    | red   | square | small
+	 *  4    | -     | -      | big
+	 *
+	 * @return array{collection: \Tainacan\Entities\Collection, metadata: array<string, \Tainacan\Entities\Metadatum>, items: array<int, \Tainacan\Entities\Item>}
+	 */
+	private function create_relation_fixtures() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Relation fixtures',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadata = [];
+		foreach ( [ 'color', 'shape', 'size' ] as $name ) {
+			$metadata[ $name ] = $this->tainacan_entity_factory->create_entity(
+				'metadatum',
+				array(
+					'name'          => $name,
+					'status'        => 'publish',
+					'collection'    => $collection,
+					'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				),
+				true
+			);
+		}
+
+		$values = [
+			1 => [ 'color' => 'red', 'size' => 'big' ],
+			2 => [ 'shape' => 'square', 'size' => 'big' ],
+			3 => [ 'color' => 'red', 'shape' => 'square', 'size' => 'small' ],
+			4 => [ 'size' => 'big' ],
+		];
+
+		$item_metadata_repository = \Tainacan\Repositories\Item_Metadata::get_instance();
+		$items = [];
+
+		foreach ( $values as $number => $item_values ) {
+			$item = $this->tainacan_entity_factory->create_entity(
+				'item',
+				array(
+					'title'      => 'Item ' . $number,
+					'collection' => $collection,
+					'status'     => 'publish'
+				),
+				true
+			);
+
+			foreach ( $item_values as $name => $value ) {
+				$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity( $item, $metadata[ $name ] );
+				$item_metadata->set_value( $value );
+				$item_metadata->validate();
+				$item_metadata_repository->insert( $item_metadata );
+			}
+
+			$items[ $number ] = $item;
+		}
+
+		return [ 'collection' => $collection, 'metadata' => $metadata, 'items' => $items ];
+	}
+
+	/**
+	 * Fetches the items of a collection with the given query params and returns their ids.
+	 *
+	 * @param \Tainacan\Entities\Collection $collection
+	 * @param array $attributes Query params (metaquery, taxquery...), as the JS client sends them.
+	 * @return int[]
+	 */
+	private function fetch_item_ids( $collection, array $attributes ) {
+		// Round-trip through JSON so the params have the same shape the REST client sends
+		$attributes = json_decode( wp_json_encode( $attributes ), true );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/items' );
+		$request->set_query_params( $attributes );
+
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		return array_map( function ( $item ) { return $item['id']; }, $response->get_data()['items'] );
+	}
+
+	public function test_items_metaquery_relation_or() {
+		$fixtures = $this->create_relation_fixtures();
+		$collection = $fixtures['collection'];
+		$metadata = $fixtures['metadata'];
+		$items = $fixtures['items'];
+
+		$clauses = [
+			[
+				'key'     => $metadata['color']->get_id(),
+				'compare' => 'LIKE',
+				'value'   => 'red'
+			],
+			[
+				'key'     => $metadata['shape']->get_id(),
+				'compare' => 'LIKE',
+				'value'   => 'square'
+			],
+		];
+
+		// OR: union of items 1, 2 and 3
+		$ids = $this->fetch_item_ids( $collection, [
+			'metaquery' => array_merge( $clauses, [ 'relation' => 'OR' ] )
+		] );
+
+		$this->assertCount( 3, $ids );
+		$this->assertContains( $items[1]->get_id(), $ids );
+		$this->assertContains( $items[2]->get_id(), $ids );
+		$this->assertContains( $items[3]->get_id(), $ids );
+
+		// AND: intersection, only item 3
+		$ids = $this->fetch_item_ids( $collection, [
+			'metaquery' => array_merge( $clauses, [ 'relation' => 'AND' ] )
+		] );
+
+		$this->assertEquals( [ $items[3]->get_id() ], $ids );
+
+		// No relation: WP_Query defaults to AND
+		$ids = $this->fetch_item_ids( $collection, [ 'metaquery' => $clauses ] );
+
+		$this->assertEquals( [ $items[3]->get_id() ], $ids );
+	}
+
+	public function test_items_nested_meta_query_group() {
+		$fixtures = $this->create_relation_fixtures();
+		$collection = $fixtures['collection'];
+		$metadata = $fixtures['metadata'];
+		$items = $fixtures['items'];
+
+		// (color LIKE red OR shape LIKE square) AND size = big: items 1 and 2
+		$ids = $this->fetch_item_ids( $collection, [
+			'metaquery' => [
+				[
+					'relation' => 'OR',
+					[
+						'key'     => $metadata['color']->get_id(),
+						'compare' => 'LIKE',
+						'value'   => 'red'
+					],
+					[
+						'key'     => $metadata['shape']->get_id(),
+						'compare' => 'LIKE',
+						'value'   => 'square'
+					],
+				],
+				[
+					'key'     => $metadata['size']->get_id(),
+					'compare' => '=',
+					'value'   => 'big'
+				],
+			]
+		] );
+
+		$this->assertCount( 2, $ids );
+		$this->assertContains( $items[1]->get_id(), $ids );
+		$this->assertContains( $items[2]->get_id(), $ids );
+	}
+
+	/**
+	 * Taxonomy terms per item: 1 => blue; 2 => red; 3 => red, green; 4 => green.
+	 * Query: (terms LIKE "blu" OR terms LIKE "red") AND terms LIKE "green" => only item 3.
+	 * The LIKE operators inside the nested group must be converted to IN, otherwise
+	 * WP_Tax_Query would treat "blu"/"red" as term ids and match nothing.
+	 */
+	public function test_items_taxquery_relation_or_nested_with_facet() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Tax relation fixtures',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'colors',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$tax_metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                  => 'color',
+				'status'                => 'publish',
+				'collection'            => $collection,
+				'metadata_type'         => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id'     => $taxonomy->get_id()
+				],
+				'multiple'              => 'yes'
+			),
+			true
+		);
+
+		$item_metadata_repository = \Tainacan\Repositories\Item_Metadata::get_instance();
+		$items = [];
+
+		foreach ( [ 1 => [ 'blue' ], 2 => [ 'red' ], 3 => [ 'red', 'green' ], 4 => [ 'green' ] ] as $number => $terms ) {
+			$items[ $number ] = $this->tainacan_entity_factory->create_entity(
+				'item',
+				array(
+					'title'      => 'Item ' . $number,
+					'collection' => $collection,
+					'status'     => 'publish'
+				),
+				true
+			);
+
+			$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity( $items[ $number ], $tax_metadatum );
+			$item_metadata->set_value( $terms );
+			$item_metadata->validate();
+			$item_metadata_repository->insert( $item_metadata );
+		}
+
+		$db_identifier = $taxonomy->get_db_identifier();
+
+		// Sanity check: the OR group alone lists items 1, 2 and 3
+		$ids = $this->fetch_item_ids( $collection, [
+			'taxquery' => [
+				[ 'taxonomy' => $db_identifier, 'operator' => 'LIKE', 'terms' => 'blu' ],
+				[ 'taxonomy' => $db_identifier, 'operator' => 'LIKE', 'terms' => 'red' ],
+				'relation' => 'OR'
+			]
+		] );
+
+		$this->assertCount( 3, $ids );
+		$this->assertContains( $items[1]->get_id(), $ids );
+		$this->assertContains( $items[2]->get_id(), $ids );
+		$this->assertContains( $items[3]->get_id(), $ids );
+
+		// Nested OR group ANDed with a facet clause
+		$ids = $this->fetch_item_ids( $collection, [
+			'taxquery' => [
+				[
+					'relation' => 'OR',
+					[ 'taxonomy' => $db_identifier, 'operator' => 'LIKE', 'terms' => 'blu' ],
+					[ 'taxonomy' => $db_identifier, 'operator' => 'LIKE', 'terms' => 'red' ],
+				],
+				[ 'taxonomy' => $db_identifier, 'operator' => 'LIKE', 'terms' => 'green' ],
+			]
+		] );
+
+		$this->assertEquals( [ $items[3]->get_id() ], $ids );
+	}
 }
 
 ?>

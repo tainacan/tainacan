@@ -493,6 +493,27 @@ abstract class Repository {
 	}
 
 	/**
+	 * Tells whether a meta_query/tax_query entry is a nested group of clauses, as accepted by
+	 * WP_Meta_Query and WP_Tax_Query: an array without a `key` or `taxonomy` of its own that
+	 * holds at least one clause (array) under any index, optionally with a `relation`.
+	 *
+	 * @param mixed $clause meta_query/tax_query entry
+	 *
+	 * @return bool
+	 */
+	public static function is_query_group( $clause ) {
+		if ( ! is_array( $clause ) || isset( $clause['key'] ) || isset( $clause['taxonomy'] ) ) {
+			return false;
+		}
+		foreach ( $clause as $index => $entry ) {
+			if ( $index !== 'relation' && is_array( $entry ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Return array of collections db identifiers
 	 *
 	 * @return array[]

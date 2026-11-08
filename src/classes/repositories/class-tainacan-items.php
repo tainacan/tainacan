@@ -906,6 +906,16 @@ class Items extends Repository {
 		if ( isset($args['meta_query']) ) {
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			foreach($args['meta_query'] as $idx => $meta) {
+				// Nested group (relation plus indexed clauses): look for the relationship clause inside it.
+				// The extra `posts_where` condition is still appended at the top level of the query.
+				if ( Repository::is_query_group( $meta ) ) {
+					$parsed_group = $this->parse_relationship_metaquery( [ 'meta_query' => $meta ] );
+					$args['meta_query'][$idx] = $parsed_group['meta_query'];
+					if ( has_filter( 'posts_where', array( $this, 'posts_where_relationship_metaquery' ) ) ) {
+						return $args;
+					}
+					continue;
+				}
 				if ( ! is_array( $meta ) || ! isset( $meta['key'] ) || $meta['key'] === '' ) {
 					continue;
 				}
@@ -983,6 +993,13 @@ class Items extends Repository {
 			foreach ($args["meta_query"] as $key => $meta_query) {
 				$core_title_meta_query = [];
 				$core_description_meta_query = [];
+
+				// Nested group (relation plus indexed clauses): resolve the special keys inside it
+				if ( Repository::is_query_group($meta_query) ) {
+					$parsed_group = $this->parse_core_metadata_for_advanced_search(["meta_query" => $meta_query], $collections);
+					$args["meta_query"][$key] = $parsed_group["meta_query"];
+					continue;
+				}
 
 				// Finds a special key value, that should represent all core title or core description
 				if (
