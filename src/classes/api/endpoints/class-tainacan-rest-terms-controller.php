@@ -274,10 +274,10 @@ class REST_Terms_Controller extends REST_Controller {
 
 			$body = json_decode($request->get_body(), true);
 
-			if ( isset( $body['metadatum_id'] ) && isset( $body['item_id'] ) ) {
+			if ( isset( $body['metadatum_id'] ) && isset( $body['item_id'] ) && is_numeric( $body['item_id'] ) ) {
 				$metadatum = \tainacan_metadata()->fetch( $body['metadatum_id'] );
 				$item = \tainacan_items()->fetch( $body['item_id'] );
-				if ( $metadatum instanceof Entities\Metadatum ) {
+				if ( $metadatum instanceof Entities\Metadatum && $item instanceof Entities\Item ) {
 					$options = $metadatum->get_metadata_type_options();
 					if ( isset( $options['allow_new_terms'] ) && $options['allow_new_terms'] == 'yes' ) {
 						return $item->can_edit() && $taxonomy->get_allow_insert() == 'yes';

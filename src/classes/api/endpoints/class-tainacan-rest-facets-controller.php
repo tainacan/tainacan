@@ -179,7 +179,12 @@ class REST_Facets_Controller extends REST_Controller {
 							$second_arg = $val['taxonomy'];
 						}
 						$entity = $metadatum_type_object->get_repository()->fetch( (int) $val['value'], $second_arg );
-						
+
+						// The referenced entity may no longer exist (e.g. a deleted item still indexed as a value).
+						if ( ! $entity instanceof Entities\Entity || ! $entity->get_id() ) {
+							return $val;
+						}
+
 						$add_attt_item = function($array_item, $item) {
 							$array_item['thumbnail'] = $item->get_thumbnail();
 							return $array_item;
@@ -189,7 +194,7 @@ class REST_Facets_Controller extends REST_Controller {
 						remove_filter( 'tainacan-item-to-array', $add_attt_item, 10);
 
 						return $val;
-						
+
 					}, $all_values['values']);
 				}
 
