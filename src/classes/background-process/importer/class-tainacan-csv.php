@@ -600,12 +600,21 @@ class CSV extends Importer {
 	 * get the encode option and return as expected
 	 */
 	private function handle_encoding($string) {
+		// blank lines yield null cells; nothing to convert
+		if ($string === null || $string === '') {
+			return $string;
+		}
 		switch( $this->get_option('encode') ) {
 			case 'automatic':
-				$encoding = mb_detect_encoding($string, ['UTF-8', 'ISO-8859-1', 'Windows-1252'], true);
+				// Windows-1252 must come before ISO-8859-1: in strict mode ISO-8859-1 accepts
+				// every byte 0x80-0xFF, so it would always win and 0x80 (euro sign) or 0x93/0x94
+				// (curly quotes) would be converted to C1 control characters. Windows-1252 is a
+				// superset of the printable ISO-8859-1 range, so Latin-1 text decodes the same way.
+				$encoding = mb_detect_encoding($string, ['UTF-8', 'Windows-1252', 'ISO-8859-1'], true);
 				if ($encoding && $encoding !== 'UTF-8') {
-					return mb_convert_encoding($value, 'UTF-8', $encoding);
+					return mb_convert_encoding($string, 'UTF-8', $encoding);
 				}
+				return $string;
 			case 'utf8':
 				return $string;
 			case 'iso88591':

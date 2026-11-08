@@ -838,6 +838,112 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * Regression test: with the default `encode` option (`automatic`), a cell
+	 * holding non UTF-8 bytes (ISO-8859-1 or Windows-1252) must be converted to
+	 * UTF-8 instead of being imported as an empty string, and Windows-1252-only
+	 * bytes (euro sign, curly quotes) must not be read as ISO-8859-1 control chars.
+	 *
+	 * @group importer
+	 */
+	public function test_encode_automatic_converts_iso88591_to_utf8() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$file_name = 'demosaved_iso88591.csv';
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer('csv');
+		$Tainacan_Importer_Handler->save_importer_instance($csv_importer);
+		$id = $csv_importer->get_id();
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($id);
+
+		$expected_title = 'Conceição';
+		$expected_description = 'Descrição com acentuação';
+		// 0x80 is the euro sign only in Windows-1252 (a C1 control char in ISO-8859-1)
+		$expected_cp1252_title = "Preço: 10\u{20AC}";
+		$expected_cp1252_description = "\u{201C}Aspas curvas\u{201D}";
+
+		// first row in ISO-8859-1, second row with Windows-1252-only bytes
+		$file_name = $this->write_csv_fixture(
+			$file_name,
+			[ 'Column 1', 'Column 2' ],
+			[
+				[
+					mb_convert_encoding( $expected_title, 'ISO-8859-1', 'UTF-8' ),
+					mb_convert_encoding( $expected_description, 'ISO-8859-1', 'UTF-8' ),
+				],
+				[
+					mb_convert_encoding( $expected_cp1252_title, 'Windows-1252', 'UTF-8' ),
+					mb_convert_encoding( $expected_cp1252_description, 'Windows-1252', 'UTF-8' ),
+				],
+			]
+		);
+
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+
+		$this->assertEquals( 2, $importer_instance->get_source_number_of_items() );
+
+		$headers = $importer_instance->get_source_metadata();
+		$this->assertEquals( array( 'Column 1', 'Column 2' ), $headers );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'Other',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC',
+				'status'		=> 'publish'
+			),
+			true
+		);
+
+		$collection_definition = [
+			'id' => $collection->get_id(),
+			'total_items' => $importer_instance->get_source_number_of_items(),
+		];
+
+		// map core title and core description to the two columns
+		$map = [];
+		$metadata = $Tainacan_Metadata->fetch_by_collection( $collection );
+		foreach ( $metadata as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$map[$metadatum->get_id()] = $headers[0];
+			} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Description' ) {
+				$map[$metadatum->get_id()] = $headers[1];
+			}
+		}
+		$this->assertEquals( 2, count( $map ) );
+
+		$collection_definition['mapping'] = $map;
+
+		$importer_instance->add_collection( $collection_definition );
+		// default option, kept explicit so the test documents what it covers
+		$importer_instance->set_option('encode', 'automatic');
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
+		$this->assertEquals( 2, count( $items ) );
+
+		// the import order is not guaranteed, compare the sets
+		$imported = [];
+		foreach ( $items as $item ) {
+			$imported[ $item->get_title() ] = $item->get_description();
+		}
+		$this->assertEqualsCanonicalizing(
+			[
+				$expected_title        => $expected_description,
+				$expected_cp1252_title => $expected_cp1252_description,
+			],
+			$imported
+		);
+
+		unlink( $file_name );
+	}
+
+	/**
 	 * UTF-8 BOM on the first column must not break special field detection.
 	 *
 	 * @group importer_csv_special_fields
