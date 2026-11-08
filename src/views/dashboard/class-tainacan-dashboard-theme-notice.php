@@ -102,8 +102,8 @@ class Dashboard_Theme_Notice {
 					<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=tainacan_settings' ) ); ?>"><?php esc_html_e( 'Use basic templates instead', 'tainacan' ); ?></a>
 				<?php endif; ?>
 				<a class="button" target="_blank" rel="noopener noreferrer" href="<?php
-					/* translators: URL of the theming documentation page. Replace with the page for this language if available. */
-					echo esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/dev/theming', 'tainacan' ) );
+					/* translators: URL of the wiki page about compatible themes. Replace with the page for this language if available. */
+					echo esc_url( __( 'https://tainacan.github.io/tainacan-wiki/#/theme', 'tainacan' ) );
 				?>"><?php esc_html_e( 'Learn more', 'tainacan' ); ?></a>
 				<button type="button" class="button-link tainacan-theme-support-notice__dismiss" data-nonce="<?php echo esc_attr( wp_create_nonce( self::NONCE_ACTION ) ); ?>"><?php esc_html_e( 'Dismiss', 'tainacan' ); ?></button>
 			</p>

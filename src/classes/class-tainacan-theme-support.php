@@ -24,12 +24,17 @@ class Theme_Support {
 	const SUPPORTED_THEMES = array( 'tainacan-interface', 'taina' );
 
 	/**
-	 * Plugin basename of "Tainacan Support for Blocksy".
-	 *
-	 * Assumption: the WordPress.org slug is `tainacan-blocksy` and the main file
-	 * follows the slug. Adjust here if the published plugin uses another name.
+	 * Plugin basename of "Tainacan Support for Blocksy" (WordPress.org slug
+	 * `tainacan-blocksy`, version 0.5.1): its main file is `functions.php`, so the
+	 * plugin can also be shipped as a Blocksy child theme.
 	 */
-	const BLOCKSY_SUPPORT_PLUGIN = 'tainacan-blocksy/tainacan-blocksy.php';
+	const BLOCKSY_SUPPORT_PLUGIN = 'tainacan-blocksy/functions.php';
+
+	/**
+	 * Constant defined by "Tainacan Support for Blocksy" when it is loaded,
+	 * whether as a plugin or as a child theme.
+	 */
+	const BLOCKSY_SUPPORT_CONSTANT = 'TAINACAN_BLOCKSY_VERSION';
 
 	protected function init() {
 		add_action( 'switch_theme', array( $this, 'flush_cache' ) );
@@ -135,12 +140,16 @@ class Theme_Support {
 	}
 
 	/**
-	 * Checks the active plugin lists directly, so no wp-admin file has to be
-	 * loaded on the front end.
+	 * Checks the plugin's own constant first, then the active plugin lists
+	 * directly, so no wp-admin file has to be loaded on the front end.
 	 *
 	 * @return bool
 	 */
 	public function is_blocksy_support_plugin_active(): bool {
+		if ( defined( self::BLOCKSY_SUPPORT_CONSTANT ) ) {
+			return true;
+		}
+
 		if ( in_array( self::BLOCKSY_SUPPORT_PLUGIN, (array) get_option( 'active_plugins', array() ), true ) ) {
 			return true;
 		}
