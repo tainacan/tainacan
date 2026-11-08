@@ -32,6 +32,7 @@ class Logs extends Repository {
 	private $current_diff = null;
 	private $current_deleting_entity;
 	private $current_action;
+	private $current_attachment_delete_log;
 
 	protected function init() {
 
