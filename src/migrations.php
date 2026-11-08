@@ -8,11 +8,14 @@ class Migrations {
 
 	static function run_migrations() {
 
-		$migrations = get_class_methods('Tainacan\Migrations');
+		// Only public static methods are migrations; private helpers such as column_exists() are not.
+		// (ReflectionClass::getMethods() ORs its flags, so visibility and staticness are checked separately.)
+		$methods = ( new \ReflectionClass( __CLASS__ ) )->getMethods( \ReflectionMethod::IS_PUBLIC );
 
-		foreach ($migrations as $migration) {
+		foreach ($methods as $method) {
+			$migration = $method->getName();
 			$option_name = '_migration_' . $migration;
-			if ('run_migrations' == $migration || get_option($option_name)) {
+			if ( ! $method->isStatic() || 'run_migrations' == $migration || get_option($option_name)) {
 				continue;
 			}
 
@@ -22,6 +25,32 @@ class Migrations {
 
 		}
 
+	}
+
+	/**
+	 * Checks whether a column exists in a table of the current WordPress database.
+	 *
+	 * Filtering by the connected database is required: on servers hosting several
+	 * databases, the same table/column name may exist in another schema and the
+	 * ALTER TABLE would be skipped.
+	 *
+	 * @param string $table_name Full table name (with prefix)
+	 * @param string $column_name Column name
+	 * @return bool
+	 */
+	private static function column_exists( $table_name, $column_name ) {
+		global $wpdb;
+
+		$column = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = %s AND table_name = %s AND column_name = %s",
+				$wpdb->dbname,
+				$table_name,
+				$column_name
+			)
+		);
+
+		return ! empty( $column );
 	}
 
 
@@ -66,9 +95,7 @@ class Migrations {
 
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
 
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'progress_label'"  );
-
-	    if(empty($column_exists)) {
+		if ( ! self::column_exists( $table_name, 'progress_label' ) ) {
 			$wpdb->query("
 	        ALTER TABLE $table_name
 	        ADD progress_label text,
@@ -76,33 +103,26 @@ class Migrations {
 	        ");
 		}
 
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'name'"  );
-
-	    if(empty($column_exists)) {
+		if ( ! self::column_exists( $table_name, 'name' ) ) {
 			$wpdb->query("
 	        ALTER TABLE $table_name
 	        ADD name text NOT NULL
 	        ");
 		}
 
-
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'output'"  );
-
-	    if(empty($column_exists)) {
+		if ( ! self::column_exists( $table_name, 'output' ) ) {
 			$wpdb->query("
 	        ALTER TABLE $table_name
 	        ADD output longtext
 	        ");
 		}
 
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'status'"  );
-
-        if(empty($column_exists)) {
-            $wpdb->query("
+		if ( ! self::column_exists( $table_name, 'status' ) ) {
+			$wpdb->query("
 	        ALTER TABLE $table_name
 	        ADD status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
 	        ");
-        }
+		}
 
 	}
 
@@ -491,7 +511,7 @@ class Migrations {
 				)"
 				,\Tainacan\Entities\Metadata_Section::$default_section_slug
 				,\Tainacan\Entities\Metadatum::$post_type
-				,\Tainacan\Entities\Metadata_Section::$default_section_slug
+				,'metadata_section_id'
 			)
 		);
 	}
@@ -525,10 +545,8 @@ class Migrations {
 		global $wpdb;
 		// update default order by "creation_date" to "date"
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
-		$database_name = DB_NAME;
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'bg_uuid' AND table_schema = '$database_name'"  );
 
-	    if(empty($column_exists)) {
+		if ( ! self::column_exists( $table_name, 'bg_uuid' ) ) {
 			$wpdb->query("
 	        ALTER TABLE $table_name
 	        ADD bg_uuid text NULL
@@ -598,22 +616,14 @@ class Migrations {
 		$database_name = DB_NAME;
 
 		// Add retry_count column if it does not exist.
-		$column_exists = $wpdb->get_results(
-			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'retry_count' AND table_schema = '$database_name'"
-		);
-
-		if ( empty( $column_exists ) ) {
+		if ( ! self::column_exists( $table_name, 'retry_count' ) ) {
 			$wpdb->query(
 				"ALTER TABLE $table_name ADD retry_count int unsigned NOT NULL default 0"
 			);
 		}
 
 		// Add max_retries column if it does not exist.
-		$column_exists = $wpdb->get_results(
-			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'max_retries' AND table_schema = '$database_name'"
-		);
-
-		if ( empty( $column_exists ) ) {
+		if ( ! self::column_exists( $table_name, 'max_retries' ) ) {
 			$wpdb->query(
 				"ALTER TABLE $table_name ADD max_retries int unsigned NOT NULL default 3"
 			);
