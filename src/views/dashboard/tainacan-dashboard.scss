@@ -67,6 +67,32 @@
         &__dismiss {
             margin-inline-start: auto;
         }
+
+        // Explicit colors: link rules of the admin color scheme can paint the label
+        // of a primary button with the color of its own background.
+        a.button-primary {
+            border-color: var(--tainacan-turquoise5, #1d6e73);
+            background-color: var(--tainacan-turquoise5, #1d6e73);
+            color: var(--tainacan-white, #fff);
+
+            &:link,
+            &:visited,
+            &:hover,
+            &:focus,
+            &:active {
+                color: var(--tainacan-white, #fff);
+            }
+
+            &:hover,
+            &:focus {
+                filter: brightness(0.9);
+            }
+        }
+
+        a.button:not(.button-primary) {
+            color: var(--tainacan-turquoise5, #1d6e73);
+            border-color: var(--tainacan-turquoise5, #1d6e73);
+        }
     }
 
     .is-dragging-metaboxes & #dashboard-widgets .meta-box-sortables,
