@@ -126,17 +126,17 @@ class REST_Facets_Controller extends REST_Controller {
 					$metadatum_options = $metadatum->get_metadata_type_options();
 					$taxonomy_id = $metadatum_options['taxonomy_id'];
 					$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
-					if( isset($request['current_query']['taxquery']) ){
+					if( isset($request['current_query']['taxquery']) && is_array($request['current_query']['taxquery']) ){
 						foreach( $request['current_query']['taxquery'] as $taxquery ){
-							if( $taxquery['taxonomy'] === $taxonomy_slug ){
+							if( is_array($taxquery) && isset($taxquery['taxonomy']) && isset($taxquery['terms']) && $taxquery['taxonomy'] === $taxonomy_slug ){
 								$include = $taxquery['terms'];
 							}
 						}
 					}
 				} else {
-					if( isset($request['current_query']['metaquery']) ){
+					if( isset($request['current_query']['metaquery']) && is_array($request['current_query']['metaquery']) ){
 						foreach( $request['current_query']['metaquery'] as $metaquery ){
-							if( $metaquery['key'] == $metadatum_id ){
+							if( is_array($metaquery) && isset($metaquery['key']) && isset($metaquery['value']) && $metaquery['key'] == $metadatum_id ){
 								$include = $metaquery['value'];
 							}
 						}
