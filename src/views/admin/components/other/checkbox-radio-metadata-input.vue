@@ -524,7 +524,17 @@
 
             this.expandResultsSection = this.shouldBeginWithListExpanded;
             
-            this.$emitter.on('updateTaxonomyInputs', ($event) => { 
+            this.$emitter.on('updateTaxonomyInputs', this.onUpdateTaxonomyInputs);
+            
+        },
+        beforeUnmount() {
+            this.$emitter.off('updateTaxonomyInputs', this.onUpdateTaxonomyInputs);
+            // Cancels previous Request
+            if (this.getOptionsValuesCancel != undefined)
+                this.getOptionsValuesCancel.cancel('Get options request canceled.');
+        },
+        methods: {
+            onUpdateTaxonomyInputs($event) {
                 if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';
@@ -538,15 +548,7 @@
                         this.activeTab = 1;
                     }
                 }
-            });
-            
-        },
-        beforeUnmount() {
-            // Cancels previous Request
-            if (this.getOptionsValuesCancel != undefined)
-                this.getOptionsValuesCancel.cancel('Get options request canceled.');
-        },
-        methods: {
+            },
             getOptionInputId(optionKey) {
                 if (!this.inputId)
                     return undefined;

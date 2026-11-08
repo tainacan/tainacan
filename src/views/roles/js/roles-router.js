@@ -8,8 +8,8 @@ const { __ } = wp.i18n;
 
 const routes = [
     { path: '/', redirect:'/roles' },
-    { path: '/roles', name: 'RolesList', component: RolesList, meta: { title: __('Tainacan User Roles') } },
-    { path: '/roles/:roleSlug', name: 'RoleEditionForm', component: RoleEditionForm, meta: { title: __('Editing User Role') } },
+    { path: '/roles', name: 'RolesList', component: RolesList, meta: { title: __('Tainacan User Roles', 'tainacan') } },
+    { path: '/roles/:roleSlug', name: 'RoleEditionForm', component: RoleEditionForm, meta: { title: __('Editing User Role', 'tainacan') } },
 ];
 
 export default createRouter({
