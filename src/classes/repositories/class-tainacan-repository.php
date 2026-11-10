@@ -387,6 +387,11 @@ abstract class Repository {
 		$meta_query = [];
 
 		foreach ( $map as $prop => $mapped ) {
+			// 'order' is WP_Query's sort direction, not the entity's 'order' attribute (menu_order). See #1281.
+			if ( 'order' === $prop ) {
+				continue;
+			}
+
 			if ( array_key_exists( $prop, $args ) ) {
 				$prop_value = $args[ $prop ];
 
