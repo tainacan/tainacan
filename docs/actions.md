@@ -222,7 +222,7 @@ Argument | Type | Description
 `$check_folder` |  | 
 `$folder` |  | 
 
-Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 331](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L331-L391)
+Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 397](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L397-L457)
 
 ---------------------------------
 <br>
@@ -239,7 +239,7 @@ Argument | Type | Description
 `$found[0]` |  | 
 `$target` |  | 
 
-Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 412](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L412-L445)
+Source: [class-tainacan-private-files.php](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php), [line 478](https://github.com/tainacan/tainacan/blob/master/src/classes/class-tainacan-private-files.php#L478-L511)
 
 ---------------------------------
 <br>
