@@ -1032,6 +1032,324 @@ class Abilities_Registry {
 			],
 
 			/*
+			 * ---------------------------------------------------------------
+			 * Semantic search, starting with the environment gate.
+			 * ---------------------------------------------------------------
+			 */
+			'tainacan/rag-environment' => [
+				'label'               => __( 'Check semantic search readiness', 'tainacan' ),
+				'description'         => __( 'Reports whether this host can store vectors: the database engine and version, whether a VECTOR column and the distance functions work, and the largest embedding dimension accepted. Returns a ready, degraded or unsupported verdict with the failed check named.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Environment_Check::get_instance(), 'for_ability' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'refresh' => [
+							'type'        => 'boolean',
+							'description' => __( 'Recompute instead of using the cached verdict.', 'tainacan' ),
+						],
+					]
+				),
+				'annotations'         => $read,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-backfill-start' => [
+				'label'               => __( 'Start a collection backfill', 'tainacan' ),
+				'description'         => __( 'Begins indexing the existing published items of one collection, counting them and recording a cursor. Indexing existing content is never automatic. Use rag-backfill-step to walk it.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Backfill::get_instance(), 'for_ability_start' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'collection_id' => $this->id_schema( __( 'Collection to backfill.', 'tainacan' ) ),
+						'space_id'      => $this->id_schema( __( 'Optional space id; defaults to the active text space.', 'tainacan' ) ),
+					],
+					[ 'collection_id' ]
+				),
+				'annotations'         => [
+					'readonly'    => false,
+					'destructive' => false,
+					'idempotent'  => true,
+				],
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-backfill-step' => [
+				'label'               => __( 'Advance a collection backfill', 'tainacan' ),
+				'description'         => __( 'Queues the next batch of items for a collection backfill and advances the cursor. An interrupted backfill resumes from the cursor rather than starting over.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Backfill::get_instance(), 'for_ability_step' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'collection_id' => $this->id_schema( __( 'Collection being backfilled.', 'tainacan' ) ),
+						'space_id'      => $this->id_schema( __( 'Optional space id; defaults to the active text space.', 'tainacan' ) ),
+						'batch'         => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Items to queue in this step, 50 by default and 200 at most.', 'tainacan' ),
+						],
+					],
+					[ 'collection_id' ]
+				),
+				'annotations'         => [
+					'readonly'    => false,
+					'destructive' => false,
+					'idempotent'  => false,
+				],
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-index-item' => [
+				'label'               => __( 'Queue an item for indexing', 'tainacan' ),
+				'description'         => __( 'Queues one item to be embedded into the active text space. Indexing never happens inline, so the work is done by rag-queue-run or the background worker. Enqueuing the same item twice does not duplicate the work.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Indexer::get_instance(), 'for_ability_enqueue' ],
+				'input_schema'        => $this->object_schema(
+					[ 'item_id' => $this->id_schema( __( 'Item ID.', 'tainacan' ) ) ],
+					[ 'item_id' ]
+				),
+				'annotations'         => $create,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-queue-run' => [
+				'label'               => __( 'Process the indexing queue', 'tainacan' ),
+				'description'         => __( 'Embeds the items waiting in the queue and reports what changed. Re-running on unchanged items embeds nothing, because chunk hashes are compared first.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Indexer::get_instance(), 'for_ability_run' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'limit' => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'How many queued items to process, 10 by default.', 'tainacan' ),
+						],
+					]
+				),
+				'annotations'         => [
+					'readonly'    => false,
+					'destructive' => false,
+					'idempotent'  => false,
+				],
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-provider-list' => [
+				'label'               => __( 'List embedding providers', 'tainacan' ),
+				'description'         => __( 'Lists the embedding providers this site offers. These are the WordPress AI connectors installed on the site: whether each is authenticated, which modalities it supports and the dimensions of its known models. Never returns credentials, because there are none here to return.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Provider_Registry::get_instance(), 'for_ability_list' ],
+				'input_schema'        => $this->object_schema( [] ),
+				'annotations'         => $read,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-space-list' => [
+				'label'               => __( 'List vector spaces', 'tainacan' ),
+				'description'         => __( 'Lists the configured vector spaces and which one is active per modality. A space is provider plus model plus modality plus dimensions, and every semantic query runs inside exactly one of them.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Space_Repository::get_instance(), 'for_ability_list' ],
+				'input_schema'        => $this->object_schema( [] ),
+				'annotations'         => $read,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-space-create' => [
+				'label'               => __( 'Create a vector space', 'tainacan' ),
+				'description'         => __( 'Creates a vector space and its storage table, with an ANN index. Dimensions are not fixed in advance: the table is built for the dimension you give, as long as this server accepted it in the environment report.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Space_Repository::get_instance(), 'for_ability_create' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'provider'   => [
+							'type'        => 'string',
+							'description' => __( 'Connector id, as returned by rag-provider-list, for example google.', 'tainacan' ),
+						],
+						'model'      => [
+							'type'        => 'string',
+							'description' => __( 'Model name, for example text-embedding-3-small.', 'tainacan' ),
+						],
+						'modality'   => [
+							'type'        => 'string',
+							'enum'        => [ 'text', 'image' ],
+							'description' => __( 'What this space embeds. Defaults to text.', 'tainacan' ),
+						],
+						'dimensions' => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Vector length produced by the model.', 'tainacan' ),
+						],
+					],
+					[ 'provider', 'model', 'dimensions' ]
+				),
+				'annotations'         => $create,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-space-activate' => [
+				'label'               => __( 'Activate a vector space', 'tainacan' ),
+				'description'         => __( 'Makes one space the active space for its modality. Exactly one space per modality is active, so every collection uses the same sizing. Switching to a space with different dimensions means the existing index belongs to another space and must be rebuilt.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Space_Repository::get_instance(), 'for_ability_activate' ],
+				'input_schema'        => $this->object_schema(
+					[ 'space_id' => $this->id_schema( __( 'Space ID.', 'tainacan' ) ) ],
+					[ 'space_id' ]
+				),
+				'annotations'         => $update,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-space-delete' => [
+				'label'               => __( 'Delete a vector space', 'tainacan' ),
+				'description'         => __( 'Deletes a space and drops its table. Destructive: every embedding stored in that space is lost and would have to be recomputed.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Space_Repository::get_instance(), 'for_ability_delete' ],
+				'input_schema'        => $this->object_schema(
+					[ 'space_id' => $this->id_schema( __( 'Space ID.', 'tainacan' ) ) ],
+					[ 'space_id' ]
+				),
+				'annotations'         => $delete,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-search' => [
+				'label'               => __( 'Search content semantically', 'tainacan' ),
+				'description'         => __( 'Runs a natural language query inside one text space and returns the closest items with scored snippets. Every hit is re-fetched through the item repository first, so private items, drafts and collections the caller cannot read are dropped before any text is returned, and the number of candidates dropped is reported as filtered_out. Requires an active space and a configured provider.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Semantic_Search::get_instance(), 'for_ability_search' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'query'         => [
+							'type'        => 'string',
+							'description' => __( 'What to look for, in natural language.', 'tainacan' ),
+						],
+						'collection_id' => $this->id_schema( __( 'Optional collection to search within. Without it, every collection in the space is searched.', 'tainacan' ) ),
+						'space_id'      => $this->id_schema( __( 'Optional space id; defaults to the active text space.', 'tainacan' ) ),
+						'limit'         => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Items to return, 10 by default and 50 at most.', 'tainacan' ),
+						],
+						'snippets'      => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Scored snippets per item, 2 by default and 5 at most.', 'tainacan' ),
+						],
+					],
+					[ 'query' ]
+				),
+				'annotations'         => $read,
+				'required_capability' => 'read',
+			],
+
+			'tainacan/rag-similar-items' => [
+				'label'               => __( 'Find items similar to an item', 'tainacan' ),
+				'description'         => __( 'Returns items whose indexed text is closest to an already indexed item. The item must have vectors in the space; if it was never indexed the call says so rather than comparing against another model. The item itself is never in its own results.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Semantic_Search::get_instance(), 'for_ability_similar' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'item_id'       => $this->id_schema( __( 'Item to find neighbours for.', 'tainacan' ) ),
+						'collection_id' => $this->id_schema( __( 'Optional collection to search within.', 'tainacan' ) ),
+						'space_id'      => $this->id_schema( __( 'Optional space id; defaults to the active text space.', 'tainacan' ) ),
+						'limit'         => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Items to return, 10 by default and 50 at most.', 'tainacan' ),
+						],
+					],
+					[ 'item_id' ]
+				),
+				'annotations'         => $read,
+				'required_capability' => 'read',
+			],
+
+			'tainacan/rag-status' => [
+				'label'               => __( 'Report semantic search status', 'tainacan' ),
+				'description'         => __( 'Reports everything an operator needs before touching the index: the environment verdict, every space with whether its table and vector index survive, chunk and byte counts, per-collection coverage, queue depth by space and the failures with their reasons. Read-only, and it never errors on a space whose table was dropped by hand, it reports it.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Status::get_instance(), 'for_ability' ],
+				'input_schema'        => $this->object_schema( [] ),
+				'annotations'         => $read,
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-queue-retry' => [
+				'label'               => __( 'Requeue failed indexing rows', 'tainacan' ),
+				'description'         => __( 'Puts failed queue rows back in line so the worker tries them again. Attempt counters are kept, so a row that keeps failing still backs off honestly, and pressing this twice finds nothing left to requeue. Does not clear a paused provider; use the breaker state in rag-status first.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Status::get_instance(), 'for_ability_retry_queue' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'limit' => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Rows to requeue, 50 by default and 500 at most.', 'tainacan' ),
+						],
+					]
+				),
+				'annotations'         => [
+					'readonly'    => false,
+					'destructive' => false,
+					'idempotent'  => true,
+				],
+				'required_capability' => 'manage_options',
+			],
+
+			'tainacan/rag-hybrid-search' => [
+				'label'               => __( 'Search with keyword and vector ranking', 'tainacan' ),
+				'description'         => __( 'Combines a keyword search with a vector search and merges them by rank using reciprocal rank fusion, so a term match cannot be buried by a high cosine score and vice versa. Every result reports both ranks. When the vector side is unavailable (no active space, provider not configured or paused), it returns keyword results and names the reason in the degraded field instead of failing.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Hybrid_Ranking::get_instance(), 'for_ability_search' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'query'         => [
+							'type'        => 'string',
+							'description' => __( 'What to look for.', 'tainacan' ),
+						],
+						'collection_id' => $this->id_schema( __( 'Optional collection to search within.', 'tainacan' ) ),
+						'space_id'      => $this->id_schema( __( 'Optional space id; defaults to the active text space.', 'tainacan' ) ),
+						'limit'         => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Items to return, 10 by default and 50 at most.', 'tainacan' ),
+						],
+					],
+					[ 'query' ]
+				),
+				'annotations'         => $read,
+				'required_capability' => 'read',
+			],
+
+			'tainacan/rag-answer' => [
+				'label'               => __( 'Answer from indexed content', 'tainacan' ),
+				'description'         => __( 'Retrieves the closest items and asks a configured text generator to answer from them, returning the answer with numbered citations and the exact prompt used. If no generator is configured the answer is null, the reason is no_generator and the citations are still returned: retrieval succeeded, generation is simply not set up. Never writes anything, but a wired generator may cost money per call.', 'tainacan' ),
+				'category'            => 'tainacan-rag',
+				'callback'            => [ \Tainacan\Rag\Answer::get_instance(), 'for_ability_answer' ],
+				'input_schema'        => $this->object_schema(
+					[
+						'query'         => [
+							'type'        => 'string',
+							'description' => __( 'Question to answer from the index.', 'tainacan' ),
+						],
+						'collection_id' => $this->id_schema( __( 'Optional collection to answer from.', 'tainacan' ) ),
+						'space_id'      => $this->id_schema( __( 'Optional space id; defaults to the active text space.', 'tainacan' ) ),
+						'sources'       => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Sources quoted into the prompt, 3 by default and 5 at most.', 'tainacan' ),
+						],
+					],
+					[ 'query' ]
+				),
+				'annotations'         => [
+					'readonly'    => true,
+					'destructive' => false,
+					'idempotent'  => false,
+				],
+				'required_capability' => 'manage_options',
+			],
+
+			/*
 				* ---------------------------------------------------------------
 				* Escape hatch.
 				* ---------------------------------------------------------------

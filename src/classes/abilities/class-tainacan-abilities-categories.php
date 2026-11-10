@@ -52,6 +52,10 @@ class Abilities_Categories {
 			'label'       => 'Tainacan administration',
 			'description' => 'Roles, capabilities and site configuration.',
 		],
+		'tainacan-rag' => [
+			'label'       => 'Tainacan semantic search',
+			'description' => 'Vector spaces, indexing and semantic retrieval.',
+		],
 		'tainacan-assist' => [
 			'label'       => 'Tainacan assisted authoring',
 			'description' => 'Single-shot proposals from an external model. These abilities never write.',
