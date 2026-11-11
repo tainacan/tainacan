@@ -172,17 +172,17 @@ protected $value
 Create an instance of Entity
 
 ```php
-public __construct(\Tainacan\Entities\Item $item = null, \Tainacan\Entities\Metadatum $metadatum = null, int $meta_id = null, mixed $parent_meta_id = null): mixed
+public __construct(\Tainacan\Entities\Item|null $item = null, \Tainacan\Entities\Metadatum|null $metadatum = null, int $meta_id = null, mixed $parent_meta_id = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter         | Type                             | Description                |
-|-------------------|----------------------------------|----------------------------|
-| `$item`           | **\Tainacan\Entities\Item**      | Item Entity                |
-| `$metadatum`      | **\Tainacan\Entities\Metadatum** | Metadatum Entity           |
-| `$meta_id`        | **int**                          | ID for a specific meta row |
-| `$parent_meta_id` | **mixed**                        |                            |
+| Parameter         | Type                                   | Description                |
+|-------------------|----------------------------------------|----------------------------|
+| `$item`           | **\Tainacan\Entities\Item\|null**      | Item Entity                |
+| `$metadatum`      | **\Tainacan\Entities\Metadatum\|null** | Metadatum Entity           |
+| `$meta_id`        | **int**                                | ID for a specific meta row |
+| `$parent_meta_id` | **mixed**                              |                            |
 
 ***
 
@@ -275,14 +275,14 @@ the representation of this object as an array
 Define the item
 
 ```php
-public set_item(\Tainacan\Entities\Item $item = null): void
+public set_item(\Tainacan\Entities\Item|null $item = null): void
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                              | Description |
+|-----------|-----------------------------------|-------------|
+| `$item`   | **\Tainacan\Entities\Item\|null** |             |
 
 ***
 
@@ -307,14 +307,14 @@ public set_value(mixed $value): void
 Define the metadatum
 
 ```php
-public set_metadatum(\Tainacan\Entities\Metadatum $metadatum = null): void
+public set_metadatum(\Tainacan\Entities\Metadatum|null $metadatum = null): void
 ```
 
 **Parameters:**
 
-| Parameter    | Type                             | Description |
-|--------------|----------------------------------|-------------|
-| `$metadatum` | **\Tainacan\Entities\Metadatum** |             |
+| Parameter    | Type                                   | Description |
+|--------------|----------------------------------------|-------------|
+| `$metadatum` | **\Tainacan\Entities\Metadatum\|null** |             |
 
 ***
 

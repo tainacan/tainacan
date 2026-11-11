@@ -20,6 +20,7 @@ classDiagram
         -current_diff : mixed
         -current_deleting_entity : mixed
         -current_action : mixed
+        -current_attachment_delete_log : mixed
         #init()
         #_get_map()
         +register_post_type()
@@ -87,6 +88,7 @@ classDiagram
         -current_diff : mixed
         -current_deleting_entity : mixed
         -current_action : mixed
+        -current_attachment_delete_log : mixed
         #init()
         #_get_map()
         +register_post_type()
@@ -144,6 +146,14 @@ private $current_deleting_entity
 
 ```php
 private $current_action
+```
+
+***
+
+### current_attachment_delete_log
+
+```php
+private $current_attachment_delete_log
 ```
 
 ***

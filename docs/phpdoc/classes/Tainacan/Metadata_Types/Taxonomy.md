@@ -254,30 +254,30 @@ HTML fragment.
 ### get_term_hierarchy_html
 
 ```php
-private get_term_hierarchy_html(\Tainacan\Entities\Term $term, \Tainacan\Entities\Item $item = null): mixed
+private get_term_hierarchy_html(\Tainacan\Entities\Term $term, ?\Tainacan\Entities\Item $item = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$term`   | **\Tainacan\Entities\Term** |             |
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                         | Description |
+|-----------|------------------------------|-------------|
+| `$term`   | **\Tainacan\Entities\Term**  |             |
+| `$item`   | **?\Tainacan\Entities\Item** |             |
 
 ***
 
 ### term_to_html
 
 ```php
-private term_to_html(mixed $term, \Tainacan\Entities\Item $item = null): mixed
+private term_to_html(mixed $term, ?\Tainacan\Entities\Item $item = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$term`   | **mixed**                   |             |
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                         | Description |
+|-----------|------------------------------|-------------|
+| `$term`   | **mixed**                    |             |
+| `$item`   | **?\Tainacan\Entities\Item** |             |
 
 ***
 
