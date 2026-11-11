@@ -182,7 +182,7 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( 'Smith & Jones', $response['values'][0]['label'] );
 	}
 
-	public function test_taxonomy_facet_hierarchy_path_is_decoded() {
+	public function test_taxonomy_facet_hierarchy_path_keeps_stored_form() {
 		$taxonomy = $this->tainacan_entity_factory->create_entity( 'taxonomy', [
 			'name' => 'Ampersand taxonomy',
 			'allow_insert' => 'yes',
@@ -190,15 +190,15 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		], true );
 		$root = $this->tainacan_entity_factory->create_entity( 'term', [
 			'taxonomy' => $taxonomy->get_db_identifier(),
-			'name' => 'R&D',
+			'name' => 'R&D > Labs',
 		], true );
 		$child = $this->tainacan_entity_factory->create_entity( 'term', [
 			'taxonomy' => $taxonomy->get_db_identifier(),
-			'name' => 'Labs',
+			'name' => 'Team',
 			'parent' => $root->get_id(),
 		], true );
 		// Precondition: WordPress stores term names encoded.
-		$this->assertSame( 'R&amp;D', get_term( $root->get_id() )->name );
+		$this->assertSame( 'R&amp;D &gt; Labs', get_term( $root->get_id() )->name );
 
 		$metadatum = $this->create_metadatum( 'Taxonomy', [
 			'metadata_type_options' => [ 'taxonomy_id' => $taxonomy->get_id(), 'allow_new_terms' => 'yes' ],
@@ -211,7 +211,8 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		] );
 
 		$this->assertCount( 1, $response['values'] );
-		$this->assertSame( 'R&D>', $response['values'][0]['hierarchy_path'] );
+		// The path is inserted as HTML and the admin splits it on ">", so the only bare ">" must be the separator.
+		$this->assertSame( 'R&amp;D &gt; Labs>', $response['values'][0]['hierarchy_path'] );
 	}
 
 	public function test_oai_dublin_core_title_is_decoded_and_not_duplicated() {

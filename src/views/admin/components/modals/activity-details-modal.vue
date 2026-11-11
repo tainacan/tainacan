@@ -369,7 +369,7 @@
                             </p>
                             <p
                                     class="log-diff-content log-diff-content--before"
-                                    v-html="!activity.old_value ? infoEmpty : (activity.old_value instanceof Array ? activity.old_value.join(`<span class='multivalue-separator'>|</span>`) : activity.old_value)" />
+                                    v-html="!activity.old_value ? infoEmpty : renderLoggedValue(activity.old_value)" />
                         </div>
                     </div>
 
@@ -502,7 +502,7 @@
                             </p>
                             <p
                                     class="log-diff-content log-diff-content--after"
-                                    v-html="!activity.new_value ? infoEmpty : (activity.new_value instanceof Array ? activity.new_value.join(`<span class='multivalue-separator'>|</span>`) : activity.new_value)" />
+                                    v-html="!activity.new_value ? infoEmpty : renderLoggedValue(activity.new_value)" />
                         </div>
                     </div>
                 </div>
@@ -525,6 +525,7 @@
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment';
     import FileItem from '../other/file-item.vue';
+    import { normalizeHtmlEntities } from '../../js/admin-utilities';
 
     export default {
         name: "ActivityDetailsModal",
@@ -604,6 +605,12 @@
                 this.$refs.activityDetailsModal.focus()
         },
         methods: {
+            // Metadata values are logged as plain text, so each lone "&" is encoded before the value is inserted as HTML.
+            renderLoggedValue(value) {
+                return value instanceof Array
+                    ? value.map((singleValue) => normalizeHtmlEntities(singleValue)).join(`<span class='multivalue-separator'>|</span>`)
+                    : normalizeHtmlEntities(value);
+            },
             ...mapActions('activity', [
                 'fetchActivity'
             ]),

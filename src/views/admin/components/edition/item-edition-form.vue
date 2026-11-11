@@ -26,7 +26,7 @@
             <h1 v-else>
                 {{ $i18n.get('title_edit_item') + ' ' }}
                 <span style="font-weight: 700;">
-                    {{ (item != null && item != undefined) ? item.title : '' }}
+                    {{ (item != null && item != undefined) ? decodeHtmlEntities(item.title) : '' }}
                 </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
@@ -85,7 +85,7 @@
                 </h1>
                 <h1 v-else>
                     {{ $i18n.get('title_edit_item') + ' ' }}
-                    <span style="font-weight: 700;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                    <span style="font-weight: 700;">{{ (item != null && item != undefined) ? decodeHtmlEntities(item.title) : '' }}</span>
                 </h1>
             </transition>
             <button 
@@ -136,7 +136,7 @@
                 </h1>
                 <h1 v-else>
                     {{ $i18n.get('title_edit_item') + ' ' }}
-                    <span style="font-weight: 700;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                    <span style="font-weight: 700;">{{ (item != null && item != undefined) ? decodeHtmlEntities(item.title) : '' }}</span>
                 </h1>
                 <span v-if="!errors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
                 <span 
@@ -818,6 +818,7 @@ import { mapActions, mapGetters } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import { permalinkGetter, formHooks } from '../../js/mixins';
 import { itemMetadataMixin } from '../../js/item-metadata-mixin';
+import { decodeHtmlEntities } from '../../js/admin-utilities';
 
 import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
@@ -1240,6 +1241,7 @@ export default {
             this.swiper.destroy();
     },
     methods: {
+        decodeHtmlEntities,
         ...mapActions('item', [
             'sendItem',
             'updateItem',
@@ -1343,7 +1345,7 @@ export default {
 
 
                 // Updater route document title
-                this.$routerHelper.updatePageTitle( this.$i18n.get('title_edit_item') + ' ' + this.item.title);
+                this.$routerHelper.updatePageTitle( this.$i18n.get('title_edit_item') + ' ' + decodeHtmlEntities(this.item.title));
                 
                 this.isLoading = false;
 
@@ -1969,7 +1971,7 @@ export default {
                     this.item = res;
 
                     // Updater route document title
-                    this.$routerHelper.updatePageTitle( this.$i18n.get('title_edit_item') + ' ' + this.item.title);
+                    this.$routerHelper.updatePageTitle( this.$i18n.get('title_edit_item') + ' ' + decodeHtmlEntities(this.item.title));
                     wp.hooks.doAction(
                         'tainacan_navigation_path_updated', 
                         { 

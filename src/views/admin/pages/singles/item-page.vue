@@ -17,7 +17,7 @@
                
                 {{ $i18n.get('title_item_page') + ' ' }}
                 <span style="font-weight: 700;">
-                    {{ (item != null && item != undefined) ? item.title : '' }}
+                    {{ (item != null && item != undefined) ? decodeHtmlEntities(item.title) : '' }}
                 </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading) && !$adminOptions.hideItemSingleCurrentStatus"
@@ -534,6 +534,7 @@
     import ExposersModal from '../../components/modals/exposers-modal.vue';
     import AttachmentsList from '../../components/lists/attachments-list.vue';
     import RelatedItemsList from '../../components/lists/related-items-list.vue';
+    import { decodeHtmlEntities } from '../../js/admin-utilities';
 
     export default {
         name: 'ItemPage',
@@ -653,7 +654,7 @@
                     .then(() => {
 
                         // Updater route document title
-                        this.$routerHelper.updatePageTitle( this.$i18n.get('title_item_page') + ' ' + this.item.title);
+                        this.$routerHelper.updatePageTitle( this.$i18n.get('title_item_page') + ' ' + decodeHtmlEntities(this.item.title));
                         wp.hooks.doAction(
                             'tainacan_navigation_path_updated', 
                             { 
@@ -701,6 +702,7 @@
 
         },
         methods: {
+            decodeHtmlEntities,
             ...mapActions('item', [
                 'fetchItem',
                 'fetchItemMetadata',

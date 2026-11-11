@@ -6,6 +6,36 @@ const tainacanSanitize = function(htmlString) {
     return htmlString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;')
 }
 
+/**
+ * Encodes each "&" that does not start a character reference, like wp_kses_normalize_entities() in PHP.
+ * Plain-text values from the API come with "&" decoded. Run them through this before inserting them as HTML
+ * (v-html, or a tooltip with html enabled), so that "Smith&notes" is not read as the "&not" entity.
+ * Entities such as "&lt;" are kept, so the value renders as it is stored.
+ * @param {*} text - Plain-text value; non-strings are returned unchanged.
+ * @returns {*} The value with lone "&" encoded.
+ */
+export const normalizeHtmlEntities = function(text) {
+    return typeof text === 'string'
+        ? text.replace(/&(?![a-zA-Z][a-zA-Z0-9]*;|#[0-9]+;|#[xX][0-9a-fA-F]+;)/g, '&amp;')
+        : text;
+}
+
+/**
+ * Decodes the HTML entities of a stored value, such as an item title, to show it as text ({{ }}, document.title).
+ * The result must never be inserted as HTML.
+ * @param {*} text - HTML-encoded value; non-strings are returned unchanged.
+ * @returns {*} The decoded text.
+ */
+export const decodeHtmlEntities = function(text) {
+    if ( typeof text !== 'string' || text.indexOf('&') < 0 )
+        return text;
+
+    // A textarea parses its content as text, so no element is created and nothing runs.
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+}
+
 // HTML SANITIZE PLUGIN - Helps sanitizing html string from javascript.
 export const HtmlSanitizerPlugin = {};
 HtmlSanitizerPlugin.install = function (app) {

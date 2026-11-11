@@ -123,7 +123,7 @@
                                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="checkbox-label-text"
-                                                    v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
+                                                    v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : normalizeHtmlEntities(option.label)) : '') }`" />
                                         </span>
                                     </label>                                
                                 </li>
@@ -416,6 +416,7 @@
     import qs from 'qs';
     import { tainacanApi, isCancel } from '../../js/axios';
     import { dynamicFilterTypeMixin } from '../../js/filter-types-mixin';
+    import { normalizeHtmlEntities } from '../../js/admin-utilities';
 
     export default {
         name: 'CheckboxRadioMetadataInput',
@@ -546,6 +547,7 @@
                 this.getOptionsValuesCancel.cancel('Get options request canceled.');
         },
         methods: {
+            normalizeHtmlEntities,
             getOptionInputId(optionKey) {
                 if (!this.inputId)
                     return undefined;
@@ -985,7 +987,7 @@
                 }
             },
             renderHierarchicalPath(hierarchyPath, label) {
-                return '<span style="color: var(--tainacan-info-color);">' + hierarchyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+                return '<span style="color: var(--tainacan-info-color);">' + hierarchyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + normalizeHtmlEntities(label);
             },
             onMobileSpecialFocus($event) {
                 $event.target.blur();
