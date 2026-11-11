@@ -274,6 +274,7 @@
         +get_schema()
       }
       class "REST_Roles_Controller\n<b>REST API controller for managing Tainacan roles and capabilities.</b>" as api_endpoints_REST_Roles_Controller {
+        -core_roles : 
         +__construct()
         +register_routes()
         +create_item(request)
@@ -2092,6 +2093,7 @@
       -current_diff : 
       -current_deleting_entity : 
       -current_action : 
+      -current_attachment_delete_log : 
       #init()
       #_get_map()
       +register_post_type()
@@ -2295,6 +2297,7 @@
       -current_diff : 
       -current_deleting_entity : 
       -current_action : 
+      -current_attachment_delete_log : 
       #init()
       #_get_map()
       +register_post_type()

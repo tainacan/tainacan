@@ -162,6 +162,7 @@
     +get_schema()
   }
   class "REST_Roles_Controller\n<b>REST API controller for managing Tainacan roles and capabilities.</b>" as REST_Roles_Controller {
+    -core_roles : 
     +__construct()
     +register_routes()
     +create_item(request)

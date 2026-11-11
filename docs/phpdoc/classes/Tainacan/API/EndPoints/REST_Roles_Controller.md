@@ -16,6 +16,7 @@ role creation, updates, deletion, and capability management.
 classDiagram
     direction TB
     class REST_Roles_Controller {
+        -core_roles : mixed
         +__construct()
         +register_routes()
         +create_item(request)
@@ -44,6 +45,16 @@ classDiagram
         +get_admin_ui_options_schema()
     }
 ```
+
+## Properties
+
+### core_roles
+
+```php
+private $core_roles
+```
+
+***
 
 ## Methods
 
