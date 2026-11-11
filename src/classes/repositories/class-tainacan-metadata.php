@@ -1522,7 +1522,7 @@ class Metadata extends Repository {
 			$values = [];
 			foreach ($results as $r) {
 
-				$label = $r;
+				$label = Entities\Item_Metadata_Entity::decode_ampersand( $r );
 
 				if ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
 					$_post = get_post($r);

@@ -127,8 +127,8 @@ class Core_Description_Rich_Text extends TAINACAN_UnitApiTestCase {
 		$value = '<p>Existing</p>' . "\nLoose line\n" . '<a href="https://example.org">ready</a>' . "\nVisit https://example.net/path?x=1&y=2.";
 		[ , $item, $metadatum ] = $this->create_item_with_core_description( $value );
 		$data = $this->read_description( $item, $metadatum )->get_data();
-		$this->assertSame( get_post( $item->get_id() )->post_content, $data['value'] );
-		$this->assertStringContainsString( '&amp;y=2', $data['value'] );
+		$this->assertSame( $value, $data['value'] );
+		$this->assertStringContainsString( '&y=2', $data['value'] );
 		$this->assertSame( 2, substr_count( $data['value_as_html'], '<a ' ) );
 		$this->assertSame( 1, substr_count( $data['value_as_html'], '<p>Existing</p>' ) );
 		$this->assertStringNotContainsString( '<a href="https://example.org"><a ', $data['value_as_html'] );
