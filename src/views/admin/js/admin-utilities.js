@@ -108,23 +108,20 @@ I18NPlugin.install = function (app) {
          * An example: ('This sentence has %s letters', [nLetters]) 
          * or ('This one has %1$s letters and %2$s words', [nLetters, nWords]). 
          */
-        getWithVariables(key, variables) { // TRY WITH regex: \%((\d)\$)*s 
+        getWithVariables(key, variables) {
             let rawString = tainacan_plugin.i18n[key];
             if (rawString != undefined && rawString != null && rawString != '' ) {
-                // let splits = rawString.match(/\%((\d)\$)*s*/gm); // An array with all the %s, %1$s, %2$s, etc
-                // let parsedString = '';
-                // for (let i = 0; i < splits.length; i++) {
-                //     parsedString += rawString.split(splits[i]).join(variables[i]);
-                // }
-                // return parsedString;
-
-                const regex = /%(\d\$)*s/m;
-                for (let variable of variables)
-                    rawString = rawString.replace(regex, variable);
-                
-                return rawString;
+                // Replaces every placeholder in a single pass so that numbered ones (%2$s)
+                // map to their position in `variables` regardless of the order in which they
+                // appear in the translated string, while bare %s consume variables in order.
+                // A function replacer also keeps "$&", "$1" etc. inside a variable literal.
+                let nextIndex = 0;
+                return rawString.replace(/%(?:(\d+)\$)?s/g, (match, position) => {
+                    const index = position !== undefined ? parseInt(position, 10) - 1 : nextIndex++;
+                    return variables[index] !== undefined ? variables[index] : match;
+                });
             } else {
-                "Invalid i18n key: " + tainacan_plugin.i18n[key];
+                return i18nGet(key);
             }
         },
         /**

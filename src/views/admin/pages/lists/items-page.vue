@@ -1111,26 +1111,9 @@
             if (currentQuery && currentQuery.advancedSearch)
                 this.openAdvancedSearch = !!currentQuery.advancedSearch;
 
-            this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
-                this.openAdvancedSearch = openAdvancedSearch;
-            });
-
-            this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
-                
-                if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
-
-                    if ((this.$refs['search-control'].classList.contains('floating-search-control')))
-                        this.$refs['search-control'].classList.remove('floating-search-control');
-                    
-                    this.$refs['items-page-container'].scrollTo({ top: 0, behavior: 'smooth'});
-                }
-
-                this.isLoadingItems = isLoadingItems;
-            });
-
-            this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
-                this.hasFiltered = hasFiltered;
-            });
+            this.$emitter.on('openAdvancedSearch', this.onOpenAdvancedSearch);
+            this.$eventBusSearchEmitter.on('isLoadingItems', this.onIsLoadingItems);
+            this.$eventBusSearchEmitter.on('hasFiltered', this.onHasFiltered);
 
         },
         mounted() {  
@@ -1183,6 +1166,23 @@
 
         },
         methods: {
+            onOpenAdvancedSearch(openAdvancedSearch) {
+                this.openAdvancedSearch = openAdvancedSearch;
+            },
+            onIsLoadingItems(isLoadingItems) {
+                if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
+
+                    if ((this.$refs['search-control'].classList.contains('floating-search-control')))
+                        this.$refs['search-control'].classList.remove('floating-search-control');
+                    
+                    this.$refs['items-page-container'].scrollTo({ top: 0, behavior: 'smooth'});
+                }
+
+                this.isLoadingItems = isLoadingItems;
+            },
+            onHasFiltered(hasFiltered) {
+                this.hasFiltered = hasFiltered;
+            },
             ...mapActions('collection', [
                 'fetchCollectionBasics'
             ]),
@@ -1723,15 +1723,13 @@
                 
             }, 750),
             removeEventListeners() {
-                // Component
-                this.$emitter.off();
                 // Window
                 window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
-                this.$emitter.off('openAdvancedSearch');
+                this.$emitter.off('openAdvancedSearch', this.onOpenAdvancedSearch);
                 // $eventBusSearch
-                this.$eventBusSearchEmitter.off('isLoadingItems');
-                this.$eventBusSearchEmitter.off('hasFiltered');
+                this.$eventBusSearchEmitter.off('isLoadingItems', this.onIsLoadingItems);
+                this.$eventBusSearchEmitter.off('hasFiltered', this.onHasFiltered);
             }
         }
     }

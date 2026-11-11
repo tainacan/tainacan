@@ -1219,9 +1219,7 @@
                 if (currentQuery && currentQuery.advancedSearch)
                     this.openAdvancedSearch = !!currentQuery.advancedSearch;
 
-                this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
-                    this.openAdvancedSearch = openAdvancedSearch;
-                });
+                this.$emitter.on('openAdvancedSearch', this.onOpenAdvancedSearch);
             }
 
             // If any default items per page is set, apply it
@@ -1230,44 +1228,10 @@
                 this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
             }
 
-            this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
-
-                this.isLoadingItems = isLoadingItems;
-                
-                document.dispatchEvent(new CustomEvent('tainacan-items-list-is-loading-items', {
-                    detail: { 
-                        isLoading: this.isLoadingItems,
-                        collectionId: this.collectionId,
-                        termId: this.termId,
-                        taxonomy: this.taxonomy
-                    }
-                }));
-            });
-
-            this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
-                this.hasFiltered = hasFiltered;
-            });
-
-            this.$eventBusSearchEmitter.on('exitViewModeWithoutPagination', () => {
-                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
-                delete currentQuery['slideshow-from'];
-                this.$router.replace({ query: currentQuery });
-    
-                // Sets the perpage and paged from previous configuration
-                this.$eventBusSearch.setItemsPerPage(this.latestPerPageAfterViewModeWithoutPagination, true);
-                this.$eventBusSearch.setPage(this.latestPageAfterViewModeWithoutPagination);
-                this.onChangeViewMode(this.latestNonFullscreenViewMode ? this.latestNonFullscreenViewMode : this.defaultViewMode);
-            });
-
-            this.$eventBusSearchEmitter.on('startSlideshowFromItem', (index) => {
-                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
-                delete currentQuery['slideshow-from'];
-                this.$router.replace({ query: currentQuery }).catch(() => undefined);
-
-                this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
-                this.onChangeViewMode('slideshow');
-                this.initialItemPosition = index;
-            });
+            this.$eventBusSearchEmitter.on('isLoadingItems', this.onIsLoadingItems);
+            this.$eventBusSearchEmitter.on('hasFiltered', this.onHasFiltered);
+            this.$eventBusSearchEmitter.on('exitViewModeWithoutPagination', this.onExitViewModeWithoutPagination);
+            this.$eventBusSearchEmitter.on('startSlideshowFromItem', this.onStartSlideshowFromItem);
 
             // Parse js-side hooks
             this.parseHooks();
@@ -1364,6 +1328,43 @@
 
         },
         methods: {
+            onOpenAdvancedSearch(openAdvancedSearch) {
+                this.openAdvancedSearch = openAdvancedSearch;
+            },
+            onIsLoadingItems(isLoadingItems) {
+                this.isLoadingItems = isLoadingItems;
+                
+                document.dispatchEvent(new CustomEvent('tainacan-items-list-is-loading-items', {
+                    detail: { 
+                        isLoading: this.isLoadingItems,
+                        collectionId: this.collectionId,
+                        termId: this.termId,
+                        taxonomy: this.taxonomy
+                    }
+                }));
+            },
+            onHasFiltered(hasFiltered) {
+                this.hasFiltered = hasFiltered;
+            },
+            onExitViewModeWithoutPagination() {
+                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
+                delete currentQuery['slideshow-from'];
+                this.$router.replace({ query: currentQuery });
+
+                // Sets the perpage and paged from previous configuration
+                this.$eventBusSearch.setItemsPerPage(this.latestPerPageAfterViewModeWithoutPagination, true);
+                this.$eventBusSearch.setPage(this.latestPageAfterViewModeWithoutPagination);
+                this.onChangeViewMode(this.latestNonFullscreenViewMode ? this.latestNonFullscreenViewMode : this.defaultViewMode);
+            },
+            onStartSlideshowFromItem(index) {
+                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
+                delete currentQuery['slideshow-from'];
+                this.$router.replace({ query: currentQuery }).catch(() => undefined);
+
+                this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
+                this.onChangeViewMode('slideshow');
+                this.initialItemPosition = index;
+            },
             ...mapActions('metadata', [
                 'fetchMetadata'
             ]),
@@ -1902,18 +1903,17 @@
                 });
             }, 500),
             removeEventListeners() {
-                // Component
-                this.$emitter.off();
                 // Window
                 if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile )
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 if (!this.hideAdvancedSearch)
-                    this.$emitter.off('openAdvancedSearch');
+                    this.$emitter.off('openAdvancedSearch', this.onOpenAdvancedSearch);
                 // $eventBusSearch
-                this.$eventBusSearchEmitter.off('isLoadingItems');
-                this.$eventBusSearchEmitter.off('hasFiltered');
-
+                this.$eventBusSearchEmitter.off('isLoadingItems', this.onIsLoadingItems);
+                this.$eventBusSearchEmitter.off('hasFiltered', this.onHasFiltered);
+                this.$eventBusSearchEmitter.off('exitViewModeWithoutPagination', this.onExitViewModeWithoutPagination);
+                this.$eventBusSearchEmitter.off('startSlideshowFromItem', this.onStartSlideshowFromItem);
             },
         }
     }
