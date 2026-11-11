@@ -355,10 +355,9 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$collection_id = $collection->get_id();
 		$metadatum_id  = $title_meta->get_id();
 
-		$this->assertEqualsCanonicalizing(
-			[ 'Lei 123', 'Lei 456' ],
-			$this->facet_title_labels( $collection_id, $metadatum_id, 'Lei', 'Lei 456', 'false' )
-		);
+		$labels = $this->facet_title_labels( $collection_id, $metadatum_id, 'Lei', 'Lei 456', 'false' );
+		sort( $labels );
+		$this->assertSame( [ 'Lei 123', 'Lei 456' ], $labels );
 		$this->assertSame(
 			[ 'Lei 123' ],
 			$this->facet_title_labels( $collection_id, $metadatum_id, '123', 'Lei 456', 'false' )
