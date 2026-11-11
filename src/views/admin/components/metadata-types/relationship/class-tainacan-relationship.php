@@ -356,7 +356,8 @@ class Relationship extends Metadata_Type {
 			$value = $item->get_title();
 		}
 		if (is_string($link)) {
-			$return = "<a data-linkto='item' data-id='$id' href='$link'>$value</a>";
+			// get_value_as_string() returns plain text, with "&" decoded, so it is escaped here.
+			$return = "<a data-linkto='item' data-id='$id' href='$link'>" . esc_html( $value ) . '</a>';
 		}
 		return $return;
 	}

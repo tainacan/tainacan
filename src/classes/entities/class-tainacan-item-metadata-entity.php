@@ -217,7 +217,7 @@ class Item_Metadata_Entity extends Entity {
 			$fto = $metadatum->get_metadata_type_object();
 			if (is_object($fto)) {
 				if ( method_exists($fto, 'get_value_as_string') ) {
-					return self::decode_ampersand( $fto->get_value_as_string($this) );
+					return self::decode_plain_text_entities( $fto->get_value_as_string($this) );
 				}
 			}
 		}
@@ -231,30 +231,54 @@ class Item_Metadata_Entity extends Entity {
 			 * 
 			 * @return string the item metadatum value string 
 			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-string', self::decode_ampersand( wp_strip_all_tags($this->get_value_as_html()) ), $this );
+			apply_filters( 'tainacan-item-metadata-get-value-as-string', self::decode_plain_text_entities( wp_strip_all_tags($this->get_value_as_html()) ), $this );
 	}
 
 	/**
-	 * Decodes the ampersand entities ("&amp;", "&#038;", "&#38;", "&#x26;") back to "&".
+	 * Decodes the entities that wp_kses() adds to plain text: "&amp;" (and "&#038;", "&#38;", "&#x26;") back to "&",
+	 * and "&gt;" back to ">".
 	 *
-	 * Values are stored HTML-encoded by wp_kses(), which turns every lone "&" into "&amp;".
-	 * This is used where the value is returned as plain text. Only ampersands are decoded,
-	 * in a single pass, so escaped markup such as "&lt;script&gt;" is never turned into tags.
+	 * Values are stored HTML-encoded by wp_kses(), which turns every lone "&" into "&amp;" and every lone ">" into "&gt;".
+	 * This is used where the value is returned as plain text. "&lt;" is never decoded, and the decoding runs in a single
+	 * pass, so escaped markup such as "&lt;script&gt;" can never be turned into a tag.
 	 *
 	 * @param mixed $value A string, or an array whose string elements are decoded (one level deep).
 	 *
 	 * @return mixed
 	 */
-	public static function decode_ampersand( $value ) {
+	public static function decode_plain_text_entities( $value ) {
 		if ( is_string( $value ) ) {
-			return preg_replace( '/&(?:amp|#0*38|#x0*26);/i', '&', $value );
+			return preg_replace_callback(
+				'/&(?:amp|#0*38|#x0*26|gt);/i',
+				function ( $matches ) {
+					return 0 === strcasecmp( $matches[0], '&gt;' ) ? '>' : '&';
+				},
+				$value
+			);
 		}
 		if ( is_array( $value ) ) {
 			return array_map( function( $element ) {
-				return is_string( $element ) ? self::decode_ampersand( $element ) : $element;
+				return is_string( $element ) ? self::decode_plain_text_entities( $element ) : $element;
 			}, $value );
 		}
 		return $value;
+	}
+
+	/**
+	 * Whether this value is edited with the rich text editor, and is therefore HTML.
+	 *
+	 * Follows the same rule as the admin form (TainacanTextarea.vue): the metadatum option must be on and the
+	 * site-wide setting must allow the editor (see tainacan_allow_rich_text_editor in class-tainacan-pages.php).
+	 *
+	 * @return bool
+	 */
+	private function uses_rich_text_editor() {
+		if ( $this->get_metadatum()->get_metadata_type_object()->get_option( 'use_rich_text_editor' ) !== 'yes' ) {
+			return false;
+		}
+		return defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' )
+			? true === TAINACAN_ALLOW_RICH_TEXT_EDITOR
+			: (bool) get_option( 'tainacan_option_allow_rich_text_editor', false );
 	}
 	
 	/**
@@ -349,8 +373,8 @@ class Item_Metadata_Entity extends Entity {
 		
 		$as_array['value'] = $this->get_value_as_array();
 		// Values edited with the rich text editor are HTML, so they keep their entities.
-		if ( $this->get_metadatum()->get_metadata_type_object()->get_option( 'use_rich_text_editor' ) !== 'yes' ) {
-			$as_array['value'] = self::decode_ampersand( $as_array['value'] );
+		if ( ! $this->uses_rich_text_editor() ) {
+			$as_array['value'] = self::decode_plain_text_entities( $as_array['value'] );
 		}
 		$as_array['parent_meta_id'] = $this->get_parent_meta_id();
 		if ( $formatted_values ) {

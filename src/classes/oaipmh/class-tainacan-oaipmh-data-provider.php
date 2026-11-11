@@ -375,14 +375,16 @@ class OAIPMH_Data_Provider {
 	private function get_item_dc( $item ) {
 		// Values are accumulated as arrays so Dublin Core fields can repeat, then
 		// de-duplicated: a core property (e.g. the title) and a metadatum mapped
-		// to the same DC element commonly carry the identical value.
+		// to the same DC element commonly carry the identical value. The core
+		// properties are stored HTML-encoded, so they are decoded like the
+		// metadata values (get_value_as_string()); the XML writer escapes them.
 		$dc = array(
-			'title'      => array( $item->get_title() ),
+			'title'      => array( \Tainacan\Entities\Item_Metadata_Entity::decode_plain_text_entities( $item->get_title() ) ),
 			'identifier' => array( get_permalink( $item->get_id() ) )
 		);
 
 		if ( $item->get_description() ) {
-			$dc['description'] = array( $item->get_description() );
+			$dc['description'] = array( \Tainacan\Entities\Item_Metadata_Entity::decode_plain_text_entities( $item->get_description() ) );
 		}
 
 		$metadata = $item->get_metadata(

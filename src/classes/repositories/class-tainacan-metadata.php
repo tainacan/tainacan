@@ -1474,7 +1474,7 @@ class Metadata extends Repository {
 					'total_items' => $total_items,
 					'type' => 'Taxonomy',
 					'description' => term_description($r->term_id),
-					'hierarchy_path' => get_term_parents_list($r->term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
+					'hierarchy_path' => Entities\Item_Metadata_Entity::decode_plain_text_entities( get_term_parents_list($r->term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false]) )
 				];
 
 			}
@@ -1521,7 +1521,7 @@ class Metadata extends Repository {
 			$values = [];
 			foreach ($results as $r) {
 
-				$label = Entities\Item_Metadata_Entity::decode_ampersand( $r );
+				$label = Entities\Item_Metadata_Entity::decode_plain_text_entities( $r );
 
 				if ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
 					$_post = get_post($r);
@@ -1535,7 +1535,7 @@ class Metadata extends Repository {
 						continue;
 					}
 					
-					$label = $_post->post_title;
+					$label = Entities\Item_Metadata_Entity::decode_plain_text_entities( $_post->post_title );
 				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Control' ) {
 					$metadata_type_object = $metadatum->get_metadata_type_object();
 					$label = $metadata_type_object->get_control_metadatum_value($r, $metadatum_options['control_metadatum'], 'string' );

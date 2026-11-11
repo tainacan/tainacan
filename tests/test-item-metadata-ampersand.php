@@ -110,6 +110,129 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( 'Smith & Jones', trim( $data['value_as_string'] ) );
 	}
 
+	public function test_rich_text_option_without_site_wide_setting_returns_plain_text() {
+		update_option( 'tainacan_option_allow_rich_text_editor', false );
+		$rich = $this->create_metadatum( 'Textarea', [ 'metadata_type_options' => [ 'use_rich_text_editor' => 'yes' ] ] );
+		$this->save_value( $rich, 'Smith & Jones' );
+
+		// The admin shows a plain textarea when the site-wide setting is off.
+		$this->assertSame( 'Smith & Jones', $this->read_rest( $rich )['value'] );
+	}
+
+	public function test_greater_than_is_returned_as_typed() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		$item_metadata = $this->save_value( $metadatum, 'a > b' );
+		$this->assertSame( 'a &gt; b', get_post_meta( $this->amp_item->get_id(), $metadatum->get_id(), true ) );
+
+		$data = $this->read_rest( $metadatum );
+		$this->assertSame( 'a > b', $data['value'] );
+		$this->assertSame( 'a > b', $data['value_as_string'] );
+		$this->assertSame( 'a &gt; b', $item_metadata->get_value_as_html() );
+	}
+
+	private function create_related_item( $text_value, $title = 'Related item' ) {
+		$related_collection = $this->tainacan_entity_factory->create_entity( 'collection', [
+			'name' => 'Related collection ' . uniqid(),
+			'status' => 'publish',
+		], true );
+		$related_text = $this->tainacan_entity_factory->create_entity( 'metadatum', [
+			'name' => 'Related text ' . uniqid(),
+			'collection_id' => $related_collection->get_id(),
+			'metadata_type' => 'Tainacan\Metadata_Types\Text',
+			'status' => 'publish',
+		], true );
+		$related_item = $this->tainacan_entity_factory->create_entity( 'item', [
+			'title' => $title,
+			'collection' => $related_collection,
+			'status' => 'publish',
+		], true );
+		$this->tainacan_item_metadata_factory->create_item_metadata( $related_item, $related_text, $text_value );
+
+		$relationship = $this->create_metadatum( 'Relationship', [
+			'metadata_type_options' => [
+				'collection_id' => $related_collection->get_id(),
+				'search' => $related_text->get_id(),
+			],
+		] );
+
+		return [ $related_collection, $related_item, $relationship ];
+	}
+
+	public function test_relationship_link_label_keeps_ampersand_encoded_in_html() {
+		[ , $related_item, $relationship ] = $this->create_related_item( 'Smith&notes' );
+		$item_metadata = $this->save_value( $relationship, $related_item->get_id() );
+
+		$html = $item_metadata->get_value_as_html();
+		$this->assertStringContainsString( '>Smith&amp;notes</a>', $html );
+		$this->assertStringNotContainsString( '>Smith&notes</a>', $html );
+	}
+
+	public function test_relationship_facet_label_is_decoded() {
+		[ $related_collection, $related_item, $relationship ] = $this->create_related_item( 'Any value' );
+		$this->tainacan_item_metadata_factory->create_item_metadata( $related_item, $related_collection->get_core_title_metadatum(), 'Smith & Jones' );
+		// Precondition: the item title is stored encoded, like every metadata value.
+		$this->assertSame( 'Smith &amp; Jones', get_post( $related_item->get_id() )->post_title );
+		$this->tainacan_item_metadata_factory->create_item_metadata( $this->amp_item, $relationship, $related_item->get_id() );
+
+		$response = Repositories\Metadata::get_instance()->fetch_all_metadatum_values( $relationship->get_id(), [
+			'collection_id' => $this->amp_collection->get_id(),
+		] );
+
+		$this->assertCount( 1, $response['values'] );
+		$this->assertSame( 'Smith & Jones', $response['values'][0]['label'] );
+	}
+
+	public function test_taxonomy_facet_hierarchy_path_is_decoded() {
+		$taxonomy = $this->tainacan_entity_factory->create_entity( 'taxonomy', [
+			'name' => 'Ampersand taxonomy',
+			'allow_insert' => 'yes',
+			'status' => 'publish',
+		], true );
+		$root = $this->tainacan_entity_factory->create_entity( 'term', [
+			'taxonomy' => $taxonomy->get_db_identifier(),
+			'name' => 'R&D',
+		], true );
+		$child = $this->tainacan_entity_factory->create_entity( 'term', [
+			'taxonomy' => $taxonomy->get_db_identifier(),
+			'name' => 'Labs',
+			'parent' => $root->get_id(),
+		], true );
+		// Precondition: WordPress stores term names encoded.
+		$this->assertSame( 'R&amp;D', get_term( $root->get_id() )->name );
+
+		$metadatum = $this->create_metadatum( 'Taxonomy', [
+			'metadata_type_options' => [ 'taxonomy_id' => $taxonomy->get_id(), 'allow_new_terms' => 'yes' ],
+			'multiple' => 'yes',
+		] );
+		$this->tainacan_item_metadata_factory->create_item_metadata( $this->amp_item, $metadatum, [ $child->get_id() ] );
+
+		$response = Repositories\Metadata::get_instance()->fetch_all_metadatum_values( $metadatum->get_id(), [
+			'parent_id' => $root->get_id(),
+		] );
+
+		$this->assertCount( 1, $response['values'] );
+		$this->assertSame( 'R&D>', $response['values'][0]['hierarchy_path'] );
+	}
+
+	public function test_oai_dublin_core_title_is_decoded_and_not_duplicated() {
+		$this->save_value( $this->amp_collection->get_core_title_metadatum(), 'Smith & Jones' );
+		$this->assertSame( 'Smith &amp; Jones', get_post( $this->amp_item->get_id() )->post_title );
+		$mapped = $this->create_metadatum( 'Text', [ 'exposer_mapping' => [ 'dublin-core' => 'dc:title' ] ] );
+		$this->save_value( $mapped, 'Smith & Jones' );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/oai' );
+		$request->set_param( 'verb', 'ListRecords' );
+		$request->set_param( 'metadataPrefix', 'oai_dc' );
+		$request->set_param( 'set', (string) $this->amp_collection->get_id() );
+		$body = $this->server->dispatch( $request )->get_data();
+
+		// The XML writer escapes "&" once, so the harvester reads "Smith & Jones".
+		$this->assertStringContainsString( '<dc:title>Smith &amp; Jones</dc:title>', $body );
+		$this->assertStringNotContainsString( '&amp;amp;', $body );
+		// The core title and the metadatum mapped to dc:title carry the same text, so they are de-duplicated.
+		$this->assertSame( 1, substr_count( $body, '<dc:title>' ) );
+	}
+
 	public function test_stored_value_and_html_output_are_unchanged() {
 		$metadatum = $this->create_metadatum( 'Text' );
 		$item_metadata = $this->save_value( $metadatum, 'Smith & Jones' );
@@ -143,10 +266,12 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		$item_metadata = $this->save_value( $metadatum, '&lt;script&gt;alert(1)&lt;/script&gt;' );
 		$data = $this->read_rest( $metadatum );
 
+		// "&gt;" may be decoded in plain-text outputs, but "&lt;" never is, so no tag can open.
 		foreach ( [ $data['value'], $data['value_as_string'], $data['value_as_html'], $item_metadata->get_value_as_string() ] as $output ) {
-			$this->assertStringNotContainsString( '<script', $output );
-			$this->assertStringContainsString( '&lt;script&gt;', $output );
+			$this->assertStringNotContainsString( '<', $output );
+			$this->assertStringContainsString( '&lt;script', $output );
 		}
+		$this->assertStringContainsString( '&lt;script&gt;', $data['value_as_html'] );
 	}
 
 	public function test_values_already_stored_encoded_are_decoded_on_output() {
