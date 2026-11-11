@@ -1004,7 +1004,9 @@ html {
 /* Iframe Mode (is used with fullscreen) */
 .tainacan-pages-container.tainacan-pages-container--iframe-mode {
     #wpadminbar,
-    #adminmenumain {
+    #adminmenumain,
+    #screen-meta,
+    #screen-meta-links {
         display: none;
     }
     #wpbody {
