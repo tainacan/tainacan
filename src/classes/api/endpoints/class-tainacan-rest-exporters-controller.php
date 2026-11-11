@@ -230,6 +230,13 @@ class REST_Exporters_Controller extends REST_Controller {
 			], 400);
 		}
 
+		if (method_exists($exporter, 'validate_options') && true !== ($validation = $exporter->validate_options())) {
+			return new \WP_REST_Response([
+				'error_message' => $validation,
+				'session_id' => $session_id
+			], 400);
+		}
+
 		$Tainacan_Exporter_Handler = \Tainacan\Exporter_Handler::get_instance();
 		$process = $Tainacan_Exporter_Handler->add_to_queue($exporter);
 		if (false === $process) {
