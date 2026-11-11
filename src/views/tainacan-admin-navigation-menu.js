@@ -404,43 +404,44 @@ function handleUITweakButtons() {
 
             const wordpressNavigation = selectedInput.value;
 
-            // Atualiza as preferências
-            let currentUserPrefs = parseTainacanUserPrefs();
-            currentUserPrefs['wordpress_navigation'] = wordpressNavigation;
-            delete currentUserPrefs['is_fullscreen'];
-            tainacan_user.prefs = JSON.stringify(currentUserPrefs);
+            if ( tainacan_user.nonce && tainacan_user.wp_api_url ) {
+                const currentUserPrefs = parseTainacanUserPrefs();
+                currentUserPrefs['wordpress_navigation'] = wordpressNavigation;
+                delete currentUserPrefs['is_fullscreen'];
 
-            // Salva na API do WordPress
-            fetch(tainacan_user.rest_url + 'wp/v2/users/me', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': tainacan_user.nonce
-                },
-                body: JSON.stringify({
-                    meta: {
-                        tainacan_prefs: tainacan_user.prefs
+                fetch( tainacan_user.wp_api_url + 'users/me', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-WP-Nonce': tainacan_user.nonce
+                    },
+                    body: JSON.stringify({
+                        meta: { tainacan_prefs: JSON.stringify( currentUserPrefs ) }
+                    })
+                }).then( response => {
+                    if ( !response.ok ) {
+                        throw new Error( 'Network response was not ok' );
                     }
-                })
-            }).then(response => {
-                if (response.ok) {
-                    // Alterna as classes do DOM dinamicamente
-                    document.body.classList.toggle('tainacan-pages-container--fullscreen', wordpressNavigation === 'none');
-                    document.body.classList.toggle('tainacan-pages-container--toolbar-only', wordpressNavigation === 'toolbar');
+                    return response.json();
+                }).then( ( data ) => {
+                    tainacan_user.prefs = ( data.meta && data.meta.tainacan_prefs )
+                        ? data.meta.tainacan_prefs
+                        : JSON.stringify( currentUserPrefs );
 
-                    // Fecha o painel de opções de tela
-                    if (showSettingsLink) {
+                    document.body.classList.toggle( 'tainacan-pages-container--fullscreen', wordpressNavigation === 'none' );
+                    document.body.classList.toggle( 'tainacan-pages-container--toolbar-only', wordpressNavigation === 'toolbar' );
+
+                    if ( showSettingsLink ) {
                         showSettingsLink.click();
                     }
 
-                    // Dispara o evento de recálculo de layout para o Vue
-                    const event = new Event('tainacan_fullscreen_mode_change');
-                    window.dispatchEvent(event);
-                    document.dispatchEvent(event);
-                }
-            }).catch(error => {
-                console.error('Erro ao salvar preferências de tela do Tainacan:', error);
-            });
+                    document.dispatchEvent( new CustomEvent( 'tainacan_fullscreen_mode_change', {
+                        detail: { isFullscreen: wordpressNavigation === 'none' }
+                    } ) );
+                }).catch( error => {
+                    console.error( 'Request to /users/me failed. Maybe you\'re not logged in.', error );
+                } );
+            }
 
         } );
     }

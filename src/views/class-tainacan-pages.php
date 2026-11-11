@@ -273,7 +273,6 @@ abstract class Pages {
 			'data' => $user_data,
 			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 			'ajax_nonce'                => is_user_logged_in() ? wp_create_nonce( 'tainacan-sample-permalink' ) : false,
-			'rest_url'                  => esc_url_raw( rest_url() ),
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
@@ -949,7 +948,7 @@ abstract class Pages {
 			<div class="metabox-prefs custom-options-wrap">
 				<h5><?php esc_html_e('Integration with WordPress Admin UI', 'tainacan'); ?></h5>
 				<fieldset>
-					<legend class="screen-reader-text"><?php esc_html_e('Fullscreen mode options', 'tainacan'); ?></legend>
+					<legend class="screen-reader-text"><?php esc_html_e('WordPress navigation options', 'tainacan'); ?></legend>
 					<label>
 						<input type="radio" name="tainacan-fullscreen-state" value="menu" <?php checked($wordpress_navigation, 'menu'); ?>>
 						<?php esc_html_e('Show WordPress menu and toolbar', 'tainacan'); ?>
