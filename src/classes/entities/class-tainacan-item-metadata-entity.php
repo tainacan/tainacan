@@ -31,11 +31,11 @@ class Item_Metadata_Entity extends Entity {
 	
 	/**
 	 * 
-	 * @param Item   $item    Item Entity
-	 * @param Metadatum  $metadatum   Metadatum Entity
+	 * @param Item|null   $item    Item Entity
+	 * @param Metadatum|null  $metadatum   Metadatum Entity
 	 * @param int $meta_id ID for a specific meta row 
 	 */
-	function __construct(Item $item = null, Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
+	function __construct(?Item $item = null, ?Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
 		$this->set_item($item);
 		$this->set_metadatum($metadatum);
 
@@ -347,10 +347,10 @@ class Item_Metadata_Entity extends Entity {
 	/**
 	 * Define the item
 	 *
-	 * @param Item $item
+	 * @param Item|null $item
 	 * @return void
 	 */
-	function set_item(Item $item = null) {
+	function set_item(?Item $item = null) {
 		$this->item = $item;
 	}
 	
@@ -367,10 +367,10 @@ class Item_Metadata_Entity extends Entity {
 	/**
 	 * Define the metadatum
 	 *
-	 * @param Metadatum $metadatum
+	 * @param Metadatum|null $metadatum
 	 * @return void
 	 */
-	function set_metadatum(Metadatum $metadatum = null) {
+	function set_metadatum(?Metadatum $metadatum = null) {
 		$this->metadatum = $metadatum;
 	}
 	

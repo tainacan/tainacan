@@ -24,8 +24,6 @@ class REST_Facets_Controller extends REST_Controller {
 	 */
 	public function __construct() {
 		$this->rest_base = 'facets';
-		$this->total_pages = 0;
-		$this->total_items = 0;
 		parent::__construct();
         add_action('init', array(&$this, 'init_objects'), 11);
 	}
