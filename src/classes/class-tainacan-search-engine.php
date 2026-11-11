@@ -136,6 +136,9 @@ class Search_Engine {
 		$sentence = isset( $this->query_instance->query_vars['sentence'] )
 			? $this->query_instance->query_vars['sentence']
 			: $this->get_default_sentence();
+		// The query string delivers sentence=false as the string "false", which is truthy
+		// in PHP and would force a phrase search. rest_sanitize_boolean() maps "false" and "0" to false.
+		$sentence = rest_sanitize_boolean( $sentence );
 		$search_terms = array();
 
 		if ( !empty( $s ) ) {

@@ -105,6 +105,12 @@ class REST_Facets_Controller extends REST_Controller {
 			}
 			$query_args = $this->prepare_filters($query_args);
 
+			// current_query is not a registered REST argument, so sentence arrives as the
+			// query-string value. The string "false" must not be treated as a phrase search.
+			if ( is_array( $query_args ) && array_key_exists( 'sentence', $query_args ) ) {
+				$query_args['sentence'] = rest_sanitize_boolean( $query_args['sentence'] );
+			}
+
 			if ( isset($request['hideempty']) && $request['hideempty'] == 0 ) {
 				$query_args = false;
 			}
