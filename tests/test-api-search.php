@@ -325,6 +325,86 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 	}
 
 	/**
+	 * Facets receive current_query[sentence] as the query-string value "false".
+	 * That must select per-word search, the same as boolean false on the items route.
+	 */
+	public function test_facets_per_word_sentence_query_string() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			[
+				'name'   => 'Leis',
+				'status' => 'publish',
+			],
+			true
+		);
+		$title_meta = $collection->get_core_title_metadatum();
+
+		foreach ( [ 'Lei 123', 'Lei 456', 'Decreto 456' ] as $title ) {
+			$item = $this->tainacan_entity_factory->create_entity(
+				'item',
+				[
+					'status'     => 'publish',
+					'collection' => $collection,
+					'title'      => $title,
+				],
+				true
+			);
+			$this->tainacan_item_metadata_factory->create_item_metadata( $item, $title_meta, $title );
+		}
+
+		$collection_id = $collection->get_id();
+		$metadatum_id  = $title_meta->get_id();
+
+		$this->assertEqualsCanonicalizing(
+			[ 'Lei 123', 'Lei 456' ],
+			$this->facet_title_labels( $collection_id, $metadatum_id, 'Lei', 'Lei 456', 'false' )
+		);
+		$this->assertSame(
+			[ 'Lei 123' ],
+			$this->facet_title_labels( $collection_id, $metadatum_id, '123', 'Lei 456', 'false' )
+		);
+		$this->assertSame(
+			[ 'Lei 456' ],
+			$this->facet_title_labels( $collection_id, $metadatum_id, 'Lei', 'Lei 456', 'true' )
+		);
+	}
+
+	/**
+	 * Title facet labels for a textual search, with sentence passed as a query-string value.
+	 *
+	 * @param int    $collection_id Collection ID.
+	 * @param int    $metadatum_id  Title metadatum ID.
+	 * @param string $facet_search  Text typed in the facet.
+	 * @param string $items_search  Current textual search.
+	 * @param string $sentence      Query-string sentence value, "true" or "false".
+	 * @return string[]
+	 */
+	private function facet_title_labels( $collection_id, $metadatum_id, $facet_search, $items_search, $sentence ) {
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection_id . '/facets/' . $metadatum_id );
+		$request->set_query_params(
+			[
+				'search'        => $facet_search,
+				'offset'        => 0,
+				'number'        => 20,
+				'count_items'   => 0,
+				'current_query' => [
+					'search'   => $items_search,
+					'sentence' => $sentence,
+				],
+			]
+		);
+		$response = $this->server->dispatch( $request );
+		$this->assertSame( 200, $response->get_status() );
+
+		return array_map(
+			function ( $value ) {
+				return $value['label'];
+			},
+			$response->get_data()['values']
+		);
+	}
+
+	/**
 	 * Terms of a private taxonomy metadatum must not be matched by the search of users
 	 * who cannot read private metadata, while terms of public taxonomy metadata still are.
 	 *
