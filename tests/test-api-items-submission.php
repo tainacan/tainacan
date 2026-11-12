@@ -44,6 +44,11 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 		);
 	}
 
+	function tearDown(): void {
+		$this->remove_added_uploads();
+		parent::tearDown();
+	}
+
 	private function create_metadatum(&$collection) {
 		$tax = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
@@ -359,6 +364,116 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 		$request->set_body($item_json);
 		$response = $this->server->dispatch($request);
 		$this->assertEquals(201, $response->get_status());
+	}
+
+	public function test_submission_item_finish_with_files() {
+		$collection_id = $this->col_user_logged->get_id();
+		$metadatums    = $this->collections_metadatum[ $collection_id ];
+
+		$item_json = wp_json_encode(
+			array(
+				'title'       => 'Item submission with files',
+				'description' => 'Item sent by submission with document, thumbnail and attachments',
+				'metadata'    => array(
+					array(
+						'metadatum_id' => $metadatums['text'],
+						'value'        => 'Text submission',
+					),
+					array(
+						'metadatum_id' => $metadatums['numeric'],
+						'value'        => 10,
+					),
+				),
+			)
+		);
+
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/collection/' . $collection_id . '/items/submission' );
+		$request->set_body( $item_json );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 201, $response->get_status() );
+
+		$submission_data = $response->get_data();
+		$submission_id   = $submission_data['id'];
+
+		$doc_tmp   = sys_get_temp_dir() . '/document-file.jpg';
+		$thumb_tmp = sys_get_temp_dir() . '/custom-thumb.jpg';
+		$attach_b  = sys_get_temp_dir() . '/beta-attachment.jpg';
+		$attach_a  = sys_get_temp_dir() . '/alpha-attachment.jpg';
+
+		copy( './tests/attachment/tainacan.jpg', $doc_tmp );
+		copy( './tests/attachment/codeispoetrywp.jpg', $thumb_tmp );
+		copy( './tests/attachment/codeispoetrywp.jpg', $attach_b );
+		copy( './tests/attachment/tainacan.jpg', $attach_a );
+
+		$finish_request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/collection/' . $collection_id . '/items/submission/' . $submission_id . '/finish'
+		);
+		$finish_request->set_file_params(
+			array(
+				'document'    => array(
+					'name'     => 'document-file.jpg',
+					'type'     => 'image/jpeg',
+					'tmp_name' => $doc_tmp,
+					'error'    => 0,
+					'size'     => filesize( $doc_tmp ),
+				),
+				'thumbnail'   => array(
+					'name'     => 'custom-thumb.jpg',
+					'type'     => 'image/jpeg',
+					'tmp_name' => $thumb_tmp,
+					'error'    => 0,
+					'size'     => filesize( $thumb_tmp ),
+				),
+				'attachments' => array(
+					'name'     => array( 'beta-attachment.jpg', 'alpha-attachment.jpg' ),
+					'type'     => array( 'image/jpeg', 'image/jpeg' ),
+					'tmp_name' => array( $attach_b, $attach_a ),
+					'error'    => array( 0, 0 ),
+					'size'     => array( filesize( $attach_b ), filesize( $attach_a ) ),
+				),
+			)
+		);
+
+		$finish_response = $this->server->dispatch( $finish_request );
+		$this->assertEquals( 201, $finish_response->get_status() );
+		$this->assertFalse( isset( $GLOBALS['TAINACAN_UPLOADING_ATTACHMENT_TO_POST'] ) );
+
+		$finish_data = $finish_response->get_data();
+		$item        = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $finish_data['id'] );
+		$this->assertInstanceOf( \Tainacan\Entities\Item::class, $item );
+
+		$expected_item_folder = 'tainacan-items/' . $collection_id . '/_x_' . $item->get_id();
+
+		// verify document upload, original filename/title (no uniqid prefix), and Private_Files directory
+		$this->assertEquals( 'attachment', $item->get_document_type() );
+		$document_id   = (int) $item->get_document();
+		$document_post = get_post( $document_id );
+		$this->assertNotNull( $document_post );
+		$this->assertEquals( $item->get_id(), $document_post->post_parent );
+		$this->assertEquals( 'document-file', $document_post->post_title );
+		$this->assertEquals( 'document-file.jpg', wp_basename( get_attached_file( $document_id ) ) );
+		$this->assertStringContainsString( $expected_item_folder, get_attached_file( $document_id ) );
+
+		// verify thumbnail upload stays in standard WP uploads directory (post_parent = 0)
+		$thumbnail_id   = (int) $item->get__thumbnail_id();
+		$thumbnail_post = get_post( $thumbnail_id );
+		$this->assertNotNull( $thumbnail_post );
+		$this->assertEquals( 0, $thumbnail_post->post_parent );
+		$this->assertEquals( 'custom-thumb', $thumbnail_post->post_title );
+		$this->assertEquals( 'custom-thumb.jpg', wp_basename( get_attached_file( $thumbnail_id ) ) );
+		$this->assertStringNotContainsString( 'tainacan-items', get_attached_file( $thumbnail_id ) );
+
+		// verify attachments preserve original filenames/titles, are sorted alphabetically, and use Private_Files directory
+		$attachments = $item->get_attachments();
+		$this->assertCount( 2, $attachments );
+		$this->assertEquals( 'alpha-attachment', $attachments[0]->post_title );
+		$this->assertEquals( 'alpha-attachment.jpg', wp_basename( get_attached_file( $attachments[0]->ID ) ) );
+		$this->assertStringContainsString( $expected_item_folder, get_attached_file( $attachments[0]->ID ) );
+
+		$this->assertEquals( 'beta-attachment', $attachments[1]->post_title );
+		$this->assertEquals( 'beta-attachment.jpg', wp_basename( get_attached_file( $attachments[1]->ID ) ) );
+		$this->assertStringContainsString( $expected_item_folder, get_attached_file( $attachments[1]->ID ) );
 	}
 
 }
