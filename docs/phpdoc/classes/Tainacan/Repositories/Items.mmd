@@ -41,12 +41,17 @@ classDiagram
         +entities_type : mixed
         -fetching_from_collections : mixed
         -relationsip_metaquery : array
+        -search_relevance_tail : string
         #init()
         #_get_map()
         +get_cpt_labels()
         +register_post_type()
         +insert(item)
         +fetch(args, collections, output)
+        -maybe_order_search_by_relevance(args)
+        +search_relevance_orderby(orderby, query)
+        -compile_orderby_tail(orderby)
+        -remove_search_relevance_order()
         +fetch_ids(args, collections)
         +_filter_where(where, wp_query)
         +update(object, new_values)

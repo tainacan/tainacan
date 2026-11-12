@@ -179,12 +179,17 @@
     +entities_type : 
     -fetching_from_collections : 
     -relationsip_metaquery : array{meta_id?: string, search_meta_id?: string, search_meta_value?: string}
+    -search_relevance_tail : string|null
     #init()
     #_get_map()
     +get_cpt_labels()
     +register_post_type()
     +insert(item)
     +fetch(args, collections, output)
+    -maybe_order_search_by_relevance(args)
+    +search_relevance_orderby(orderby, query)
+    -compile_orderby_tail(orderby)
+    -remove_search_relevance_order()
     +fetch_ids(args, collections)
     +_filter_where(where, wp_query)
     +update(object, new_values)
