@@ -1554,10 +1554,10 @@
                     return orderBy;
 
                 const orderby = orderBy && orderBy.orderby ? orderBy.orderby : orderBy;
-                if (!orderby || orderby == 'name' || (blockOrderBy && blockOrderBy.metakey && orderby === this.defaultOrderBy))
-                    return blockOrderBy || 'date';
+                if (typeof orderby == 'string' && orderby != 'name' && !(blockOrderBy && blockOrderBy.metakey && orderby === this.defaultOrderBy))
+                    return orderby;
 
-                return orderby;
+                return blockOrderBy || 'date';
             },
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
