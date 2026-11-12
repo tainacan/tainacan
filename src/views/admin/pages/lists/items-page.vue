@@ -363,7 +363,7 @@
                         </div>
                         <div class="sorting-options-container-orderby">
                             <template 
-                                    v-for="metadatum of sortingMetadata"
+                                    v-for="metadatum of sortingOptions"
                                     :key="metadatum.slug">
                                 <b-dropdown-item
                                         v-if="metadatum != undefined"
@@ -900,7 +900,16 @@
                 'metaKey': 'getMetaKey'
             }),
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified');
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified' && this.orderBy != 'relevance');
+            },
+            sortingOptions() {
+                if (!this.searchQuery)
+                    return this.sortingMetadata;
+
+                return [{
+                    name: this.$i18n.get('label_relevance'),
+                    slug: 'relevance'
+                }].concat(this.sortingMetadata);
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
@@ -974,7 +983,8 @@
                     }
                     
                     // Order By (required extra work to deal with custom metadata ordering)
-                    if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
+                    const orderByWasMissing = this.$route.query.orderby == undefined;
+                    if (orderByWasMissing || (to.params.collectionId != from.params.collectionId)) {
                         let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
                         let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
                     
@@ -1025,6 +1035,8 @@
                     // Passes the current URL to store
                     this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                     this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+                    if (this.$eventBusSearch.switchToSearchRelevance(orderByWasMissing && (this.$route.query.search || this.$route.query.s)))
+                        this.$eventBusSearch.updateURLQueries();
 
                     // Advanced Search
                     if (this.$route.query && this.$route.query.advancedSearch)

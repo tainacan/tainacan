@@ -268,6 +268,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_disabled'                                 => __( 'Disabled', 'tainacan' ),
 	'label_creation'                                 => __( 'Creation', 'tainacan' ),
 	'label_creation_date'                            => __( 'Creation date', 'tainacan' ),
+	'label_relevance'                                => __( 'Relevance', 'tainacan' ),
 	'label_modification_date'                        => __( 'Modification date', 'tainacan' ),
 	'label_collection_items'                         => __( 'Collection Items', 'tainacan' ),
 	'label_collection_metadata'                      => __( 'Collection Metadata', 'tainacan' ),

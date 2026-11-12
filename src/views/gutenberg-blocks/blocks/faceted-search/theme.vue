@@ -315,7 +315,7 @@
                             </button>
                         </template>
                         <template 
-                                v-for="metadatum of sortingMetadata"
+                                v-for="metadatum of sortingOptions"
                                 :key="metadatum.slug">
                             <b-dropdown-item
                                     v-if="metadatum != undefined"
@@ -940,7 +940,16 @@
                 }
             },
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified'); 
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified' && this.orderBy != 'relevance'); 
+            },
+            sortingOptions() {
+                if (!this.searchQuery)
+                    return this.sortingMetadata;
+
+                return [{
+                    name: this.$i18n.get('label_relevance'),
+                    slug: 'relevance'
+                }].concat(this.sortingMetadata);
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
@@ -1015,7 +1024,8 @@
                         }
                         
                         // Order By (required extra work to deal with custom metadata ordering)
-                        if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
+                        const orderByWasMissing = this.$route.query.orderby == undefined;
+                        if (orderByWasMissing || (to.params.collectionId != from.params.collectionId)) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
                             let orderBy = this.initialOrderBy(this.$userPrefs.get(orderByKey));
                         
@@ -1071,6 +1081,8 @@
                         // Passes the current URL to store
                         this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+                        if (this.$eventBusSearch.switchToSearchRelevance(orderByWasMissing && (this.$route.query.search || this.$route.query.s)))
+                            this.$eventBusSearch.updateURLQueries();
 
                         // Advanced Search
                         if (this.$route.query && this.$route.query.advancedSearch)
@@ -1172,6 +1184,7 @@
                 if (!currentQuery.order)
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
+            const opensOnSearchWithoutOrder = !currentQuery.orderby && (currentQuery.search || currentQuery.s);
             if (this.defaultOrderBy != undefined) {
 
                 if (this.defaultOrderByMeta || this.defaultOrderByType) {
@@ -1186,13 +1199,13 @@
                     
                     this.$eventBusSearch.setDefaultOrderBy(orderByObject);
 
-                    if (!currentQuery.orderby)
+                    if (!currentQuery.orderby && !opensOnSearchWithoutOrder)
                         this.$eventBusSearch.setOrderBy(orderByObject);
                 
                 } else {                    
                     this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
 
-                    if (!currentQuery.orderby)
+                    if (!currentQuery.orderby && !opensOnSearchWithoutOrder)
                         this.$eventBusSearch.setOrderBy(this.defaultOrderBy);
                 }
             }
@@ -1210,6 +1223,8 @@
             if (!currentQuery.orderby && this.defaultOrderBy)
                 this.$store.dispatch('search/setOrderBy', this.defaultOrderBy);
             this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+            if (this.$eventBusSearch.switchToSearchRelevance(!currentQuery.orderby && (currentQuery.search || currentQuery.s)))
+                this.$eventBusSearch.updateURLQueries();
 
             // Sets advanced search
             if ( currentQuery.advancedSearch )

@@ -12,6 +12,8 @@ Considering all these options, our current approach was to filter the SQL query 
 
 This approach might slow down search queries, especially the open keyword search input.
 
+A request with `orderby=relevance` orders matches by WordPress's title and description ranking, with creation date as the tiebreak. Matches that exist only in other metadata are not scored. See [Search relevance](search-relevance.md).
+
 If you want to disable this change to the default WordPress behavior you can do this by adding the following line to you `wp-config.php`. You should do this if you are going to use another plugin for this purpose to avoid conflicts.
 
 ```
