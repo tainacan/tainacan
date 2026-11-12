@@ -31,6 +31,13 @@ class Items extends Repository {
 	 */
 	private $relationsip_metaquery = [];
 
+	/**
+	 * Secondary ORDER BY used after WordPress search relevance, for the query in progress.
+	 *
+	 * @var string|null
+	 */
+	private $search_relevance_tail = null;
+
 	protected function init() {
 		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
@@ -384,6 +391,8 @@ class Items extends Repository {
 			$args['orderby'] = $new_order;
 		}
 
+		$args = $this->maybe_order_search_by_relevance( $args );
+
 		if ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY ) {
 			$args = $this->parse_relationship_metaquery($args);
 		}
@@ -401,12 +410,136 @@ class Items extends Repository {
 		}
 
 		$wp_query = new \WP_Query( $args );
+		$this->remove_search_relevance_order();
 
 		if ( $should_filter ) {
 			remove_filter('posts_where', [$this, '_filter_where']);
 		}
 
 		return $this->fetch_output( $wp_query, $output );
+	}
+
+	/**
+	 * Rank a textual search by title and description when the requested sort is relevance.
+	 *
+	 * WordPress only applies that ranking when orderby is the string "relevance".
+	 * The ranking stays best-match-first. Creation date, in the requested direction,
+	 * is the tiebreak, then the item ID. Any other orderby is left untouched, so an
+	 * explicit title, date or metadata sort replaces the ranking. ID-only queries
+	 * (the facets subquery) keep their own order. When the Search and performance
+	 * option is off, or TAINACAN_DISABLE_SEARCH_RELEVANCE is defined, the relevance
+	 * key is rewritten to creation date and the ranking is not built.
+	 *
+	 * @param array $args WP_Query args, after the string orderby has been normalized.
+	 * @return array
+	 */
+	private function maybe_order_search_by_relevance( $args ) {
+		if ( empty( $args['s'] ) || ( isset( $args['fields'] ) && 'ids' === $args['fields'] ) ) {
+			return $args;
+		}
+		if ( ! is_array( $args['orderby'] ) || ! isset( $args['orderby']['relevance'] ) ) {
+			return $args;
+		}
+
+		$relevance_enabled = defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' )
+			? ! TAINACAN_DISABLE_SEARCH_RELEVANCE
+			: (bool) get_option( 'tainacan_option_enable_search_relevance', true );
+		if ( ! $relevance_enabled ) {
+			$direction = $args['orderby']['relevance'];
+			unset( $args['orderby']['relevance'] );
+			if ( ! isset( $args['orderby']['date'] ) && ! isset( $args['orderby']['post_date'] ) ) {
+				$args['orderby'] = array( 'post_date' => is_string( $direction ) ? $direction : 'DESC' ) + $args['orderby'];
+			}
+			return $args;
+		}
+
+		$orderby   = $args['orderby'];
+		$direction = $orderby['relevance'];
+		unset( $orderby['relevance'] );
+		if ( ! isset( $orderby['date'] ) && ! isset( $orderby['post_date'] ) ) {
+			$orderby = array( 'post_date' => is_string( $direction ) ? $direction : 'DESC' ) + $orderby;
+		}
+
+		$tail = $this->compile_orderby_tail( $orderby );
+		if ( '' === $tail ) {
+			return $args;
+		}
+
+		$this->search_relevance_tail       = $tail;
+		$args['orderby']                    = 'relevance';
+		$args['tainacan_relevance_order']   = true;
+		add_filter( 'posts_orderby', array( $this, 'search_relevance_orderby' ), 10, 2 );
+
+		return $args;
+	}
+
+	/**
+	 * Replace the date tail WordPress adds for orderby=relevance with the requested sort.
+	 *
+	 * @param string    $orderby ORDER BY clause without the ORDER BY keyword.
+	 * @param \WP_Query $query   Query being ordered.
+	 * @return string
+	 */
+	public function search_relevance_orderby( $orderby, $query ) {
+		if ( ! $query instanceof \WP_Query || empty( $query->query_vars['tainacan_relevance_order'] ) || ! is_string( $this->search_relevance_tail ) || '' === $this->search_relevance_tail ) {
+			return $orderby;
+		}
+
+		global $wpdb;
+		$stripped = preg_replace(
+			'/,\s*' . preg_quote( $wpdb->posts, '/' ) . '\.post_date\s+(ASC|DESC)\s*$/i',
+			'',
+			$orderby,
+			1
+		);
+		if ( ! is_string( $stripped ) || $stripped === $orderby ) {
+			return $orderby;
+		}
+
+		return $stripped . ', ' . $this->search_relevance_tail;
+	}
+
+	/**
+	 * @param array $orderby Map of orderby key to ASC or DESC.
+	 * @return string Empty when a key is not a post column WordPress can sort without an extra join.
+	 */
+	private function compile_orderby_tail( $orderby ) {
+		global $wpdb;
+
+		$columns = array(
+			'date'          => 'post_date',
+			'post_date'     => 'post_date',
+			'title'         => 'post_title',
+			'post_title'    => 'post_title',
+			'name'          => 'post_name',
+			'post_name'     => 'post_name',
+			'modified'      => 'post_modified',
+			'post_modified' => 'post_modified',
+			'ID'            => 'ID',
+			'menu_order'    => 'menu_order',
+			'author'        => 'post_author',
+			'post_author'   => 'post_author',
+		);
+		$parts = array();
+
+		foreach ( $orderby as $key => $direction ) {
+			if ( 'rand' === $key ) {
+				$parts[] = 'RAND()';
+				continue;
+			}
+			if ( ! isset( $columns[ $key ] ) ) {
+				return '';
+			}
+			$direction = ( is_string( $direction ) && 'ASC' === strtoupper( $direction ) ) ? 'ASC' : 'DESC';
+			$parts[]   = "{$wpdb->posts}.{$columns[ $key ]} {$direction}";
+		}
+
+		return implode( ', ', $parts );
+	}
+
+	private function remove_search_relevance_order() {
+		remove_filter( 'posts_orderby', array( $this, 'search_relevance_orderby' ), 10 );
+		$this->search_relevance_tail = null;
 	}
 
 	/**

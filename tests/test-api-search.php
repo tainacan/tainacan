@@ -369,6 +369,178 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 	}
 
 	/**
+	 * orderby=relevance ranks title and description matches first and keeps
+	 * creation date as the tiebreak. Title and the default date sort stay
+	 * plain sorts, including while a textual search is active.
+	 */
+	public function test_search_relevance_ranks_title_before_metadata() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			[
+				'name'   => 'Leis ordenadas',
+				'status' => 'publish',
+			],
+			true
+		);
+		$note = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			[
+				'name'          => 'Nota',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+			],
+			true
+		);
+
+		$created = array();
+		foreach ( array( 'Lei 456', 'Decreto 456', 'Lei 123' ) as $title ) {
+			$created[ $title ] = $this->tainacan_entity_factory->create_entity(
+				'item',
+				[
+					'status'     => 'publish',
+					'collection' => $collection,
+					'title'      => $title,
+				],
+				true
+			);
+		}
+		$other = $this->tainacan_entity_factory->create_entity(
+			'item',
+			[
+				'status'      => 'publish',
+				'collection'  => $collection,
+				'title'       => 'Outro registro',
+				'description' => '',
+			],
+			true
+		);
+		$this->tainacan_item_metadata_factory->create_item_metadata( $other, $note, 'menciona Lei e tambem 456' );
+
+		// Distinct dates, so the relevance tiebreak is the date direction and not the item ID.
+		$dates = array(
+			'Lei 456'     => '2020-01-01 00:00:00',
+			'Decreto 456' => '2020-01-02 00:00:00',
+			'Lei 123'     => '2020-01-03 00:00:00',
+		);
+		foreach ( $dates as $title => $mysql_date ) {
+			wp_update_post(
+				array(
+					'ID'            => $created[ $title ]->get_id(),
+					'post_date'     => $mysql_date,
+					'post_date_gmt' => get_gmt_from_date( $mysql_date ),
+				)
+			);
+		}
+		wp_update_post(
+			array(
+				'ID'            => $other->get_id(),
+				'post_date'     => '2020-01-04 00:00:00',
+				'post_date_gmt' => get_gmt_from_date( '2020-01-04 00:00:00' ),
+			)
+		);
+
+		$by_date = $this->search_collection_titles( $collection->get_id(), 'Lei 456', array() );
+		$this->assertSame(
+			array( 'Outro registro', 'Lei 123', 'Decreto 456', 'Lei 456' ),
+			$by_date
+		);
+		$this->assertSame(
+			$by_date,
+			$this->search_collection_titles(
+				$collection->get_id(),
+				'Lei 456',
+				array(
+					'orderby' => 'date',
+					'order'   => 'desc',
+				)
+			)
+		);
+
+		$by_relevance = $this->search_collection_titles(
+			$collection->get_id(),
+			'Lei 456',
+			array(
+				'orderby' => 'relevance',
+				'order'   => 'desc',
+			)
+		);
+		$this->assertSame(
+			array( 'Lei 456', 'Lei 123', 'Decreto 456', 'Outro registro' ),
+			$by_relevance
+		);
+		$this->assertSame(
+			array( 'Lei 456', 'Decreto 456', 'Lei 123', 'Outro registro' ),
+			$this->search_collection_titles(
+				$collection->get_id(),
+				'Lei 456',
+				array(
+					'orderby' => 'relevance',
+					'order'   => 'asc',
+				)
+			)
+		);
+
+		update_option( 'tainacan_option_enable_search_relevance', '' );
+		$disabled = $this->search_collection_titles(
+			$collection->get_id(),
+			'Lei 456',
+			array(
+				'orderby' => 'relevance',
+				'order'   => 'desc',
+			)
+		);
+		delete_option( 'tainacan_option_enable_search_relevance' );
+		$this->assertSame( $by_date, $disabled );
+
+		$by_title = $this->search_collection_titles(
+			$collection->get_id(),
+			'Lei 456',
+			array(
+				'orderby' => 'title',
+				'order'   => 'asc',
+			)
+		);
+		$this->assertSame(
+			array( 'Decreto 456', 'Lei 123', 'Lei 456', 'Outro registro' ),
+			$by_title
+		);
+
+		unset( $created );
+	}
+
+	/**
+	 * Titles returned by a per-word search in this collection, in result order.
+	 *
+	 * @param int                  $collection_id Collection ID.
+	 * @param string               $search        Textual search.
+	 * @param array<string,mixed>  $args          Extra query args, such as orderby.
+	 * @return string[]
+	 */
+	private function search_collection_titles( $collection_id, $search, $args ) {
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection_id . '/items' );
+		$request->set_query_params(
+			array_merge(
+				array(
+					'search'   => $search,
+					'sentence' => false,
+					'perpage'  => 20,
+				),
+				$args
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$this->assertSame( 200, $response->get_status() );
+
+		return array_map(
+			function ( $item ) {
+				return $item['title'];
+			},
+			$response->get_data()['items']
+		);
+	}
+
+	/**
 	 * Title facet labels for a textual search, with sentence passed as a query-string value.
 	 *
 	 * @param int    $collection_id Collection ID.

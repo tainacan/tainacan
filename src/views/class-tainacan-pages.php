@@ -364,6 +364,11 @@ abstract class Pages {
 			'has_permalinks_structure' => get_option('permalink_structure') !== '',
 			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),
 			'default_search_sentence'  => \Tainacan\Theme_Helper::get_instance()->get_default_search_sentence(),
+			'search_relevance_enabled' => (
+				defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' )
+					? ! TAINACAN_DISABLE_SEARCH_RELEVANCE
+					: (bool) get_option( 'tainacan_option_enable_search_relevance', true )
+			),
 			'datepickers_year_min'     => (int) get_option( 'tainacan_option_datepickers_year_min', \Tainacan\Settings::DATEPICKERS_YEAR_MIN_DEFAULT ),
 			'datepickers_year_max'     => (int) get_option( 'tainacan_option_datepickers_year_max', \Tainacan\Settings::DATEPICKERS_YEAR_MAX_DEFAULT ),
 		];

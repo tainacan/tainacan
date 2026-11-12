@@ -315,7 +315,7 @@
                             </button>
                         </template>
                         <template 
-                                v-for="metadatum of sortingMetadata"
+                                v-for="metadatum of sortingOptions"
                                 :key="metadatum.slug">
                             <b-dropdown-item
                                     v-if="metadatum != undefined"
@@ -940,7 +940,16 @@
                 }
             },
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified'); 
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified' && this.orderBy != 'relevance'); 
+            },
+            sortingOptions() {
+                if (!this.searchQuery || !this.$eventBusSearch.isSearchRelevanceEnabled())
+                    return this.sortingMetadata;
+
+                return [{
+                    name: this.$i18n.get('label_relevance'),
+                    slug: 'relevance'
+                }].concat(this.sortingMetadata);
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
@@ -1015,7 +1024,8 @@
                         }
                         
                         // Order By (required extra work to deal with custom metadata ordering)
-                        if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
+                        const orderByWasMissing = this.$route.query.orderby == undefined;
+                        if (orderByWasMissing || (to.params.collectionId != from.params.collectionId)) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
                             let orderBy = this.initialOrderBy(this.$userPrefs.get(orderByKey));
                         
@@ -1071,6 +1081,8 @@
                         // Passes the current URL to store
                         this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+                        if (this.$eventBusSearch.syncRelevanceWithRoute(from && from.query, this.$route.query, orderByWasMissing))
+                            this.$eventBusSearch.updateURLQueries();
 
                         // Advanced Search
                         if (this.$route.query && this.$route.query.advancedSearch)
@@ -1172,27 +1184,29 @@
                 if (!currentQuery.order)
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
+            const opensOnSearchWithoutOrder = !currentQuery.orderby && this.$eventBusSearch.hasTextSearch(currentQuery);
+            let blockOrderBy = this.defaultOrderBy;
             if (this.defaultOrderBy != undefined) {
 
                 if (this.defaultOrderByMeta || this.defaultOrderByType) {
                     
-                    let orderByObject = { orderby: this.defaultOrderBy }
+                    blockOrderBy = { orderby: this.defaultOrderBy };
                     
                     if (this.defaultOrderByMeta)
-                        orderByObject['metakey'] = this.defaultOrderByMeta;
+                        blockOrderBy.metakey = this.defaultOrderByMeta;
                     
                     if (this.defaultOrderByType)
-                        orderByObject['metatype'] = this.defaultOrderByType;
+                        blockOrderBy.metatype = this.defaultOrderByType;
                     
-                    this.$eventBusSearch.setDefaultOrderBy(orderByObject);
+                    this.$eventBusSearch.setDefaultOrderBy(blockOrderBy);
 
-                    if (!currentQuery.orderby)
-                        this.$eventBusSearch.setOrderBy(orderByObject);
+                    if (!currentQuery.orderby && !opensOnSearchWithoutOrder)
+                        this.$eventBusSearch.setOrderBy(blockOrderBy);
                 
                 } else {                    
                     this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
 
-                    if (!currentQuery.orderby)
+                    if (!currentQuery.orderby && !opensOnSearchWithoutOrder)
                         this.$eventBusSearch.setOrderBy(this.defaultOrderBy);
                 }
             }
@@ -1205,11 +1219,16 @@
             }
 
             // Passes the current URL to store. setOrderBy above is cleared by this
-            // replacement when the URL itself has no orderby, so put the block default back.
+            // replacement when the URL itself has no orderby, so put a sort back.
+            // A search link keeps aside the saved preference, then the block default.
             this.$store.dispatch('search/setPostQuery', currentQuery )
-            if (!currentQuery.orderby && this.defaultOrderBy)
-                this.$store.dispatch('search/setOrderBy', this.defaultOrderBy);
+            if (!currentQuery.orderby && opensOnSearchWithoutOrder)
+                this.$store.dispatch('search/setOrderBy', this.sortRestoredAfterSearch(blockOrderBy));
+            else if (!currentQuery.orderby && blockOrderBy)
+                this.$store.dispatch('search/setOrderBy', blockOrderBy);
             this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+            if (this.$eventBusSearch.switchToSearchRelevance(opensOnSearchWithoutOrder))
+                this.$eventBusSearch.updateURLQueries();
 
             // Sets advanced search
             if ( currentQuery.advancedSearch )
@@ -1518,6 +1537,27 @@
                     || prefOrderBy.orderby === 'date';
 
                 return prefIsCreationDate ? this.defaultOrderBy : prefOrderBy;
+            },
+            /**
+             * Sort kept aside for a search link with no orderby.
+             * initialOrderBy is the route watcher's choice: saved preference, then the block default.
+             * blockOrderBy already carries a metadata default's meta key.
+             */
+            sortRestoredAfterSearch(blockOrderBy) {
+                const orderByKey = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
+                let orderBy = this.initialOrderBy(this.$userPrefs.get(orderByKey));
+
+                if (orderBy && orderBy != 'name' && (orderBy.slug || typeof orderBy == 'string'))
+                    orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                if (orderBy && orderBy.metakey)
+                    return orderBy;
+
+                const orderby = orderBy && orderBy.orderby ? orderBy.orderby : orderBy;
+                if (typeof orderby == 'string' && orderby != 'name' && !(blockOrderBy && blockOrderBy.metakey && orderby === this.defaultOrderBy))
+                    return orderby;
+
+                return blockOrderBy || 'date';
             },
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));

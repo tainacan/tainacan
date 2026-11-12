@@ -46,6 +46,7 @@
   - [Rich text editor](/dev/rich-text-editor.md 'Configure the Tainacan rich text editor - Tainacan Wiki')
   - [Faceted Search](/dev/faceted-search.md 'Tweaks for better Faceted Search performance - Tainacan Wiki')
   - [Search Engine](/dev/search-engine.md 'Configuration for better Search Engine performance - Tainacan Wiki')
+  - [Search relevance](/dev/search-relevance.md 'How textual search results are ordered by relevance - Tainacan Wiki')
   - [Garbage Collector](/dev/garbage-collector.md 'Usage of Tainacan Garbage Collector - Tainacan Wiki')
   - [Protecting private files](/dev/private-files.md 'File privacy on Tainacan - Tainacan Wiki')
 - Other development topics
