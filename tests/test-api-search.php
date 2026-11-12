@@ -481,6 +481,18 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 			)
 		);
 
+		update_option( 'tainacan_option_enable_search_relevance', '' );
+		$disabled = $this->search_collection_titles(
+			$collection->get_id(),
+			'Lei 456',
+			array(
+				'orderby' => 'relevance',
+				'order'   => 'desc',
+			)
+		);
+		delete_option( 'tainacan_option_enable_search_relevance' );
+		$this->assertSame( $by_date, $disabled );
+
 		$by_title = $this->search_collection_titles(
 			$collection->get_id(),
 			'Lei 456',

@@ -10,6 +10,16 @@ WordPress applies this ranking when `orderby` is the string `relevance`. `Items:
 
 The REST API accepts `relevance` as an `orderby` value. The default is `date`. A client that omits `relevance` is ordered by the sort it sent.
 
+The Search and performance setting **Order textual search results by relevance** is on by default. When it is off, the sort menu does not offer Relevance and this ranking is not built. A request that still sends `orderby=relevance` is ordered by creation date.
+
+`TAINACAN_DISABLE_SEARCH_RELEVANCE` in `wp-config.php` forces the setting off and locks the checkbox:
+
+```php
+define( 'TAINACAN_DISABLE_SEARCH_RELEVANCE', true );
+```
+
+The sort menu and `Items::fetch()` read `tainacan_option_enable_search_relevance`. The constant takes precedence over the saved value.
+
 ## What the ranking compares
 
 For a search that WordPress splits into more than one term, the order is a `CASE`, best match first:

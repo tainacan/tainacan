@@ -943,7 +943,7 @@
                 return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified' && this.orderBy != 'relevance'); 
             },
             sortingOptions() {
-                if (!this.searchQuery)
+                if (!this.searchQuery || !this.$eventBusSearch.isSearchRelevanceEnabled())
                     return this.sortingMetadata;
 
                 return [{

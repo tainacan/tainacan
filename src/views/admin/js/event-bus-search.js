@@ -188,8 +188,15 @@ export default {
              * has not already chosen another one. The previous sort is kept aside
              * and is not written to the saved preference.
              */
+            isSearchRelevanceEnabled() {
+                if (typeof tainacan_plugin === 'undefined' || tainacan_plugin.search_relevance_enabled === undefined)
+                    return true;
+
+                const value = tainacan_plugin.search_relevance_enabled;
+                return value === true || value === 'true' || value === '1' || value === 1;
+            },
             switchToSearchRelevance(shouldSwitch) {
-                if (!shouldSwitch)
+                if (!shouldSwitch || !this.isSearchRelevanceEnabled())
                     return false;
 
                 const store = app.config.globalProperties.$store;
@@ -235,6 +242,13 @@ export default {
              * the sort kept aside. Returns true when the store sort changed.
              */
             syncRelevanceWithRoute(previousQuery, nextQuery, orderByWasMissing) {
+                if (!this.isSearchRelevanceEnabled()) {
+                    const query = app.config.globalProperties.$store.getters['search/getPostQuery'] || {};
+                    if (query.orderby === 'relevance')
+                        return this.restoreOrderAfterSearch();
+                    return false;
+                }
+
                 const hadSearch = this.hasTextSearch(previousQuery);
                 const hasSearch = this.hasTextSearch(nextQuery);
 

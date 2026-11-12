@@ -152,6 +152,20 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
+			'id' => 'enable_search_relevance',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Search result order', 'tainacan' ),
+			'label' => __( 'Order textual search results by relevance', 'tainacan' ),
+			'description' => __( 'When enabled, a textual search sorts by relevance: title and description matches come first, and other matches keep the creation date order. The visitor can still choose another sort. Disabling it skips that extra ordering.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'input_disabled' => defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' ),
+			'default' => defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' ) ? ! TAINACAN_DISABLE_SEARCH_RELEVANCE : true,
+			'forced_value' => defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' ) ? ! TAINACAN_DISABLE_SEARCH_RELEVANCE : null
+		) );
+
+		$this->create_tainacan_setting( array(
 			'id' => 'search_each_word_by_default',
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Search matching mode', 'tainacan' ),

@@ -426,7 +426,9 @@ class Items extends Repository {
 	 * The ranking stays best-match-first. Creation date, in the requested direction,
 	 * is the tiebreak, then the item ID. Any other orderby is left untouched, so an
 	 * explicit title, date or metadata sort replaces the ranking. ID-only queries
-	 * (the facets subquery) keep their own order.
+	 * (the facets subquery) keep their own order. When the Search and performance
+	 * option is off, or TAINACAN_DISABLE_SEARCH_RELEVANCE is defined, the relevance
+	 * key is rewritten to creation date and the ranking is not built.
 	 *
 	 * @param array $args WP_Query args, after the string orderby has been normalized.
 	 * @return array
@@ -436,6 +438,18 @@ class Items extends Repository {
 			return $args;
 		}
 		if ( ! is_array( $args['orderby'] ) || ! isset( $args['orderby']['relevance'] ) ) {
+			return $args;
+		}
+
+		$relevance_enabled = defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' )
+			? ! TAINACAN_DISABLE_SEARCH_RELEVANCE
+			: (bool) get_option( 'tainacan_option_enable_search_relevance', true );
+		if ( ! $relevance_enabled ) {
+			$direction = $args['orderby']['relevance'];
+			unset( $args['orderby']['relevance'] );
+			if ( ! isset( $args['orderby']['date'] ) && ! isset( $args['orderby']['post_date'] ) ) {
+				$args['orderby'] = array( 'post_date' => is_string( $direction ) ? $direction : 'DESC' ) + $args['orderby'];
+			}
 			return $args;
 		}
 
