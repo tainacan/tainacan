@@ -85,6 +85,40 @@ class XssTaxonomyTermNames extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * A term description stored as escaped markup must not be decoded into a tag
+	 * on read either (the same read path covers name and description).
+	 */
+	function test_term_description_html_entities_are_not_decoded_to_tags() {
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'desc tax',
+				'allow_insert' => 'yes',
+				'status'       => 'publish',
+			),
+			true
+		);
+
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy'    => $taxonomy->get_db_identifier(),
+				'name'        => 'desc term',
+				'description' => '&lt;img src=x onerror=alert(4)&gt;',
+			),
+			true
+		);
+
+		$fetched     = $Tainacan_Terms->fetch( $term->get_term_id(), $taxonomy );
+		$description = $fetched->get_description();
+
+		$this->assertStringNotContainsString( '<img', $description );
+		$this->assertStringContainsString( 'img src=x onerror=alert(4)', $description );
+	}
+
+	/**
 	 * Reading a taxonomy facet label must not decode "<"/">" into a live tag.
 	 */
 	function test_facet_label_html_entities_are_not_decoded_to_tags() {
@@ -145,10 +179,55 @@ class XssTaxonomyTermNames extends TAINACAN_UnitTestCase {
 		$values   = isset( $response['values'] ) ? $response['values'] : array();
 
 		$this->assertNotEmpty( $values );
+
+		$payload_label = null;
 		foreach ( $values as $value ) {
 			$this->assertStringNotContainsString( '<', $value['label'] );
 			$this->assertStringNotContainsString( '>', $value['label'] );
 			$this->assertStringNotContainsString( '<img', $value['label'] );
+			if ( false !== strpos( $value['label'], 'img src=x onerror=alert(2)' ) ) {
+				$payload_label = $value['label'];
+			}
 		}
+
+		// The label for the malicious term must exist and keep its text escaped,
+		// so an empty or missing label can never make this test pass.
+		$this->assertNotNull( $payload_label );
+	}
+
+	/**
+	 * Numeric character references for "<"/">" must not be decoded into a tag
+	 * either (the old wp_specialchars_decode() also decoded "&#060;"/"&#062;").
+	 */
+	function test_term_name_numeric_entities_are_not_decoded_to_tags() {
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'num tax',
+				'allow_insert' => 'yes',
+				'status'       => 'publish',
+			),
+			true
+		);
+
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => '&#060;img src=x onerror=alert(3)&#062;',
+			),
+			true
+		);
+
+		$fetched = $Tainacan_Terms->fetch( $term->get_term_id(), $taxonomy );
+		$name    = $fetched->get_name();
+
+		$this->assertStringNotContainsString( '<', $name );
+		$this->assertStringNotContainsString( '>', $name );
+		$this->assertStringNotContainsString( '<img', $name );
+		// The inner text is preserved, only the angle brackets stay encoded.
+		$this->assertStringContainsString( 'img src=x onerror=alert(3)', $name );
 	}
 }

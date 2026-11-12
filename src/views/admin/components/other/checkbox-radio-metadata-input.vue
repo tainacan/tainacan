@@ -123,7 +123,7 @@
                                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="checkbox-label-text"
-                                                    v-html="renderCheckboxLabel(option)" />
+                                                    v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                         </span>
                                     </label>                                
                                 </li>
@@ -625,10 +625,8 @@
                 }
             },
             saveSelectedTagName(value, label, link){
-                // Escape the term/item provided label and url before storing markup
-                // that is rendered with v-html in the selected tags list (stored XSS).
                 if (!this.selectedTagsName[value])
-                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href="' + this.escapeHtmlEntities(link) + '" target="_blank">' + this.escapeHtmlEntities(label) + '</a>') : this.escapeHtmlEntities(label)) });
+                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href="' + link + '" target="_blank">' + label + '</a>') : label) });
             },
             previousPage() {
 
@@ -994,19 +992,7 @@
                 }
             },
             renderHierarchicalPath(hierarchyPath, label) {
-                return '<span style="color: var(--tainacan-info-color);">' + this.escapeHtmlEntities(hierarchyPath).replace(/&gt;/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + this.escapeHtmlEntities(label);
-            },
-            // Escape option-provided strings before injecting them with v-html.
-            // Only the hierarchy separator markup is intentional HTML (stored XSS).
-            escapeHtmlEntities(value) {
-                return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            },
-            renderCheckboxLabel(option) {
-                if ( option.name )
-                    return this.escapeHtmlEntities(option.name);
-                if ( option.label )
-                    return option.hierarchy_path ? this.renderHierarchicalPath(option.hierarchy_path, option.label) : this.escapeHtmlEntities(option.label);
-                return '';
+                return '<span style="color: var(--tainacan-info-color);">' + hierarchyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
             },
             onMobileSpecialFocus($event) {
                 $event.target.blur();

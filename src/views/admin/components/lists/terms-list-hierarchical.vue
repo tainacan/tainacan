@@ -413,14 +413,11 @@ export default {
             'multipleTermsInsertion'
         ]),
         renderTermHierarchyLabel(term) {
-            // Escape term-provided strings before injecting them with v-html. Only
-            // the hierarchy separator markup below is intentional HTML (stored XSS).
-            const escapeHtml = (value) => String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            if ( term.hierarchy_path )
-                return '<span style="color: var(--tainacan-info-color);">' + escapeHtml(term.hierarchy_path).replace(/&gt;/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + escapeHtml(term.name);
+            if ( term.hierarchy_path ) 
+                return '<span style="color: var(--tainacan-info-color);">' + term.hierarchy_path.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + term.name;
 
-            return escapeHtml(term.name);
-        },
+            return term.name;
+        }, 
         isTermSelected(termId) {
             return this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == termId) >= 0;
         },
