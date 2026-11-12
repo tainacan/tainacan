@@ -94,4 +94,44 @@ class TAINACAN_REST_Reports_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringNotContainsString( 'Legacy Cache Marker', wp_json_encode( $data ) );
 		$this->assertStringNotContainsString( 'legacy@example.com', wp_json_encode( $data ) );
 	}
+
+	public function test_report_for_missing_taxonomy_returns_404() {
+		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/reports/taxonomy/999999' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 404, $response->get_status() );
+		$this->assertArrayHasKey( 'error_message', $response->get_data() );
+	}
+
+	public function test_report_for_missing_collection_returns_404() {
+		$routes = array(
+			'/reports/collection/999999/summary',
+			'/reports/collection/999999/metadata',
+		);
+
+		foreach ( $routes as $route ) {
+			$request  = new \WP_REST_Request( 'GET', $this->namespace . $route );
+			$response = $this->server->dispatch( $request );
+
+			$this->assertEquals( 404, $response->get_status(), $route );
+			$this->assertArrayHasKey( 'error_message', $response->get_data(), $route );
+		}
+	}
+
+	public function test_report_for_missing_metadatum_returns_404() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Reports collection',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/reports/collection/' . $collection->get_id() . '/metadata/999999' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 404, $response->get_status() );
+		$this->assertArrayHasKey( 'error_message', $response->get_data() );
+	}
 }
