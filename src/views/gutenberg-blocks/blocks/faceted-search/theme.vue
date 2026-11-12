@@ -1185,22 +1185,23 @@
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
             const opensOnSearchWithoutOrder = !currentQuery.orderby && this.$eventBusSearch.hasTextSearch(currentQuery);
+            let blockOrderBy = this.defaultOrderBy;
             if (this.defaultOrderBy != undefined) {
 
                 if (this.defaultOrderByMeta || this.defaultOrderByType) {
                     
-                    let orderByObject = { orderby: this.defaultOrderBy }
+                    blockOrderBy = { orderby: this.defaultOrderBy };
                     
                     if (this.defaultOrderByMeta)
-                        orderByObject['metakey'] = this.defaultOrderByMeta;
+                        blockOrderBy.metakey = this.defaultOrderByMeta;
                     
                     if (this.defaultOrderByType)
-                        orderByObject['metatype'] = this.defaultOrderByType;
+                        blockOrderBy.metatype = this.defaultOrderByType;
                     
-                    this.$eventBusSearch.setDefaultOrderBy(orderByObject);
+                    this.$eventBusSearch.setDefaultOrderBy(blockOrderBy);
 
                     if (!currentQuery.orderby && !opensOnSearchWithoutOrder)
-                        this.$eventBusSearch.setOrderBy(orderByObject);
+                        this.$eventBusSearch.setOrderBy(blockOrderBy);
                 
                 } else {                    
                     this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
@@ -1218,10 +1219,13 @@
             }
 
             // Passes the current URL to store. setOrderBy above is cleared by this
-            // replacement when the URL itself has no orderby, so put the block default back.
+            // replacement when the URL itself has no orderby, so put a sort back.
+            // A search link keeps aside the saved preference, then the block default.
             this.$store.dispatch('search/setPostQuery', currentQuery )
-            if (!currentQuery.orderby && this.defaultOrderBy)
-                this.$store.dispatch('search/setOrderBy', this.defaultOrderBy);
+            if (!currentQuery.orderby && opensOnSearchWithoutOrder)
+                this.$store.dispatch('search/setOrderBy', this.sortRestoredAfterSearch(blockOrderBy));
+            else if (!currentQuery.orderby && blockOrderBy)
+                this.$store.dispatch('search/setOrderBy', blockOrderBy);
             this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
             if (this.$eventBusSearch.switchToSearchRelevance(opensOnSearchWithoutOrder))
                 this.$eventBusSearch.updateURLQueries();
@@ -1533,6 +1537,27 @@
                     || prefOrderBy.orderby === 'date';
 
                 return prefIsCreationDate ? this.defaultOrderBy : prefOrderBy;
+            },
+            /**
+             * Sort kept aside for a search link with no orderby.
+             * initialOrderBy is the route watcher's choice: saved preference, then the block default.
+             * blockOrderBy already carries a metadata default's meta key.
+             */
+            sortRestoredAfterSearch(blockOrderBy) {
+                const orderByKey = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
+                let orderBy = this.initialOrderBy(this.$userPrefs.get(orderByKey));
+
+                if (orderBy && orderBy != 'name' && (orderBy.slug || typeof orderBy == 'string'))
+                    orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                if (orderBy && orderBy.metakey)
+                    return orderBy;
+
+                const orderby = orderBy && orderBy.orderby ? orderBy.orderby : orderBy;
+                if (!orderby || orderby == 'name' || (blockOrderBy && blockOrderBy.metakey && orderby === this.defaultOrderBy))
+                    return blockOrderBy || 'date';
+
+                return orderby;
             },
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
