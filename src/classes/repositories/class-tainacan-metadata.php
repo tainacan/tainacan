@@ -1442,7 +1442,9 @@ class Metadata extends Repository {
 					)
 				);
 
-				$label = wp_specialchars_decode($r->name);
+				// Decode only "&amp;"; see Terms::get_mapped_property(). Decoding "<"
+				// and ">" would reintroduce the stored XSS through facet labels.
+				$label = str_replace('&amp;', '&', $r->name);
 				$total_items = null;
 
 				if ( $args['count_items'] ) {

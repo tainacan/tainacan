@@ -583,7 +583,7 @@
             },
             saveSelectedTagName(value, label, link){
                 if (!this.selectedTagsName[value])
-                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href=' + link + ' target="_blank">' + label + '</a>') : label) });
+                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href="' + link + '" target="_blank">' + label + '</a>') : label) });
             },
             previousPage() {
 
