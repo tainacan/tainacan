@@ -19,6 +19,7 @@ const TAINACAN_FILTER_TYPES_DIR           = __DIR__ . '/../views/admin/component
 const TAINACAN_REPOSITORIES_DIR           = __DIR__ . '/repositories/';
 const TAINACAN_METADATA_TYPES_DIR         = __DIR__ . '/../views/admin/components/metadata-types/';
 const TAINACAN_INTEGRATIONS_DIR           = __DIR__ . '/integrations/';
+const TAINACAN_ABILITIES_DIR              = __DIR__ . '/abilities/';
 
 const DIRS = [
 	TAINACAN_CLI_DIR,
@@ -131,6 +132,8 @@ function tainacan_autoload($class_name) {
 			$dir = TAINACAN_FILTER_TYPES_DIR;
 		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Integrations' ) {
 			$dir = TAINACAN_INTEGRATIONS_DIR;
+		} else if ( isset( $class_path[1] ) && $class_path[1] === 'Abilities' ) {
+			$dir = TAINACAN_ABILITIES_DIR;
 		} else if ( $sliced ) {
 			$lower     = $sliced[0];
 			$sliced[0] = strtolower( $lower );
@@ -189,6 +192,8 @@ $Tainacan_Search_Engine = new \Tainacan\Search_Engine();
 \Tainacan\Roles::get_instance();
 
 \Tainacan\Private_Files::get_instance();
+
+\Tainacan\Abilities\Abilities_Bootstrap::get_instance();
 
 if ( class_exists('WP_CLI') ) {
 	Tainacan\Cli::get_instance();
