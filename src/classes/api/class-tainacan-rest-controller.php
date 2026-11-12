@@ -213,6 +213,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 		foreach ($args['tax_query'] as $index => $tax_query) {
 
+			// Keep root-level string keys (the 'relation' key) in place, otherwise
+			// the AND/OR relation would be reindexed as a clause and lost by WP_Tax_Query
+			if ( ! is_int($index) ) {
+				$new_tax_query[$index] = $tax_query;
+				continue;
+			}
+
 			if ( isset($tax_query['operator']) && $tax_query['operator'] == 'LIKE' &&
 		 		isset($tax_query['terms']) && is_string($tax_query['terms']) ) {
 
