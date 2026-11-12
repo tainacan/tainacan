@@ -43,7 +43,7 @@ The admin item list and the faceted-search block share one items request. Both s
 
 - When the search goes from empty to a value, the current sort is kept aside in memory and `orderby` becomes `relevance`. The saved preference is left as it was.
 - Creation date, Title or a metadatum replaces Relevance. That choice updates the URL and the saved preference.
-- Clearing the search while Relevance is still selected restores the sort that was set aside. Another sort chosen during the search stays in place.
+- Clearing the search while Relevance is still selected restores the sort that was set aside. The same restore runs when the search leaves the URL, including Back and an edited link. Another sort chosen during the search stays in place.
 - A link that contains both a search and a sort keeps that sort. A link that has a search and no sort is filled by the same branch that supplies a missing `orderby`, and that value is then Relevance.
 
 The saved preference, the URL, the collection default and metadata sorts are resolved as for any other sort. Relevance is one of the values those screens send.

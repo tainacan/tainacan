@@ -1081,7 +1081,7 @@
                         // Passes the current URL to store
                         this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
-                        if (this.$eventBusSearch.switchToSearchRelevance(orderByWasMissing && (this.$route.query.search || this.$route.query.s)))
+                        if (this.$eventBusSearch.syncRelevanceWithRoute(from && from.query, this.$route.query, orderByWasMissing))
                             this.$eventBusSearch.updateURLQueries();
 
                         // Advanced Search
@@ -1184,7 +1184,7 @@
                 if (!currentQuery.order)
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
-            const opensOnSearchWithoutOrder = !currentQuery.orderby && (currentQuery.search || currentQuery.s);
+            const opensOnSearchWithoutOrder = !currentQuery.orderby && this.$eventBusSearch.hasTextSearch(currentQuery);
             if (this.defaultOrderBy != undefined) {
 
                 if (this.defaultOrderByMeta || this.defaultOrderByType) {
@@ -1223,7 +1223,7 @@
             if (!currentQuery.orderby && this.defaultOrderBy)
                 this.$store.dispatch('search/setOrderBy', this.defaultOrderBy);
             this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
-            if (this.$eventBusSearch.switchToSearchRelevance(!currentQuery.orderby && (currentQuery.search || currentQuery.s)))
+            if (this.$eventBusSearch.switchToSearchRelevance(opensOnSearchWithoutOrder))
                 this.$eventBusSearch.updateURLQueries();
 
             // Sets advanced search

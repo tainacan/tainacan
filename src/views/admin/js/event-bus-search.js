@@ -212,7 +212,7 @@ export default {
                 const query = store.getters['search/getPostQuery'] || {};
                 if (query.orderby !== 'relevance') {
                     this.orderBeforeRelevance = null;
-                    return;
+                    return false;
                 }
 
                 const remembered = this.orderBeforeRelevance;
@@ -221,6 +221,27 @@ export default {
                     store.dispatch('search/setOrderBy', remembered.metakey ? remembered : remembered.orderby);
                 else
                     store.dispatch('search/clearOrderBy');
+                return true;
+            },
+            hasTextSearch(query) {
+                if (!query)
+                    return false;
+                const value = query.search || query.s;
+                return value != undefined && String(value).trim() !== '';
+            },
+            /**
+             * Relevance follows the URL. A search that arrives without a sort becomes
+             * relevance. A search that leaves while relevance is still selected restores
+             * the sort kept aside. Returns true when the store sort changed.
+             */
+            syncRelevanceWithRoute(previousQuery, nextQuery, orderByWasMissing) {
+                const hadSearch = this.hasTextSearch(previousQuery);
+                const hasSearch = this.hasTextSearch(nextQuery);
+
+                if (hadSearch && !hasSearch)
+                    return this.restoreOrderAfterSearch();
+
+                return this.switchToSearchRelevance(!!orderByWasMissing && hasSearch);
             },
             rememberOrderByPreference(orderBy) {
                 if (orderBy == undefined || orderBy === '' || orderBy === 'relevance')
