@@ -209,9 +209,38 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			return $args;
 		}
 
+		$args['tax_query'] = $this->convert_tax_query_like_clauses($args['tax_query'], $args);
+
+		return $args;
+
+	}
+
+	/**
+	 * Converts LIKE / NOT LIKE tax query clauses into IN / NOT IN clauses over the matching
+	 * term ids. Nested groups (`relation` plus indexed clauses) are converted recursively.
+	 *
+	 * @param array $tax_queries tax_query array or nested group.
+	 * @param array $args WP_Query args, used for `hide_empty`.
+	 * @return array
+	 */
+	private function convert_tax_query_like_clauses(array $tax_queries, array $args) {
+
 		$new_tax_query = [];
 
-		foreach ($args['tax_query'] as $index => $tax_query) {
+		foreach ($tax_queries as $index => $tax_query) {
+
+			// Keep root-level string keys (the 'relation' key) in place, otherwise
+			// the AND/OR relation would be reindexed as a clause and lost by WP_Tax_Query
+			if ( ! is_int($index) ) {
+				$new_tax_query[$index] = $tax_query;
+				continue;
+			}
+
+			// Nested group (relation plus indexed clauses): convert its clauses recursively
+			if ( \Tainacan\Repositories\Repository::is_query_group($tax_query) ) {
+				$new_tax_query[] = $this->convert_tax_query_like_clauses($tax_query, $args);
+				continue;
+			}
 
 			if ( isset($tax_query['operator']) && $tax_query['operator'] == 'LIKE' &&
 		 		isset($tax_query['terms']) && is_string($tax_query['terms']) ) {
@@ -252,10 +281,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 		}
 
-		$args['tax_query'] = $new_tax_query;
-
-		return $args;
-
+		return $new_tax_query;
 	}
 
 	/**
@@ -309,7 +335,6 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	 */
 	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];
-		$query_field_scaped = ["value", "terms"];
 
 		// if the meta/date/taxquery has a root relation
         if( isset( $request_meta_query['relation']) )
@@ -317,42 +342,75 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 		// If is a multidimensional array (array of array)
 		if($this->contains_array($request_meta_query, $query)) {
-			
+
 			foreach ( $request_meta_query as $index1 => $a ) {
-				$sanitize = $this->get_query_value_sanitizer( $mapped, $a );
-
-				foreach ( $query as $mapped_meta => $meta_v ) {
-					if ( isset( $a[ $mapped_meta ] ) ) {
-						if( in_array($mapped_meta, $query_field_scaped) ) {
-							$valeu =  is_array($request[ $mapped ][ $index1 ][ $mapped_meta ])
-								? array_map( $sanitize, $request[ $mapped ][ $index1 ][ $mapped_meta ] )
-								: $sanitize( $request[ $mapped ][ $index1 ][ $mapped_meta ] );
-							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $valeu;
-						} else {
-							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $mapped_meta ];
-
-						}
-					}
+				if ( ! is_array( $a ) ) {
+					continue;
 				}
 
+				$prepared = $this->prepare_meta_clause( $mapped, $query, $a );
+
+				if ( ! empty( $prepared ) ) {
+					$args[ $mapped_v ][ $index1 ] = $prepared;
+				}
 			}
 
 		} else {
-			$sanitize = $this->get_query_value_sanitizer( $mapped, $request_meta_query );
-			foreach ( $query as $mapped_meta => $meta_v ) {
-				if(isset($request[$mapped][$mapped_meta])) {
-					if( in_array($mapped_meta, $query_field_scaped) ) {
-						$args[ $mapped_v ][ $meta_v ] =  is_array($request[ $mapped ][ $mapped_meta ])
-							? array_map( $sanitize, $request[ $mapped ][ $mapped_meta ] )
-							: $sanitize( $request[ $mapped ][ $mapped_meta ] );
-					} else {
-						$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $mapped_meta ];
-					}
-				}
+			foreach ( $this->prepare_meta_clause( $mapped, $query, $request_meta_query ) as $meta_v => $value ) {
+				$args[ $mapped_v ][ $meta_v ] = $value;
 			}
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Maps and sanitizes one meta/date/tax query clause. A clause may also be a nested group
+	 * (`relation` plus indexed clauses), as accepted by WP_Meta_Query and WP_Tax_Query; the
+	 * group is then prepared recursively.
+	 *
+	 * @param string $mapped Query parameter name (metaquery, datequery, taxquery).
+	 * @param array $query Map of request field names to WP_Query field names.
+	 * @param array $clause Clause or nested group as received in the request.
+	 * @return array
+	 */
+	private function prepare_meta_clause( $mapped, $query, $clause ) {
+		$query_field_scaped = ["value", "terms"];
+		$prepared = [];
+
+		// `contains_array` is also checked because date_query clauses have no key/taxonomy and may
+		// hold arrays under mapped names (before/after), which must not be mistaken for a group.
+		if ( \Tainacan\Repositories\Repository::is_query_group( $clause ) && $this->contains_array( $clause, $query ) ) {
+			if ( isset( $clause['relation'] ) ) {
+				$prepared['relation'] = $clause['relation'];
+			}
+			foreach ( $clause as $index => $sub_clause ) {
+				if ( ! is_array( $sub_clause ) ) {
+					continue;
+				}
+				$prepared_sub_clause = $this->prepare_meta_clause( $mapped, $query, $sub_clause );
+				if ( ! empty( $prepared_sub_clause ) ) {
+					$prepared[ $index ] = $prepared_sub_clause;
+				}
+			}
+			return $prepared;
+		}
+
+		$sanitize = $this->get_query_value_sanitizer( $mapped, $clause );
+
+		foreach ( $query as $mapped_meta => $meta_v ) {
+			if ( isset( $clause[ $mapped_meta ] ) ) {
+				if ( in_array( $mapped_meta, $query_field_scaped ) ) {
+					$prepared[ $meta_v ] = is_array( $clause[ $mapped_meta ] )
+						? array_map( $sanitize, $clause[ $mapped_meta ] )
+						: $sanitize( $clause[ $mapped_meta ] );
+				} else {
+					$prepared[ $meta_v ] = $clause[ $mapped_meta ];
+				}
+			}
+		}
+
+		return $prepared;
 	}
 
 	/**
@@ -561,6 +619,10 @@ abstract class REST_Controller extends \WP_REST_Controller {
 				'type'        => 'string',
 				'description' => __('OR or AND, how the sub-arrays should be compared.', 'tainacan'),
 				'default'     => 'AND',
+				'enum'        => array(
+					'AND',
+					'OR'
+				)
 			),
 			'metadatumtype' => array(
 				'type'        => 'string',
