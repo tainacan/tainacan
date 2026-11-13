@@ -371,6 +371,9 @@ abstract class Pages {
 			),
 			'datepickers_year_min'     => (int) get_option( 'tainacan_option_datepickers_year_min', \Tainacan\Settings::DATEPICKERS_YEAR_MIN_DEFAULT ),
 			'datepickers_year_max'     => (int) get_option( 'tainacan_option_datepickers_year_max', \Tainacan\Settings::DATEPICKERS_YEAR_MAX_DEFAULT ),
+			// Same limits the WordPress media modal (Plupload) checks before uploading a file
+			'wp_max_upload_size'       => wp_max_upload_size(),
+			'wp_allowed_file_extensions' => array_values( array_unique( explode( '|', implode( '|', array_keys( get_allowed_mime_types() ) ) ) ) ),
 		];
 		
 		$maps = [

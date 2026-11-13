@@ -464,9 +464,7 @@ export const setItems = ({ commit }, items ) => {
  */
 export const sendAttachment = ( { commit }, { collection_id, file }) => {
     return new Promise(( resolve, reject ) => {
-        axios.wpApi.post('/media/?post=' + collection_id, file, {
-            headers: { 'Content-Disposition': 'attachment; filename=' + file.name }
-        })
+        axios.uploadMediaFile({ file, postId: collection_id })
             .then( res => {
                 let attachment = res.data;
                 commit('setSingleAttachment', attachment);
@@ -578,9 +576,7 @@ export const fetchPage = ({}, pageId ) => {
  */
 export const sendFile = ( { commit }, {itemId, file } ) => {
     return new Promise(( resolve, reject ) => {
-        axios.wpApi.post('/media/?post=' + itemId, file, {
-            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
-        })
+        axios.uploadMediaFile({ file, postId: itemId })
             .then( res => {
                 let file = res.data;
                 commit('setSingleFile', file);

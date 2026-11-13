@@ -25,156 +25,159 @@
                 @dragover="onDragOver"
                 @dragleave="onDragLeave"
                 @drop="onDrop">
-            <div
-                    v-if="isDraggingOver"
-                    class="document-drop-overlay"
-                    aria-hidden="true">
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
-                </span>
-                <p>{{ $i18n.get('instruction_drop_file_to_set_document') }}</p>
-            </div>
-            <div
-                    v-if="uploadProgress !== null"
-                    class="document-upload-progress"
-                    role="progressbar"
-                    :aria-label="$i18n.get('info_uploading_document')"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    :aria-valuenow="uploadProgress">
-                <p>{{ $i18n.get('info_uploading_document') }} ({{ uploadProgress }}%)</p>
-                <div class="document-upload-progress-track">
-                    <div
-                            class="document-upload-progress-bar"
-                            :style="{ width: uploadProgress + '%' }" />
+            <!-- Positions the drop overlay and progress over the content, whatever the .section-box padding is -->
+            <div class="document-field-drop-area">
+                <div
+                        v-if="isDraggingOver"
+                        class="document-drop-overlay"
+                        aria-hidden="true">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
+                    </span>
+                    <p>{{ $i18n.get('instruction_drop_file_to_set_document') }}</p>
                 </div>
-            </div>
-            <div
-                    v-if="form.document != undefined && form.document != null &&
-                        form.document_type != undefined && form.document_type != null &&
-                        form.document != '' && form.document_type != 'empty'"
-                    class="document-field-content"
-                    :class="'document-field-content--' + form.document_type">
-                <div v-html="item.document_as_html" />
-                <div class="document-buttons-row">
-                    <a
-                            id="button-edit-document"
-                            class="button is-rounded is-secondary"
-                            size="is-small"
-                            role="button"
-                            tabindex="0"
-                            :aria-label="$i18n.get('label_button_edit_document')"
-                            @click.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
-                            @keydown.enter.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
-                            @keydown.space.prevent="($event) => $emit('on-set-document', $event, form.document_type)">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('edit'),
-                                    autoHide: true,
-                                    placement: 'bottom',
-                                    popperClass: ['tainacan-tooltip', 'tooltip']
-                                }"
-                                class="icon"
-                                aria-hidden="true">
-                            <i class="tainacan-icon tainacan-icon-edit" />
-                        </span>
-                    </a>
-                    <a
-                            v-if="collection && collection.item_enable_document_content_editing === 'yes' && form.document_type !== 'text'"
-                            id="button-edit-document-content-index"
-                            class="button is-rounded is-secondary"
-                            size="is-small"
-                            role="button"
-                            tabindex="0"
-                            :aria-label="$i18n.get('label_button_index_document')"
-                            @click.prevent="($event) => $emit('on-edit-document-content-index', $event)"
-                            @keydown.enter.prevent="($event) => $emit('on-edit-document-content-index', $event)"
-                            @keydown.space.prevent="($event) => $emit('on-edit-document-content-index', $event)">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('label_document_content'),
-                                    autoHide: true,
-                                    placement: 'bottom',
-                                    popperClass: ['tainacan-tooltip', 'tooltip']
-                                }"
-                                class="icon"
-                                aria-hidden="true">
-                            <i class="tainacan-icon tainacan-icon-text" />
-                        </span>
-                    </a>
-                    <a
-                            id="button-delete-document"
-                            class="button is-rounded is-secondary"
-                            size="is-small"
-                            :aria-label="$i18n.get('label_button_delete_document')"
-                            role="button"
-                            tabindex="0"
-                            @click.prevent="$emit('on-remove-document')"
-                            @keydown.enter.prevent="$emit('on-remove-document')"
-                            @keydown.space.prevent="$emit('on-remove-document')">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('delete'),
-                                    autoHide: true,
-                                    placement: 'bottom',
-                                    popperClass: ['tainacan-tooltip', 'tooltip']
-                                }"
-                                class="icon"
-                                aria-hidden="true">
-                            <i class="tainacan-icon tainacan-icon-delete" />
-                        </span>
-                    </a>
+                <div
+                        v-if="uploadProgress !== null"
+                        class="document-upload-progress"
+                        role="progressbar"
+                        :aria-label="$i18n.get('info_uploading_document')"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        :aria-valuenow="uploadProgress">
+                    <p>{{ $i18n.get('info_uploading_document') }} ({{ uploadProgress }}%)</p>
+                    <div class="document-upload-progress-track">
+                        <div
+                                class="document-upload-progress-bar"
+                                :style="{ width: uploadProgress + '%' }" />
+                    </div>
                 </div>
+                <div
+                        v-if="form.document != undefined && form.document != null &&
+                            form.document_type != undefined && form.document_type != null &&
+                            form.document != '' && form.document_type != 'empty'"
+                        class="document-field-content"
+                        :class="'document-field-content--' + form.document_type">
+                    <div v-html="item.document_as_html" />
+                    <div class="document-buttons-row">
+                        <a
+                                id="button-edit-document"
+                                class="button is-rounded is-secondary"
+                                size="is-small"
+                                role="button"
+                                tabindex="0"
+                                :aria-label="$i18n.get('label_button_edit_document')"
+                                @click.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
+                                @keydown.enter.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
+                                @keydown.space.prevent="($event) => $emit('on-set-document', $event, form.document_type)">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"
+                                    class="icon"
+                                    aria-hidden="true">
+                                <i class="tainacan-icon tainacan-icon-edit" />
+                            </span>
+                        </a>
+                        <a
+                                v-if="collection && collection.item_enable_document_content_editing === 'yes' && form.document_type !== 'text'"
+                                id="button-edit-document-content-index"
+                                class="button is-rounded is-secondary"
+                                size="is-small"
+                                role="button"
+                                tabindex="0"
+                                :aria-label="$i18n.get('label_button_index_document')"
+                                @click.prevent="($event) => $emit('on-edit-document-content-index', $event)"
+                                @keydown.enter.prevent="($event) => $emit('on-edit-document-content-index', $event)"
+                                @keydown.space.prevent="($event) => $emit('on-edit-document-content-index', $event)">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_document_content'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"
+                                    class="icon"
+                                    aria-hidden="true">
+                                <i class="tainacan-icon tainacan-icon-text" />
+                            </span>
+                        </a>
+                        <a
+                                id="button-delete-document"
+                                class="button is-rounded is-secondary"
+                                size="is-small"
+                                :aria-label="$i18n.get('label_button_delete_document')"
+                                role="button"
+                                tabindex="0"
+                                @click.prevent="$emit('on-remove-document')"
+                                @keydown.enter.prevent="$emit('on-remove-document')"
+                                @keydown.space.prevent="$emit('on-remove-document')">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'bottom',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"
+                                    class="icon"
+                                    aria-hidden="true">
+                                <i class="tainacan-icon tainacan-icon-delete" />
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <ul 
+                        v-else
+                        class="document-field-placeholder">
+                    <li v-if="!$adminOptions.hideItemEditionDocumentFileInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['attachment'] && collection.item_enabled_document_types['attachment']['enabled'] === 'yes')">
+                        <button
+                                type="button"
+                                tabindex="0"
+                                @click.prevent="($event) => $emit('on-set-file-document', $event)"
+                                @keydown.enter.prevent="($event) => $emit('on-set-file-document', $event)"
+                                @keydown.space.prevent="($event) => $emit('on-set-file-document', $event)">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
+                            </span>
+                            <p>{{ $i18n.get('label_file') }}</p>
+                        </button>
+                    </li>
+                    <li v-if="!$adminOptions.hideItemEditionDocumentTextInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['text'] && collection.item_enabled_document_types['text']['enabled'] === 'yes')">
+                        <button
+                                type="button"
+                                tabindex="0"
+                                @click.prevent="$emit('on-set-text-document')"
+                                @keydown.enter.prevent="$emit('on-set-text-document')"
+                                @keydown.space.prevent="$emit('on-set-text-document')">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
+                            </span>
+                            <p>{{ $i18n.get('label_text') }}</p>
+                        </button>
+                    </li>
+                    <li v-if="!$adminOptions.hideItemEditionDocumentUrlInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['url'] && collection.item_enabled_document_types['url']['enabled'] === 'yes')">
+                        <button
+                                type="button"
+                                tabindex="0"
+                                @click.prevent="$emit('on-set-url-document')"
+                                @keydown.enter.prevent="$emit('on-set-url-document')"
+                                @keydown.space.prevent="$emit('on-set-url-document')">
+                            <span 
+                                    aria-hidden="true"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
+                            </span>
+                            <p>{{ $i18n.get('label_url') }}</p>
+                        </button>
+                    </li>
+                </ul>
             </div>
-            <ul 
-                    v-else
-                    class="document-field-placeholder">
-                <li v-if="!$adminOptions.hideItemEditionDocumentFileInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['attachment'] && collection.item_enabled_document_types['attachment']['enabled'] === 'yes')">
-                    <button
-                            type="button"
-                            tabindex="0"
-                            @click.prevent="($event) => $emit('on-set-file-document', $event)"
-                            @keydown.enter.prevent="($event) => $emit('on-set-file-document', $event)"
-                            @keydown.space.prevent="($event) => $emit('on-set-file-document', $event)">
-                        <span 
-                                aria-hidden="true"
-                                class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
-                        </span>
-                        <p>{{ $i18n.get('label_file') }}</p>
-                    </button>
-                </li>
-                <li v-if="!$adminOptions.hideItemEditionDocumentTextInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['text'] && collection.item_enabled_document_types['text']['enabled'] === 'yes')">
-                    <button
-                            type="button"
-                            tabindex="0"
-                            @click.prevent="$emit('on-set-text-document')"
-                            @keydown.enter.prevent="$emit('on-set-text-document')"
-                            @keydown.space.prevent="$emit('on-set-text-document')">
-                        <span 
-                                aria-hidden="true"
-                                class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
-                        </span>
-                        <p>{{ $i18n.get('label_text') }}</p>
-                    </button>
-                </li>
-                <li v-if="!$adminOptions.hideItemEditionDocumentUrlInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['url'] && collection.item_enabled_document_types['url']['enabled'] === 'yes')">
-                    <button
-                            type="button"
-                            tabindex="0"
-                            @click.prevent="$emit('on-set-url-document')"
-                            @keydown.enter.prevent="$emit('on-set-url-document')"
-                            @keydown.space.prevent="$emit('on-set-url-document')">
-                        <span 
-                                aria-hidden="true"
-                                class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
-                        </span>
-                        <p>{{ $i18n.get('label_url') }}</p>
-                    </button>
-                </li>
-            </ul>
             <p
                     v-if="errorMessage"
                     class="help is-danger">
@@ -193,6 +196,10 @@ export default {
         uploadProgress: {
             type: Number,
             default: null
+        },
+        isDropBusy: {
+            type: Boolean,
+            default: false
         },
         errorMessage: [String, Array]
     },
@@ -214,11 +221,13 @@ export default {
     computed: {
         acceptsFileDrop() {
             return !this.$adminOptions.hideItemEditionDocumentFileInput &&
-                this.uploadProgress === null &&
                 this.collection &&
                 this.collection.item_enabled_document_types &&
                 this.collection.item_enabled_document_types['attachment'] &&
                 this.collection.item_enabled_document_types['attachment']['enabled'] === 'yes';
+        },
+        canDropNow() {
+            return this.acceptsFileDrop && !this.isDropBusy;
         }
     },
     methods: {
@@ -226,22 +235,26 @@ export default {
             return !!event.dataTransfer && Array.from(event.dataTransfer.types || []).includes('Files');
         },
         onDragEnter(event) {
-            if ( !this.acceptsFileDrop || !this.isDraggingFiles(event) )
+            if ( !this.isDraggingFiles(event) )
                 return;
 
+            // Always prevents the browser default with files, so a drop never navigates away to the file
             event.preventDefault();
+
+            if ( !this.canDropNow )
+                return;
 
             // Counts nested dragenter/dragleave pairs so the overlay does not flicker over child elements
             this.dragEnterCounter++;
             this.isDraggingOver = true;
         },
         onDragOver(event) {
-            if ( !this.acceptsFileDrop || !this.isDraggingFiles(event) )
+            if ( !this.isDraggingFiles(event) )
                 return;
 
-            // Required for the browser to allow the drop event
+            // Required for the browser to fire the drop event instead of opening the file
             event.preventDefault();
-            event.dataTransfer.dropEffect = 'copy';
+            event.dataTransfer.dropEffect = this.canDropNow ? 'copy' : 'none';
         },
         onDragLeave() {
             if ( !this.isDraggingOver )
@@ -252,13 +265,13 @@ export default {
                 this.resetDragState();
         },
         onDrop(event) {
-            if ( !this.acceptsFileDrop || !this.isDraggingFiles(event) )
+            if ( !this.isDraggingFiles(event) )
                 return;
 
             event.preventDefault();
             this.resetDragState();
 
-            if ( event.dataTransfer.files && event.dataTransfer.files.length )
+            if ( this.canDropNow && event.dataTransfer.files && event.dataTransfer.files.length )
                 this.$emit('on-drop-file-document', Array.from(event.dataTransfer.files));
         },
         resetDragState() {
@@ -273,6 +286,10 @@ export default {
     
     .document-field {
 
+        .document-field-drop-area {
+            position: relative;
+        }
+
         &.is-dragging-over .document-field-placeholder,
         &.is-dragging-over .document-field-content {
             opacity: 0.25;
@@ -282,9 +299,6 @@ export default {
         .document-upload-progress {
             position: absolute;
             inset: 0;
-            // Matches the horizontal padding of .section-box in the item edition form
-            inset-inline-start: 1.75em;
-            inset-inline-end: 0.75em;
             z-index: 2;
             display: flex;
             flex-direction: column;
@@ -301,9 +315,11 @@ export default {
                 margin: 0;
             }
         }
+        // Same look as the b-upload drop zones (bulk add, importers, item submission)
         .document-drop-overlay {
             pointer-events: none;
-            border: 2px dashed var(--tainacan-secondary);
+            border: 1px dashed var(--tainacan-secondary);
+            border-radius: var(--tainacan-input-border-radius, 2px);
             background-color: var(--tainacan-primary);
         }
         .document-upload-progress {
@@ -467,7 +483,8 @@ export default {
     }
     .document-buttons-row {
         bottom: -12px;
-        inset-inline-start: 0.875em;
+        // Relative to .document-field-drop-area, half way into the .section-box start padding
+        inset-inline-start: -0.875em;
         position: absolute;
     }
 

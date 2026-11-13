@@ -976,6 +976,12 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_document_replace'                  => __( 'This item already has a document. Do you really want to replace it with the dropped file?', 'tainacan' ),
 	'info_warning_only_first_file_used_as_document'  => __( 'Only one file can be the item document. The first dropped file was used.', 'tainacan' ),
 	'info_uploading_document'                        => __( 'Uploading document', 'tainacan' ),
+	/* translators: %s is the file name */
+	'info_error_upload_empty_file_%s'                => __( '"%s" is empty. Please try another file.', 'tainacan' ),
+	/* translators: %s is the file name */
+	'info_error_upload_file_too_big_%s'              => __( '"%s" exceeds the maximum upload size for this site.', 'tainacan' ),
+	/* translators: %s is the file name */
+	'info_error_upload_file_type_not_allowed_%s'     => __( 'Sorry, you are not allowed to upload "%s" because of its file type.', 'tainacan' ),
 	/* translators: %s is the collection name */
 	'info_warning_collection_delete_%s'              => __( 'Do you really want to permanently delete the collection "%s"?', 'tainacan' ),
 	/* translators: %s is the collection name */
