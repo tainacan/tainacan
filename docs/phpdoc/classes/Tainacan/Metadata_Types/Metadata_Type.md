@@ -14,14 +14,14 @@ classDiagram
     direction TB
     class Metadata_Type {
         -primitive_type : string
-        -repository : bool|Repository
+        -repository : bool
         -options : array
         -default_options : array
         -errors : mixed
         -core : mixed
         -related_mapped_prop : mixed
         -component : string
-        -form_component : bool|string
+        -form_component : bool
         -name : mixed
         -description : mixed
         -preview_template : string
@@ -62,6 +62,7 @@ classDiagram
         +set_sortable(sortable)
         +get_manage_multiple_input()
         +set_manage_multiple_input(manage_multiple_input)
+        +allows_links()
         +get_slug()
         +_toArray()
     }
@@ -640,6 +641,16 @@ public set_manage_multiple_input(mixed $manage_multiple_input): mixed
 | Parameter                | Type      | Description |
 |--------------------------|-----------|-------------|
 | `$manage_multiple_input` | **mixed** |             |
+
+***
+
+### allows_links
+
+Whether stored values and queries for this type may keep anchor tags.
+
+```php
+public allows_links(): bool
+```
 
 ***
 

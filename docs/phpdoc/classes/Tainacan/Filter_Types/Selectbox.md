@@ -14,10 +14,6 @@ classDiagram
     direction TB
     class Selectbox {
         +__construct()
-        +get_manage_multiple_input()
-        +get_form_labels()
-        +get_options_as_html()
-        +validate_options(metadatum)
     }
 ```
 

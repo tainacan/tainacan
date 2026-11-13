@@ -175,7 +175,9 @@ abstract class REST_Controller extends \WP_REST_Controller {
 					if ( $mapped === 'perpage' && (int) $request[ $mapped ] < 1 ) {
 						$args[ $mapped_v ] = $this->get_minimum_safe_perpage();
 					} else {
-						$args[ $mapped_v ] = $request[ $mapped ];
+						$args[ $mapped_v ] = in_array( $mapped, [ 'title', 'name' ], true )
+							? $this->sanitize_value( $request[ $mapped ] )
+							: $request[ $mapped ];
 					}
 				}
 			}
@@ -256,15 +258,43 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 	}
 
-	protected function sanitize_value($value) {
+	/**
+	 * Sanitize query values as post HTML. Anchor tags are removed unless the field stores rich text.
+	 *
+	 * @param mixed $value Value to sanitize.
+	 * @param bool $remove_links Whether anchor tags must be removed.
+	 * @return mixed
+	 */
+	protected function sanitize_value($value, $remove_links = true) {
 		if (is_numeric($value) || empty($value) ) {
 			return $value;
 		}
 
 		$allowed_html = wp_kses_allowed_html('post');
-		unset($allowed_html["a"]);
+		if ( $remove_links ) {
+			unset($allowed_html['a']);
+		}
 	
 		return trim(wp_kses($value, $allowed_html));
+	}
+
+	/**
+	 * Keep anchors in a query value only when the targeted metadata type allows them.
+	 *
+	 * @param string $mapped Query parameter name.
+	 * @param array $clause Query clause.
+	 * @return \Closure
+	 */
+	private function get_query_value_sanitizer( $mapped, $clause ) {
+		$remove_links = true;
+		if ( $mapped === 'metaquery' && isset( $clause['key'] ) && is_numeric( $clause['key'] ) ) {
+			$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch( (int) $clause['key'] );
+			$metadata_type = $metadatum instanceof \Tainacan\Entities\Metadatum ? $metadatum->get_metadata_type_object() : null;
+			$remove_links = ! ( $metadata_type && $metadata_type->allows_links() );
+		}
+		return function ( $value ) use ( $remove_links ) {
+			return $this->sanitize_value( $value, $remove_links );
+		};
 	}
 
 	/**
@@ -289,13 +319,14 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		if($this->contains_array($request_meta_query, $query)) {
 			
 			foreach ( $request_meta_query as $index1 => $a ) {
+				$sanitize = $this->get_query_value_sanitizer( $mapped, $a );
 
 				foreach ( $query as $mapped_meta => $meta_v ) {
 					if ( isset( $a[ $mapped_meta ] ) ) {
 						if( in_array($mapped_meta, $query_field_scaped) ) {
 							$valeu =  is_array($request[ $mapped ][ $index1 ][ $mapped_meta ])
-								? array_map([$this, 'sanitize_value'], $request[ $mapped ][ $index1 ][ $mapped_meta ])
-								: $this->sanitize_value($request[ $mapped ][ $index1 ][ $mapped_meta ]);
+								? array_map( $sanitize, $request[ $mapped ][ $index1 ][ $mapped_meta ] )
+								: $sanitize( $request[ $mapped ][ $index1 ][ $mapped_meta ] );
 							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $valeu;
 						} else {
 							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $mapped_meta ];
@@ -307,12 +338,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			}
 
 		} else {
+			$sanitize = $this->get_query_value_sanitizer( $mapped, $request_meta_query );
 			foreach ( $query as $mapped_meta => $meta_v ) {
 				if(isset($request[$mapped][$mapped_meta])) {
 					if( in_array($mapped_meta, $query_field_scaped) ) {
 						$args[ $mapped_v ][ $meta_v ] =  is_array($request[ $mapped ][ $mapped_meta ])
-							? array_map([$this, 'sanitize_value'], $request[ $mapped ][ $mapped_meta ])
-							: $this->sanitize_value($request[ $mapped ][ $mapped_meta ]);
+							? array_map( $sanitize, $request[ $mapped ][ $mapped_meta ] )
+							: $sanitize( $request[ $mapped ][ $mapped_meta ] );
 					} else {
 						$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $mapped_meta ];
 					}

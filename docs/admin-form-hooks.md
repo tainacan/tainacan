@@ -9,7 +9,7 @@
 Admin Form Hooks are a powerful tool for extenders who want to add functionality to *Tainacan entities*.
 
 > [!NOTE]
-> You may find a similar concept, the [Settings options](/dev/creating-options-in-the-settings-page.md), which are a way to add options in the Settings Page using WordPress Options API. That will create and store options available for the entire plugin, actually even for the entire site.
+> You may find a similar concept, the [Settings options](creating-options-in-the-settings-page.md), which are a way to add options in the Settings Page using WordPress Options API. That will create and store options available for the entire plugin, actually even for the entire site.
 
 But when we talk about **Tainacan Admin Form Hooks**, we're dealing with storing data bind to one of *Tainacan entities*, that is storing new information about Collections, Taxonomies, Items, etc. The data will be available via the REST API of each entity and will be editable via their respective forms inside the Tainacan Admin panel, in a special gray box.
 
@@ -338,9 +338,9 @@ public function enqueue_styles() {
 
 ## Conclusion
 
-Tainacan Admin Form Hooks provide a powerful and flexible way to extend the admin interface. For a broader map of when to use a plugin and which APIs to pick, see the [Plugin Development Guidelines](/dev/plugin-development-guidelines.md). If your plugin writes metadata from outside the form and needs the fields to refresh, see [Reloading the Item Editing Form](/dev/reloading-the-item-editing-form.md). You can also learn more about extending the Plugin by reading related topics:
+Tainacan Admin Form Hooks provide a powerful and flexible way to extend the admin interface. For a broader map of when to use a plugin and which APIs to pick, see the [Plugin Development Guidelines](plugin-development-guidelines.md). If your plugin writes metadata from outside the form and needs the fields to refresh, see [Reloading the Item Editing Form](reloading-the-item-editing-form.md). You can also learn more about extending the Plugin by reading related topics:
 
-- [Creating options in the Settings Page](/dev/creating-options-in-the-settings-page.md) - A guide for registering and displaying options inside the Tainacan Settings Page
-- [Creating Tainacan Admin Pages](/dev/creating-tainacan-admin-pages.md) - A guide for creating your own Pages inside the Tainacan Admin
-- [Creating a new Metadata Type](/dev/creating-metadata-type.md) - A guide for creating your custom Metadata Type
-- [Creating a new Filters Type](/dev/creating-filters-type.md) - A guide for creating your custom Filters Type
+- [Creating options in the Settings Page](creating-options-in-the-settings-page.md) - A guide for registering and displaying options inside the Tainacan Settings Page
+- [Creating Tainacan Admin Pages](creating-tainacan-admin-pages.md) - A guide for creating your own Pages inside the Tainacan Admin
+- [Creating a new Metadata Type](creating-metadata-type.md) - A guide for creating your custom Metadata Type
+- [Creating a new Filters Type](creating-filters-type.md) - A guide for creating your custom Filters Type

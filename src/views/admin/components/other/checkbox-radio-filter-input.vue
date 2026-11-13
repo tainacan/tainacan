@@ -498,7 +498,22 @@
             else
                 this.isCheckboxListLoading = true;
             
-            this.$emitter.on('updateTaxonomyInputs', ($event) => { 
+            this.$emitter.on('updateTaxonomyInputs', this.onUpdateTaxonomyInputs);
+        },
+        mounted() {
+            if (this.isModal && this.$refs.CheckboxRadioFilterInput)
+                this.$refs.CheckboxRadioFilterInput.focus();
+        },
+        beforeUnmount() {
+            this.$emitter.off('updateTaxonomyInputs', this.onUpdateTaxonomyInputs);
+            if (this.isModal)
+                this.$emit('beforeClose');
+            // Cancels previous Request
+            if (this.getOptionsValuesCancel != undefined)
+                this.getOptionsValuesCancel.cancel('Get options request canceled.');
+        },
+        methods: {
+            onUpdateTaxonomyInputs($event) {
                 if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';
@@ -507,20 +522,7 @@
                     this.searchResults = [];
                     this.initializeValues();
                 }
-            });
-        },
-        mounted() {
-            if (this.isModal && this.$refs.CheckboxRadioFilterInput)
-                this.$refs.CheckboxRadioFilterInput.focus();
-        },
-        beforeUnmount() {
-            if (this.isModal)
-                this.$emit('beforeClose');
-            // Cancels previous Request
-            if (this.getOptionsValuesCancel != undefined)
-                this.getOptionsValuesCancel.cancel('Get options request canceled.');
-        },
-        methods: {
+            },
             setActiveTab(index) {
                 this.activeTab = index;
                 this.fetchSelectedLabels();
@@ -581,7 +583,7 @@
             },
             saveSelectedTagName(value, label, link){
                 if (!this.selectedTagsName[value])
-                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href=' + link + ' target="_blank">' + label + '</a>') : label) });
+                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href="' + link + '" target="_blank">' + label + '</a>') : label) });
             },
             previousPage() {
 

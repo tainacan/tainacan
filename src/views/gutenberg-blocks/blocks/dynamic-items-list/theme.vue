@@ -47,41 +47,43 @@
     <div
             v-if="showSearchBar"
             class="dynamic-items-search-bar">
-        <button
-                :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
-                :label="wpI18n('Sort ascending', 'tainacan')"
-                @click="localOrder = 'asc'; fetchItems()">
-            <span 
-                    aria-hidden="true"
-                    class="icon">
-                <i>
-                    <svg
-                            width="24"
-                            height="24"
-                            viewBox="-2 -2 20 20">
-                        <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z" />       
-                    </svg>
-                </i>
-            </span>
-        </button>  
-        <button
-                :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
-                :label="wpI18n('Sort descending', 'tainacan')"
-                @click="localOrder = 'desc'; fetchItems(); ">
-            <span 
-                    aria-hidden="true"
-                    class="icon">
-                <i>
-                    <svg
-                            width="24"
-                            height="24"
-                            viewBox="-2 -2 20 20">
-                        <path
-                                d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z" />
-                    </svg>
-                </i>
-            </span>
-        </button>  
+        <template v-if="!randomOrder">
+            <button
+                    :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
+                    :label="wpI18n('Sort ascending', 'tainacan')"
+                    @click="localOrder = 'asc'; fetchItems()">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
+                    <i>
+                        <svg
+                                width="24"
+                                height="24"
+                                viewBox="-2 -2 20 20">
+                            <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z" />       
+                        </svg>
+                    </i>
+                </span>
+            </button>  
+            <button
+                    :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
+                    :label="wpI18n('Sort descending', 'tainacan')"
+                    @click="localOrder = 'desc'; fetchItems(); ">
+                <span 
+                        aria-hidden="true"
+                        class="icon">
+                    <i>
+                        <svg
+                                width="24"
+                                height="24"
+                                viewBox="-2 -2 20 20">
+                            <path
+                                    d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z" />
+                        </svg>
+                    </i>
+                </span>
+            </button>  
+        </template>
         <button
                 :label="wpI18n('Search', 'tainacan')"
                 class="search-button"
@@ -325,6 +327,7 @@ export default {
         order: String,
         orderBy: String,
         orderByMetaKey: String,
+        randomOrder: Boolean,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
@@ -468,22 +471,33 @@ export default {
                     this.localMaxItemsNumber = 12;
                 }
 
-                // Set up sorting order
-                if (this.localOrder != undefined)
-                    queryObject.order = this.localOrder;
-                else if (queryObject.order != undefined)
-                    this.localOrder = queryObject.order;
-
-                if (!queryObject.order) // Avoid empty string query
+                if (this.randomOrder) {
+                    // Random mode only changes the request, leaving the chosen sort intact.
+                    queryObject.orderby = 'rand';
                     delete queryObject.order;
+                    delete queryObject.metakey;
 
-                // Set up orderBy
-                if (this.orderBy != undefined)
-                    queryObject.orderby = this.orderBy;
-                
-                 // Set up orderByMetaKey
-                if (this.orderByMetaKey != undefined)
-                    queryObject.metakey = this.orderByMetaKey;
+                } else {
+
+                    // Set up sorting order
+                    if (this.localOrder != undefined)
+                        queryObject.order = this.localOrder;
+                    else if (queryObject.order != undefined)
+                        this.localOrder = queryObject.order;
+
+                    if (!queryObject.order) // Avoid empty string query
+                        delete queryObject.order;
+
+                    // Set up orderBy
+                    const orderBy = this.orderBy || queryObject.orderby;
+                    queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
+
+                    // Set up orderByMetaKey
+                    if (this.orderByMetaKey != undefined)
+                        queryObject.metakey = this.orderByMetaKey;
+                    if (!queryObject.metakey)
+                        delete queryObject.metakey;
+                }
 
                 // Set up search string
                 if (this.searchString != undefined)

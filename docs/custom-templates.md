@@ -1,6 +1,6 @@
 # Custom Templates
 
-When using Tainacan plugin with your custom theme enabled, you'll have access to all of [Tainacan pages](tainacan-pages.md) such as Items, Collections and Taxonomy Term Items in the same way that WordPress displays any custom **post_type**. An Item's list, for example, shall have _thumbnail_, _title_ and _description_ with the same appearance that your blog posts, without featuring a _Collection banner_, _filters list_ or the _advanced search_ that is offered by themes such as [Tainacan Interface](https://wordpress.org/themes/tainacan-interface).
+When using Tainacan plugin with your custom theme enabled, you'll have access to all of [Tainacan pages](/tainacan-pages.md) such as Items, Collections and Taxonomy Term Items in the same way that WordPress displays any custom **post_type**. An Item's list, for example, shall have _thumbnail_, _title_ and _description_ with the same appearance that your blog posts, without featuring a _Collection banner_, _filters list_ or the _advanced search_ that is offered by themes such as [Tainacan Interface](https://wordpress.org/themes/tainacan-interface).
 
 Here is an example of an item list in a raw [child theme](https://developer.wordpress.org/themes/advanced-topics/child-themes/) of [TwentyTwenty](https://wordpress.org/themes/twentytwenty/):
 
@@ -22,7 +22,7 @@ Ok, so all you have to do is creating these files and fill them as you wish... b
 
 ### Theme Helper functions
 
-For helping you creating your template, exclusive functions are available on your theme once the plugin is activated. You can find all or their definitions on the [Tainacan Template Tags](/dev/template-tags.md) page. We summarize them below.
+For helping you creating your template, exclusive functions are available on your theme once the plugin is activated. You can find all or their definitions on the [Tainacan Template Tags](template-tags.md) page. We summarize them below.
 
 If you're building a custom `single-items.php`, you might be interested in:
 
@@ -39,8 +39,8 @@ If you're building a custom `single-items.php`, you might be interested in:
 
 If you are building any items archive listing, the following functions are essential:
 
-- `tainacan_the_faceted_search()` - Renders an HTML div with ID and parameters for the Vue.js (client-side) instance responsible for an items list with filters menu, search control and view modes. It is applicable for Collection Items, Term Items, and Repository Items. Learn more about it [in The Vue Items List Component section](/dev/the-vue-items-list-component.md);
-- `tainacan_register_view_mode()` - Registers a view mode. This is used by themes or plugins that implemented [custom extra view modes](/dev/extra-view-modes.md);
+- `tainacan_the_faceted_search()` - Renders an HTML div with ID and parameters for the Vue.js (client-side) instance responsible for an items list with filters menu, search control and view modes. It is applicable for Collection Items, Term Items, and Repository Items. Learn more about it [in The Vue Items List Component section](the-vue-items-list-component.md);
+- `tainacan_register_view_mode()` - Registers a view mode. This is used by themes or plugins that implemented [custom extra view modes](extra-view-modes.md);
 - `tainacan_current_view_displays()` - Checks if a certain metadata or property is to be displayed on this view mode;
 
 If you're building a custom items or collection archive, these functions may help:
@@ -62,11 +62,11 @@ And more...
 - `tainacan_get_the_mime_type_icon()` - Gets a mime-type icon to a file according to its type. This generates the thumbnails used in the attachments and blocks carousels;
 - `tainacan_get_initials()` - A presentation function used by some thumbnails in some themes. It outputs a string version of a name with its initials - for example: "Classic Paintings" would be returned as "CP";
 
-Those are, of course, _helper functions_. If you're not satisfied with the way the rendering is performed by then, you can create your own. Check [the source code](https://github.com/tainacan/tainacan/blob/develop/src/classes/) for a more complete idea of how to fetch Tainacan content. You can also hook into several of this functions using [our actions and filters](/dev/filters.md). There is also [an example](/dev/the-vue-items-list-component) of an `archive-items.php` implementation in the next section.
+Those are, of course, _helper functions_. If you're not satisfied with the way the rendering is performed by then, you can create your own. Check [the source code](https://github.com/tainacan/tainacan/blob/develop/src/classes/) for a more complete idea of how to fetch Tainacan content. You can also hook into several of this functions using [our actions and filters](filters.md). There is also [an example](the-vue-items-list-component.md) of an `archive-items.php` implementation in the next section.
 
 ## Even more specific templates
 
-We mentioned [above](#create-your-files-for-the-templates) templates for the basic four [Tainacan pages](tainacan-pages.md) that the plugin will generate for you. Nevertheless, you are still able to create more specific templates, using the standard [WordPress template file hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/).
+We mentioned [above](#create-your-files-for-the-templates) templates for the basic four [Tainacan pages](/tainacan-pages.md) that the plugin will generate for you. Nevertheless, you are still able to create more specific templates, using the standard [WordPress template file hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/).
 
 Examples:
 

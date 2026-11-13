@@ -12,11 +12,36 @@ Class TainacanMetadatumType
 ```mermaid
 classDiagram
     direction TB
+    class Taxonomy {
+        #name : mixed
+        +post_type : string
+        #capability_type : string
+        #repository : string
+        +db_identifier_prefix : string
+        +__toString()
+        +tainacan_register_taxonomy()
+        +get_capabilities()
+        +get_name()
+        +get_description()
+        +get_allow_insert()
+        +get_hierarchical()
+        +get_slug()
+        +get_enabled_post_types()
+        +get_db_identifier()
+        +set_name(value)
+        +set_slug(value)
+        +set_description(value)
+        +set_allow_insert(value)
+        +set_hierarchical(value)
+        +set_enabled_post_types(value)
+        +validate()
+        +term_exists(term_name, parent, return_term)
+    }
     class Entity {
         #repository : Repository
         -errors : array
-        #post_type : string|false
-        #capability_type : string|false
+        #post_type : string
+        #capability_type : string
         +WP_Post : WP_Post
         -validated : bool
         +cap : object
@@ -49,31 +74,6 @@ classDiagram
         +can_publish(user)
         +get_capabilities()
         +diff(which)
-    }
-    class Taxonomy {
-        #name : mixed
-        +post_type : string
-        #capability_type : string
-        #repository : string
-        +db_identifier_prefix : string
-        +__toString()
-        +tainacan_register_taxonomy()
-        +get_capabilities()
-        +get_name()
-        +get_description()
-        +get_allow_insert()
-        +get_hierarchical()
-        +get_slug()
-        +get_enabled_post_types()
-        +get_db_identifier()
-        +set_name(value)
-        +set_slug(value)
-        +set_description(value)
-        +set_allow_insert(value)
-        +set_hierarchical(value)
-        +set_enabled_post_types(value)
-        +validate()
-        +term_exists(term_name, parent, return_term)
     }
     Entity ..> Entity
     Entity <|-- Taxonomy
@@ -254,30 +254,30 @@ HTML fragment.
 ### get_term_hierarchy_html
 
 ```php
-private get_term_hierarchy_html(\Tainacan\Entities\Term $term, \Tainacan\Entities\Item $item = null): mixed
+private get_term_hierarchy_html(\Tainacan\Entities\Term $term, ?\Tainacan\Entities\Item $item = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$term`   | **\Tainacan\Entities\Term** |             |
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                         | Description |
+|-----------|------------------------------|-------------|
+| `$term`   | **\Tainacan\Entities\Term**  |             |
+| `$item`   | **?\Tainacan\Entities\Item** |             |
 
 ***
 
 ### term_to_html
 
 ```php
-private term_to_html(mixed $term, \Tainacan\Entities\Item $item = null): mixed
+private term_to_html(mixed $term, ?\Tainacan\Entities\Item $item = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$term`   | **mixed**                   |             |
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                         | Description |
+|-----------|------------------------------|-------------|
+| `$term`   | **mixed**                    |             |
+| `$item`   | **?\Tainacan\Entities\Item** |             |
 
 ***
 
@@ -733,6 +733,16 @@ public set_manage_multiple_input(mixed $manage_multiple_input): mixed
 | Parameter                | Type      | Description |
 |--------------------------|-----------|-------------|
 | `$manage_multiple_input` | **mixed** |             |
+
+***
+
+### allows_links
+
+Whether stored values and queries for this type may keep anchor tags.
+
+```php
+public allows_links(): bool
+```
 
 ***
 

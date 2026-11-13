@@ -2,9 +2,9 @@
 
 When authoring plugins for extending Tainacan functionalities, you may have to face some Vue.js code, which is the JS framework adopted by our community for implementing the Tainacan Admin Panel. Most of the time, you shall have the tools necessary for doing the work using the libraries that our plugin already includes. But in the situations where that is not enough, comes the need for registering **extra VueJS components**. Here a few examples:
 
-* You may need a [Map component](https://github.com/vue-leaflet/Vue2Leaflet ':ignore') for creating a [new Metadata Type](/dev/creating-metadata-type.md) of geo-location;
-* You may want to use a [Color Picker component](https://github.com/xiaokaike/vue-color ':ignore') for registering a [new Filter Type](/dev/creating-filters-type.md) based on colors, or even adding an extra form hook to increment your Collection settings;
-* You may want some [fancy Gallery component](https://github.com/KitchenStories/vue-gallery-slideshow ':ignore') to create a new fullscreen [Extra View Mode](/dev/extra-view-modes);
+* You may need a [Map component](https://github.com/vue-leaflet/Vue2Leaflet ':ignore') for creating a [new Metadata Type](creating-metadata-type.md) of geo-location;
+* You may want to use a [Color Picker component](https://github.com/xiaokaike/vue-color ':ignore') for registering a [new Filter Type](creating-filters-type.md) based on colors, or even adding an extra form hook to increment your Collection settings;
+* You may want some [fancy Gallery component](https://github.com/KitchenStories/vue-gallery-slideshow ':ignore') to create a new fullscreen [Extra View Mode](extra-view-modes.md);
 
 We here take a look into the details of:
 
@@ -14,7 +14,7 @@ We here take a look into the details of:
 
 ## Global components registration
 
-Every global component in our Vue.JS code is registered in the `/src/views/admin/js/main.js` file (for the Administrative panel) or inside the `/src/views/theme-search/theme-main.js` (for the bundle that renders the [Items List](/dev/the-vue-items-list-component.md)). These files have usually three sections:
+Every global component in our Vue.JS code is registered in the `/src/views/admin/js/main.js` file (for the Administrative panel) or inside the `/src/views/theme-search/theme-main.js` (for the bundle that renders the [Items List](the-vue-items-list-component.md)). These files have usually three sections:
 
 1. The imports, that load libraries from the plugin bundle, such as `import VueMasonry from 'vue-masonry-css';` and `import FilterNumeric from '../../admin/components/filter-types/numeric/Numeric.vue';`;
 2. The components and plugins registrations to the global Vue instance, such as `Vue.use(VueMasonry);` and `Vue.component('tainacan-filter-numeric', FilterNumeric);`;
@@ -171,6 +171,6 @@ To register Vue components to the same instance of Tainacan plugin, all you have
 
 You can see more examples of using this strategy by checking the documentation of:
 
-* How to create a [new Metadata Type](/dev/creating-metadata-type.md);
-* How to create a [new Filter Type](/dev/creating-filters-type.md);
-* How to create an [Extra View Mode](/dev/extra-view-modes);
+* How to create a [new Metadata Type](creating-metadata-type.md);
+* How to create a [new Filter Type](creating-filters-type.md);
+* How to create an [Extra View Mode](extra-view-modes.md);

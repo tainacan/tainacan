@@ -1,6 +1,9 @@
 <template>
     <div>
-        <b-field :addons="false">
+        <b-field
+                :addons="false"
+                :type="fieldMessage('comparators') ? 'is-danger' : ''"
+                :message="fieldMessage('comparators')">
             <label class="label is-inline">
                 {{ $i18n.getHelperTitle('tainacan-filter-date', 'comparators') }}<span>&nbsp;*&nbsp;</span>
                 <help-button
@@ -27,7 +30,8 @@
 
     export default {
         props: {
-            modelValue: Object
+            modelValue: Object,
+            errors: [ String, Object, Array ]
         },
         emits: [
             'update:model-value',
@@ -74,6 +78,10 @@
             };
         },
         methods: {
+            fieldMessage(key) {
+                const message = this.errors && this.errors[key];
+                return typeof message === 'string' ? message : '';
+            },
             emitValues() {
                 this.$emit('update:model-value', { comparators: this.comparators });
             }

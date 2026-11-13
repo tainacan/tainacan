@@ -30,7 +30,13 @@
                 <div
                         v-if="documentSectionLabel"
                         class="section-label">
-                    <label>{{ documentSectionLabel }}</label>
+                    <label :class="{ 'has-text-danger': documentErrorMessage }">{{ documentSectionLabel }}</label>
+                    <span
+                            v-if="requireDocument == 'yes'"
+                            class="required-metadatum-asterisk"
+                            :class="documentErrorMessage ? 'is-danger' : ''">
+                        *
+                    </span>
                     <help-button
                             v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')"
                             :title="$i18n.getHelperTitle('items', 'document')"
@@ -213,6 +219,11 @@
                             <p>{{ $i18n.get('label_url') }}</p>
                         </li>
                     </ul>
+                    <p
+                            v-if="documentErrorMessage && form.document_type != 'attachment'"
+                            class="help is-danger">
+                        {{ documentErrorMessage }}
+                    </p>
                 </div>
 
             </template>
@@ -818,6 +829,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import { formHooks } from '../../../admin/js/mixins';
 import { itemMetadataMixin } from '../../../admin/js/item-metadata-mixin';
+import { conditionalSectionsFrom } from '../../../admin/js/conditional-sections';
 
 export default {
     name: 'ItemSubmissionForm',
@@ -880,6 +892,7 @@ export default {
             showThumbnailInput: false,
             couldLoadCollection: true,
             useCaptcha: 'no',
+            requireDocument: 'no',
             captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
             linkToCreatedItem: '',
             userHasAgreedToTerms: false,
@@ -967,6 +980,7 @@ export default {
                 this.collectionItemMetadataEnumeration = collection.item_enable_metadata_enumeration;
                 this.collectionMetadataSectionOrder = collection.metadata_section_order;
                 this.useCaptcha = collection.submission_use_recaptcha;
+                this.requireDocument = collection.item_require_document;
 
                 // Initialize clear data from store
                 this.clearItemSubmission();
@@ -996,20 +1010,7 @@ export default {
                  * Creates the conditional metadata set to later watch values
                  * of certain metadata that control sections visibility.
                  */
-                this.conditionalSections = {};
-                for (let metadataSection of metadataSections) {
-                    if ( metadataSection.is_conditional_section == 'yes') { 
-                        const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
-                        if ( conditionalSectionId.length ) {
-                            this.conditionalSections[metadataSection.id] = {
-                                sectionId: metadataSection.id,
-                                metadatumId: conditionalSectionId[0],
-                                metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
-                                hide: true
-                            };
-                        }
-                    }
-                }
+                this.conditionalSections = conditionalSectionsFrom(metadataSections);
             })
             .catch((error) => {
                 this.isLoadingMetadataSections = false;

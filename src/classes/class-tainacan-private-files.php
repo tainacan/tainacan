@@ -278,21 +278,87 @@ class Private_Files {
 				$mime_type = \Tainacan\Media::get_instance()->get_mime_content_type($existing_file);
 
 				if ($item instanceof \Tainacan\Entities\Item && $item->can_read()) {
-					http_response_code(200); //header("HTTP/1.1 200 Ok");
-					//header('Content-Description: File Transfer');
-					//header('Content-Type: application/octet-stream');
+					$size = \filesize($existing_file);
+					if ($size === false) {
+						return;
+					}
+					$method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : 'GET';
+					$status = 200;
+					$start = 0;
+					$end = $size - 1;
+					$length = $size;
+					$stream = false;
+
+					// Unsupported or malformed ranges retain the ordinary full-file response.
+					if ($method === 'GET' && isset($_SERVER['HTTP_RANGE']) && !isset($_SERVER['HTTP_IF_RANGE']) &&
+						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The anchored expression validates the complete byte-range syntax.
+						preg_match('/^bytes=([0-9]*)-([0-9]*)$/i', trim(wp_unslash($_SERVER['HTTP_RANGE'])), $range) &&
+						($range[1] !== '' || $range[2] !== '')) {
+						// Compare decimal strings before conversion, including values larger than PHP_INT_MAX.
+						$first = ltrim($range[1], '0');
+						$last = ltrim($range[2], '0');
+						$reversed = $range[1] !== '' && $range[2] !== '' &&
+							(strlen($first) > strlen($last) || (strlen($first) === strlen($last) && strcmp($first, $last) > 0));
+						if (!$reversed) {
+							if ($range[1] === '') {
+								$start = max(0, $size - (int) $range[2]);
+							} else {
+								$start = (int) $range[1];
+								if ($range[2] !== '') {
+									$end = min($end, (int) $range[2]);
+								}
+							}
+							$status = $size === 0 || $start > $end ? 416 : 206;
+							$length = $status === 416 ? 0 : $end - $start + 1;
+						}
+					}
+
+					if ($status === 206) {
+						// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Seek and stream a bounded portion without loading the whole file.
+						$stream = \fopen($existing_file, 'rb');
+						if ($stream === false) {
+							return;
+						}
+						if (\fseek($stream, $start) !== 0) {
+							// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Close the streaming handle.
+							\fclose($stream);
+							return;
+						}
+					}
+
+					status_header($status);
 					header("Content-type: " . $mime_type);
-					//header('Content-Disposition: attachment; filename="'.basename($file).'"');
-					// header('Expires: 0');
-					// header('Cache-Control: must-revalidate');
-					// header('Pragma: public');
-					// header('Content-Length: ' . filesize($file));
+					header('Accept-Ranges: bytes');
+					header('Content-Length: ' . $length);
+					if ($status === 206) {
+						header('Content-Range: bytes ' . $start . '-' . $end . '/' . $size);
+					} elseif ($status === 416) {
+						header('Content-Range: bytes */' . $size);
+					}
 					if (\ob_get_level() > 0) {
 						\ob_clean();
 					}
 					\flush();
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream the attachment to the response. WP_Filesystem::get_contents() would load the whole file into memory.
-					\readfile($existing_file);
+					if ($method === 'HEAD' || $status === 416) {
+						die;
+					}
+					if ($status === 206) {
+						while ($length > 0 && !\feof($stream) && !\connection_aborted()) {
+							// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- Read bounded chunks without loading the whole attachment.
+							$chunk = \fread($stream, min(65536, $length));
+							if ($chunk === false || $chunk === '') {
+								break;
+							}
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw attachment bytes must not be escaped.
+							echo $chunk;
+							$length -= strlen($chunk);
+						}
+						// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Close the streaming handle.
+						\fclose($stream);
+					} else {
+						// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Stream the attachment to the response. WP_Filesystem::get_contents() would load the whole file into memory.
+						\readfile($existing_file);
+					}
 
 					die;
 				}

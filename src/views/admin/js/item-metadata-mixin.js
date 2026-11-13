@@ -1,5 +1,5 @@
 import { mapActions } from 'vuex';
-
+import { conditionalSectionShouldHide } from './conditional-sections';
 export const itemMetadataMixin = {
     created() {
         this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
@@ -51,7 +51,7 @@ export const itemMetadataMixin = {
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0])  ? values[0] : values,
-                    parent_meta_id: parentMetaId ? parentMetaId : null
+					parent_meta_id: parentMetaId ? parentMetaId : null
                 })
                     .then(() => { 
                         this.isUpdatingValues = false;
@@ -64,13 +64,18 @@ export const itemMetadataMixin = {
                         if ( parentId )
                             this.$emitter.emit('updateErrorMessageOf#' + parentId );
                     })
-                    .catch(({ error }) => {
+                    .catch((error) => {
                         this.isUpdatingValues = false;
+                        const fieldErrors = error.response && error.response.data && error.response.data.errors;
+                        if (!fieldErrors)
+                            return;
+
+                        this.$claimApiError(error);
                         let index = this.errors.findIndex( errorItem => ( errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ) ) || ( errorItem.metadatum_id == parentId ) );
                         let messages = [];
 
-                        for (let index in error)
-                            messages.push(error[index]);
+                        for (let fieldIndex in fieldErrors)
+                            messages.push(fieldErrors[fieldIndex]);
                         
                         if ( index >= 0) {
                             Object.assign( this.errors, { [index]: { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } });
@@ -115,10 +120,17 @@ export const itemMetadataMixin = {
              */
             let updatedConditionalSections = JSON.parse(JSON.stringify(this.conditionalSections));
             for (let conditionalSectionId in updatedConditionalSections) {
-                if ( updatedConditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
-                    const conditionalValues = Array.isArray(updatedConditionalSections[conditionalSectionId].metadatumValues) ? updatedConditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
-                    updatedConditionalSections[conditionalSectionId].hide = Array.isArray(values) ? values.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(values) < 0 ;
-                }
+                const record = updatedConditionalSections[conditionalSectionId];
+                const rules = Array.isArray(record.rules) ? record.rules : [];
+                let touched = false;
+                rules.forEach(rule => {
+                    if (rule.metadatumId == metadatumId) {
+                        rule.matched = !conditionalSectionShouldHide(values, rule.metadatumValues, rule.hierarchical);
+                        touched = true;
+                    }
+                });
+                if (touched)
+                    record.hide = rules.some(rule => !rule.matched);
             }
             this.conditionalSections = updatedConditionalSections;
         },

@@ -35,6 +35,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         order,
         orderBy,
         orderByMetaKey,
+        randomOrder,
         searchString,
         selectedItems,
         isLoading,
@@ -319,34 +320,32 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 setAttributes({ maxItemsNumber: 12 });
             }
 
-            // Set up sorting order
-            if (queryObject.order != '' && !showSearchBar)
-                setAttributes({ order: queryObject.order });
-            else if (order != '')
-                queryObject.order = order;
-            else {
-                queryObject.order = 'asc';
-                setAttributes({ order: 'asc' });
-            }
-            
-            // Set up sorting orderby
-            if (queryObject.orderby != '')
-                setAttributes({ orderBy: queryObject.orderby });
-            else if (orderBy != 'date')
-                queryObject.orderby = orderBy;
-            else {
-                queryObject.orderby = 'date';
-                setAttributes({ orderBy: 'date' });
+            // Keep the chosen sort separate from random mode, including legacy rand URLs.
+            if (queryObject.orderby && queryObject.orderby != 'rand') {
+                orderBy = queryObject.orderby;
+                if (queryObject.order && !showSearchBar)
+                    order = queryObject.order;
+                if (queryObject.metakey)
+                    orderByMetaKey = queryObject.metakey;
+                setAttributes({ orderBy: orderBy, order: order, orderByMetaKey: orderByMetaKey });
             }
 
-            // Set up sorting metakey (used by some orderby)
-            if (queryObject.metakey != '')
-                setAttributes({ orderByMetaKey: queryObject.metakey });
-            else if (orderByMetaKey != '')
-                queryObject.metakey = orderByMetaKey;
-            else {
-                queryObject.metakey = '';
-                setAttributes({ orderByMetaKey: '' });
+            if (randomOrder) {
+                queryObject.orderby = 'rand';
+                delete queryObject.order;
+                delete queryObject.metakey;
+            } else {
+                queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
+                if (order)
+                    queryObject.order = order;
+                else {
+                    queryObject.order = 'asc';
+                    setAttributes({ order: 'asc' });
+                }
+                if (orderByMetaKey)
+                    queryObject.metakey = orderByMetaKey;
+                else
+                    delete queryObject.metakey;
             }
 
             // Set up search string
@@ -715,6 +714,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                                     min={ 1 }
                                     max={ tainacan_blocks.api_max_items_per_page ? Number(tainacan_blocks.api_max_items_per_page) : 96 }
                                 />
+                                <ToggleControl
+                                    label={__('Random order', 'tainacan')}
+                                    help={ randomOrder ? __('Items are being displayed in a random order.', 'tainacan') : __('Toggle to display items in a random order.', 'tainacan') }
+                                    checked={ randomOrder }
+                                    onChange={ ( isChecked ) => {
+                                        randomOrder = isChecked;
+                                        setAttributes({ randomOrder: randomOrder });
+                                        setContent();
+                                    }}
+                                />
                             <hr></hr>
                         </div>
                          : null }
@@ -1007,30 +1016,35 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             {
                 showSearchBar ?
                 <div className="dynamic-items-search-bar">
-                    <Button
-                        onClick={ () => { order = 'asc'; setAttributes({ order: order }); setContent(); }}
-                        className={order == 'asc' ? 'sorting-button-selected' : ''}
-                        label={__('Sort ascending', 'tainacan')}>
-                        <span className="icon">
-                            <i>
-                                <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
-                                </svg>
-                            </i>
-                        </span>
-                    </Button>  
-                    <Button
-                        onClick={ () => { order = 'desc'; setAttributes({ order: order }); setContent(); }}
-                        className={order == 'desc' ? 'sorting-button-selected' : ''}
-                        label={__('Sort descending', 'tainacan')}>
-                        <span className="icon">
-                            <i>
-                                <svg width="24" height="24" viewBox="-2 -4 20 20">
-                                <path d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
-                                </svg>
-                            </i>
-                        </span>
-                    </Button>  
+                    { !randomOrder ?
+                        <>
+                            <Button
+                                onClick={ () => { order = 'asc'; setAttributes({ order: order }); setContent(); }}
+                                className={order == 'asc' ? 'sorting-button-selected' : ''}
+                                label={__('Sort ascending', 'tainacan')}>
+                                <span className="icon">
+                                    <i>
+                                        <svg width="24" height="24" viewBox="-2 -4 20 20">
+                                        <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
+                                        </svg>
+                                    </i>
+                                </span>
+                            </Button>  
+                            <Button
+                                onClick={ () => { order = 'desc'; setAttributes({ order: order }); setContent(); }}
+                                className={order == 'desc' ? 'sorting-button-selected' : ''}
+                                label={__('Sort descending', 'tainacan')}>
+                                <span className="icon">
+                                    <i>
+                                        <svg width="24" height="24" viewBox="-2 -4 20 20">
+                                        <path d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
+                                        </svg>
+                                    </i>
+                                </span>
+                            </Button>  
+                        </>
+                        : null
+                    }
                     <Button
                         onClick={ () => { setContent(); }}
                         label={__('Search', 'tainacan')}>

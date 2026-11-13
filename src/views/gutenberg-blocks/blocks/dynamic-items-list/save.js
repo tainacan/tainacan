@@ -16,6 +16,7 @@ export default function({ attributes }) {
         order,
         orderBy,
         orderByMetaKey,
+        randomOrder,
         showSearchBar,
         showCollectionHeader,
         showCollectionLabel,
@@ -61,6 +62,7 @@ export default function({ attributes }) {
                 data-order={ order !== undefined ? order : '' }
                 data-order-by={ orderBy !== undefined ? orderBy : 'date' }
                 data-order-by-meta-key={ orderByMetaKey !== undefined ? orderByMetaKey : '' }
+                data-random-order={ '' + randomOrder }
                 data-tainacan-view-mode={ tainacanViewMode }
                 data-tainacan-api-root={ tainacan_blocks.root }
                 id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>

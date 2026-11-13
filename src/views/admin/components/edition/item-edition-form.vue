@@ -575,6 +575,7 @@
                                             :form="form"
                                             :collection="collection"
                                             :upload-progress="documentUploadProgress"
+                                            :error-message="documentErrorMessage"
                                             @on-set-document="setDocument"
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
@@ -661,6 +662,7 @@
                                     :form="form"
                                     :collection="collection"
                                     :upload-progress="documentUploadProgress"
+                                    :error-message="documentErrorMessage"
                                     @on-set-document="setDocument"
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
@@ -820,6 +822,7 @@ import { mapActions, mapGetters } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import { permalinkGetter, formHooks } from '../../js/mixins';
 import { itemMetadataMixin } from '../../js/item-metadata-mixin';
+import { conditionalSectionsForItemMetadata, conditionalSectionsFrom } from '../../js/conditional-sections';
 
 import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
@@ -1038,6 +1041,10 @@ export default {
                 )
             );
         },
+        documentErrorMessage() {
+            const existingError = this.errors.find(error => error.metadatum_id == 'document');
+            return existingError ? existingError.errors : '';
+        },
         shouldDisplayItemEditionThumbnail() {
             return !this.$adminOptions.hideItemEditionThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
         },
@@ -1188,20 +1195,7 @@ export default {
                  * Creates the conditional metadata set to later watch values
                  * of certain metadata that control sections visibility.
                  */
-                this.conditionalSections = {};
-                for (let metadataSection of metadataSections) {
-                    if ( metadataSection.is_conditional_section == 'yes') { 
-                        const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
-                        if ( conditionalSectionId.length ) {
-                            this.conditionalSections[metadataSection.id] = {
-                                sectionId: metadataSection.id,
-                                metadatumId: conditionalSectionId[0],
-                                metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
-                                hide: true
-                            };
-                        }
-                    }
-                }
+                this.conditionalSections = conditionalSectionsFrom(metadataSections);
             })
             .catch((error) => {
                 this.isLoadingMetadataSections = false;
@@ -1393,19 +1387,48 @@ export default {
                 if ( !this.item.current_user_can_edit )
                     this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
             })
-            .catch((errors) => {
-                
-                this.prepareErrors(errors);
+            .catch((error) => {
+
                 this.form.status = previousStatus;
                 this.item.status = previousStatus;
 
+                if (status != 'trash') {
+                    const data = error.response && error.response.data;
+                    if (data && data.errors)
+                        this.prepareErrors(data);
+                    this.showSubmitErrorsSnackbar(error);
+                }
+
                 this.isLoading = false;
             });
+        },
+        showSubmitErrorsSnackbar(error) {
+            const errorMessages = this.errors
+                .map((fieldError) => [].concat(fieldError.errors)
+                    .map((singleError) => typeof singleError == 'string' ? singleError : Object.values(singleError).join(' '))
+                    .join(' ')
+                )
+                .filter((errorMessage) => errorMessage);
+
+            const data = error.response && error.response.data;
+            const message = errorMessages.length
+                ? this.$i18n.get('info_errors_in_form') + ': ' + errorMessages.join(' ')
+                : (data && typeof data.error_message === 'string' ? data.error_message : '');
+
+            this.$showApiError(error, message);
         },
         hasErrorsOnForm(hasErrors) {
             if (hasErrors)
                 this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else
+                this.formErrorMessage = '';
+        },
+        clearDocumentError() {
+            const index = this.errors.findIndex(errorItem => errorItem.metadatum_id == 'document');
+            if (index >= 0)
+                this.errors.splice(index, 1);
+
+            if (!this.errors.length)
                 this.formErrorMessage = '';
         },
         onDiscard() {
@@ -1505,14 +1528,7 @@ export default {
                     }
                     
                     /* Sets initial state for conditional sections based on metadatum values */
-                    for (let conditionalSectionId in this.conditionalSections) {
-                        const currentItemMetadatum = metadata.find(anItemMetadatum => anItemMetadatum.metadatum.id == this.conditionalSections[conditionalSectionId].metadatumId);
-                        if (currentItemMetadatum) {
-                            const itemMetadatumValues = Array.isArray(currentItemMetadatum.value) ? currentItemMetadatum.value : [ currentItemMetadatum.value ];
-                            const conditionalValues = Array.isArray(this.conditionalSections[conditionalSectionId].metadatumValues) ? this.conditionalSections[conditionalSectionId].metadatumValues : [this.conditionalSections[conditionalSectionId].metadatumValues];
-                            this.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
-                        }
-                    }
+                    this.conditionalSections = conditionalSectionsForItemMetadata(this.conditionalSections, metadata);
                     
                     /**
                      * Fires action tainacan_item_edition_metadata_loaded
@@ -1664,6 +1680,7 @@ export default {
 
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                 .then((item) => {
+                    this.clearDocumentError();
                     this.isLoading = false;
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
@@ -1677,8 +1694,8 @@ export default {
                     this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
                 })
-                .catch((errors) => {
-                    this.prepareErrors(errors);
+                .catch((error) => {
+                    this.applyDocumentApiError(error);
                     this.isLoading = false;
                 });
         },
@@ -1721,10 +1738,11 @@ export default {
                     this.item.document_mimetype = item.document_mimetype;
                     if (item.document_type != undefined && item.document_type == 'text')
                         this.textContent = item.document;
+                    this.clearDocumentError();
                     this.isLoading = false;
                 })
-                .catch((errors) => {
-                    this.prepareErrors(errors);
+                .catch((error) => {
+                    this.applyDocumentApiError(error);
                     this.isLoading = false;
                 });
         },
@@ -1793,6 +1811,7 @@ export default {
                     if (item.document_options !== undefined && item.document_options['forced_iframe_allowfullscreen'] !== undefined)
                         this.urlIframeAllowfullscreen = item.document_options['forced_iframe_allowfullscreen'];
 
+                    this.clearDocumentError();
                     this.isLoading = false;
 
                     let oldThumbnail = this.item.thumbnail;
@@ -1801,8 +1820,8 @@ export default {
                         this.item.thumbnail_id = item.thumbnail_id;
                     }
                 })
-                .catch((errors) => {
-                    this.prepareErrors(errors);
+                .catch((error) => {
+                    this.applyDocumentApiError(error);
                     this.isLoading = false;
                 });
         },
@@ -1820,8 +1839,8 @@ export default {
                 this.item.document_mimetype = 'empty';
                 this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
-            .catch((errors) => {
-                this.prepareErrors(errors);
+            .catch((error) => {
+                this.applyDocumentApiError(error);
             });
         },
         deleteThumbnail() {
@@ -2212,6 +2231,14 @@ export default {
 
             return enabledMetadata.indexOf(metadatum.id);
         },
+        applyDocumentApiError(error) {
+            const data = error.response && error.response.data;
+            if (!data || !data.errors)
+                return;
+
+            this.prepareErrors(data);
+            this.$claimApiError(error);
+        },
         prepareErrors(errors) {
             if ( errors.errors ) {
                 for (let error of errors.errors) {
@@ -2236,10 +2263,19 @@ export default {
                             }
                         }
                         
-                        this.errors.push({
-                            metadatum_id: parentCompoundId ? parentCompoundId : metadatumId,
-                            errors: error[metadatumId]
-                        });
+                        const targetMetadatumId = parentCompoundId ? parentCompoundId : metadatumId;
+                        const existingErrorIndex = this.errors.findIndex(errorItem => errorItem.metadatum_id == targetMetadatumId);
+                        if (existingErrorIndex >= 0) {
+                            this.errors.splice(existingErrorIndex, 1, {
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        } else {
+                            this.errors.push({
+                                metadatum_id: targetMetadatumId,
+                                errors: error[metadatumId]
+                            });
+                        }
                     }   
                 }
                 this.formErrorMessage = errors.error_message;

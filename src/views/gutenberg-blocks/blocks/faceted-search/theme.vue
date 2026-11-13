@@ -315,13 +315,13 @@
                             </button>
                         </template>
                         <template 
-                                v-for="metadatum of sortingMetadata"
+                                v-for="metadatum of sortingOptions"
                                 :key="metadatum.slug">
                             <b-dropdown-item
                                     v-if="metadatum != undefined"
                                     aria-controls="items-list-results"
                                     role="button"
-                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && (orderBy == metadatum.slug || (metadatum.metadata_type_object && orderBy == metadatum.metadata_type_object.related_mapped_prop))) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && (orderBy == metadatum.slug || (orderBy == 'date' && metadatum.slug == 'creation_date') || (orderBy == 'modified' && metadatum.slug == 'modification_date') || (metadatum.metadata_type_object && orderBy == metadatum.metadata_type_object.related_mapped_prop))) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     :value="metadatum"
                                     :data-metadatum-slug="metadatum.slug ? metadatum.slug : ''">
                                 {{ metadatum.name }}
@@ -940,7 +940,16 @@
                 }
             },
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified'); 
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified' && this.orderBy != 'relevance'); 
+            },
+            sortingOptions() {
+                if (!this.searchQuery || !this.$eventBusSearch.isSearchRelevanceEnabled())
+                    return this.sortingMetadata;
+
+                return [{
+                    name: this.$i18n.get('label_relevance'),
+                    slug: 'relevance'
+                }].concat(this.sortingMetadata);
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
@@ -1015,9 +1024,10 @@
                         }
                         
                         // Order By (required extra work to deal with custom metadata ordering)
-                        if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
+                        const orderByWasMissing = this.$route.query.orderby == undefined;
+                        if (orderByWasMissing || (to.params.collectionId != from.params.collectionId)) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
-                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
+                            let orderBy = this.initialOrderBy(this.$userPrefs.get(orderByKey));
                         
                             if (orderBy && orderBy != 'name') {
                             
@@ -1029,6 +1039,8 @@
                                     Object.keys(orderBy).forEach((paramKey) => {
                                         this.$route.query[paramKey] = orderBy[paramKey];
                                     });
+                                else if (typeof orderBy == 'string')
+                                    this.$route.query.orderby = orderBy;
                                 else
                                     this.$route.query.orderby = 'date'
                                 
@@ -1041,6 +1053,8 @@
                             }
                         } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
                             this.$route.query.orderby = 'date'
+                        } else if ( this.$route.query.orderby == 'modification_date' ) {
+                            this.$route.query.orderby = 'modified'
                         }
                         
                         // Theme View Modes
@@ -1067,6 +1081,8 @@
                         // Passes the current URL to store
                         this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+                        if (this.$eventBusSearch.syncRelevanceWithRoute(from && from.query, this.$route.query, orderByWasMissing))
+                            this.$eventBusSearch.updateURLQueries();
 
                         // Advanced Search
                         if (this.$route.query && this.$route.query.advancedSearch)
@@ -1168,27 +1184,29 @@
                 if (!currentQuery.order)
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
+            const opensOnSearchWithoutOrder = !currentQuery.orderby && this.$eventBusSearch.hasTextSearch(currentQuery);
+            let blockOrderBy = this.defaultOrderBy;
             if (this.defaultOrderBy != undefined) {
 
                 if (this.defaultOrderByMeta || this.defaultOrderByType) {
                     
-                    let orderByObject = { orderby: this.defaultOrderBy }
+                    blockOrderBy = { orderby: this.defaultOrderBy };
                     
                     if (this.defaultOrderByMeta)
-                        orderByObject['metakey'] = this.defaultOrderByMeta;
+                        blockOrderBy.metakey = this.defaultOrderByMeta;
                     
                     if (this.defaultOrderByType)
-                        orderByObject['metatype'] = this.defaultOrderByType;
+                        blockOrderBy.metatype = this.defaultOrderByType;
                     
-                    this.$eventBusSearch.setDefaultOrderBy(orderByObject);
+                    this.$eventBusSearch.setDefaultOrderBy(blockOrderBy);
 
-                    if (!currentQuery.orderby)
-                        this.$eventBusSearch.setOrderBy(orderByObject);
+                    if (!currentQuery.orderby && !opensOnSearchWithoutOrder)
+                        this.$eventBusSearch.setOrderBy(blockOrderBy);
                 
                 } else {                    
                     this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
 
-                    if (!currentQuery.orderby)
+                    if (!currentQuery.orderby && !opensOnSearchWithoutOrder)
                         this.$eventBusSearch.setOrderBy(this.defaultOrderBy);
                 }
             }
@@ -1200,9 +1218,17 @@
                     currentQuery[key] = false;
             }
 
-            // Passes the current URL to store
+            // Passes the current URL to store. setOrderBy above is cleared by this
+            // replacement when the URL itself has no orderby, so put a sort back.
+            // A search link keeps aside the saved preference, then the block default.
             this.$store.dispatch('search/setPostQuery', currentQuery )
+            if (!currentQuery.orderby && opensOnSearchWithoutOrder)
+                this.$store.dispatch('search/setOrderBy', this.sortRestoredAfterSearch(blockOrderBy));
+            else if (!currentQuery.orderby && blockOrderBy)
+                this.$store.dispatch('search/setOrderBy', blockOrderBy);
             this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+            if (this.$eventBusSearch.switchToSearchRelevance(opensOnSearchWithoutOrder))
+                this.$eventBusSearch.updateURLQueries();
 
             // Sets advanced search
             if ( currentQuery.advancedSearch )
@@ -1212,9 +1238,7 @@
                 if (currentQuery && currentQuery.advancedSearch)
                     this.openAdvancedSearch = !!currentQuery.advancedSearch;
 
-                this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
-                    this.openAdvancedSearch = openAdvancedSearch;
-                });
+                this.$emitter.on('openAdvancedSearch', this.onOpenAdvancedSearch);
             }
 
             // If any default items per page is set, apply it
@@ -1223,44 +1247,10 @@
                 this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
             }
 
-            this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
-
-                this.isLoadingItems = isLoadingItems;
-                
-                document.dispatchEvent(new CustomEvent('tainacan-items-list-is-loading-items', {
-                    detail: { 
-                        isLoading: this.isLoadingItems,
-                        collectionId: this.collectionId,
-                        termId: this.termId,
-                        taxonomy: this.taxonomy
-                    }
-                }));
-            });
-
-            this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
-                this.hasFiltered = hasFiltered;
-            });
-
-            this.$eventBusSearchEmitter.on('exitViewModeWithoutPagination', () => {
-                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
-                delete currentQuery['slideshow-from'];
-                this.$router.replace({ query: currentQuery });
-    
-                // Sets the perpage and paged from previous configuration
-                this.$eventBusSearch.setItemsPerPage(this.latestPerPageAfterViewModeWithoutPagination, true);
-                this.$eventBusSearch.setPage(this.latestPageAfterViewModeWithoutPagination);
-                this.onChangeViewMode(this.latestNonFullscreenViewMode ? this.latestNonFullscreenViewMode : this.defaultViewMode);
-            });
-
-            this.$eventBusSearchEmitter.on('startSlideshowFromItem', (index) => {
-                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
-                delete currentQuery['slideshow-from'];
-                this.$router.replace({ query: currentQuery }).catch(() => undefined);
-
-                this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
-                this.onChangeViewMode('slideshow');
-                this.initialItemPosition = index;
-            });
+            this.$eventBusSearchEmitter.on('isLoadingItems', this.onIsLoadingItems);
+            this.$eventBusSearchEmitter.on('hasFiltered', this.onHasFiltered);
+            this.$eventBusSearchEmitter.on('exitViewModeWithoutPagination', this.onExitViewModeWithoutPagination);
+            this.$eventBusSearchEmitter.on('startSlideshowFromItem', this.onStartSlideshowFromItem);
 
             // Parse js-side hooks
             this.parseHooks();
@@ -1357,6 +1347,43 @@
 
         },
         methods: {
+            onOpenAdvancedSearch(openAdvancedSearch) {
+                this.openAdvancedSearch = openAdvancedSearch;
+            },
+            onIsLoadingItems(isLoadingItems) {
+                this.isLoadingItems = isLoadingItems;
+                
+                document.dispatchEvent(new CustomEvent('tainacan-items-list-is-loading-items', {
+                    detail: { 
+                        isLoading: this.isLoadingItems,
+                        collectionId: this.collectionId,
+                        termId: this.termId,
+                        taxonomy: this.taxonomy
+                    }
+                }));
+            },
+            onHasFiltered(hasFiltered) {
+                this.hasFiltered = hasFiltered;
+            },
+            onExitViewModeWithoutPagination() {
+                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
+                delete currentQuery['slideshow-from'];
+                this.$router.replace({ query: currentQuery });
+
+                // Sets the perpage and paged from previous configuration
+                this.$eventBusSearch.setItemsPerPage(this.latestPerPageAfterViewModeWithoutPagination, true);
+                this.$eventBusSearch.setPage(this.latestPageAfterViewModeWithoutPagination);
+                this.onChangeViewMode(this.latestNonFullscreenViewMode ? this.latestNonFullscreenViewMode : this.defaultViewMode);
+            },
+            onStartSlideshowFromItem(index) {
+                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
+                delete currentQuery['slideshow-from'];
+                this.$router.replace({ query: currentQuery }).catch(() => undefined);
+
+                this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
+                this.onChangeViewMode('slideshow');
+                this.initialItemPosition = index;
+            },
             ...mapActions('metadata', [
                 'fetchMetadata'
             ]),
@@ -1499,6 +1526,39 @@
 
                 return terms.join(' ' + this.$i18n.get('label_or') + ' ');
             },  
+            initialOrderBy(prefOrderBy) {
+                if (this.collectionId || !this.defaultOrderBy || this.defaultOrderBy === 'date')
+                    return prefOrderBy || this.defaultOrderBy;
+
+                const prefIsCreationDate = !prefOrderBy
+                    || prefOrderBy === 'date'
+                    || prefOrderBy === 'creation_date'
+                    || prefOrderBy.slug === 'creation_date'
+                    || prefOrderBy.orderby === 'date';
+
+                return prefIsCreationDate ? this.defaultOrderBy : prefOrderBy;
+            },
+            /**
+             * Sort kept aside for a search link with no orderby.
+             * initialOrderBy is the route watcher's choice: saved preference, then the block default.
+             * blockOrderBy already carries a metadata default's meta key.
+             */
+            sortRestoredAfterSearch(blockOrderBy) {
+                const orderByKey = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
+                let orderBy = this.initialOrderBy(this.$userPrefs.get(orderByKey));
+
+                if (orderBy && orderBy != 'name' && (orderBy.slug || typeof orderBy == 'string'))
+                    orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                if (orderBy && orderBy.metakey)
+                    return orderBy;
+
+                const orderby = orderBy && orderBy.orderby ? orderBy.orderby : orderBy;
+                if (typeof orderby == 'string' && orderby != 'name' && !(blockOrderBy && blockOrderBy.metakey && orderby === this.defaultOrderBy))
+                    return orderby;
+
+                return blockOrderBy || 'date';
+            },
             onChangeOrderBy(metadatum) {
                 this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
                 this.showItemsHiddingDueSortingDialog();
@@ -1542,6 +1602,7 @@
                     }
                 }
                 let thumbnailMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'thumbnail');
+                let modificationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'modification_date');
                 let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 
                 let titleMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'title' : false);
@@ -1550,6 +1611,7 @@
                 // Updates Search
                 let fetchOnlyArray = [
                     ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null),
+                    ((modificationDateMetadatum != undefined && modificationDateMetadatum.display) ? 'modification_date' : null),
                     ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
                     (this.isRepositoryLevel && titleMetadatum && titleMetadatum.display ? 'title' : null),
                     (this.isRepositoryLevel && descriptionMetadatum && descriptionMetadatum.display ? 'description' : null)
@@ -1691,10 +1753,12 @@
                                         
                                     }
 
+                                    let modificationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject)) ? (prefsFetchOnlyObject.indexOf('modification_date') >= 0) : true;
                                     let creationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject)) ? (prefsFetchOnlyObject.indexOf('creation_date') >= 0) : true;
                                 
                                     let fetchOnlyArray = [
                                         (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                        (modificationDateMetadatumDisplay ? 'modification_date' : null),
                                         (creationDateMetadatumDisplay ? 'creation_date' : null),
                                         (this.isRepositoryLevel && repositoryTitleDisplay ? 'title' : null),
                                         (this.isRepositoryLevel && repositoryDescriptionDisplay ? 'description' : null)
@@ -1714,6 +1778,14 @@
                                         });
                                     }
                                     this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: modificationDateMetadatumDisplay
+                                    });
+                                    this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
                                         metadata_type: undefined,
@@ -1725,7 +1797,7 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
                             
-                                    const basicAttributes = this.effectiveHideItemsThumbnail ? 'creation_date,title,description' : 'thumbnail,creation_date,title,description';
+                                    const basicAttributes = this.effectiveHideItemsThumbnail ? 'modification_date,creation_date,title,description' : 'thumbnail,modification_date,creation_date,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
                                     
                                     if (this.isRepositoryLevel) {
@@ -1745,6 +1817,14 @@
                                             this.sortingMetadata.push(metadatum);
                                     }
                                     
+                                    this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: true
+                                    });
                                     this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
@@ -1863,18 +1943,17 @@
                 });
             }, 500),
             removeEventListeners() {
-                // Component
-                this.$emitter.off();
                 // Window
                 if ( !this.hideFilters && !this.shouldNotHideFiltersOnMobile )
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 if (!this.hideAdvancedSearch)
-                    this.$emitter.off('openAdvancedSearch');
+                    this.$emitter.off('openAdvancedSearch', this.onOpenAdvancedSearch);
                 // $eventBusSearch
-                this.$eventBusSearchEmitter.off('isLoadingItems');
-                this.$eventBusSearchEmitter.off('hasFiltered');
-
+                this.$eventBusSearchEmitter.off('isLoadingItems', this.onIsLoadingItems);
+                this.$eventBusSearchEmitter.off('hasFiltered', this.onHasFiltered);
+                this.$eventBusSearchEmitter.off('exitViewModeWithoutPagination', this.onExitViewModeWithoutPagination);
+                this.$eventBusSearchEmitter.off('startSlideshowFromItem', this.onStartSlideshowFromItem);
             },
         }
     }

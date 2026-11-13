@@ -62,7 +62,16 @@
                                 :title="$i18n.getHelperTitle('taxonomies', 'description')" 
                                 :message="$i18n.getHelperMessage('taxonomies', 'description')"
                                 extra-classes="tainacan-repository-tooltip" />
+                        <component
+                                :is="'tainacan-rich-text-editor'"
+                                v-if="isRichTextEditorAllowed"
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                name="description"
+                                :invalid="editFormErrors['description'] != undefined"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 type="textarea"
@@ -267,11 +276,11 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <p 
-                        style="margin: 0 12px;"
-                        class="help is-danger">
+                <span
+                        class="help is-danger"
+                        style="margin: 0 12px;">
                     {{ formErrorMessage }}
-                </p>
+                </span>
                 <p 
                         v-if="updatedAt != undefined"
                         class="updated-at">
@@ -315,7 +324,6 @@
     import { mapActions } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
-
     export default {
         name: 'TaxonomyEditionForm',
         components: {
@@ -385,6 +393,7 @@
                 editFormErrors: {},
                 formErrorMessage: '',
                 entityName: 'taxonomy',
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 updatedAt: undefined,
                 shouldReloadTermsList: false,
                 themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
@@ -518,13 +527,16 @@
                             this.$router.push(this.$routerHelper.getTaxonomyEditPath(this.taxonomyId, true));
                         }
                     })
-                    .catch((errors) => {
-                        for (let error of errors.errors) {
-                            for (let attribute of Object.keys(error)) {
-                                this.editFormErrors[attribute] = error[attribute];
+                    .catch((error) => {
+                        const errors = error.response && error.response.data;
+                        if (errors && errors.errors) {
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let attribute of Object.keys(fieldError))
+                                    this.editFormErrors[attribute] = fieldError[attribute];
                             }
+                            this.formErrorMessage = errors.error_message;
                         }
-                        this.formErrorMessage = errors.error_message;
 
                         this.isLoadingTaxonomy = false;
                     });
@@ -586,6 +598,10 @@
 
                     })
                     .catch((error) => {
+                        const data = error.response && error.response.data;
+                        if (data && data.error_message)
+                            this.$showApiError(error, data.error_message);
+
                         this.$console.error(error)
                         this.isLoadingTaxonomy = false;
                     });
@@ -738,7 +754,7 @@
 
         .help {
             display: inline-flex;
-            font-size: 1.0em;
+            font-size: 0.813em;
             margin-top: 0;
             margin-inline-start: 24px;
 
@@ -772,4 +788,3 @@
         }
     }
 </style>
-

@@ -41,7 +41,10 @@
                     v-html="$i18n.getWithVariables( 'info_manage_taxonomies', [ $routerHelper.getAbsoluteAdminPath() + $routerHelper.getTaxonomiesPath() ] )" />
         </b-field>
 
-        <b-field :addons="false">
+        <b-field
+                :addons="false"
+                :type="optionMessage('input_type') ? 'is-danger' : ''"
+                :message="optionMessage('input_type')">
             <label class="label">
                 {{ $i18n.get('label_input_type') }}
                 <help-button
@@ -95,6 +98,8 @@
         <b-field
                 v-if="taxonomy_id && selectedTaxonomy && isTermCreationAllowedOnCurrentTaxonomy" 
                 :addons="false"
+                :type="optionMessage('allow_new_terms') ? 'is-danger' : ''"
+                :message="optionMessage('allow_new_terms')"
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
                 &nbsp;
             <b-switch
@@ -273,11 +278,11 @@
                 }
             },
             setError(){
-                if (this.errors && this.errors.taxonomy_id !== '') {
-                    this.setErrorsAttributes( 'is-danger', this.errors.taxonomy_id );
-                } else {
+                const message = this.optionMessage('taxonomy_id');
+                if (message !== '')
+                    this.setErrorsAttributes( 'is-danger', message );
+                else
                     this.setErrorsAttributes( '', '' );
-                }
                 return true;
             },
             isTermCreationAllowedOnCurrentTaxonomy() {
@@ -340,6 +345,10 @@
         methods: {
             setInputType( input ) {
                 this.input_type = input;
+            },
+            optionMessage(key) {
+                const message = this.errors && this.errors[key];
+                return typeof message === 'string' ? message : '';
             },
             setErrorsAttributes( type, message ) {
                 this.taxonomyType = type;

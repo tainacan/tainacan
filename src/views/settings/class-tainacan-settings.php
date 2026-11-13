@@ -152,6 +152,20 @@ class Settings extends Pages {
 		) );
 
 		$this->create_tainacan_setting( array(
+			'id' => 'enable_search_relevance',
+			'section' => 'tainacan_settings_search_and_performance',
+			'title' => __( 'Search result order', 'tainacan' ),
+			'label' => __( 'Order textual search results by relevance', 'tainacan' ),
+			'description' => __( 'When enabled, a textual search sorts by relevance: title and description matches come first, and other matches keep the creation date order. The visitor can still choose another sort. Disabling it skips that extra ordering.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'input_disabled' => defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' ),
+			'default' => defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' ) ? ! TAINACAN_DISABLE_SEARCH_RELEVANCE : true,
+			'forced_value' => defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' ) ? ! TAINACAN_DISABLE_SEARCH_RELEVANCE : null
+		) );
+
+		$this->create_tainacan_setting( array(
 			'id' => 'search_each_word_by_default',
 			'section' => 'tainacan_settings_search_and_performance',
 			'title' => __( 'Search matching mode', 'tainacan' ),
@@ -241,6 +255,56 @@ class Settings extends Pages {
 			'input_type' => 'checkbox',
 			'sanitize_callback' => 'rest_sanitize_boolean',
 			'default' => false
+		) );
+
+		/**
+		 * Input fields -----------------------------------------------------
+		 */
+		add_settings_section(
+			'tainacan_settings_input_fields',
+			__( 'Input fields', 'tainacan' ),
+			array( $this, 'input_fields_section_description' ),
+			'tainacan_settings'
+		);
+
+		$this->create_tainacan_setting( array(
+			'id' => 'allow_rich_text_editor',
+			'section' => 'tainacan_settings_input_fields',
+			'title' => __( 'Rich text editor', 'tainacan' ),
+			'label' => __( 'Allow the rich text editor in text inputs', 'tainacan' ),
+			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
+			'type' => 'boolean',
+			'input_type' => 'checkbox',
+			'input_disabled' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ),
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'default' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ) ? TAINACAN_ALLOW_RICH_TEXT_EDITOR : false,
+			'forced_value' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ) ? TAINACAN_ALLOW_RICH_TEXT_EDITOR : null
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'datepickers_year_min',
+			'section' => 'tainacan_settings_input_fields',
+			'title' => __( 'Datepicker years before', 'tainacan' ),
+			// translators: %s: The default number of years.
+			'description' => sprintf( __( 'Sets how far back the datepicker year selector goes, counting from the year being displayed. Enter zero or a negative number (e.g. -500 lets you pick up to 500 years back). The default is %s. For historical collections, use a larger negative number.', 'tainacan' ), self::DATEPICKERS_YEAR_MIN_DEFAULT ),
+			'type' => 'integer',
+			'input_type' => 'number',
+			'input_attrs' => 'max=0 step=1 required',
+			'sanitize_callback' => array( $this, 'sanitize_datepickers_year_min' ),
+			'default' => self::DATEPICKERS_YEAR_MIN_DEFAULT,
+		) );
+
+		$this->create_tainacan_setting( array(
+			'id' => 'datepickers_year_max',
+			'section' => 'tainacan_settings_input_fields',
+			'title' => __( 'Datepicker years after', 'tainacan' ),
+			// translators: %s: The default number of years.
+			'description' => sprintf( __( 'Sets how far forward the datepicker year selector goes, counting from the year being displayed. Enter zero or a positive number (e.g. 50 lets you pick up to 50 years ahead). The default is %s.', 'tainacan' ), self::DATEPICKERS_YEAR_MAX_DEFAULT ),
+			'type' => 'integer',
+			'input_type' => 'number',
+			'input_attrs' => 'min=0 step=1 required',
+			'sanitize_callback' => array( $this, 'sanitize_datepickers_year_max' ),
+			'default' => self::DATEPICKERS_YEAR_MAX_DEFAULT,
 		) );
 
 		/**
@@ -379,6 +443,7 @@ class Settings extends Pages {
 		$orderby_options = array(
 			'title' => __( 'Title', 'tainacan' ),
 			'date' => __( 'Creation date', 'tainacan' ),
+			'modified' => __( 'Modification date', 'tainacan' ),
 		);
 		$orderby_options_html = '';
 		foreach( $orderby_options as $key => $label ) {
@@ -510,42 +575,6 @@ class Settings extends Pages {
 			'input_type' => 'checkbox',
 			'sanitize_callback' => 'rest_sanitize_boolean',
 			'default' => false,
-		) );
-
-		/**
-		 * Date selectors -----------------------------------------------------
-		 */
-		add_settings_section(
-			'tainacan_settings_datepickers',
-			__( 'Date selectors', 'tainacan' ),
-			array( $this, 'datepickers_section_description' ),
-			'tainacan_settings'
-		);
-
-		$this->create_tainacan_setting( array(
-			'id' => 'datepickers_year_min',
-			'section' => 'tainacan_settings_datepickers',
-			'title' => __( 'Years before', 'tainacan' ),
-			// translators: %s: The default number of years.
-			'description' => sprintf( __( 'Sets how far back the year selector goes, counting from the year being displayed. Enter zero or a negative number (e.g. -500 lets you pick up to 500 years back). The default is %s. For historical collections, use a larger negative number.', 'tainacan' ), self::DATEPICKERS_YEAR_MIN_DEFAULT ),
-			'type' => 'integer',
-			'input_type' => 'number',
-			'input_attrs' => 'max=0 step=1 required',
-			'sanitize_callback' => array( $this, 'sanitize_datepickers_year_min' ),
-			'default' => self::DATEPICKERS_YEAR_MIN_DEFAULT,
-		) );
-
-		$this->create_tainacan_setting( array(
-			'id' => 'datepickers_year_max',
-			'section' => 'tainacan_settings_datepickers',
-			'title' => __( 'Years after', 'tainacan' ),
-			// translators: %s: The default number of years.
-			'description' => sprintf( __( 'Sets how far forward the year selector goes, counting from the year being displayed. Enter zero or a positive number (e.g. 50 lets you pick up to 50 years ahead). The default is %s.', 'tainacan' ), self::DATEPICKERS_YEAR_MAX_DEFAULT ),
-			'type' => 'integer',
-			'input_type' => 'number',
-			'input_attrs' => 'min=0 step=1 required',
-			'sanitize_callback' => array( $this, 'sanitize_datepickers_year_max' ),
-			'default' => self::DATEPICKERS_YEAR_MAX_DEFAULT,
 		) );
 
 		/**
@@ -876,6 +905,14 @@ class Settings extends Pages {
 	<?php
 	}
 
+	public function input_fields_section_description() {
+	?>
+		<p class="settings-section-description">
+			<?php esc_html_e( 'Options for input fields in Tainacan, including the rich text editor and the year range offered by datepickers in date metadata and filters.', 'tainacan' ); ?>
+		</p>
+	<?php
+	}
+
 	public function theme_templates_section_description() {
 	?>
 		<p class="settings-section-description">
@@ -896,17 +933,6 @@ class Settings extends Pages {
 	?>
 		<p class="settings-section-description">
 			<?php esc_html_e( 'Core title, core description, and item thumbnails on the repository items list and on taxonomy term items lists, for both public and admin pages. Each collection keeps its own definitions and it is not affected by these settings.', 'tainacan' ); ?>
-		</p>
-	<?php
-	}
-
-	/**
-	 * Renders the description of the date selectors settings section.
-	 */
-	public function datepickers_section_description() {
-	?>
-		<p class="settings-section-description">
-			<?php esc_html_e( 'Options for the date selectors used in date metadata and filters. They define the years range offered by the year selector, relative to the year being displayed.', 'tainacan' ); ?>
 		</p>
 	<?php
 	}

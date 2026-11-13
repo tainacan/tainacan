@@ -709,7 +709,7 @@ export default function ({ attributes, setAttributes }) {
                                                 tagName="p"
                                                 value={ termsAgreementMessage }
                                                 onChange={ ( inputContent ) => setAttributes( { termsAgreementMessage: inputContent } ) }
-                                                placeholder={ __( 'Type a message requiring the user to agree with certain conditions.' ) }
+                                                placeholder={ __( 'Type a message requiring the user to agree with certain conditions.', 'tainacan' ) }
                                             />
                                     </div>
                                     : null

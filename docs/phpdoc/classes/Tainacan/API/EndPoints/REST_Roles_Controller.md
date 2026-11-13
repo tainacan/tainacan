@@ -16,6 +16,7 @@ role creation, updates, deletion, and capability management.
 classDiagram
     direction TB
     class REST_Roles_Controller {
+        -core_roles : mixed
         +__construct()
         +register_routes()
         +create_item(request)
@@ -44,6 +45,16 @@ classDiagram
         +get_admin_ui_options_schema()
     }
 ```
+
+## Properties
+
+### core_roles
+
+```php
+private $core_roles
+```
+
+***
 
 ## Methods
 
@@ -515,15 +526,18 @@ public add_support_to_tax_query_like(mixed $args): mixed
 
 ### sanitize_value
 
+Sanitize query values as post HTML. Anchor tags are removed unless the field stores rich text.
+
 ```php
-protected sanitize_value(mixed $value): mixed
+protected sanitize_value(mixed $value, bool $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$value`        | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
 
 ***
 

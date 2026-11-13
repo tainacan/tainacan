@@ -1,17 +1,24 @@
 <template>
     <div v-if="!$adminOptions.hideItemEditionDocument && ( !$adminOptions.hideItemEditionDocumentFileInput || !$adminOptions.hideItemEditionDocumentTextInput || !$adminOptions.hideItemEditionDocumentUrlInput )">
         <div class="section-label">
-            <label>
+            <label :class="{ 'has-text-danger': errorMessage }">
                 <span class="icon has-text-dark">
                     <i :class="'tainacan-icon tainacan-icon-' + ( (!form.document_type || form.document_type == 'empty' ) ? 'item' : (form.document_type == 'attachment' ? 'attachments' : form.document_type))" />
                 </span>
                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (form.document != undefined && form.document != null && form.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
             </label>
+            <span
+                    v-if="collection && collection.item_require_document === 'yes'"
+                    class="required-metadatum-asterisk"
+                    :class="errorMessage ? 'is-danger' : ''">
+                *
+            </span>
             <help-button
                     :title="collection && collection.item_document_label ? collection.item_document_label : $i18n.getHelperTitle('items', 'document')"
                     :message="$i18n.getHelperMessage('items', 'document')" />
         </div>
         <div
+                id="tainacan-item-metadatum_id-document"
                 class="section-box document-field"
                 :class="{ 'is-dragging-over': isDraggingOver }"
                 @dragenter="onDragEnter"
@@ -168,6 +175,11 @@
                     </button>
                 </li>
             </ul>
+            <p
+                    v-if="errorMessage"
+                    class="help is-danger">
+                {{ errorMessage }}
+            </p>
         </div>
     </div>
 </template>
@@ -181,7 +193,8 @@ export default {
         uploadProgress: {
             type: Number,
             default: null
-        }
+        },
+        errorMessage: [String, Array]
     },
     emits: [
         'on-set-file-document',

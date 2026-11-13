@@ -990,6 +990,59 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	/**
+	 * @see https://github.com/tainacan/tainacan/issues/1281
+	 */
+	public function test_fetch_filters_includes_filter_with_non_zero_menu_order() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Collection with ordered filter',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Metadatum with ordered filter',
+				'status'        => 'publish',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Numeric'
+			),
+			true
+		);
+
+		$filter = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'        => 'Filter with non-zero menu_order',
+				'collection'  => $collection,
+				'metadatum'   => $metadatum,
+				'filter_type' => 'Tainacan\Filter_Types\Numeric_Interval',
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		wp_update_post( array( 'ID' => $filter->get_id(), 'menu_order' => 10 ) );
+
+		$request  = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/filters' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$returned_ids = array_map(
+			function( $filter ) {
+				return $filter['id'];
+			},
+			$response->get_data()
+		);
+
+		$this->assertContains( $filter->get_id(), $returned_ids );
+	}
+
+	/**
 	 * @see https://github.com/tainacan/tainacan/issues/1248
 	 */
 	public function test_create_taxonomy_filters() {

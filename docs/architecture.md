@@ -15,33 +15,31 @@ Tainacan is developed as a WordPress plugin, leveraging its native structure and
 
 There are other parts of the code that leverage functionality related to consuming and manipulating data but these three are the most relevant.
 
-### 1.1 Main Entities and Repositories
+### 1.1 Where the code lives
 
-The following table shows the main entities of the system, their corresponding repositories, and the location of implementation files. Each entity has a dedicated repository that manages its persistence and retrieval operations.
+From Tainacan source code, the content on `src/` holds the portion of the code that WordPress loads. Everything outside it is the development workspace (`tests`, `wp-repo-assets`, etc).
 
-| Entity                             | Repository                                | Code Location                            |
-| ---------------------------------- | ----------------------------------------- | ---------------------------------------- |
-| Collection (`tainacan-collection`) | `Tainacan\Repositories\Collections`       | `class-tainacan-collections.php`         |
-| Item (`tainacan-item`)             | `Tainacan\Repositories\Items`             | `class-tainacan-items.php`               |
-| Metadatum (`tainacan-metadatum`)   | `Tainacan\Repositories\Metadata`          | `class-tainacan-metadata.php`            |
-| Metadata Section                   | `Tainacan\Repositories\Metadata_Sections` | `class-tainacan-metadata-sections.php`   |
-| Filter                             | `Tainacan\Repositories\Filters`           | `class-tainacan-filters.php`             |
-| Taxonomy                           | `Tainacan\Repositories\Taxonomies`        | `class-tainacan-taxonomies.php`          |
-| Term                               | `Tainacan\Repositories\Terms`             | `class-tainacan-terms.php`               |
+| Path | What it holds |
+| --- | --- |
+| `src/tainacan.php` | Plugin header, constants, and the first `require` |
+| `src/classes/tainacan-creator.php` | Autoloader and the handlers started at boot |
+| `src/classes/entities/` | Entity classes |
+| `src/classes/repositories/` | Persistence |
+| `src/classes/api/` | REST controllers |
+| `src/classes/background-process/` | Importers, exporters, and other background jobs |
+| `src/classes/mappers/` | Metadata standards, such as Dublin Core |
+| `src/classes/exposers/` | Alternative API response formats |
+| `src/classes/oaipmh/` | OAI-PMH protocol support |
+| `src/classes/theme-helper/` | Template tags for themes |
+| `src/views/admin/` | Admin application |
+| `src/views/gutenberg-blocks/` | Block editor blocks |
+| `src/migrations.php` | Upgrades for existing installs |
 
-### 1.2 Detailed Code Locations for Entities
+Where each record is stored is in [Key concepts](key-concepts.md). How to create and read one is the [internal API](internal-api.md). The class reference generated from the source is the [code reference](phpdoc/Home.md).
 
-| Entity           | File (Path)                                                |
-| ---------------- | ---------------------------------------------------------- |
-| Collection       | `src/classes/entities/class-tainacan-collection.php`       |
-| Item             | `src/classes/entities/class-tainacan-item.php`             |
-| Metadatum        | `src/classes/entities/class-tainacan-metadatum.php`        |
-| Metadata Section | `src/classes/entities/class-tainacan-metadata-section.php` |
-| Filter           | `src/classes/entities/class-tainacan-filter.php`           |
-| Taxonomy         | `src/classes/entities/class-tainacan-taxonomy.php`         |
-| Term             | `src/classes/entities/class-tainacan-term.php`             |
+### 1.2 How the plugin starts
 
-
+`src/tainacan.php` defines the constants and loads `src/classes/tainacan-creator.php`, then `src/migrations.php`. The creator file loads the background-process handlers and calls `get_instance()` on `Importer_Handler`, `Exporter_Handler`, and `Generic_Process_Handler`. It then registers `tainacan_autoload()`. A class named `Tainacan\Some_Class` is loaded from a file named `class-tainacan-some-class.php` in one of the directories that file lists.
 
 ## 2. REST API
 
@@ -108,19 +106,17 @@ Tainacan's data architecture is based on WordPress infrastructure, using and ext
 | Taxonomies and Terms         | `wp_terms`, `wp_term_taxonomy`,  `wp_term_relationships`  | Used for categorization        |
 | Background Processes         | `wp_tnc_bg_process`            | Import, export, bulk edition etc. |
 
+The `post_type` value for each entity is in [Key concepts](key-concepts.md#storage). An item is a post of type `tnc_col_{id}_item`, not a single shared post type.
 
-### 4.2 Domain Relationships
+### 4.2 Domain relationships
 
-* A collection contains multiple metadata and sections.
-* An item belongs to a single collection and may be classified by terms from different taxonomies.
-* Taxonomy-type metadata acts as a bridge to terms.
-* Users have differentiated permissions via WordPress roles and capabilities.
+How collections, items, metadata, taxonomies, and filters relate is described in [Key concepts](key-concepts.md#relationships).
 
-# 4.3 Data Handling and WordPress Database Access
+### 4.3 Data Handling and WordPress Database Access
 
 Data manipulation in the Tainacan plugin is performed using a combination of native WordPress functions and direct database access when needed.
 
-### WordPress Native Functions
+#### WordPress Native Functions
 
 For most standard operations, Tainacan relies on WordPress native functions such as:
 
@@ -132,7 +128,7 @@ For most standard operations, Tainacan relies on WordPress native functions such
 
 These functions ensure compatibility with the WordPress ecosystem and benefit from built-in features like caching and hooks.
 
-### Direct Database Access with `$wpdb`
+#### Direct Database Access with `$wpdb`
 
 For more complex scenarios or when dealing with custom database tables (e.g., background processes), Tainacan uses direct SQL access via the `$wpdb` object:
 
@@ -143,7 +139,20 @@ For more complex scenarios or when dealing with custom database tables (e.g., ba
 
 Tainacan features a flexible structure for data import and export. Operations are performed through sessions and executed asynchronously.
 
-### 5.1 Import
+### 5.1 How records leave the repository
+
+Four mechanisms are easy to mix up:
+
+| Mechanism | What it does |
+| --- | --- |
+| Mapper | Renames a collection's metadata to a standard, such as Dublin Core. It does not write a file or change the response format. |
+| Exposer | Changes the REST response for a request, for example to XML or CSV. A request can ask for a mapper the exposer supports. |
+| Exporter | Builds a downloadable file in the background. The file can use the collection's own metadata or a mapped standard. |
+| OAI-PMH | An exposer with a fixed mapper. `Tainacan\Exposers\OAI_PMH` accepts only Dublin Core. |
+
+See [Exporting and exposing](exporting-and-exposing.md), [Mapping standards](mapping-standards.md), and [Exposers](exposers.md).
+
+### 5.2 Import
 
 * Available importers: CSV, Flickr, YouTube, etc.
 * Sessions created via `/importers/session`
@@ -151,7 +160,7 @@ Tainacan features a flexible structure for data import and export. Operations ar
 * Base class: `class-tainacan-importer.php`
 * Manager: `class-tainacan-importer-handler.php`
 
-### 5.2 Export
+### 5.3 Export
 
 * Exporters: CSV, Vocabulary CSV.
 * Customizable sessions
@@ -159,6 +168,9 @@ Tainacan features a flexible structure for data import and export. Operations ar
 * Asynchronous execution with access to logs/results via endpoint
 * Manager: `class-tainacan-exporter-handler.php`
 
+### 5.4 Other background work
+
+Bulk edit is not an importer or an exporter. `Generic_Process_Handler` registers it as `Tainacan\GenericProcess\Bulk_Edit_Process` and runs it on the same background-process queue. Plugins can register further processes on the `tainacan-register-generic_process` action.
 
 ## 6. Frontend Architecture
 
@@ -232,18 +244,5 @@ Tainacan uses Vuex for centralized state management. The main state modules incl
 - **Search**: State related to search and filtering
 - **Filter**: State related to available filters
 - **Metadata**: State related to available metadata
-
-
-## 7. References and Contribution
-
-* 📚 **Official Wiki**: [https://tainacan.github.io/tainacan-wiki/](https://tainacan.github.io/tainacan-wiki/)
-* 💻 **Source Code**: [https://github.com/tainacan/tainacan](https://github.com/tainacan/tainacan)
-* 💬 **Community Forum**: [https://tainacan.discourse.group/](https://tainacan.discourse.group/)
-* ✉️ **Mailing List**: [https://groups.google.com/g/tainacan](https://groups.google.com/g/tainacan)
-
-
-
-
-
 
 

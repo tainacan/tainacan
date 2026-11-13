@@ -943,6 +943,32 @@ html {
     }
 }
 
+/* Keep the WordPress toolbar visible while hiding only its side menu. */
+.tainacan-pages-container.tainacan-pages-container--toolbar-only {
+    position: fixed;
+    top: var(--wp-admin--admin-bar--height, 32px);
+    inset-inline-start: 0;
+    width: 100%;
+    height: calc(100dvh - var(--wp-admin--admin-bar--height, 32px));
+
+    #wpwrap {
+        z-index: 1;
+    }
+    #adminmenumain {
+        display: none;
+    }
+    #wpcontent,
+    #wpfooter {
+        margin-inline-start: 0;
+    }
+    #wpadminbar {
+        z-index: 99999;
+
+        #wp-admin-bar-menu-toggle {
+            display: none !important;
+        }
+    }
+}
 
 /* Fullscreen mode */
 .tainacan-pages-container.tainacan-pages-container--fullscreen {
@@ -1004,7 +1030,9 @@ html {
 /* Iframe Mode (is used with fullscreen) */
 .tainacan-pages-container.tainacan-pages-container--iframe-mode {
     #wpadminbar,
-    #adminmenumain {
+    #adminmenumain,
+    #screen-meta,
+    #screen-meta-links {
         display: none;
     }
     #wpbody {

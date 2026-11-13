@@ -126,7 +126,10 @@
                     </span>
                 </p>
             </legend>    
-            <b-field :addons="false">
+            <b-field
+                    :addons="false"
+                    :type="fieldMessage('first_comparator') ? 'is-danger' : ''"
+                    :message="fieldMessage('first_comparator')">
                 <b-select
                         v-if="showEditFirstComparatorOptions"
                         v-model="firstComparator"
@@ -178,7 +181,10 @@
             <div class="logic-divider">
                 <span>{{ $i18n.get('label_and') }}</span>
             </div>
-            <b-field :addons="false">
+            <b-field
+                    :addons="false"
+                    :type="fieldMessage('second_comparator') ? 'is-danger' : ''"
+                    :message="fieldMessage('second_comparator')">
                 <b-select
                         v-if="showEditSecondComparatorOptions"
                         v-model="secondComparator"
@@ -299,8 +305,9 @@
                 this.fillSelectedName();
             },
             errors() {
-                if ( this.errors && this.errors.secondary_filter_metadatum_id !== '' )
-                    this.setErrorsAttributes( 'is-danger', this.errors.secondary_filter_metadatum_id );
+                const message = this.fieldMessage('secondary_filter_metadatum_id');
+                if (message !== '')
+                    this.setErrorsAttributes( 'is-danger', message );
                 else
                     this.setErrorsAttributes( '', '' );
             }
@@ -365,6 +372,10 @@
                     secondary_filter_metadatum_name: this.secondNumericMetadatumName,
                     accept_numeric_interval: this.acceptNumericInterval
                 });
+            },
+            fieldMessage(key) {
+                const message = this.errors && this.errors[key];
+                return typeof message === 'string' ? message : '';
             },
             setErrorsAttributes( type, message ) {
                 this.metadataType = type;

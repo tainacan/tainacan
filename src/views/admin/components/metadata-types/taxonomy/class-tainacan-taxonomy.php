@@ -437,7 +437,7 @@ class Taxonomy extends Metadata_Type {
 	 * @param \Tainacan\Entities\Item|null $item Optional item for link context.
 	 * @return string HTML <ul><li>...</li></ul>.
 	 */
-	private function render_terms_flat_list( array $terms, \Tainacan\Entities\Item $item = null ) {
+	private function render_terms_flat_list( array $terms, ?\Tainacan\Entities\Item $item = null ) {
 		$out = '<ul>';
 		foreach ( $terms as $term ) {
 			$out .= '<li>' . $this->term_to_html( $term, $item ) . '</li>';
@@ -455,7 +455,7 @@ class Taxonomy extends Metadata_Type {
 	 * @param \Tainacan\Entities\Item|null $item Optional item for link context.
 	 * @return string Nested <ul>/<li> markup.
 	 */
-	private function render_terms_hierarchy_tree( array $terms, \Tainacan\Entities\Item $item = null ) {
+	private function render_terms_hierarchy_tree( array $terms, ?\Tainacan\Entities\Item $item = null ) {
 		$taxonomy_id = $this->get_option('taxonomy_id');
 		$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( (int) $taxonomy_id );
 		if ( ! $taxonomy_slug || ! taxonomy_exists( $taxonomy_slug ) ) {
@@ -540,7 +540,7 @@ class Taxonomy extends Metadata_Type {
 	 * @param \Tainacan\Entities\Item|null $item Optional item.
 	 * @return string HTML fragment.
 	 */
-	private function render_terms_tree_level( array $terms, array $children_by_parent, \Tainacan\Entities\Item $item = null ) {
+	private function render_terms_tree_level( array $terms, array $children_by_parent, ?\Tainacan\Entities\Item $item = null ) {
 		if ( empty( $terms ) ) {
 			return '';
 		}
@@ -559,7 +559,7 @@ class Taxonomy extends Metadata_Type {
 		return $out;
 	}
 
-	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term, \Tainacan\Entities\Item $item = null) {
+	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term, ?\Tainacan\Entities\Item $item = null) {
 
 		if ( $this->get_option('hide_hierarchy_path') == 'yes' )
 			return $this->term_to_html($term, $item);
@@ -578,7 +578,7 @@ class Taxonomy extends Metadata_Type {
 		return \implode($glue, $terms);
 	}
 
-	private function term_to_html($term, \Tainacan\Entities\Item $item = null) {
+	private function term_to_html($term, ?\Tainacan\Entities\Item $item = null) {
 		$collections = ( isset($item) && $this->get_option( 'link_filtered_by_current_collection' ) === 'yes' ) ? [ $item->get_collection_id() ] : $this->get_option( 'link_filtered_by_collections' );
 		$do_not_display_term_as_link = $this->get_option('do_not_dispaly_term_as_link') == 'yes';
 

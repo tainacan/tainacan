@@ -80,6 +80,7 @@ class Term extends Entity {
 		$term_array['header_image']   = $this->get_header_image();
 		$term_array['url']            = get_term_link( $this->get_id() );
 		$term_array['hierarchy_path'] = get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false]);
+		$term_array['ancestors']      = array_map( 'intval', get_ancestors( (int) $term_id, $taxonomy_slug, 'taxonomy' ) );
 
 		return apply_filters('tainacan-term-to-array', $term_array, $this);
 	}

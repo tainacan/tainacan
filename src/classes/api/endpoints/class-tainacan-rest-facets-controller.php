@@ -24,8 +24,6 @@ class REST_Facets_Controller extends REST_Controller {
 	 */
 	public function __construct() {
 		$this->rest_base = 'facets';
-		$this->total_pages = 0;
-		$this->total_items = 0;
 		parent::__construct();
         add_action('init', array(&$this, 'init_objects'), 11);
 	}
@@ -106,6 +104,12 @@ class REST_Facets_Controller extends REST_Controller {
 				$query_args = is_user_logged_in() && is_admin() ? ["status" =>  ["publish", "private", "draft"]] : [];
 			}
 			$query_args = $this->prepare_filters($query_args);
+
+			// current_query is not a registered REST argument, so sentence arrives as the
+			// query-string value. The string "false" must not be treated as a phrase search.
+			if ( is_array( $query_args ) && array_key_exists( 'sentence', $query_args ) ) {
+				$query_args['sentence'] = rest_sanitize_boolean( $query_args['sentence'] );
+			}
 
 			if ( isset($request['hideempty']) && $request['hideempty'] == 0 ) {
 				$query_args = false;
@@ -264,6 +268,13 @@ class REST_Facets_Controller extends REST_Controller {
 							'parent' => [
 								'type' => 'string',
 								'description' => __( 'Parent term id, if coming from a Taxonomy metadata type that has hierarchy.', 'tainacan' ),
+							],
+							'ancestors' => [
+								'type' => 'array',
+								'description' => __( 'Ancestor term ids, nearest parent first, when the facet comes from a hierarchical taxonomy.', 'tainacan' ),
+								'items' => [
+									'type' => 'integer',
+								],
 							],
 							'total_items' => [
 								'type' => 'integer',

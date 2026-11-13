@@ -5,7 +5,14 @@
                 {{ $i18n.get('instruction_write_text') }}
             </h2>
         </div>
+        <component
+                :is="'tainacan-rich-text-editor'"
+                v-if="isRichTextEditorAllowed"
+                id="tainacan-item-document-text"
+                v-model="localTextContent"
+                aria-labelledby="item-document-text-modal-title" />
         <b-input
+                v-else
                 ref="item-document-text-input"
                 v-model="localTextContent"
                 aria-labelledby="item-document-text-modal-title"
@@ -46,13 +53,15 @@ export default {
     ],
     data(){
         return {
-            localTextContent: ''
+            localTextContent: '',
+            isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1'
         }
     },
     mounted() {
         this.localTextContent = this.textContent;
 
         if (
+            !this.isRichTextEditorAllowed &&
             this.$refs && 
             this.$refs['item-document-text-input'] &&
             this.$refs['item-document-text-input']['$el'] &&

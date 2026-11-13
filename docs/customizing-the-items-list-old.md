@@ -1,13 +1,13 @@
 # Customizing the Items List (previous to 0.16)
 
 > [!NOTE]
-> WARNING: this page was made before 0.16 release, which means it is outdated. For the latest content on how to customize the items list, please visit [this page](/dev/customizing-the-items-list).
+> WARNING: this page was made before 0.16 release, which means it is outdated. For the latest content on how to customize the items list, please visit [this page](customizing-the-items-list.md).
 
-A lot can be done for adding Tainacan support to your theme using the template hierarchy logic mentioned in the section [Custom Templates](/dev/custom-templates.md). While this might be enough you may be interested in tweaking a bit more of the appearance of the most complex page that Tainacan offers to you: **The Items List Page**. Check the example bellow, of the child theme of [TwentyTwenty](https://wordpress.org/themes/twentytwenty/ ":ignore") that implemented a basic `archive-items.php`:
+A lot can be done for adding Tainacan support to your theme using the template hierarchy logic mentioned in the section [Custom Templates](custom-templates.md). While this might be enough you may be interested in tweaking a bit more of the appearance of the most complex page that Tainacan offers to you: **The Items List Page**. Check the example bellow, of the child theme of [TwentyTwenty](https://wordpress.org/themes/twentytwenty/ ":ignore") that implemented a basic `archive-items.php`:
 
 ![Template added to the items list page.](./_assets/images/the-vue-items-list-component-1.png)
 
-Looks like a powerful faceted search interface, but we definitelly could make some font adjustments to match better with our parent theme. It turns out that this page works in a much different strategy, which is explained in details in [the "Vue Items List Component" section](/dev/the-vue-items-list-component.md).
+Looks like a powerful faceted search interface, but we definitelly could make some font adjustments to match better with our parent theme. It turns out that this page works in a much different strategy, which is explained in details in [the "Vue Items List Component" section](the-vue-items-list-component.md).
 
 > To summarize, **the Items List returned by _tainacan_the_faceted_search()_ is acually a Vue.js component**, rendered on the client side. Most of its code is shared with the admin panel version of the items list.
 
@@ -203,7 +203,7 @@ So here are a few examples of customizations that you can do, now that you under
    }
    ```
    Of course, you need to take care of margins and paddings here too, depending on how much you are changing these values;
-3. **Ajust the list container according to site margin**. In many themes, a page has a lateral margin, that keeps content inside a container of a certain `max-width`, which can leave the items list a bit...tight. The best way to handle this is to have a [Custom Template](/dev/custom-templates.md) for the items list that provides proper container classes for the list section. If you are not able to do that, you can still solve it with negative margins and a bit of work:
+3. **Ajust the list container according to site margin**. In many themes, a page has a lateral margin, that keeps content inside a container of a certain `max-width`, which can leave the items list a bit...tight. The best way to handle this is to have a [Custom Template](custom-templates.md) for the items list that provides proper container classes for the list section. If you are not able to do that, you can still solve it with negative margins and a bit of work:
    ```css
    /* Replace $max-width by your container max-width. Remember that it may change according to the screen size, which can be adapted with media queries. /*
    /* The items list container */

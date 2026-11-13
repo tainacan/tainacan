@@ -15,34 +15,6 @@ updates, deletion, and querying with proper validation and logging.
 ```mermaid
 classDiagram
     direction TB
-    class Items {
-        +entities_type : mixed
-        -fetching_from_collections : mixed
-        -relationsip_metaquery : array{meta_id?: string, search_meta_id?: string, search_meta_value?: string}
-        #init()
-        #_get_map()
-        +get_cpt_labels()
-        +register_post_type()
-        +insert(item)
-        +fetch(args, collections, output)
-        +fetch_ids(args, collections)
-        +_filter_where(where, wp_query)
-        +update(object, new_values)
-        +generate_index_content(item)
-        +extract_document_content(item, context)
-        +supports_document_content_extraction(item)
-        -validate_default_pdf_document_extraction(item)
-        -extract_document_content_default(item)
-        +get_thumbnail_id_from_document(item)
-        +hook_api_updated_item(updated_item, attributes)
-        +hook_comments_open(comments_open, post_id)
-        +map_meta_cap(caps, cap, user_id, args)
-        -get_related_items_by_collection(item, collection, metadata, args)
-        +fetch_related_items(item, args)
-        -parse_relationship_metaquery(args)
-        +posts_where_relationship_metaquery(where)
-        -parse_core_metadata_for_advanced_search(args, collections)
-    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -57,7 +29,7 @@ classDiagram
         +get_name()
         +insert(obj)
         +insert_metadata(obj, prop, diffs)
-        +maybe_add_slashes(value)
+        +maybe_add_slashes(value, remove_links)
         +fetch_output(WP_Query, output)
         +parse_fetch_args(args)
         +get_default_properties(map)
@@ -78,7 +50,40 @@ classDiagram
         -insert_thumbnail(obj, diffs)
         +get_descendants_ids(id, depth)
         +get_capabilities()
-        #sanitize_value(content)
+        #sanitize_value(content, remove_links)
+    }
+    class Items {
+        +entities_type : mixed
+        -fetching_from_collections : mixed
+        -relationsip_metaquery : array
+        -search_relevance_tail : string
+        #init()
+        #_get_map()
+        +get_cpt_labels()
+        +register_post_type()
+        +insert(item)
+        +fetch(args, collections, output)
+        -maybe_order_search_by_relevance(args)
+        +search_relevance_orderby(orderby, query)
+        -compile_orderby_tail(orderby)
+        -remove_search_relevance_order()
+        +fetch_ids(args, collections)
+        +_filter_where(where, wp_query)
+        +update(object, new_values)
+        +generate_index_content(item)
+        +extract_document_content(item, context)
+        +supports_document_content_extraction(item)
+        -validate_default_pdf_document_extraction(item)
+        -extract_document_content_default(item)
+        +get_thumbnail_id_from_document(item)
+        +hook_api_updated_item(updated_item, attributes)
+        +hook_comments_open(comments_open, post_id)
+        +map_meta_cap(caps, cap, user_id, args)
+        -get_related_items_by_collection(item, collection, metadata, args)
+        +fetch_related_items(item, args)
+        -parse_relationship_metaquery(args)
+        +posts_where_relationship_metaquery(where)
+        -parse_core_metadata_for_advanced_search(args, collections)
     }
     Repository ..> Items
     Repository ..> Repository
@@ -111,6 +116,16 @@ Temporary state for the optional relationship metaquery posts_where filter.
 
 ```php
 private array{meta_id?: string, search_meta_id?: string, search_meta_value?: string} $relationsip_metaquery
+```
+
+***
+
+### search_relevance_tail
+
+Secondary ORDER BY used after WordPress search relevance, for the query in progress.
+
+```php
+private string|null $search_relevance_tail
 ```
 
 ***
@@ -238,6 +253,73 @@ You can pass the Collection ID or object, or an Array of IDs or collection objec
 **Return Value:**
 
 an instance of wp query OR array of entities OR a Item;
+
+***
+
+### maybe_order_search_by_relevance
+
+Rank a textual search by title and description when the requested sort is relevance.
+
+```php
+private maybe_order_search_by_relevance(array $args): array
+```
+
+WordPress only applies that ranking when orderby is the string "relevance".
+The ranking stays best-match-first. Creation date, in the requested direction,
+is the tiebreak, then the item ID. Any other orderby is left untouched, so an
+explicit title, date or metadata sort replaces the ranking. ID-only queries
+(the facets subquery) keep their own order. When the Search and performance
+option is off, or TAINACAN_DISABLE_SEARCH_RELEVANCE is defined, the relevance
+key is rewritten to creation date and the ranking is not built.
+
+**Parameters:**
+
+| Parameter | Type      | Description                                                  |
+|-----------|-----------|--------------------------------------------------------------|
+| `$args`   | **array** | WP_Query args, after the string orderby has been normalized. |
+
+***
+
+### search_relevance_orderby
+
+Replace the date tail WordPress adds for orderby=relevance with the requested sort.
+
+```php
+public search_relevance_orderby(string $orderby, \WP_Query $query): string
+```
+
+**Parameters:**
+
+| Parameter  | Type          | Description                                   |
+|------------|---------------|-----------------------------------------------|
+| `$orderby` | **string**    | ORDER BY clause without the ORDER BY keyword. |
+| `$query`   | **\WP_Query** | Query being ordered.                          |
+
+***
+
+### compile_orderby_tail
+
+```php
+private compile_orderby_tail(array $orderby): string
+```
+
+**Parameters:**
+
+| Parameter  | Type      | Description                        |
+|------------|-----------|------------------------------------|
+| `$orderby` | **array** | Map of orderby key to ASC or DESC. |
+
+**Return Value:**
+
+Empty when a key is not a post column WordPress can sort without an extra join.
+
+***
+
+### remove_search_relevance_order
+
+```php
+private remove_search_relevance_order(): mixed
+```
 
 ***
 
@@ -713,14 +795,15 @@ on error
 ### maybe_add_slashes
 
 ```php
-public maybe_add_slashes(mixed $value): mixed
+public maybe_add_slashes(mixed $value, mixed $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description |
+|-----------------|-----------|-------------|
+| `$value`        | **mixed** |             |
+| `$remove_links` | **mixed** |             |
 
 ***
 
@@ -1135,15 +1218,18 @@ Object with all the capabilities as member variables.
 
 ### sanitize_value
 
+Sanitize post HTML, optionally removing anchor tags while keeping their text.
+
 ```php
-protected sanitize_value(mixed $content): mixed
+protected sanitize_value(mixed $content, bool $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter  | Type      | Description |
-|------------|-----------|-------------|
-| `$content` | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$content`      | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
 
 ***
 
