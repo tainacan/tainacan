@@ -56,12 +56,17 @@ classDiagram
         +entities_type : mixed
         -fetching_from_collections : mixed
         -relationsip_metaquery : array
+        -search_relevance_tail : string
         #init()
         #_get_map()
         +get_cpt_labels()
         +register_post_type()
         +insert(item)
         +fetch(args, collections, output)
+        -maybe_order_search_by_relevance(args)
+        +search_relevance_orderby(orderby, query)
+        -compile_orderby_tail(orderby)
+        -remove_search_relevance_order()
         +fetch_ids(args, collections)
         +_filter_where(where, wp_query)
         +update(object, new_values)
@@ -111,6 +116,16 @@ Temporary state for the optional relationship metaquery posts_where filter.
 
 ```php
 private array{meta_id?: string, search_meta_id?: string, search_meta_value?: string} $relationsip_metaquery
+```
+
+***
+
+### search_relevance_tail
+
+Secondary ORDER BY used after WordPress search relevance, for the query in progress.
+
+```php
+private string|null $search_relevance_tail
 ```
 
 ***
@@ -238,6 +253,73 @@ You can pass the Collection ID or object, or an Array of IDs or collection objec
 **Return Value:**
 
 an instance of wp query OR array of entities OR a Item;
+
+***
+
+### maybe_order_search_by_relevance
+
+Rank a textual search by title and description when the requested sort is relevance.
+
+```php
+private maybe_order_search_by_relevance(array $args): array
+```
+
+WordPress only applies that ranking when orderby is the string "relevance".
+The ranking stays best-match-first. Creation date, in the requested direction,
+is the tiebreak, then the item ID. Any other orderby is left untouched, so an
+explicit title, date or metadata sort replaces the ranking. ID-only queries
+(the facets subquery) keep their own order. When the Search and performance
+option is off, or TAINACAN_DISABLE_SEARCH_RELEVANCE is defined, the relevance
+key is rewritten to creation date and the ranking is not built.
+
+**Parameters:**
+
+| Parameter | Type      | Description                                                  |
+|-----------|-----------|--------------------------------------------------------------|
+| `$args`   | **array** | WP_Query args, after the string orderby has been normalized. |
+
+***
+
+### search_relevance_orderby
+
+Replace the date tail WordPress adds for orderby=relevance with the requested sort.
+
+```php
+public search_relevance_orderby(string $orderby, \WP_Query $query): string
+```
+
+**Parameters:**
+
+| Parameter  | Type          | Description                                   |
+|------------|---------------|-----------------------------------------------|
+| `$orderby` | **string**    | ORDER BY clause without the ORDER BY keyword. |
+| `$query`   | **\WP_Query** | Query being ordered.                          |
+
+***
+
+### compile_orderby_tail
+
+```php
+private compile_orderby_tail(array $orderby): string
+```
+
+**Parameters:**
+
+| Parameter  | Type      | Description                        |
+|------------|-----------|------------------------------------|
+| `$orderby` | **array** | Map of orderby key to ASC or DESC. |
+
+**Return Value:**
+
+Empty when a key is not a post column WordPress can sort without an extra join.
+
+***
+
+### remove_search_relevance_order
+
+```php
+private remove_search_relevance_order(): mixed
+```
 
 ***
 
