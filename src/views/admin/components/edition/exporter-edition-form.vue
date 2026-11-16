@@ -25,6 +25,7 @@
                         class="column is-gapless">
                     <form
                             id="exporterOptionsForm"
+                            @input="checkOptionsForm"
                             @change="checkOptionsForm">
                         <div v-html="exporterSession.options_form" />
                     </form>
@@ -387,7 +388,12 @@
             },
             checkOptionsForm() {
                 const formElement = document.getElementById('exporterOptionsForm');
-                this.optionsFormIsValid = !formElement || formElement.checkValidity();
+                if (!formElement) {
+                    this.optionsFormIsValid = !this.exporterSession.options_form;
+                    return;
+                }
+                const controls = formElement.querySelectorAll('input, select, textarea');
+                this.optionsFormIsValid = Array.from(controls).every((control) => control.checkValidity());
             },
             formIsValid(){
                 return (
