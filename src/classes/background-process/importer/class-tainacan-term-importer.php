@@ -44,6 +44,14 @@ class Term_Importer extends Importer {
 			return __('Select an existing taxonomy or enter a name for the new one.', 'tainacan');
 		}
 
+		if ( $this->get_option('select_taxonomy') != '' && ! \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_option('select_taxonomy') ) ) {
+			return __('The selected taxonomy was not found.', 'tainacan');
+		}
+
+		if ( strlen( $this->get_option('delimiter') ) !== 1 ) {
+			return __('The CSV delimiter must be a single character.', 'tainacan');
+		}
+
 		return true;
 	}
 

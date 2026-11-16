@@ -22,6 +22,14 @@ class CSV extends Importer {
 		]);
 	}
 
+	public function validate_options() {
+		if ( strlen( $this->get_option('delimiter') ) !== 1 ) {
+			return __('The CSV delimiter must be a single character.', 'tainacan');
+		}
+
+		return true;
+	}
+
 	/**
 	 * Opens the temporary CSV file for reading, skipping a UTF-8 BOM when present.
 	 *
