@@ -12,11 +12,18 @@ trait Exporter_Handler_Cell {
 		}
 
 		if ( strlen( $this->get_option('delimiter') ) !== 1 ) {
+			if ( $this instanceof \Tainacan\Exporter\XLSX_Exporter ) {
+				return __('The compound children delimiter must be a single character.', 'tainacan');
+			}
 			return __('The CSV delimiter must be a single character.', 'tainacan');
 		}
 
 		if ( strlen( $this->get_option('enclosure') ) !== 1 ) {
 			return __('The enclosure must be a single character.', 'tainacan');
+		}
+
+		if ( $this->get_option('delimiter') === $this->get_option('enclosure') ) {
+			return __('The delimiter and the enclosure must be different characters.', 'tainacan');
 		}
 
 		return true;
