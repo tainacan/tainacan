@@ -14,10 +14,6 @@ classDiagram
     direction TB
     class Selectbox {
         +__construct()
-        +get_manage_multiple_input()
-        +get_form_labels()
-        +get_options_as_html()
-        +validate_options(metadatum)
     }
 ```
 
@@ -501,6 +497,16 @@ public set_manage_multiple_input(mixed $manage_multiple_input): mixed
 | Parameter                | Type      | Description |
 |--------------------------|-----------|-------------|
 | `$manage_multiple_input` | **mixed** |             |
+
+***
+
+### allows_links
+
+Whether stored values and queries for this type may keep anchor tags.
+
+```php
+public allows_links(): bool
+```
 
 ***
 

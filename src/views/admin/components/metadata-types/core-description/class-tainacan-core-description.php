@@ -22,8 +22,18 @@ class Core_Description extends Metadata_Type {
 		$this->set_form_component('tainacan-form-textarea');
         $this->set_name( __('Core Description', 'tainacan') );
         $this->set_description( __('The "Core Description" is a compulsory metadata automatically created for all collections by default. This is the main description displayed in items lists and where the basic research tools will do their searches.', 'tainacan') );
+		$this->set_default_options([
+			'use_rich_text_editor' => 'no'
+		]);
 		$this->set_sortable( false );
     }
+
+	/**
+	 * @inheritdoc
+	 */
+	public function allows_links() {
+		return true;
+	}
 
 	/**
 	 * @inheritdoc
@@ -33,6 +43,10 @@ class Core_Description extends Metadata_Type {
 			'maxlength' => [
 				'title' => __( 'Maximum of characters', 'tainacan' ),
 				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
+			],
+			'use_rich_text_editor' => [
+				'title' => __( 'Use rich text editor', 'tainacan' ),
+				'description' => __( 'Replaces the textarea with the rich text editor when it is enabled for Tainacan. HTML saved in this field is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
 			]
 		];
 	}
@@ -82,7 +96,7 @@ class Core_Description extends Metadata_Type {
 		return true;
 		
     }
-    
+
     /**
 	 * Get the value as a HTML string with links and breakline tag.
 	 * @return string
@@ -97,11 +111,11 @@ class Core_Description extends Metadata_Type {
 			if ( $html_formatting === 'list' ) {
 				$total = count( $value );
 				if ( $total === 1 ) {
-					$return .= nl2br($this->make_clickable_links( reset( $value ) ));
+					$return .= wpautop($this->make_clickable_links( reset( $value ) ));
 				} elseif ( $total > 1 ) {
 					$return .= '<ul>';
 					foreach ( $value as $el ) {
-						$return .= '<li>' . nl2br($this->make_clickable_links($el)) . '</li>';
+						$return .= '<li>' . wpautop($this->make_clickable_links($el)) . '</li>';
 					}
 					$return .= '</ul>';
 				}
@@ -113,7 +127,7 @@ class Core_Description extends Metadata_Type {
 				$separator = $item_metadata->get_multivalue_separator();
 				foreach ( $value as $el ) {
 					$return .= $prefix;
-					$return .= nl2br($this->make_clickable_links($el));
+					$return .= wpautop($this->make_clickable_links($el));
 					$return .= $suffix;
 					$count++;
 					if ( $count < $total ) {
@@ -122,7 +136,7 @@ class Core_Description extends Metadata_Type {
 				}
 			}
 		} else {
-			$return = nl2br($this->make_clickable_links($value));
+			$return = wpautop($this->make_clickable_links($value));
 		}
 
 		return 

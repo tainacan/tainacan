@@ -80,7 +80,7 @@
 }
 .filters-menu:not(.filters-menu-modal) {
 	align-self: stretch;
-	z-index: 40;
+	z-index: auto;
 	float: inline-start;
 	max-width: var(--tainacan-filter-menu-width-theme);
 	min-width: 154px;

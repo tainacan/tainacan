@@ -587,51 +587,32 @@ export default {
                 };
             }
 
-            return {
-                ...this.stackedBarChartOptions, 
-                ...{
-                    title: {},
-                    xaxis: {
-                        type: 'category',
-                        tickPlacement: 'on',
-                        labels: {
-                            show: true,
-                            trim: true,
-                            hideOverlappingLabels: false
-                        },
-                        tooltip: { enabled: true }
-                    },
-                    chart: {
-                        type: 'bar',
-                        height: 350,
-                        stacked: stacked,
-                        toolbar: {
-                            show: true,
-                            export: {
-                                scale: 3
-                            }
-                        },
-                        zoom: {
-                            enabled: true,
-                            autoScaleYaxis: true,
-                        }
-                    },
-                    tooltip: {
-                        custom: tooltipCustom
-                    },
-                    yaxis: {
-                        title: {
-                            text: this.$i18n.get('label_number_of_items')
-                        }
-                    },
-                    animations: {
-                        enabled: getTerms().length <= 40
-                    },
-                    noData: {
-                        text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
-                    }
+            const chartOptions = JSON.parse(JSON.stringify(this.stackedBarChartOptions));
+            chartOptions.title = {};
+            chartOptions.xaxis = {
+                type: 'category',
+                tickPlacement: 'on',
+                labels: {
+                    show: true,
+                    trim: true,
+                    hideOverlappingLabels: false
+                },
+                tooltip: { enabled: true }
+            };
+            chartOptions.chart.stacked = stacked;
+            chartOptions.chart.animations.enabled = getTerms().length <= 40;
+            chartOptions.tooltip = {
+                custom: tooltipCustom
+            };
+            chartOptions.yaxis = {
+                title: {
+                    text: this.$i18n.get('label_number_of_items')
                 }
             };
+            chartOptions.noData = {
+                text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
+            };
+            return chartOptions;
         },
         buildMetadatumTermsChart() {
             if (!Array.isArray(this.taxonomyTerms))
@@ -693,7 +674,12 @@ export default {
                 const chartComponent = this.$refs[refName];
                 if (chartComponent && chartComponent.updateOptions) {
                     chartComponent.updateOptions({
-                        xaxis: { categories: terms.map(term => term.label) }
+                        xaxis: { categories: terms.map(term => term.label) },
+                        chart: {
+                            animations: {
+                                enabled: terms.length <= 40
+                            }
+                        }
                     }, false, true);
                 }
             });

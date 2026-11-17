@@ -48,7 +48,9 @@
         <transition name="filter-item">
             <b-field
                     v-if="hasMetadata"
-                    :addons="false">
+                    :addons="false"
+                    :type="optionMessage('search') ? 'is-danger' : ''"
+                    :message="optionMessage('search')">
                 <label class="label">
                     {{ $i18n.get('label_metadata_for_search') }}
                     <help-button
@@ -103,6 +105,8 @@
 
         <b-field
                 :addons="false"
+                :type="optionMessage('display_in_related_items') ? 'is-danger' : ''"
+                :message="optionMessage('display_in_related_items')"
                 :label="$i18n.getHelperTitle('tainacan-relationship', 'display_in_related_items')">
                 &nbsp;
             <b-switch
@@ -118,6 +122,8 @@
 
         <b-field
                 :addons="false"
+                :type="optionMessage('accept_draft_items') ? 'is-danger' : ''"
+                :message="optionMessage('accept_draft_items')"
                 :label="$i18n.getHelperTitle('tainacan-relationship', 'accept_draft_items')">
                 &nbsp;
             <b-switch
@@ -133,6 +139,8 @@
 
         <b-field
                 :addons="false"
+                :type="optionMessage('accept_only_items_authored_by_current_user') ? 'is-danger' : ''"
+                :message="optionMessage('accept_only_items_authored_by_current_user')"
                 :label="$i18n.getHelperTitle('tainacan-relationship', 'accept_only_items_authored_by_current_user')">
                 &nbsp;
             <b-switch
@@ -188,8 +196,9 @@
         },
         computed: {
             setError(){
-                if ( this.errors && this.errors.collection_id !== '' )
-                    this.setErrorsAttributes( 'is-danger', this.errors.collection_id );
+                const message = this.optionMessage('collection_id');
+                if (message !== '')
+                    this.setErrorsAttributes( 'is-danger', message );
                 else
                     this.setErrorsAttributes( '', '' );
                 return true;
@@ -242,9 +251,13 @@
             this.cancelCollectionSearch();
         },
         methods: {
+            optionMessage(key) {
+                const message = this.errors && this.errors[key];
+                return typeof message === 'string' ? message : '';
+            },
             setErrorsAttributes( type, message ){
                 this.collectionType = type;
-                this.collectionType = message;
+                this.collectionMessage = message;
             },
             fetchSelectedCollection(id) {
                 this.loading = true;

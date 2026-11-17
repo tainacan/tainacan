@@ -164,6 +164,16 @@ export const setStatus= ({ commit }, status ) => {
 
 // Sorting queries
 /**
+ * Drops orderby, metakey and metatype so a route fill can restore the saved sort.
+ * @returns {void}
+ */
+export const clearOrderBy = ({ commit }) => {
+    commit('removePostQueryAttribute', 'orderby');
+    commit('removePostQueryAttribute', 'metakey');
+    commit('removePostQueryAttribute', 'metatype');
+};
+
+/**
  * Dispatches `search/setOrderBy`.
  * @returns {*} Action result.
  */

@@ -11,6 +11,8 @@
         "phpoffice/phpspreadsheet": "~5.8.1"
     },
     "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
+        "wp-coding-standards/wpcs": "^3.1.0",
         "phpunit/phpunit": "^9.6.34",
         "squizlabs/php_codesniffer": "^3.13.6",
         "yoast/phpunit-polyfills": "^1.1.0",
@@ -22,10 +24,13 @@
     "minimum-stability": "dev",
     "config": {
         "vendor-dir": "src/vendor",
-        "platform-check": false
+        "platform-check": false,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "scripts": {
-        "post-install-cmd": "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/phpcompatibility/php-compatibility",
-        "post-update-cmd" : "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/phpcompatibility/php-compatibility"
+        "phpcs": "\"src/vendor/bin/phpcs\"",
+        "phpcbf": "\"src/vendor/bin/phpcbf\""
     }
 }

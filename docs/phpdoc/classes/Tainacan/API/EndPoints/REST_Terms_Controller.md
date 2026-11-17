@@ -43,6 +43,7 @@ classDiagram
         +get_item_permissions_check(request)
         +get_endpoint_args_for_item_schema(method)
         +get_wp_query_params()
+        -terms_batch_exceeds_limit(terms)
         +get_schema()
     }
 ```
@@ -401,6 +402,20 @@ public get_wp_query_params(): array
 
 ***
 
+### terms_batch_exceeds_limit
+
+```php
+private terms_batch_exceeds_limit(array $terms): bool
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$terms`  | **array** |             |
+
+***
+
 ### get_schema
 
 ```php
@@ -519,15 +534,18 @@ public add_support_to_tax_query_like(mixed $args): mixed
 
 ### sanitize_value
 
+Sanitize query values as post HTML. Anchor tags are removed unless the field stores rich text.
+
 ```php
-protected sanitize_value(mixed $value): mixed
+protected sanitize_value(mixed $value, bool $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$value`        | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
 
 ***
 

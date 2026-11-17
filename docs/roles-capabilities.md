@@ -1,6 +1,6 @@
 # Roles and Capabilities
 
-This document describes how Tainacan roles and capabilities are implemented from version 0.15 on. For earlier versions, check the old [permissions](/dev/permissions.md) page.
+This document describes how Tainacan roles and capabilities are implemented from version 0.15 on. For earlier versions, check the old [permissions](permissions.md) page.
 
 It serves as a reference to developers to understand how this works and also as the basis for writing the documentation for end-users.
 

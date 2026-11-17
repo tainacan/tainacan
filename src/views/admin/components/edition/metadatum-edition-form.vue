@@ -139,7 +139,17 @@
                                         :message="$i18n.getHelperMessage('metadata', 'description')"
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
+                            <component
+                                    :is="'tainacan-rich-text-editor'"
+                                    v-if="isRichTextEditorAllowed"
+                                    id="tainacan-metadatum-description"
+                                    v-model="form.description"
+                                    name="description"
+                                    :invalid="formErrors['description'] != undefined"
+                                    @focus="clearErrors('description')" />
                             <b-input
+                                    v-else
+                                    id="tainacan-metadatum-description"
                                     v-model="form.description"
                                     type="textarea"
                                     name="description"
@@ -506,9 +516,9 @@
                     {{ $i18n.get('cancel') }}
                 </button>
             </div>
-            <p class="help is-danger">
+            <span class="help is-danger">
                 {{ formErrorMessage }}
-            </p>
+            </span>
             <div class="control">
                 <b-button
                         :loading="isUpdating"
@@ -525,7 +535,6 @@
     import { nextTick } from 'vue';
     import {mapActions} from 'vuex';
     import { formHooks } from "../../js/mixins";
-
     import FormText from '../metadata-types/text/FormText.vue';
     import FormTextarea from '../metadata-types/textarea/FormTextarea.vue';
     import FormRelationship from '../metadata-types/relationship/FormRelationship.vue';
@@ -576,6 +585,7 @@
                 hideMetadataTypeOptions: false,
                 showAdvancedOptions: false,
                 showCardinalityOptions: false,
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 showHTMLFormattingOptions: false
             }
         },
@@ -637,16 +647,20 @@
 
                             this.$emit('on-edition-finished');
                         })
-                        .catch((errors) => {
+                        .catch((error) => {
                             this.isUpdating = false;
-                            for (let error of errors.errors) {
-                                for (let attribute of Object.keys(error))
-                                    this.formErrors[attribute] = error[attribute];
-                            }
-                            this.formErrorMessage = errors.error_message;
+                            const errors = error.response && error.response.data;
+                            if (errors && errors.errors) {
+                                this.$claimApiError(error);
+                                for (let fieldError of errors.errors) {
+                                    for (let attribute of Object.keys(fieldError))
+                                        this.formErrors[attribute] = fieldError[attribute];
+                                }
+                                this.formErrorMessage = errors.error_message;
 
-                            this.form.formErrors = this.formErrors;
-                            this.form.formErrorMessage = this.formErrorMessage;
+                                this.form.formErrors = this.formErrors;
+                                this.form.formErrorMessage = this.formErrorMessage;
+                            }
                         });
                 } else {
                     let formElement = document.getElementById('metadatumEditForm');
@@ -686,18 +700,21 @@
 
                             this.$emit('on-edition-finished');
                         })
-                        .catch((errors) => {
+                        .catch((error) => {
                             this.isUpdating = false;
+                            const errors = error.response && error.response.data;
+                            if (errors && errors.errors) {
+                                this.$claimApiError(error);
+                                for (let fieldError of errors.errors) {
+                                    for (let attribute of Object.keys(fieldError))
+                                        this.formErrors[attribute] = fieldError[attribute];
+                                }
+                                this.formErrorMessage = errors.error_message;
+                                this.$emit('on-error-found');
 
-                            for (let error of errors.errors) {
-                                for (let attribute of Object.keys(error))
-                                    this.formErrors[attribute] = error[attribute];
+                                this.form.formErrors = this.formErrors;
+                                this.form.formErrorMessage = this.formErrorMessage;
                             }
-                            this.formErrorMessage = errors.error_message;
-                            this.$emit('on-error-found');
-
-                            this.form.formErrors = this.formErrors;
-                            this.form.formErrorMessage = this.formErrorMessage;
                         });
                 }
             },
@@ -869,5 +886,3 @@
     }
 
 </style>
-
-

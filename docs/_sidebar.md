@@ -5,6 +5,13 @@
   - [Setup Local](/dev/setup-local.md 'Local Setup for Tainacan Development - Tainacan Wiki')
   - [Key Concepts](/dev/key-concepts.md 'Key Concepts related to Tainacan Development - Tainacan Wiki')
   - [Internal API](/dev/internal-api.md 'Tainacan Internal API - Tainacan Wiki')
+    - [Collections](/dev/repository-collections.md 'Collections in the Tainacan internal API - Tainacan Wiki')
+    - [Metadata](/dev/repository-metadata.md 'Metadata in the Tainacan internal API - Tainacan Wiki')
+    - [Items](/dev/repository-items.md 'Items in the Tainacan internal API - Tainacan Wiki')
+    - [Item metadata](/dev/repository-item-metadata.md 'Item metadata in the Tainacan internal API - Tainacan Wiki')
+    - [Filters](/dev/repository-filters.md 'Filters in the Tainacan internal API - Tainacan Wiki')
+    - [Taxonomies](/dev/repository-taxonomies.md 'Taxonomies in the Tainacan internal API - Tainacan Wiki')
+    - [Terms](/dev/repository-terms.md 'Terms in the Tainacan internal API - Tainacan Wiki')
   - [Architecture](/dev/architecture.md 'technical architecture of Tainacan')
   - [:link: JSON API](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/tainacan/tainacan/refs/heads/develop/docs/openapi.json ':ignore')
   - [Code Reference](/dev/phpdoc/Home.md 'PHP Code Reference listing Classes and functions - Tainacan Wiki')
@@ -18,7 +25,6 @@
     - [Exposers](/dev/exposers.md 'Exposers - Tainacan Wiki')
   - [Exporter Flow](/dev/exporter-flow.md 'Exporter Flow on Tainacan - Tainacan Wiki')
   - [Importer Flow](/dev/importer-flow.md 'Importer Flow on Tainacan - Tainacan Wiki')
-    - [Repository Methods](/dev/repository-methods.md 'Tainacan Repository Methods - Tainacan Wiki')
 - Plugin Extension
   - [Plugin Development Guidelines](/dev/plugin-development-guidelines.md 'Guidelines for Developing Plugins for Tainacan - Tainacan Wiki')
   - [Using Admin Form Hooks](/dev/admin-form-hooks.md 'Using Admin Form Hooks - Tainacan Wiki')
@@ -37,8 +43,10 @@
   - [Customizing the Items List](/dev/customizing-the-items-list.md 'How to better customize Tainacan items list on a theme - Tainacan Wiki')
   - [Extra View Modes](/dev/extra-view-modes.md 'How to create extra custom view modes for Tainacan items list - Tainacan Wiki')
 - Configuration and performance
+  - [Rich text editor](/dev/rich-text-editor.md 'Configure the Tainacan rich text editor - Tainacan Wiki')
   - [Faceted Search](/dev/faceted-search.md 'Tweaks for better Faceted Search performance - Tainacan Wiki')
   - [Search Engine](/dev/search-engine.md 'Configuration for better Search Engine performance - Tainacan Wiki')
+  - [Search relevance](/dev/search-relevance.md 'How textual search results are ordered by relevance - Tainacan Wiki')
   - [Garbage Collector](/dev/garbage-collector.md 'Usage of Tainacan Garbage Collector - Tainacan Wiki')
   - [Protecting private files](/dev/private-files.md 'File privacy on Tainacan - Tainacan Wiki')
 - Other development topics

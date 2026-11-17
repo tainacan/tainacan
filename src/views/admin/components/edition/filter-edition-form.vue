@@ -115,7 +115,17 @@
                             :title="$i18n.getHelperTitle('filters', 'description')" 
                             :message="$i18n.getHelperMessage('filters', 'description')" />    
                 </label>
+                <component
+                        :is="'tainacan-rich-text-editor'"
+                        v-if="isRichTextEditorAllowed"
+                        id="tainacan-filter-description"
+                        v-model="form.description"
+                        name="description"
+                        :invalid="formErrors['description'] != undefined"
+                        @focus="clearErrors('description')" />
                 <b-input
+                        v-else
+                        id="tainacan-filter-description"
                         v-model="form.description" 
                         type="textarea" 
                         name="description"
@@ -322,9 +332,9 @@
                 </b-button>
             </div>
         </div>
-        <p class="help is-danger">
+        <span class="help is-danger">
             {{ formErrorMessage }}
-        </p>
+        </span>
     </form>
 </template>
 
@@ -332,7 +342,6 @@
 import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
 import { formHooks } from "../../js/mixins";
-
 import FormFilterDate from '../filter-types/date/FormDate.vue';
 import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNumericInterval.vue';
@@ -377,6 +386,7 @@ export default {
             showEditMaxOptions: false,
             entityName: 'filter',
             isLoading: false,
+            isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
             maxOptionsLimit: tainacan_plugin.api_max_items_per_page && !isNaN(tainacan_plugin.api_max_items_per_page) ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },
@@ -444,17 +454,21 @@ export default {
                         this.closedByForm = true;
                         this.$emit('on-edition-finished');
                     })
-                    .catch((errors) => {
+                    .catch((error) => {
                         this.isLoading = false;
-                        for (let error of errors.errors) {     
-                            for (let attribute of Object.keys(error))
-                                this.formErrors[attribute] = error[attribute];
-                        }
-                        this.formErrorMessage = errors.error_message;
-                        this.$emit('on-error-found');
+                        const errors = error.response && error.response.data;
+                        if (errors && errors.errors) {
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let attribute of Object.keys(fieldError))
+                                    this.formErrors[attribute] = fieldError[attribute];
+                            }
+                            this.formErrorMessage = errors.error_message;
+                            this.$emit('on-error-found');
 
-                        this.form.formErrors = this.formErrors;
-                        this.form.formErrorMessage = this.formErrorMessage;
+                            this.form.formErrors = this.formErrors;
+                            this.form.formErrorMessage = this.formErrorMessage;
+                        }
                     });
             } else {
                 let formElement = document.getElementById('filterEditForm');
@@ -486,17 +500,21 @@ export default {
                         this.closedByForm = true;
                         this.$emit('on-edition-finished');
                     })
-                    .catch((errors) => {
+                    .catch((error) => {
                         this.isLoading = false;
-                        for (let error of errors.errors) {     
-                            for (let attribute of Object.keys(error))
-                                this.formErrors[attribute] = error[attribute];
-                        }
-                        this.formErrorMessage = errors.error_message;
-                        this.$emit('on-error-found');
+                        const errors = error.response && error.response.data;
+                        if (errors && errors.errors) {
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let attribute of Object.keys(fieldError))
+                                    this.formErrors[attribute] = fieldError[attribute];
+                            }
+                            this.formErrorMessage = errors.error_message;
+                            this.$emit('on-error-found');
 
-                        this.form.formErrors = this.formErrors;
-                        this.form.formErrorMessage = this.formErrorMessage;
+                            this.form.formErrors = this.formErrors;
+                            this.form.formErrorMessage = this.formErrorMessage;
+                        }
                     });
             }           
         },
@@ -586,5 +604,3 @@ export default {
     }
 
 </style>
-
-

@@ -98,16 +98,13 @@ while IFS= read -r -d '' file; do
     set_phpdoc_title "$file" "$filename"
 done < <(find "$DOCS_DIR/phpdoc/functions" -name "*.md" -type f -print0)
 
-echo "Fixing documentation links for GitHub Pages..."
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|\./functions/|/dev/phpdoc/functions/|g' {} \;
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|\./classes/|/dev/phpdoc/classes/|g' {} \;
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|\./namespaces/|/dev/phpdoc/namespaces/|g' {} \;
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|\./packages/|/dev/phpdoc/packages/|g' {} \;
-
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|/dev/phpdoc/functions/\([^)]*\))|/dev/phpdoc/functions/\1.md)|g' {} \;
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|/dev/phpdoc/classes/\([^)]*\))|/dev/phpdoc/classes/\1.md)|g' {} \;
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|/dev/phpdoc/namespaces/\([^)]*\))|/dev/phpdoc/namespaces/\1.md)|g' {} \;
-find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -i 's|/dev/phpdoc/packages/\([^)]*\))|/dev/phpdoc/packages/\1.md)|g' {} \;
+# phpDocumentor emits ./functions/Name from the phpdoc root. Leave those
+# relative so they resolve on GitHub. The wiki rewrites them to /dev/ when
+# the page is rendered. Only the .md extension is missing.
+echo "Adding .md extensions to phpDocumentor links..."
+find "$DOCS_DIR/phpdoc" -name "*.md" -type f -exec sed -E -i \
+    -e 's@(\./(functions|classes|namespaces|packages)/[^)#.]+)(\)|#)@\1.md\3@g' \
+    {} \;
 
 echo "Generating WordPress hooks documentation..."
 

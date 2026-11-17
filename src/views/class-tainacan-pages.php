@@ -66,6 +66,7 @@ abstract class Pages {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_js' ), 90 );
 		add_filter( 'screen_settings', array( &$this, 'admin_add_screen_options' ), 10, 2 );
+		$this->add_help_tabs();
 	}
 	
 	/**
@@ -79,6 +80,62 @@ abstract class Pages {
 	 * @return void
 	 */
 	function add_admin_menu() {}
+
+	/**
+	 * Returns the help tabs to be added to the current admin screen.
+	 *
+	 * @return array
+	 */
+	protected function get_help_tabs() {
+		return array();
+	}
+
+	/**
+	 * Returns the help sidebar content for the current admin screen.
+	 *
+	 * @return string
+	 */
+	protected function get_help_sidebar() {
+		return '';
+	}
+
+	/**
+	 * Adds WordPress help tabs and sidebar to the current admin screen.
+	 *
+	 * @return void
+	 */
+	protected function add_help_tabs() {
+		$screen = get_current_screen();
+
+		if ( ! $screen )
+			return;
+
+		$allowed_html = wp_kses_allowed_html( 'post' );
+		foreach ( array( 'div', 'p', 'a' ) as $tag ) {
+			if ( isset( $allowed_html[ $tag ] ) )
+				$allowed_html[ $tag ]['hidden'] = true;
+		}
+
+		$help_tabs = $this->get_help_tabs();
+
+		foreach ( $help_tabs as $help_tab ) {
+			if ( empty( $help_tab['id'] ) || empty( $help_tab['title'] ) || empty( $help_tab['content'] ) )
+				continue;
+
+			$screen->add_help_tab(
+				array(
+					'id'      => sanitize_key( $help_tab['id'] ),
+					'title'   => wp_strip_all_tags( $help_tab['title'] ),
+					'content' => wp_kses( $help_tab['content'], $allowed_html ),
+				)
+			);
+		}
+
+		$help_sidebar = $this->get_help_sidebar();
+
+		if ( ! empty( $help_sidebar ) )
+			$screen->set_help_sidebar( wp_kses( $help_sidebar, $allowed_html ) );
+	}
 	
 	/**
 	 * admin_enqueue_css is called from the 'admin_enqueue_scripts' action only when the page is loaded and should
@@ -124,14 +181,25 @@ abstract class Pages {
 		$classes .= ' tainacan-pages-container';
 
 		$current_user  = wp_get_current_user();
+		$wordpress_navigation = 'menu';
 
 		if ( $current_user instanceof \WP_User ) {
 			
 			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
 			$user_prefs = json_decode( $user_prefs_as_string, true );
 
-			if ( $this->has_admin_ui_option('forceFullscreenAdminMode') || ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) ) )
+			if ( isset($user_prefs['wordpress_navigation']) && in_array( $user_prefs['wordpress_navigation'], array( 'menu', 'toolbar', 'none' ), true ) ) {
+				$wordpress_navigation = $user_prefs['wordpress_navigation'];
+			} elseif ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] === 'true' || $user_prefs['is_fullscreen'] === true ) ) {
+				// Older preferences used a boolean; true corresponds to hiding all WordPress navigation.
+				$wordpress_navigation = 'none';
+			}
+
+			if ( $this->has_admin_ui_option('forceFullscreenAdminMode') || $wordpress_navigation === 'none' ) {
 				$classes .= ' tainacan-pages-container--fullscreen';
+			} elseif ( $wordpress_navigation === 'toolbar' ) {
+				$classes .= ' tainacan-pages-container--toolbar-only';
+			}
 
 			if ( isset($user_prefs['admin_style']) )
 				$classes .= ' tainacan-pages-container--admin-' . $user_prefs['tainacan-admin-style'] . '-style';
@@ -285,12 +353,24 @@ abstract class Pages {
 				defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') &&
 				true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY
 			),
+			'tainacan_allow_rich_text_editor' => (
+				defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' )
+					? true === TAINACAN_ALLOW_RICH_TEXT_EDITOR
+					: (bool) get_option( 'tainacan_option_allow_rich_text_editor', false )
+			),
 			'tainacan_index_pdf_content' => \Tainacan\Media::is_index_pdf_content_enabled(),
 			'tainacan_enable_image_blurhash' => \Tainacan\Media::is_image_blurhash_enabled(),
 			'document_content_index_max_characters' => \Tainacan\Media::get_document_content_index_max_characters(),
 			'has_permalinks_structure' => get_option('permalink_structure') !== '',
 			'wp_abilities_api_url'     => esc_url_raw( rest_url( 'wp-abilities/v1/' ) ),
 			'default_search_sentence'  => \Tainacan\Theme_Helper::get_instance()->get_default_search_sentence(),
+			'search_relevance_enabled' => (
+				defined( 'TAINACAN_DISABLE_SEARCH_RELEVANCE' )
+					? ! TAINACAN_DISABLE_SEARCH_RELEVANCE
+					: (bool) get_option( 'tainacan_option_enable_search_relevance', true )
+			),
+			'datepickers_year_min'     => (int) get_option( 'tainacan_option_datepickers_year_min', \Tainacan\Settings::DATEPICKERS_YEAR_MIN_DEFAULT ),
+			'datepickers_year_max'     => (int) get_option( 'tainacan_option_datepickers_year_max', \Tainacan\Settings::DATEPICKERS_YEAR_MAX_DEFAULT ),
 		];
 		
 		$maps = [
@@ -356,8 +436,10 @@ abstract class Pages {
 	
 	/**
 	 * register_user_meta is called from the 'init' action and defines the tainacan_prefs object as a user meta.
-	 * 
+	 *
 	 * The tainacan_prefs holds several user defined options such as perpage and orderby preferences.
+	 * It is exposed on the users endpoint only in the edit context, so public view responses omit it.
+	 * Updates via POST /wp/v2/users/me still return the field.
 	 *
 	 * @return void
 	 */
@@ -368,7 +450,12 @@ abstract class Pages {
 			'type'         => 'string',
 			'description'  => 'Tainacan admin user preferences',
 			'single'       => true,
-			'show_in_rest' => true,
+			'show_in_rest' => array(
+				'schema' => array(
+					'type'    => 'string',
+					'context' => array( 'edit' ),
+				),
+			),
 		);
 		register_meta( 'user', 'tainacan_prefs', $args );
 	}
@@ -847,7 +934,7 @@ abstract class Pages {
 		if ( !is_admin() && !$this->get_page_slug() || empty($current_page) || $current_page !== $this->get_page_slug() )
 			return $current;
 
-		$is_fullscreen = false;
+		$wordpress_navigation = 'menu';
 
 		$current_user  = wp_get_current_user();
 		
@@ -856,8 +943,11 @@ abstract class Pages {
 			$user_prefs_as_string = get_user_meta( $current_user->ID, 'tainacan_prefs', true );
 			$user_prefs = json_decode( $user_prefs_as_string, true );
 
-			if ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] == 'true' || $user_prefs['is_fullscreen'] == true ) )
-				$is_fullscreen = $user_prefs['is_fullscreen'];
+			if ( isset($user_prefs['wordpress_navigation']) && in_array( $user_prefs['wordpress_navigation'], array( 'menu', 'toolbar', 'none' ), true ) ) {
+				$wordpress_navigation = $user_prefs['wordpress_navigation'];
+			} elseif ( isset($user_prefs['is_fullscreen']) && ( $user_prefs['is_fullscreen'] === 'true' || $user_prefs['is_fullscreen'] === true ) ) {
+				$wordpress_navigation = 'none';
+			}
 
 		}	
 
@@ -867,21 +957,23 @@ abstract class Pages {
 			?>
 			<div class="metabox-prefs custom-options-wrap">
 				<h5><?php esc_html_e('Integration with WordPress Admin UI', 'tainacan'); ?></h5>
-				<label for="tainacan-fullscreen-toggler">
-					<fieldset>
-						<legend class="screen-reader-text"><?php esc_html_e('Fullscreen mode options', 'tainacan'); ?></legend>
-						<label>
-							<input type="radio" name="tainacan-fullscreen-state" value="1" <?php checked($is_fullscreen, true); ?>>
-							<?php esc_html_e('Hide WordPress navigation', 'tainacan'); ?>
-						</label>
-						<label>
-							<input type="radio" name="tainacan-fullscreen-state" value="0" <?php checked(!$is_fullscreen, true); ?>>
-							<?php esc_html_e('Show WordPress navigation', 'tainacan'); ?>
-						</label>
-					</fieldset>
-				</label>
+				<fieldset>
+					<legend class="screen-reader-text"><?php esc_html_e('WordPress navigation options', 'tainacan'); ?></legend>
+					<label>
+						<input type="radio" name="tainacan-fullscreen-state" value="menu" <?php checked($wordpress_navigation, 'menu'); ?>>
+						<?php esc_html_e('Show WordPress menu and toolbar', 'tainacan'); ?>
+					</label>
+					<label>
+						<input type="radio" name="tainacan-fullscreen-state" value="toolbar" <?php checked($wordpress_navigation, 'toolbar'); ?>>
+						<?php esc_html_e('Show WordPress toolbar only', 'tainacan'); ?>
+					</label>
+					<label>
+						<input type="radio" name="tainacan-fullscreen-state" value="none" <?php checked($wordpress_navigation, 'none'); ?>>
+						<?php esc_html_e('Hide WordPress navigation', 'tainacan'); ?>
+					</label>
+				</fieldset>
 				<p class="submit">
-					<button type="button" class="button-primary" id="tainacan-fullscreen-toggler">
+					<button type="button" id="tainacan-apply-fullscreen-options" class="button button-primary">
 						<?php esc_html_e('Apply', 'tainacan'); ?>
 					</button>
 				</p>
@@ -913,4 +1005,3 @@ abstract class Pages {
 	}
 
 }
-

@@ -79,6 +79,94 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertContains($item2->get_title(), $items_titles);
 	}
 
+	/**
+	 * @dataProvider collection_items_access_provider
+	 */
+	public function test_fetch_items_respects_collection_access( $status, $role, $expected_status ) {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array( 'name' => 'Collection access', 'status' => $status ),
+			true
+		);
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array( 'title' => 'Published item', 'collection' => $collection, 'status' => 'publish' ),
+			true
+		);
+
+		$user_id = $role ? $this->factory()->user->create( array( 'role' => $role ) ) : 0;
+		wp_set_current_user( $user_id );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/items' );
+		$response = $this->server->dispatch( $request );
+		$data = $response->get_data();
+
+		$this->assertEquals( $expected_status, $response->get_status() );
+		if ( 200 === $expected_status ) {
+			$this->assertEquals( array( $item->get_id() ), array_column( $data['items'], 'id' ) );
+		} else {
+			$this->assertSame( 'rest_forbidden', $data['code'] );
+			$this->assertArrayNotHasKey( 'items', $data );
+		}
+	}
+
+	public static function collection_items_access_provider() {
+		return array(
+			'private collection, anonymous' => array( 'private', null, 401 ),
+			'private collection, subscriber' => array( 'private', 'subscriber', 403 ),
+			'private collection, administrator' => array( 'private', 'administrator', 200 ),
+			'public collection, anonymous' => array( 'publish', null, 200 ),
+		);
+	}
+
+	/**
+	 * @dataProvider missing_collection_ids_provider
+	 */
+	public function test_fetch_items_from_missing_collection_is_denied( $collection_id ) {
+		wp_set_current_user( 0 );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection_id . '/items' );
+		$response = $this->server->dispatch( $request );
+		$data = $response->get_data();
+
+		$this->assertEquals( 401, $response->get_status() );
+		$this->assertSame( 'rest_forbidden', $data['code'] );
+		$this->assertArrayNotHasKey( 'items', $data );
+	}
+
+	public static function missing_collection_ids_provider() {
+		return array(
+			'nonexistent collection' => array( 999999999 ),
+			'zero collection ID' => array( 0 ),
+		);
+	}
+
+	public function test_fetch_items_anonymously_across_collections() {
+		$items = array();
+		foreach ( array( 'publish', 'private' ) as $status ) {
+			$collection = $this->tainacan_entity_factory->create_entity(
+				'collection',
+				array( 'name' => $status . ' collection', 'status' => $status ),
+				true
+			);
+			$items[$status] = $this->tainacan_entity_factory->create_entity(
+				'item',
+				array( 'title' => $status . ' collection item', 'collection' => $collection, 'status' => 'publish' ),
+				true
+			);
+		}
+
+		wp_set_current_user( 0 );
+
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/items' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$item_ids = array_column( $response->get_data()['items'], 'id' );
+		$this->assertContains( $items['publish']->get_id(), $item_ids );
+		$this->assertNotContains( $items['private']->get_id(), $item_ids );
+	}
+
 	public function test_delete_or_trash_item_from_a_collection(){
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

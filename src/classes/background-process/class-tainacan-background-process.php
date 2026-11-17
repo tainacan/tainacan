@@ -24,6 +24,19 @@ abstract class Background_Process extends Background_Process_Base {
 	 * @var false|int
 	 */
 	public $ID = false;
+
+	/**
+	 * Whether this worker lost the ownership of the process it was running.
+	 *
+	 * Set when another request took the process over, typically after the
+	 * watchdog re-queued it. It stops this worker before its next iteration and
+	 * keeps the shutdown handler from closing a process that belongs to someone
+	 * else now.
+	 *
+	 * @since 1.4.2
+	 * @var bool
+	 */
+	protected $ownership_lost = false;
 	
 	/**
 	 * Prefix
@@ -116,7 +129,7 @@ abstract class Background_Process extends Background_Process_Base {
 					'priority' => $priority,
 					'action' => $this->action,
 					'name' => $this->get_name(),
-					'queued_on' => gmdate('Y-m-d H:i:s'),
+					'queued_on' => $this->utc_now(),
 					'status' => 'waiting',
 					'bg_uuid' => uniqid(),
 				]
@@ -148,7 +161,7 @@ abstract class Background_Process extends Background_Process_Base {
 				$this->table, 
 				[
 					'data' => maybe_serialize($data),
-					'processed_last' => gmdate('Y-m-d H:i:s'),
+					'processed_last' => $this->utc_now(),
 					'progress_label' => $batch->progress_label,
 					'progress_value' => $batch->progress_value,
 					'output' => $batch->output
@@ -202,47 +215,40 @@ abstract class Background_Process extends Background_Process_Base {
 	public function close( $key, $status = 'finished' ) {
 		global $wpdb;
 
-		// If the process errored, check whether it should be retried.
-		if ( $status === 'errored' ) {
-			$process = $wpdb->get_row(
-				$wpdb->prepare(
-					"SELECT retry_count, max_retries, status FROM {$this->table} WHERE ID = %d",
-					$key
-				)
+		// If the process errored and still has retries left, re-queue it for another attempt.
+		$retry_state = $this->get_retry_state( $key, $status );
+
+		if ( $retry_state ) {
+			// Increment retry count and re-queue the process for another attempt.
+			$wpdb->query('START TRANSACTION');
+			$wpdb->update(
+				$this->table,
+				[
+					'retry_count' => (int) $retry_state->retry_count + 1,
+					'status'      => 'waiting',
+					'done'        => 0,
+				],
+				[ 'ID' => $key ]
 			);
+			$wpdb->query('COMMIT');
 
-			if ( $process && (int) $process->retry_count < (int) $process->max_retries ) {
-				// Increment retry count and re-queue the process for another attempt.
-				$wpdb->query('START TRANSACTION');
-				$wpdb->update(
-					$this->table,
-					[
-						'retry_count' => (int) $process->retry_count + 1,
-						'status'      => 'waiting',
-						'done'        => 0,
-					],
-					[ 'ID' => $key ]
-				);
-				$wpdb->query('COMMIT');
+			$this->debug( sprintf( 'Process %d re-queued for retry (attempt %d of %d)', $key, (int) $retry_state->retry_count + 1, (int) $retry_state->max_retries ) );
+			$this->write_log( $key, [
+				[
+					'datetime' => gmdate( 'Y-m-d H:i:s' ),
+					'message'  => sprintf(
+						/* translators: %1$d is the retry attempt number, %2$d is the max retries */
+						__( 'Process re-queued for retry (attempt %1$d of %2$d)', 'tainacan' ),
+						(int) $retry_state->retry_count + 1,
+						(int) $retry_state->max_retries
+					),
+				],
+			] );
 
-				$this->debug( sprintf( 'Process %d re-queued for retry (attempt %d of %d)', $key, (int) $process->retry_count + 1, (int) $process->max_retries ) );
-				$this->write_log( $key, [
-					[
-						'datetime' => gmdate( 'Y-m-d H:i:s' ),
-						'message'  => sprintf(
-							/* translators: %1$d is the retry attempt number, %2$d is the max retries */
-							__( 'Process re-queued for retry (attempt %1$d of %2$d)', 'tainacan' ),
-							(int) $process->retry_count + 1,
-							(int) $process->max_retries
-						),
-					],
-				] );
-
-				// Re-dispatch so the retried process starts immediately.
-				$this->is_cron_dispatch = true;
-				$this->dispatch();
-				return $this;
-			}
+			// Re-dispatch so the retried process starts immediately.
+			$this->is_cron_dispatch = true;
+			$this->dispatch();
+			return $this;
 		}
 
 		$params = [
@@ -264,6 +270,43 @@ abstract class Background_Process extends Background_Process_Base {
 		);
 		$wpdb->query('COMMIT');
 		return $this;
+	}
+
+	/**
+	 * Determine whether a process that is being closed will be re-queued for a retry.
+	 *
+	 * Returns the process row (with `retry_count` and `max_retries`) when another
+	 * attempt is still due, or false when the process is going to be finalised.
+	 *
+	 * Subclasses use this to avoid irreversible side effects while a retry is still
+	 * pending. For example, the importer must not delete its source file before the
+	 * retried run has had a chance to read it (see issue #1249).
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param int    $key    The process ID.
+	 * @param string $status The status the process is being closed with.
+	 * @return object|false Process row when a retry will happen, false otherwise.
+	 */
+	protected function get_retry_state( $key, $status ) {
+		if ( $status !== 'errored' ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$process = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT retry_count, max_retries FROM {$this->table} WHERE ID = %d",
+				$key
+			)
+		);
+
+		if ( ! $process || (int) $process->retry_count >= (int) $process->max_retries ) {
+			return false;
+		}
+
+		return $process;
 	}
 
 	/**
@@ -398,6 +441,13 @@ abstract class Background_Process extends Background_Process_Base {
 				return;
 			}
 			
+			// A worker that lost the ownership of the process must not close it:
+			// another request may be running the same batch already. See #1285.
+			if ( $this->ownership_lost ) {
+				$this->debug('Shutdown after ownership loss: leaving the process to its current worker');
+				return;
+			}
+
 			$error_str = "Fatal error: " . json_encode($error);
 			if ( is_array($error) ) {
 				$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'];
@@ -418,6 +468,13 @@ abstract class Background_Process extends Background_Process_Base {
 		$close_status = 'finished';
 
 		do {
+			// Another request may have taken this process over (the watchdog can
+			// have re-queued it and re-dispatched it). Stop here instead of
+			// processing the same batch range twice. See #1285.
+			if ( ! $this->owns_process( $batch->key ) ) {
+				$this->abort_worker_ownership_lost( $batch->key );
+			}
+
 			// Update heartbeat on each iteration so the watchdog can track live processes.
 			$this->record_heartbeat();
 			try {
@@ -431,6 +488,13 @@ abstract class Background_Process extends Background_Process_Base {
 				$close_status = 'errored';
 			}
 		} while ( false !== $task && ! $this->time_exceeded() && ! $this->memory_exceeded() );
+
+		// Ownership can also be lost between the last iteration and the writes
+		// below; writing then would overwrite the data of the worker that owns
+		// the row now.
+		if ( ! $this->owns_process( $batch->key ) ) {
+			$this->abort_worker_ownership_lost( $batch->key );
+		}
 
 		$this->debug('process limit reached');
 
@@ -458,6 +522,66 @@ abstract class Background_Process extends Background_Process_Base {
 		}
 
 		$this->debug('dying');
+		wp_die();
+	}
+
+	/**
+	 * Whether this request still owns the given process.
+	 *
+	 * A worker owns a process while the row is still 'running' and the process
+	 * lock still holds the value this request stored in lock_process(). Ownership
+	 * is lost when someone else closes and re-queues the process (the watchdog
+	 * after a false stale detection, for example) or when another request takes
+	 * the lock after unlock_process(). Continuing to run in that situation leaves
+	 * two workers writing the same batch and the same output.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/1285
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param int $key Process ID.
+	 * @return bool
+	 */
+	protected function owns_process( $key ) {
+		global $wpdb;
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT status, done FROM {$this->table} WHERE ID = %d",
+				$key
+			)
+		);
+
+		if ( ! $row || 'running' !== $row->status || (int) $row->done !== 0 ) {
+			return false;
+		}
+
+		$lock = get_site_transient( $this->identifier . '_process_lock' );
+
+		return ! empty( $lock ) && $lock == $this->process_lock_in_time;
+	}
+
+	/**
+	 * Stop this worker because another request owns the process now.
+	 *
+	 * Nothing is updated, closed or unlocked here on purpose: the row and the
+	 * lock belong to the current owner, and closing the row from a stale worker is
+	 * what produced the duplicated batches reported in #1285.
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param int $key Process ID.
+	 * @return void
+	 */
+	protected function abort_worker_ownership_lost( $key ) {
+		$this->ownership_lost = true;
+		$this->debug( sprintf( 'Worker of process %d aborted: another request owns it now', $key ) );
+		$this->write_log( $key, [
+			[
+				'datetime' => $this->utc_now(),
+				'message'  => __( 'Process aborted: another worker owns this process now.', 'tainacan' ),
+			],
+		] );
 		wp_die();
 	}
 

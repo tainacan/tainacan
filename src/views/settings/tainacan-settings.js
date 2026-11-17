@@ -30,7 +30,7 @@
 			heading.focus({ preventScroll: true });
 		}
 
-		var sectionIds = (window.tainacanSettingsSections && Array.isArray(tainacanSettingsSections.ids)) ? tainacanSettingsSections.ids : [];
+		var sectionIds = (window.tainacan_settings && Array.isArray(tainacan_settings.ids)) ? tainacan_settings.ids : [];
 
 		var pairs = headings.map(function (heading, index) {
 			if (sectionIds[index])

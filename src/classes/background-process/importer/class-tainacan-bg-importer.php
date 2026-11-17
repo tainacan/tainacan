@@ -36,31 +36,38 @@ class Background_Importer extends Background_Process {
 
 	public function close( $key, $status = 'finished' ) {
 
-		$batch = $this->get_batch_by_key( $key );
-		$data = $batch->data;
+		// A process that errored but still has retries left is re-queued by the
+		// parent, and the next attempt needs the source file to run. Deleting it
+		// here makes every retry fail on a missing source file (see issue #1249),
+		// so only delete it once the process is really going to end.
+		if ( ! $this->get_retry_state( $key, $status ) ) {
 
-		if (
-			! empty( $data['tmp_file_id'] ) &&
-			! empty( $data['class_name'] ) &&
-			class_exists( $data['class_name'] )
-		) {
-			$class_name = $data['class_name'];
-			$importer = new $class_name( $data );
+			$batch = $this->get_batch_by_key( $key );
+			$data = $batch->data;
 
 			if (
-				method_exists( $importer, 'delete_source_file' ) &&
-				! $importer->delete_source_file()
+				! empty( $data['tmp_file_id'] ) &&
+				! empty( $data['class_name'] ) &&
+				class_exists( $data['class_name'] )
 			) {
-				$this->write_error_log(
-					$key,
-					[[
-						'datetime' => gmdate( 'Y-m-d H:i:s' ),
-						'message'  => 'Failed to delete importer source file.'
-					]]
-				);
+				$class_name = $data['class_name'];
+				$importer = new $class_name( $data );
 
-				if ( $status === 'finished' ) {
-					$status = 'finished-errors';
+				if (
+					method_exists( $importer, 'delete_source_file' ) &&
+					! $importer->delete_source_file()
+				) {
+					$this->write_error_log(
+						$key,
+						[[
+							'datetime' => gmdate( 'Y-m-d H:i:s' ),
+							'message'  => 'Failed to delete importer source file.'
+						]]
+					);
+
+					if ( $status === 'finished' ) {
+						$status = 'finished-errors';
+					}
 				}
 			}
 		}

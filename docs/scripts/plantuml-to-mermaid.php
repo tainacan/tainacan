@@ -302,6 +302,25 @@ foreach ($lines as $line) {
     }
 }
 
+/**
+ * Mermaid class members treat braces, unions, and generics as syntax.
+ * Keep the leading type name (array{...} becomes array).
+ */
+function mermaid_safe_type($type) {
+    $type = strip_tags($type);
+    $type = trim($type);
+    if ($type === '') {
+        return 'mixed';
+    }
+    if (preg_match('/[{}|<>?,:]/', $type)) {
+        if (preg_match('/^[A-Za-z_\\\\][A-Za-z0-9_\\\\]*/', $type, $matches)) {
+            return str_replace('\\', '', $matches[0]);
+        }
+        return 'mixed';
+    }
+    return $type;
+}
+
 // Output classes
 foreach ($classes as $originalName => $class) {
     $name = str_replace(['\\', '/', ' ', '-'], '_', $class['name']);
@@ -324,11 +343,7 @@ foreach ($classes as $originalName => $class) {
             $attrName = $attr['name'];
             $attrType = $attr['type'];
             // Clean up type (remove HTML tags, extra spaces)
-            $attrType = strip_tags($attrType);
-            $attrType = trim($attrType);
-            if (empty($attrType)) {
-                $attrType = 'mixed';
-            }
+            $attrType = mermaid_safe_type($attrType);
             echo "        {$attr['visibility']}{$attrName} : {$attrType}\n";
         }
     }

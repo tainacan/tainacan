@@ -269,7 +269,7 @@ The `methods` here simply delegate the blur and input events to the default pare
 
 That might not be your case, but if your metadata component has registered a Metadata Form Component with extra options then you can access them via the `this.itemMetadatum.metadatum.metadata_type_options` object. In the code above, we access this value with a Computed function.
 
-Finally, in this example, a custom component from [Buefy](https://buefy.github.io/), `b-input` is used. We recommend checking it out, as this library is already loaded on Tainacan, and most of its classes are styled to match our default style. But if you want to use another Vue.js library or component, you can check the session of [Registering Custom Vue JS](/dev/registering-custom-vue-components.md) for understanding how to use it, but the process is much alike what we have done to register the Metadata Form Component.
+Finally, in this example, a custom component from [Buefy](https://buefy.github.io/), `b-input` is used. We recommend checking it out, as this library is already loaded on Tainacan, and most of its classes are styled to match our default style. But if you want to use another Vue.js library or component, you can check the session of [Registering Custom Vue JS](registering-custom-vue-components.md) for understanding how to use it, but the process is much alike what we have done to register the Metadata Form Component.
 
 ## Creating Vue Web Component for the Metadata Form
 
@@ -553,4 +553,4 @@ If everything goes well, you shall have a new folder `node_modules` and a new fi
 
 Creating your custom Metadata Type for Tainacan requires following some _naming conventions_ and understanding a bit of the structure existing on the plugin code. We here summarized how to [Register](#registering-your-metadata-type), create the [Class](#creating-the-php-class) and the [Custom Vue Components](#creating-vue-web-component) related to it. But you can learn a lot more by studying the [source code of some more complex examples](https://github.com/tainacan/tainacan/tree/develop/src/views/admin/components/metadata-types ":ignore"). Feel free to reach us at the GitHub repo or at the [community forum](https://tainacan.discourse.group ":ignore") :wink:
 
-> Oh, and BTW. Are you ready to also create a [Custom Filter Type](/dev/creating-filters-type) for your new Metadata Type?
+> Oh, and BTW. Are you ready to also create a [Custom Filter Type](creating-filters-type.md) for your new Metadata Type?

@@ -47,7 +47,11 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         collection,
         collectionBackgroundColor,
         collectionTextColor,
-        variableItemsWidth
+        variableItemsWidth,
+        order,
+        orderBy,
+        orderByMetaKey,
+        randomOrder
     } = attributes;
 
     // Gets blocks props from hook
@@ -203,6 +207,32 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
             else {
                 queryObject.perpage = 12;
                 setAttributes({ maxItemsNumber: 12 });
+            }
+
+            // Keep the chosen sort separate from random mode, including legacy rand URLs.
+            if (queryObject.orderby && queryObject.orderby != 'rand') {
+                orderBy = queryObject.orderby;
+                if (queryObject.order)
+                    order = queryObject.order;
+                if (queryObject.metakey)
+                    orderByMetaKey = queryObject.metakey;
+                setAttributes({ orderBy: orderBy, order: order, orderByMetaKey: orderByMetaKey });
+            }
+
+            if (randomOrder) {
+                queryObject.orderby = 'rand';
+                delete queryObject.order;
+                delete queryObject.metakey;
+            } else {
+                queryObject.orderby = orderBy && orderBy != 'rand' ? orderBy : 'date';
+                if (order)
+                    queryObject.order = order;
+                else
+                    delete queryObject.order;
+                if (orderByMetaKey)
+                    queryObject.metakey = orderByMetaKey;
+                else
+                    delete queryObject.metakey;
             }
 
             // Remove unecessary queries
@@ -561,6 +591,16 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                                     }}
                                     min={ 1 }
                                     max={ tainacan_blocks.api_max_items_per_page ? Number(tainacan_blocks.api_max_items_per_page) : 96 }
+                                />
+                                <ToggleControl
+                                    label={__('Random order', 'tainacan')}
+                                    help={ randomOrder ? __('Items are being displayed in a random order.', 'tainacan') : __('Toggle to display items in a random order.', 'tainacan') }
+                                    checked={ randomOrder }
+                                    onChange={ ( isChecked ) => {
+                                        randomOrder = isChecked;
+                                        setAttributes({ randomOrder: randomOrder });
+                                        setContent();
+                                    }}
                                 />
                             </div>
                         </PanelBody>

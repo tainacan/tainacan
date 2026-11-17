@@ -1024,7 +1024,7 @@
                                         :key="metadatumIndex">
                                     <span
                                             v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
-                                            :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
+                                            :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <div
                                                 class="metadata-value"
@@ -1155,7 +1155,7 @@
                             <td
                                     v-if="column.display"
                                     class="column-default-width"
-                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
+                                    :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea',
                                               'thumbnail-cell': column.metadatum == 'row_thumbnail',
                                               'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
                                               'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' ||
@@ -1219,7 +1219,7 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
-                                            popperClass: [ 'tainacan-tooltip', 'tooltip', 'content', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            popperClass: [ 'tainacan-tooltip', 'tooltip', 'content', column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-grey is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
@@ -1616,7 +1616,7 @@
                                     :key="metadatumIndex">
                                 <span 
                                         v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
-                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
+                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component === 'tainacan-textarea' }">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <div      
                                             class="metadata-value"
@@ -2165,7 +2165,7 @@
                                                             column.metadata_type_object != undefined && 
                                                             (column.metadata_type_object.related_mapped_prop != 'title') &&
                                                             (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate')"
-                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
+                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component === 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <div
                                                             class="metadata-value"
@@ -2391,7 +2391,6 @@ import CustomDialog from '../other/custom-dialog.vue';
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
 import { getInitiallySelectedItemIds } from "../../js/selection-bridge.js";
-
 import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { latLng } from 'leaflet';
@@ -2812,6 +2811,13 @@ export default {
 
             this.clearContextMenu();
         },
+        showBulkApiError(error) {
+            const data = error && error.response && error.response.data;
+            if (data && data.error_message)
+                this.$showApiError(error, data.error_message);
+
+            this.$emit('update-is-loading', false);
+        },
         untrashOneItem(itemId) {
             const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
@@ -2827,11 +2833,11 @@ export default {
                             collectionId: this.collectionId,
                             object: [itemId]
                         }).then(() => {
-                            this.untrashItemsInBulk({
+                            return this.untrashItemsInBulk({
                                 collectionId: this.collectionId,
                                 groupId: this.groupId
                             }).then(() => this.$eventBusSearch.loadItems() );
-                        });
+                        }).catch((error) => this.showBulkApiError(error));
                     }
                 },
                 trapFocus: true,
@@ -2872,7 +2878,8 @@ export default {
                         this.deleteItem({
                             itemId: item.id,
                             isPermanently: this.isOnTrash
-                        }).then(() => this.$eventBusSearch.loadItems() );
+                        }).then(() => this.$eventBusSearch.loadItems() )
+                            .catch((error) => this.showBulkApiError(error));
                     }
                 },
                 trapFocus: true,
@@ -2899,7 +2906,7 @@ export default {
                             collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            this.untrashItemsInBulk({
+                            return this.untrashItemsInBulk({
                                 collectionId: this.collectionId,
                                 groupId: this.groupId
                             }).then(() => {
@@ -2914,7 +2921,7 @@ export default {
                                     }
                                 });
                             });
-                        });
+                        }).catch((error) => this.showBulkApiError(error));
                     }
                 },
                 trapFocus: true,
@@ -2946,40 +2953,30 @@ export default {
                             collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            if (this.isOnTrash) {
-                                this.deleteItemsInBulk({
+                            const finish = () => {
+                                this.$eventBusSearch.loadItems();
+                                this.$buefy.snackbar.open({
+                                    message: this.$i18n.get('info_bulk_edit_process_added'),
+                                    type: 'is-primary',
+                                    duration: 4000,
+                                    actionText: this.$i18n.get('label_view_processes'),
+                                    onAction: () => {
+                                        this.$router.push(this.$routerHelper.getProcessesPath());
+                                    }
+                                });
+                            };
+
+                            if (this.isOnTrash)
+                                return this.deleteItemsInBulk({
                                     collectionId: this.collectionId,
                                     groupId: this.groupId
-                                }).then(() => {
-                                    this.$eventBusSearch.loadItems();
-                                    this.$buefy.snackbar.open({
-                                        message: this.$i18n.get('info_bulk_edit_process_added'),
-                                        type: 'is-primary',
-                                        duration: 4000,
-                                        actionText: this.$i18n.get('label_view_processes'),
-                                        onAction: () => {
-                                            this.$router.push(this.$routerHelper.getProcessesPath());
-                                        }
-                                    });
-                                });
-                            } else {
-                                this.trashItemsInBulk({
-                                    collectionId: this.collectionId,
-                                    groupId: this.groupId
-                                }).then(() => {
-                                    this.$eventBusSearch.loadItems();
-                                    this.$buefy.snackbar.open({
-                                        message: this.$i18n.get('info_bulk_edit_process_added'),
-                                        type: 'is-primary',
-                                        duration: 4000,
-                                        actionText: this.$i18n.get('label_view_processes'),
-                                        onAction: () => {
-                                            this.$router.push(this.$routerHelper.getProcessesPath());
-                                        }
-                                    });
-                                });
-                            }
-                        });
+                                }).then(finish);
+
+                            return this.trashItemsInBulk({
+                                collectionId: this.collectionId,
+                                groupId: this.groupId
+                            }).then(finish);
+                        }).catch((error) => this.showBulkApiError(error));
                     }
                 },
                 trapFocus: true,
@@ -3264,5 +3261,4 @@ export default {
     }
 
 </style>
-
 

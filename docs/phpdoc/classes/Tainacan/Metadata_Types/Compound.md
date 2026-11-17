@@ -580,6 +580,16 @@ public set_manage_multiple_input(mixed $manage_multiple_input): mixed
 
 ***
 
+### allows_links
+
+Whether stored values and queries for this type may keep anchor tags.
+
+```php
+public allows_links(): bool
+```
+
+***
+
 ### get_slug
 
 Gets a slug based on the class name to represent the metadata type

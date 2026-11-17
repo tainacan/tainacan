@@ -125,23 +125,20 @@ class REST_Filters_Controller extends REST_Controller {
 
 		if(empty($received_type)){
 			throw new \InvalidArgumentException('The type can\'t be empty');
-		} elseif(!strrchr($received_type, '_')){
-			$type = ucfirst(strtolower($received_type));
-		} else {
-			$type = ucwords(strtolower($received_type), '_\\');
 		}
 
+		// Class names are case-insensitive, so the received type is matched ignoring case
+		// and replaced by the registered name (e.g. TaxonomyTaginput, Numeric_Interval).
 		$registered_filter_types = $this->filter_repository->fetch_filter_types();
-		$valid_type = false;
+		$type = null;
 		foreach ($registered_filter_types as $registered_type) {
-			if ($type === $registered_type || "Tainacan\\Filter_Types\\$type" === $registered_type) {
+			if (strcasecmp($received_type, $registered_type) === 0 || strcasecmp("Tainacan\\Filter_Types\\$received_type", $registered_type) === 0) {
 				$type = $registered_type;
-				$valid_type = true;
 				break;
 			}
 		}
 
-		if (!$valid_type) {
+		if (empty($type)) {
 			throw new \InvalidArgumentException( 'Invalid filter type.' );
 		}
 
@@ -200,7 +197,11 @@ class REST_Filters_Controller extends REST_Controller {
 				return $options_error;
 			}
 
-			$filter_obj = $this->prepare_item_for_database($request);
+			try {
+				$filter_obj = $this->prepare_item_for_database($request);
+			} catch (\Exception $exception){
+				return new \WP_REST_Response($exception->getMessage(), 400);
+			}
 
 			if ($filter_obj->validate()){
 				$filter_inserted = $this->filter_repository->insert($filter_obj);

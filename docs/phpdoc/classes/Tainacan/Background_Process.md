@@ -16,34 +16,6 @@ to handle DB updates in the background.
 ```mermaid
 classDiagram
     direction TB
-    class Background_Process {
-        #table : string
-        +ID : false|int
-        #prefix : string
-        #action : string
-        #name : string
-        #default_max_retries : int
-        +__construct()
-        +get_id()
-        +get_name()
-        +set_name(name)
-        +save(priority)
-        +update(key, batch)
-        +open(key)
-        +close(key, status)
-        +delete(key)
-        #is_queue_empty()
-        #get_batch()
-        #get_batch_by_key(key)
-        #handle()
-        +delete_all_batches()
-        +kill_process()
-        #write_log_to_file(key, log, type)
-        #write_log(key, log)
-        #write_error_log(key, log)
-        -recursive_stingify_log_array(log, break)
-        -has_errors(key)
-    }
     class Background_Process_Base {
         #action : string
         #start_time : int
@@ -82,6 +54,35 @@ classDiagram
         #clear_scheduled_event()
         +cancel_process()
         +debug(message)
+    }
+    class Background_Process {
+        #table : string
+        +ID : false
+        #prefix : string
+        #action : string
+        #name : string
+        #default_max_retries : int
+        +__construct()
+        +get_id()
+        +get_name()
+        +set_name(name)
+        +save(priority)
+        +update(key, batch)
+        +open(key)
+        +close(key, status)
+        #get_retry_state(key, status)
+        +delete(key)
+        #is_queue_empty()
+        #get_batch()
+        #get_batch_by_key(key)
+        #handle()
+        +delete_all_batches()
+        +kill_process()
+        #write_log_to_file(key, log, type)
+        #write_log(key, log)
+        #write_error_log(key, log)
+        -recursive_stingify_log_array(log, break)
+        -has_errors(key)
     }
     class Async_Request {
         #prefix : string
@@ -277,6 +278,34 @@ public close(mixed $key, mixed $status = 'finished'): mixed
 |-----------|-----------|-------------|
 | `$key`    | **mixed** |             |
 | `$status` | **mixed** |             |
+
+***
+
+### get_retry_state
+
+Determine whether a process that is being closed will be re-queued for a retry.
+
+```php
+protected get_retry_state(int $key, string $status): object|false
+```
+
+Returns the process row (with `retry_count` and `max_retries`) when another
+attempt is still due, or false when the process is going to be finalised.
+
+Subclasses use this to avoid irreversible side effects while a retry is still
+pending. For example, the importer must not delete its source file before the
+retried run has had a chance to read it (see issue #1249).
+
+**Parameters:**
+
+| Parameter | Type       | Description                                  |
+|-----------|------------|----------------------------------------------|
+| `$key`    | **int**    | The process ID.                              |
+| `$status` | **string** | The status the process is being closed with. |
+
+**Return Value:**
+
+Process row when a retry will happen, false otherwise.
 
 ***
 
