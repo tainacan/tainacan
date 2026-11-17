@@ -141,6 +141,14 @@ class REST_Terms_Controller extends REST_Controller {
 		$attributes = $to_prepare[0];
 		$taxonomy = $to_prepare[1];
 
+		/*
+		 * Start from a fresh entity. $this->term is created once on init, and
+		 * mutating it in place meant a second term created in the same PHP process
+		 * reused an entity that already carried a term ID. Same family of bug as
+		 * the taxonomies controller.
+		 */
+		$this->term = new Entities\Term();
+
 		$readonly = $this->get_readonly_fields();
 		foreach ($attributes as $attribute => $value){
 			if ( in_array($attribute, $readonly, true) ) {

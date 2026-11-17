@@ -922,17 +922,25 @@ class REST_Items_Controller extends REST_Controller {
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 
-		if($this->item->validate()) {
+		/*
+		 * Validate the entity that is actually inserted. prepare_item_for_database()
+		 * returns a fresh Item and never assigns $this->item, so validating the
+		 * property marked a different object as valid and left $item_obj
+		 * unvalidated. Repository::insert() only enforces validation for non-draft
+		 * statuses, which is why creating a published item threw while creating a
+		 * draft silently worked.
+		 */
+		if ( $item_obj->validate() ) {
 			$item = $this->items_repository->insert( $item_obj );
 
-			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
+			return new \WP_REST_Response( $this->prepare_item_for_response( $item, $request ), 201 );
 		}
 
 
 		return new \WP_REST_Response([
 			'error_message' => __('One or more values are invalid.', 'tainacan'),
-			'errors'        => $this->item->get_errors(),
-			'item'          => $this->prepare_item_for_response($this->item, $request)
+			'errors'        => $item_obj->get_errors(),
+			'item'          => $this->prepare_item_for_response($item_obj, $request)
 		], 400);
 	}
 
