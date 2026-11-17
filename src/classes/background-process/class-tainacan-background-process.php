@@ -24,6 +24,19 @@ abstract class Background_Process extends Background_Process_Base {
 	 * @var false|int
 	 */
 	public $ID = false;
+
+	/**
+	 * Whether this worker lost the ownership of the process it was running.
+	 *
+	 * Set when another request took the process over, typically after the
+	 * watchdog re-queued it. It stops this worker before its next iteration and
+	 * keeps the shutdown handler from closing a process that belongs to someone
+	 * else now.
+	 *
+	 * @since 1.4.2
+	 * @var bool
+	 */
+	protected $ownership_lost = false;
 	
 	/**
 	 * Prefix
@@ -116,7 +129,7 @@ abstract class Background_Process extends Background_Process_Base {
 					'priority' => $priority,
 					'action' => $this->action,
 					'name' => $this->get_name(),
-					'queued_on' => gmdate('Y-m-d H:i:s'),
+					'queued_on' => $this->utc_now(),
 					'status' => 'waiting',
 					'bg_uuid' => uniqid(),
 				]
@@ -148,7 +161,7 @@ abstract class Background_Process extends Background_Process_Base {
 				$this->table, 
 				[
 					'data' => maybe_serialize($data),
-					'processed_last' => gmdate('Y-m-d H:i:s'),
+					'processed_last' => $this->utc_now(),
 					'progress_label' => $batch->progress_label,
 					'progress_value' => $batch->progress_value,
 					'output' => $batch->output
@@ -428,6 +441,13 @@ abstract class Background_Process extends Background_Process_Base {
 				return;
 			}
 			
+			// A worker that lost the ownership of the process must not close it:
+			// another request may be running the same batch already. See #1285.
+			if ( $this->ownership_lost ) {
+				$this->debug('Shutdown after ownership loss: leaving the process to its current worker');
+				return;
+			}
+
 			$error_str = "Fatal error: " . json_encode($error);
 			if ( is_array($error) ) {
 				$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'];
@@ -448,6 +468,13 @@ abstract class Background_Process extends Background_Process_Base {
 		$close_status = 'finished';
 
 		do {
+			// Another request may have taken this process over (the watchdog can
+			// have re-queued it and re-dispatched it). Stop here instead of
+			// processing the same batch range twice. See #1285.
+			if ( ! $this->owns_process( $batch->key ) ) {
+				$this->abort_worker_ownership_lost( $batch->key );
+			}
+
 			// Update heartbeat on each iteration so the watchdog can track live processes.
 			$this->record_heartbeat();
 			try {
@@ -461,6 +488,13 @@ abstract class Background_Process extends Background_Process_Base {
 				$close_status = 'errored';
 			}
 		} while ( false !== $task && ! $this->time_exceeded() && ! $this->memory_exceeded() );
+
+		// Ownership can also be lost between the last iteration and the writes
+		// below; writing then would overwrite the data of the worker that owns
+		// the row now.
+		if ( ! $this->owns_process( $batch->key ) ) {
+			$this->abort_worker_ownership_lost( $batch->key );
+		}
 
 		$this->debug('process limit reached');
 
@@ -488,6 +522,66 @@ abstract class Background_Process extends Background_Process_Base {
 		}
 
 		$this->debug('dying');
+		wp_die();
+	}
+
+	/**
+	 * Whether this request still owns the given process.
+	 *
+	 * A worker owns a process while the row is still 'running' and the process
+	 * lock still holds the value this request stored in lock_process(). Ownership
+	 * is lost when someone else closes and re-queues the process (the watchdog
+	 * after a false stale detection, for example) or when another request takes
+	 * the lock after unlock_process(). Continuing to run in that situation leaves
+	 * two workers writing the same batch and the same output.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/1285
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param int $key Process ID.
+	 * @return bool
+	 */
+	protected function owns_process( $key ) {
+		global $wpdb;
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT status, done FROM {$this->table} WHERE ID = %d",
+				$key
+			)
+		);
+
+		if ( ! $row || 'running' !== $row->status || (int) $row->done !== 0 ) {
+			return false;
+		}
+
+		$lock = get_site_transient( $this->identifier . '_process_lock' );
+
+		return ! empty( $lock ) && $lock == $this->process_lock_in_time;
+	}
+
+	/**
+	 * Stop this worker because another request owns the process now.
+	 *
+	 * Nothing is updated, closed or unlocked here on purpose: the row and the
+	 * lock belong to the current owner, and closing the row from a stale worker is
+	 * what produced the duplicated batches reported in #1285.
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param int $key Process ID.
+	 * @return void
+	 */
+	protected function abort_worker_ownership_lost( $key ) {
+		$this->ownership_lost = true;
+		$this->debug( sprintf( 'Worker of process %d aborted: another request owns it now', $key ) );
+		$this->write_log( $key, [
+			[
+				'datetime' => $this->utc_now(),
+				'message'  => __( 'Process aborted: another worker owns this process now.', 'tainacan' ),
+			],
+		] );
 		wp_die();
 	}
 
