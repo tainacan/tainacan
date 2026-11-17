@@ -129,7 +129,8 @@ class REST_Facets_Controller extends REST_Controller {
 					if( isset($request['current_query']['taxquery']) && is_array($request['current_query']['taxquery']) ){
 						foreach( $request['current_query']['taxquery'] as $taxquery ){
 							if( is_array($taxquery) && isset($taxquery['taxonomy']) && isset($taxquery['terms']) && $taxquery['taxonomy'] === $taxonomy_slug ){
-								$include = $taxquery['terms'];
+								// several clauses on the same taxonomy (e.g. joined by OR): select all their terms
+								$include = array_merge( $include, (array) $taxquery['terms'] );
 							}
 						}
 					}
@@ -137,12 +138,16 @@ class REST_Facets_Controller extends REST_Controller {
 					if( isset($request['current_query']['metaquery']) && is_array($request['current_query']['metaquery']) ){
 						foreach( $request['current_query']['metaquery'] as $metaquery ){
 							if( is_array($metaquery) && isset($metaquery['key']) && isset($metaquery['value']) && $metaquery['key'] == $metadatum_id ){
-								$include = $metaquery['value'];
+								// several clauses on the same metadatum (e.g. joined by OR): select all their values.
+								// A scalar value becomes a one-element array, since the repository only includes arrays.
+								$include = array_merge( $include, (array) $metaquery['value'] );
 							}
 						}
 					}
 				}
 			}
+
+			$include = array_values( array_unique( $include ) );
 
 			$parent_id = 0;
 			if ( isset($request['parent']) ) {

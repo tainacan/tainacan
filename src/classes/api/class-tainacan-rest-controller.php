@@ -220,6 +220,11 @@ abstract class REST_Controller extends \WP_REST_Controller {
 				continue;
 			}
 
+			// A clause must be an array; anything else is dropped, as the other tax_query loops do
+			if ( ! is_array($tax_query) ) {
+				continue;
+			}
+
 			if ( isset($tax_query['operator']) && $tax_query['operator'] == 'LIKE' &&
 		 		isset($tax_query['terms']) && is_string($tax_query['terms']) ) {
 

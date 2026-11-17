@@ -1041,7 +1041,26 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$values = $this->get_values($values);
 		$this->assertEquals( 80, sizeof($values) );
 
-		// relation OR + clause on the metadatum itself: the clause is kept (dropping a disjunct would narrow the set)
+		// relation OR + only clauses on the metadatum itself: dropped as under AND, nothing else is filtered
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'items_filter' => [
+				'meta_query' => [
+					'relation' => 'OR',
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => 'Value 1'
+					],
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => 'Value 2'
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 80, sizeof($values) );
+
+		// relation OR + clause on the metadatum itself and on another metadatum: the clause is kept (dropping a disjunct would narrow the set)
 		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
 			'items_filter' => [
 				'meta_query' => [
@@ -1107,7 +1126,13 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$values = $this->get_values($values);
 		$this->assertEquals( sizeof($unfiltered), sizeof($values) );
 
-		// relation OR + clause on the facet's own taxonomy: the clause is kept, so only the matching root remains
+		// relation OR + only the facet's own clause: one clause matches the same items under OR, AND
+		// or no relation, so it is dropped as under AND and the list (with counts) equals the unfiltered one
+		$unfiltered_counted = $this->get_values( $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'count_items' => true,
+		] ) );
+		$this->assertEquals( 2, sizeof($unfiltered_counted) );
 		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
 			'collection_id' => $this->collection1->get_id(),
 			'count_items' => true,
@@ -1123,9 +1148,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 			]
 		] );
 		$values = $this->get_values($values);
-		$this->assertEquals( 1, sizeof($values) );
-		$this->assertEquals( 'Term for collection 1', $values[0]['label'] );
-		$this->assertEquals( 10, $values[0]['total_items'] );
+		$this->assertEquals( $unfiltered_counted, $values );
 	}
 
 	/**
@@ -1245,6 +1268,177 @@ class Facets extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
 		$this->assertEquals( 40, (int) $response->get_headers()['X-WP-Total'] );
+	}
+
+	/**
+	 * getSelected must select the values of every clause on the facet's metadatum (two clauses
+	 * joined by OR), and a scalar meta value must be selected too. number=1 keeps the selected
+	 * values out of the first page, so they are only listed if the include path runs.
+	 */
+	function test_facets_endpoint_get_selected_unions_clauses_and_accepts_scalars() {
+		$route = $this->namespace . '/collection/' . $this->collection1->get_id() . '/facets/';
+
+		// meta facet: one scalar and one array value, on two OR clauses of the same metadatum.
+		// Unselected, the first page (ordered by value) is only "Value 1".
+		$request = new \WP_REST_Request( 'GET', $route . $this->metadatum_repo->get_id() );
+		$request->set_query_params( [
+			'getSelected'   => 1,
+			'offset'        => 0,
+			'number'        => 1,
+			'current_query' => [
+				'metaquery' => [
+					'relation' => 'OR',
+					[
+						'key'     => $this->metadatum_repo->get_id(),
+						'value'   => 'Value 5',
+						'compare' => '='
+					],
+					[
+						'key'     => $this->metadatum_repo->get_id(),
+						'value'   => [ 'Value 7' ],
+						'compare' => 'IN'
+					]
+				]
+			]
+		] );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$listed = array_column( $response->get_data()['values'], 'value' );
+		sort( $listed );
+		$this->assertEquals( [ 'Value 5', 'Value 7' ], $listed );
+
+		// text facet with a single scalar value: unselected, the first page is only "even"
+		$request = new \WP_REST_Request( 'GET', $route . $this->metadatum_text->get_id() );
+		$request->set_query_params( [
+			'getSelected'   => 1,
+			'offset'        => 0,
+			'number'        => 1,
+			'current_query' => [
+				'metaquery' => [
+					[
+						'key'     => $this->metadatum_text->get_id(),
+						'value'   => 'odd',
+						'compare' => '='
+					]
+				]
+			]
+		] );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$this->assertEquals( [ 'odd' ], array_column( $response->get_data()['values'], 'value' ) );
+
+		// taxonomy facet: two OR clauses on the same taxonomy, one root term each.
+		// Unselected, the first page (ordered by name) is only "Term for all".
+		$term_c1  = get_term_by( 'name', 'Term for collection 1', $this->taxonomy->get_db_identifier() );
+		$term_all = get_term_by( 'name', 'Term for all', $this->taxonomy->get_db_identifier() );
+		$request = new \WP_REST_Request( 'GET', $route . $this->meta_1_tax->get_id() );
+		$request->set_query_params( [
+			'getSelected'   => 1,
+			'offset'        => 0,
+			'number'        => 1,
+			'current_query' => [
+				'taxquery' => [
+					'relation' => 'OR',
+					[
+						'taxonomy' => $this->taxonomy->get_db_identifier(),
+						'terms'    => [ $term_all->term_id ]
+					],
+					[
+						'taxonomy' => $this->taxonomy->get_db_identifier(),
+						'terms'    => $term_c1->term_id
+					]
+				]
+			]
+		] );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$listed = array_map( 'intval', array_column( $response->get_data()['values'], 'value' ) );
+		sort( $listed );
+		$expected = [ (int) $term_all->term_id, (int) $term_c1->term_id ];
+		sort( $expected );
+		$this->assertEquals( $expected, $listed );
+	}
+
+	/**
+	 * add_support_to_tax_query_like() rebuilds the tax_query: the LIKE / NOT LIKE clauses must
+	 * keep working, and the root relation must survive the rebuild.
+	 */
+	function test_items_endpoint_tax_query_like_with_relation() {
+		$taxonomy = $this->taxonomy->get_db_identifier();
+		$route    = $this->namespace . '/collection/' . $this->collection1->get_id() . '/items';
+
+		// LIKE "collection 1" (Term for collection 1 and its child: items 1-20) OR Term for all (with child: items 21-40)
+		$request = new \WP_REST_Request( 'GET', $route );
+		$request->set_query_params( [
+			'perpage'  => 1,
+			'taxquery' => [
+				'relation' => 'OR',
+				[
+					'taxonomy' => $taxonomy,
+					'terms'    => 'collection 1',
+					'operator' => 'LIKE'
+				],
+				[
+					'taxonomy'  => $taxonomy,
+					'metadatum' => 'name',
+					'terms'     => 'Term for all'
+				]
+			]
+		] );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$this->assertEquals( 40, (int) $response->get_headers()['X-WP-Total'] );
+
+		// same clauses with AND: no item has both
+		$params = $request->get_query_params();
+		$params['taxquery']['relation'] = 'AND';
+		$request->set_query_params( $params );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$this->assertEquals( 0, (int) $response->get_headers()['X-WP-Total'] );
+
+		// NOT LIKE "child" (drops items 11-20 and 31-40) AND Term for collection 1 (with child: items 1-20) => items 1-10
+		$request = new \WP_REST_Request( 'GET', $route );
+		$request->set_query_params( [
+			'perpage'  => 1,
+			'taxquery' => [
+				'relation' => 'AND',
+				[
+					'taxonomy' => $taxonomy,
+					'terms'    => 'child',
+					'operator' => 'NOT LIKE'
+				],
+				[
+					'taxonomy'  => $taxonomy,
+					'metadatum' => 'name',
+					'terms'     => 'Term for collection 1'
+				]
+			]
+		] );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$this->assertEquals( 10, (int) $response->get_headers()['X-WP-Total'] );
+	}
+
+	/**
+	 * add_support_to_tax_query_like() must skip a clause that is not an array instead of reading keys from it.
+	 */
+	function test_add_support_to_tax_query_like_skips_non_array_clauses() {
+		$controller = new \Tainacan\API\EndPoints\REST_Items_Controller();
+		$args = $controller->add_support_to_tax_query_like( [
+			'tax_query' => [
+				'relation' => 'OR',
+				'not-a-clause',
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'terms'    => 'Term for all',
+					'field'    => 'name'
+				]
+			]
+		] );
+		$this->assertSame( 'OR', $args['tax_query']['relation'] );
+		$this->assertCount( 2, $args['tax_query'] );
+		$this->assertNotContains( 'not-a-clause', $args['tax_query'] );
 	}
 
 	/**
