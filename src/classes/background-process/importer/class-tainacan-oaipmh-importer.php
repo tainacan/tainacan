@@ -7,23 +7,24 @@ use Tainacan;
 use Tainacan\Entities;
 
 /**
- * Imports items from an OAI-PMH 2.0 data provider using the `oai_dc` metadata format.
+ * Imports the records of an OAI-PMH 2.0 data provider (`oai_dc` format) as items of ONE
+ * collection chosen by the user, through the standard importer flow: the user picks the
+ * destination collection and maps the Dublin Core elements to its metadata (manual collection
+ * and manual mapping, as in the CSV importer). The background job never creates collections.
  *
- * The importer follows the standard importer flow (see the wiki page "importer-flow"):
+ * Two sources are possible, chosen on the options form:
  *
- *  1. Step "Create Collections" (`create_collections()`): calls `ListSets` and, depending on
- *     the "Create set as" option, creates one collection per set, or a single collection whose
- *     sets become terms of a "Sets" taxonomy. Providers without sets get a single collection
- *     named after the repository. Every collection receives the Dublin Core metadata described
- *     by the `dublin-core` mapper, and the resulting mapping (`metadatum ID => 'dc:element'`)
- *     is stored in the collections queue through `add_collection()`.
+ *  - "One set": a single `ListRecords` harvest restricted to the set spec typed by the user
+ *    (or taken from a pasted URL that has `set=`). `ListSets` is never called in this mode.
+ *  - "Whole repository": a single `ListRecords` harvest with no `set` argument. Every setSpec
+ *    of a record header becomes a term of one flat "OAI-PMH sets" taxonomy, through a multiple
+ *    taxonomy metadatum created in the destination collection. The human names of the sets only
+ *    exist in `ListSets`, which is walked first, one page per iteration, solely to fill a
+ *    spec => name map.
  *
- *  2. Step "Import Items" (default `process_collections()`): each iteration fetches ONE
- *     `ListRecords` page in `process_item()` and inserts all of its records in `insert()`.
- *     Paging follows the `resumptionToken` returned by the provider; `total_items` of each
- *     queued collection counts pages, not records, and grows while tokens keep coming.
- *
- * Only the OAI-PMH base URL is required. Query strings pasted along with the URL are discarded.
+ * Each iteration of the "Import Items" step fetches ONE `ListRecords` page and inserts its records.
+ * `total_items` of the collection counts pages and grows while the provider returns resumption
+ * tokens. When the token ends, or a page fails for good, the collection stops.
  */
 class Oaipmh_Importer extends Importer {
 
@@ -32,266 +33,254 @@ class Oaipmh_Importer extends Importer {
 	const METADATA_PREFIX  = 'oai_dc';
 
 	/**
-	 * How many times a single OAI request is attempted before giving up.
+	 * Source field holding the OAI header identifier of a record.
 	 */
-	const MAX_HTTP_ATTEMPTS = 3;
+	const IDENTIFIER_FIELD = 'oai:identifier';
 
 	/**
-	 * Safety cap for `ListSets` pagination inside a single step iteration.
+	 * Internal source field holding the set names of a record (whole repository mode).
 	 */
-	const MAX_LIST_SETS_PAGES = 20;
+	const SETS_FIELD = 'oai:setSpec';
+
+	/**
+	 * Item post meta keys: the OAI identifier of the source record and the import run that
+	 * inserted it (used to skip records already inserted when a page is processed again).
+	 */
+	const ITEM_IDENTIFIER_META = '_tainacan_oaipmh_identifier';
+	const ITEM_RUN_META        = '_tainacan_oaipmh_run';
+
+	/**
+	 * Collection post meta key that remembers the sets metadatum created in it.
+	 */
+	const COLLECTION_SETS_META = '_tainacan_oaipmh_sets_metadatum';
+
+	/**
+	 * Attempts of the same page (transport errors, HTTP 5xx, invalid XML) before it fails for good.
+	 */
+	const MAX_PAGE_ATTEMPTS = 3;
+
+	/**
+	 * Flow-control waits (HTTP 503/429 with Retry-After) accepted for the same page.
+	 */
+	const MAX_PAGE_WAITS = 20;
+
+	/**
+	 * Longest Retry-After honored, in seconds.
+	 */
+	const MAX_RETRY_AFTER = 3600;
+
+	/**
+	 * Longest pause inside one iteration, in seconds. Longer waits span several iterations,
+	 * so the background process keeps recording heartbeats.
+	 */
+	const MAX_SLEEP_PER_ITERATION = 5;
+
+	/**
+	 * The fifteen Dublin Core elements, in the order of the specification.
+	 */
+	const DC_ELEMENTS = [
+		'dc:title',
+		'dc:creator',
+		'dc:subject',
+		'dc:description',
+		'dc:publisher',
+		'dc:contributor',
+		'dc:date',
+		'dc:type',
+		'dc:format',
+		'dc:identifier',
+		'dc:source',
+		'dc:language',
+		'dc:relation',
+		'dc:coverage',
+		'dc:rights',
+	];
 
 	protected $steps = [
 		[
-			'name' => 'Create Collections',
-			'progress_label' => 'Create Collections',
-			'callback' => 'create_collections'
+			'name' => 'Read set names',
+			'progress_label' => 'Reading set names',
+			'callback' => 'read_set_names'
 		],
 		[
 			'name' => 'Import Items',
-			'progress_label' => 'Import Items',
-			'callback' => 'process_collections',
-			'total' => 2
+			'progress_label' => 'Importing Items',
+			'callback' => 'process_collections'
 		],
 	];
 
 	/**
-	 * Name of the taxonomy (and of its metadatum) created when sets are imported as terms.
-	 */
-	protected $NAME_FOR_SETS = 'Sets';
-
-	private $col_repo;
-	private $items_repo;
-	private $metadata_repo;
-	private $item_metadata_repo;
-	private $tax_repo;
-	private $term_repo;
-
-	/**
-	 * Metadatum entities of the mapping, cached per collection while a page is inserted.
+	 * Metadatum entities of the mapping, cached while one page is inserted.
 	 *
-	 * @var array<int, \Tainacan\Entities\Metadatum>
+	 * @var array<int, \Tainacan\Entities\Metadatum|false>
 	 */
 	private $metadata_cache = [];
 
-	public function __construct($attributes = array()) {
-		parent::__construct($attributes);
-		$this->set_default_options([
-			'using_set' => 'collection'
-		]);
+	/**
+	 * OAI identifier of the record being inserted, read by after_inserted_item().
+	 *
+	 * @var string
+	 */
+	private $current_record_identifier = '';
 
-		$this->col_repo = \Tainacan\Repositories\Collections::get_instance();
-		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
-		$this->metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
-		$this->item_metadata_repo = \Tainacan\Repositories\Item_Metadata::get_instance();
-		$this->tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
-		$this->term_repo = \Tainacan\Repositories\Terms::get_instance();
+	public function __construct( $attributes = array() ) {
+		parent::__construct( $attributes );
+
+		$this->set_default_options([
+			'source'   => 'set',
+			'set_spec' => '',
+		]);
 
 		$this->remove_import_method('file');
 		$this->add_import_method('url');
 	}
 
+	// -------------------------------------------------------------------------
+	// Setup (synchronous, from the importer form)
+	// -------------------------------------------------------------------------
+
 	/**
 	 * Stores the OAI-PMH base URL.
 	 *
-	 * Users often paste a full request such as `.../oai?verb=Identify`; the query string is
-	 * dropped so that the verbs built by this class are not appended to it.
+	 * Only scheme, host, port and path are kept: userinfo, query string and fragment are dropped,
+	 * so the verbs built by this class are always sent (a fragment would otherwise swallow them).
+	 * A `set` argument found in the query string is kept as the set spec to use when the options
+	 * form leaves it empty.
+	 *
+	 * The URL typed by the user is used as is; it is never replaced by the `baseURL` advertised
+	 * by `Identify`, which may point to another host.
 	 *
 	 * @param string $url
 	 * @return bool
 	 */
-	public function set_url($url) {
-		if ( is_string($url) ) {
-			$url = trim($url);
-			$query_position = strpos($url, '?');
-			if ( false !== $query_position ) {
-				$url = substr($url, 0, $query_position);
+	public function set_url( $url ) {
+		if ( ! is_string( $url ) ) {
+			return false;
+		}
+
+		$parts = wp_parse_url( trim( $url ) );
+		if ( ! is_array( $parts ) || empty( $parts['host'] ) || empty( $parts['scheme'] ) || ! in_array( strtolower( $parts['scheme'] ), [ 'http', 'https' ], true ) ) {
+			return false;
+		}
+
+		if ( ! empty( $parts['query'] ) ) {
+			$query = [];
+			parse_str( $parts['query'], $query );
+			if ( isset( $query['set'] ) && is_string( $query['set'] ) && '' !== trim( $query['set'] ) ) {
+				$this->add_transient( 'url_set_spec', trim( $query['set'] ) );
 			}
 		}
-		return parent::set_url($url);
+
+		$clean = strtolower( $parts['scheme'] ) . '://' . $parts['host'];
+		if ( ! empty( $parts['port'] ) ) {
+			$clean .= ':' . (int) $parts['port'];
+		}
+		if ( ! empty( $parts['path'] ) ) {
+			$clean .= $parts['path'];
+		}
+
+		return parent::set_url( $clean );
 	}
 
 	/**
-	 * Step 1: discovers the sets of the provider and creates the target collections.
+	 * The fifteen Dublin Core elements plus the OAI header identifier, offered on the mapping screen.
 	 *
-	 * @return bool Always false, so the importer moves to the next step.
+	 * @return string[]
 	 */
-	public function create_collections() {
-		$this->add_log('Creating collections');
-
-		if ( ! $this->get_url() ) {
-			$this->add_error_log( __('No OAI-PMH base URL was informed.', 'tainacan') );
-			$this->abort();
-			return false;
-		}
-
-		$sets = $this->fetch_sets();
-		if ( false === $sets ) {
-			// Error already logged; the importer was aborted.
-			return false;
-		}
-
-		if ( empty($sets) ) {
-			$this->add_log('Provider has no sets; importing everything into a single collection');
-			$this->queue_collection_for_set( '', $this->get_repository_name() );
-			return false;
-		}
-
-		if ( 'taxonomy' === $this->get_option('using_set') ) {
-			$this->queue_single_collection_with_sets_taxonomy( $sets );
-			return false;
-		}
-
-		foreach ( $sets as $set ) {
-			$this->queue_collection_for_set( $set['spec'], $set['name'] );
-		}
-
-		return false;
+	public function get_source_metadata() {
+		return array_merge( self::DC_ELEMENTS, [ self::IDENTIFIER_FIELD ] );
 	}
 
 	/**
-	 * Step 2 worker: fetches one `ListRecords` page of the given collection.
+	 * Stores the destination collection and its mapping.
 	 *
-	 * @param int   $index                 Page index within the collection (0 = first page).
-	 * @param array $collection_definition Entry of the collections queue.
-	 * @return array|bool Records of the page to be handled by insert(); true when there is
-	 *                    nothing (left) to import for this page; false on error.
-	 */
-	public function process_item( $index, $collection_definition ) {
-		if ( ! is_array($collection_definition) || ! isset($collection_definition['id']) ) {
-			$this->add_error_log('Collection misconfigured');
-			return false;
-		}
-
-		$set_spec = $this->get_set_spec_of( $collection_definition );
-		$this->add_log( sprintf('Processing page %d of set "%s"', (int) $index + 1, '' === $set_spec ? '(all records)' : $set_spec) );
-
-		if ( 0 === (int) $index ) {
-			$this->delete_transient('resumptionToken');
-			$params = [
-				'verb'           => 'ListRecords',
-				'metadataPrefix' => self::METADATA_PREFIX,
-			];
-			if ( '' !== $set_spec ) {
-				$params['set'] = $set_spec;
-			}
-		} else {
-			$token = $this->get_transient('resumptionToken');
-			if ( empty($token) ) {
-				$this->add_log('No resumption token left; nothing else to fetch for this set');
-				return true;
-			}
-			$params = [
-				'verb'            => 'ListRecords',
-				'resumptionToken' => $token,
-			];
-		}
-
-		$xml = $this->fetch_xml( $this->build_request_url($params) );
-		if ( ! $xml ) {
-			return false;
-		}
-
-		if ( isset($xml->error) ) {
-			$code = (string) $xml->error['code'];
-			if ( 'noRecordsMatch' === $code ) {
-				$this->add_log('Provider returned noRecordsMatch');
-				return true;
-			}
-			$this->add_error_log( sprintf('OAI-PMH error "%s": %s', $code, trim((string) $xml->error)) );
-			return false;
-		}
-
-		if ( ! isset($xml->ListRecords) ) {
-			$this->add_error_log('Unexpected response: no ListRecords element found');
-			return false;
-		}
-
-		$token = isset($xml->ListRecords->resumptionToken) ? trim( (string) $xml->ListRecords->resumptionToken ) : '';
-		if ( '' !== $token ) {
-			$this->add_transient('resumptionToken', $token);
-			// Keep the queue calling us: this collection has at least one more page.
-			$this->ensure_total_pages( $collection_definition, (int) $index + 2 );
-		} else {
-			$this->delete_transient('resumptionToken');
-		}
-
-		$records = [];
-		foreach ( $xml->ListRecords->record as $record ) {
-			$parsed = $this->parse_record($record);
-			if ( $parsed ) {
-				$records[] = $parsed;
-			}
-		}
-
-		if ( empty($records) ) {
-			$this->add_log('Page has no importable records');
-			return true;
-		}
-
-		return [
-			'records'               => $records,
-			'collection_definition' => $collection_definition,
-		];
-	}
-
-	/**
-	 * Inserts all records of a page returned by process_item().
+	 * Mapping keys that ask for a new metadatum (`create_metadata*`, `create_repository_metadata*`)
+	 * create one named after the Dublin Core element. New metadata are multiple, since OAI records
+	 * repeat elements (subjects, dates, identifiers...). `total_items` counts `ListRecords` pages:
+	 * it starts at 1 and grows while the provider returns resumption tokens.
 	 *
-	 * @param array $processed_item   ['records' => array[], 'collection_definition' => array]
-	 * @param int   $collection_index Index in the collections queue (unused: the definition travels with the page).
-	 * @return Entities\Item|false The last inserted item, or false when nothing was inserted.
+	 * @param array $collection
+	 * @return bool
 	 */
-	public function insert( $processed_item, $collection_index ) {
-		if ( ! is_array($processed_item) || empty($processed_item['records']) || empty($processed_item['collection_definition']['id']) ) {
-			$this->add_error_log('Nothing to insert: malformed page');
+	public function add_collection( array $collection ) {
+		if ( ! isset( $collection['id'] ) ) {
 			return false;
 		}
 
-		$definition = $processed_item['collection_definition'];
-		$collection = $this->col_repo->fetch( (int) $definition['id'] );
-		if ( ! $collection instanceof Entities\Collection ) {
-			$this->add_error_log('Target collection not found: ' . $definition['id']);
-			return false;
-		}
-		if ( ! $collection->user_can('edit_items') ) {
-			$this->add_error_log( __("You don't have permission to create items in this collection.", 'tainacan') );
-			return false;
-		}
+		$mapping = isset( $collection['mapping'] ) && is_array( $collection['mapping'] ) ? $collection['mapping'] : [];
 
-		$this->items_repo->disable_logs();
-		$this->metadata_repo->disable_logs();
-		$this->item_metadata_repo->disable_logs();
-
-		$mapping = isset($definition['mapping']) && is_array($definition['mapping']) ? $definition['mapping'] : [];
-		$this->metadata_cache = [];
-
-		$last_inserted = false;
-		foreach ( $processed_item['records'] as $record ) {
-			$item = $this->insert_record( $record, $collection, $mapping, $definition );
-			if ( $item ) {
-				$last_inserted = $item;
+		foreach ( $mapping as $metadatum_id => $source_field ) {
+			if ( is_numeric( $metadatum_id ) ) {
+				continue;
 			}
-		}
-		// Do not carry entity objects into the serialized session.
-		$this->metadata_cache = [];
+			unset( $mapping[ $metadatum_id ] );
 
-		return $last_inserted;
+			$key = (string) $metadatum_id;
+			$is_create_collection = 0 === strpos( $key, 'create_metadata' );
+			$is_create_repository = 0 === strpos( $key, 'create_repository_metadata' );
+			if ( ( ! $is_create_collection && ! $is_create_repository ) || ! in_array( $source_field, $this->get_source_metadata(), true ) ) {
+				continue;
+			}
+
+			$metadatum = $this->create_new_metadata(
+				$this->describe_source_field( $source_field ),
+				$is_create_repository ? 'default' : $collection['id']
+			);
+			if ( ! $metadatum instanceof Entities\Metadatum ) {
+				$this->add_error_log( __( 'Error while creating metadatum, please review the metadatum description.', 'tainacan' ) );
+				return false;
+			}
+			$mapping[ $metadatum->get_id() ] = $source_field;
+		}
+
+		$collection['mapping'] = $mapping;
+		$collection['total_items'] = 1;
+
+		$this->save_mapping( $collection['id'], $mapping );
+		$this->remove_collection( $collection['id'] );
+		$this->collections[] = $collection;
+		// remove_collection() unsets an index; the queue is read from index 0.
+		$this->collections = array_values( $this->collections );
+
+		// Identifies this import run on the inserted items. Created here, before the background
+		// process starts, so a retry from the first saved state still recognizes its own items.
+		if ( null === $this->get_transient('run_id') ) {
+			$this->add_transient( 'run_id', uniqid( 'oai', true ) );
+		}
+		return true;
 	}
 
 	/**
-	 * Renders the options form (how sets should be imported).
+	 * @param int   $collection_id
+	 * @param array $mapping metadatum ID => source field
+	 */
+	public function save_mapping( $collection_id, $mapping ) {
+		update_post_meta( $collection_id, 'metadata_mapping', $mapping );
+	}
+
+	/**
+	 * @param int $collection_id
+	 * @return array|false
+	 */
+	public function get_mapping( $collection_id ) {
+		$mapping = get_post_meta( $collection_id, 'metadata_mapping', true );
+		return $mapping ? $mapping : false;
+	}
+
+	/**
+	 * Renders the options form: the source of the records and the set spec.
 	 *
 	 * @return string
 	 */
 	public function options_form() {
+		$source = $this->get_option('source');
 		ob_start();
 		?>
-		<div class="columns">
-			<div class="column">
+		<div class="columns is-multiline">
+			<div class="column is-12">
 				<div class="field">
 					<label class="label" style="position: relative">
-						<?php esc_html_e('Create set as', 'tainacan'); ?>
+						<?php esc_html_e('Records to import', 'tainacan'); ?>
 						<span class="help-wrapper">
 							<a class="help-button">
 								<span class="icon is-small">
@@ -300,156 +289,563 @@ class Oaipmh_Importer extends Importer {
 							</a>
 							<div class="help-tooltip">
 								<div class="help-tooltip-header">
-									<h5><?php esc_html_e('Create set as', 'tainacan'); ?></h5>
+									<h5><?php esc_html_e('Records to import', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php esc_html_e('Choose the action to manipulate sets', 'tainacan'); ?></p>
+									<p><?php esc_html_e('Every record is imported as one item of the selected collection. Import a single set, or the whole repository: in that case the sets of each record are stored as terms of an "OAI-PMH sets" taxonomy metadatum created in the collection.', 'tainacan'); ?></p>
+								</div>
+							</div>
+						</span>
+					</label>
+					<div class="control">
+						<label class="b-radio radio">
+							<input type="radio" name="source" value="set" <?php checked( 'repository' !== $source ); ?>>
+							<span class="check"></span>
+							<span class="control-label"><?php esc_html_e('One set', 'tainacan'); ?></span>
+						</label>
+						<label class="b-radio radio">
+							<input type="radio" name="source" value="repository" <?php checked( 'repository', $source ); ?>>
+							<span class="check"></span>
+							<span class="control-label"><?php esc_html_e('The whole repository', 'tainacan'); ?></span>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="column is-12-tablet is-6-desktop">
+				<div class="field">
+					<label class="label" style="position: relative">
+						<?php esc_html_e('Set spec', 'tainacan'); ?>
+						<span class="help-wrapper">
+							<a class="help-button">
+								<span class="icon is-small">
+									<i class="tainacan-icon tainacan-icon-help" ></i>
+								</span>
+							</a>
+							<div class="help-tooltip">
+								<div class="help-tooltip-header">
+									<h5><?php esc_html_e('Set spec', 'tainacan'); ?></h5>
+								</div>
+								<div class="help-tooltip-body">
+									<p><?php esc_html_e('Required when importing one set. It is the value of the "set" argument of a ListRecords URL, for example col_123456789_5061. A URL that contains "set=" is also accepted.', 'tainacan'); ?></p>
 								</div>
 							</div>
 						</span>
 					</label>
 					<div class="control is-clearfix">
-						<div class="select">
-							<select name="using_set">
-								<option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php esc_html_e('Collections', 'tainacan'); ?></option>
-								<option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php esc_html_e('Taxonomies', 'tainacan'); ?></option>
-							</select>
-						</div>
+						<input class="input" type="text" name="set_spec" value="<?php echo esc_attr( $this->get_option('set_spec') ); ?>">
 					</div>
 				</div>
 			</div>
 		</div>
 		<?php
-
 		return ob_get_clean();
 	}
 
 	// -------------------------------------------------------------------------
-	// Collections queue
+	// Step 1: set names (whole repository only)
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Creates (or reuses) the collection for a set and adds it to the queue.
+	 * Walks `ListSets`, one page per iteration, to fill the spec => name map used for the set
+	 * terms. Only runs when importing the whole repository; it never creates collections.
+	 * Failing to read the names is not fatal: the raw specs are used instead.
 	 *
-	 * @param string $set_spec Set identifier; empty string when the provider has no sets.
-	 * @param string $name     Collection name.
-	 * @return bool
+	 * @return int|false A positive number while there are pages left, false when done.
 	 */
-	protected function queue_collection_for_set( $set_spec, $name ) {
-		$collection = $this->create_collection( '' === $set_spec ? 'repository' : $set_spec, $name );
-		if ( ! $collection ) {
+	public function read_set_names() {
+		if ( ! $this->is_repository_mode() ) {
 			return false;
 		}
 
-		$mapping = $this->create_collection_metadata( $collection );
-		$total_pages = $this->estimate_total_pages( $set_spec );
-		if ( false === $total_pages ) {
+		if ( null === $this->get_transient('set_names') ) {
+			$this->add_transient( 'set_names', [] );
+			$this->prepare_sets_metadatum();
+		}
+
+		if ( ! $this->get_transient('sets_metadatum_id') ) {
 			return false;
 		}
 
-		$this->add_log( sprintf('Collection "%s" (ID %d) queued with %d page(s)', $name, $collection->get_id(), $total_pages) );
-		$this->add_collection([
-			'id'          => $collection->get_id(),
-			'mapping'     => $mapping,
-			'total_items' => $total_pages,
-			'source_id'   => $set_spec,
-		]);
-		return true;
+		if ( $this->wait_for_provider() ) {
+			return $this->get_in_step_count() + 1;
+		}
+
+		$token  = (string) $this->get_transient('list_sets_token');
+		$params = '' !== $token ? [ 'verb' => 'ListSets', 'resumptionToken' => $token ] : [ 'verb' => 'ListSets' ];
+		$response = $this->fetch_oai( $params );
+
+		if ( 'wait' === $response['status'] ) {
+			return $this->get_in_step_count() + 1;
+		}
+
+		if ( 'ok' === $response['status'] ) {
+			$xml = $response['xml'];
+
+			if ( isset( $xml->error ) ) {
+				if ( 'noSetHierarchy' !== (string) $xml->error['code'] ) {
+					$this->add_error_log( sprintf( 'Could not read the set names (OAI-PMH error "%s": %s). The set specs are used as term names.', (string) $xml->error['code'], trim( (string) $xml->error ) ) );
+				}
+				return $this->finish_set_names();
+			}
+
+			if ( isset( $xml->ListSets ) ) {
+				$this->reset_attempts();
+				$names = $this->get_transient('set_names');
+				foreach ( $xml->ListSets->set as $set ) {
+					$spec = trim( (string) $set->setSpec );
+					$name = trim( (string) $set->setName );
+					if ( '' !== $spec ) {
+						$names[ $spec ] = '' !== $name ? $name : $spec;
+					}
+				}
+				$this->add_transient( 'set_names', $names );
+
+				$token = isset( $xml->ListSets->resumptionToken ) ? trim( (string) $xml->ListSets->resumptionToken ) : '';
+				if ( '' === $token ) {
+					return $this->finish_set_names();
+				}
+				$this->add_transient( 'list_sets_token', $token );
+				return $this->get_in_step_count() + 1;
+			}
+
+			$response = [ 'status' => 'failed', 'message' => 'Unexpected response: no ListSets element found' ];
+		}
+
+		if ( $this->register_failed_attempt( 'failed' === $response['status'] ) ) {
+			return $this->get_in_step_count() + 1;
+		}
+
+		$this->add_error_log( sprintf( 'Could not read the set names (%s). The set specs are used as term names.', $response['message'] ) );
+		return $this->finish_set_names();
 	}
 
 	/**
-	 * Creates one collection for the whole repository plus a taxonomy whose terms are the sets.
+	 * Ends the set names step: sets that share a name get their spec appended, so two different
+	 * sets never collapse into the same term.
 	 *
-	 * @param array $sets List of ['spec' => string, 'name' => string].
-	 * @return bool
+	 * @return false
 	 */
-	protected function queue_single_collection_with_sets_taxonomy( array $sets ) {
-		$collection = $this->create_collection( 'repository', $this->get_repository_name() );
-		if ( ! $collection ) {
-			return false;
+	protected function finish_set_names() {
+		$names = (array) $this->get_transient('set_names');
+		$count = array_count_values( $names );
+		foreach ( $names as $spec => $name ) {
+			if ( $count[ $name ] > 1 ) {
+				$names[ $spec ] = sprintf( '%s (%s)', $name, $spec );
+			}
 		}
-		$mapping = $this->create_collection_metadata( $collection );
+		$this->add_transient( 'set_names', $names );
+		$this->delete_transient('list_sets_token');
+		$this->reset_attempts();
+		return false;
+	}
 
-		$taxonomy_id = $this->get_transient('set_taxonomy_id');
-		if ( $taxonomy_id ) {
-			$taxonomy = $this->tax_repo->fetch( (int) $taxonomy_id );
-		} else {
+	/**
+	 * Creates (or reuses) the flat "OAI-PMH sets" taxonomy and its multiple metadatum in the
+	 * destination collection, and maps it to the internal sets field.
+	 */
+	protected function prepare_sets_metadatum() {
+		$collections = $this->get_collections();
+		$position = $this->get_current_collection();
+		if ( empty( $collections[ $position ]['id'] ) ) {
+			return;
+		}
+		$collection_id = (int) $collections[ $position ]['id'];
+
+		$metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
+		$metadatum = $metadata_repo->fetch( (int) get_post_meta( $collection_id, self::COLLECTION_SETS_META, true ) );
+
+		if ( ! $metadatum instanceof Entities\Metadatum || (int) $metadatum->get_collection_id() !== $collection_id ) {
+			$name = __( 'OAI-PMH sets', 'tainacan' );
+
 			$taxonomy = new Entities\Taxonomy();
-			$taxonomy->set_name( $this->NAME_FOR_SETS );
+			$taxonomy->set_name( $name );
 			$taxonomy->set_allow_insert('yes');
 			$taxonomy->set_status('publish');
 			if ( ! $taxonomy->validate() ) {
-				$this->add_error_log('Error creating taxonomy ' . $this->NAME_FOR_SETS);
+				$this->add_error_log( 'Error creating the taxonomy for the sets; they will not be imported.' );
 				$this->add_error_log( $taxonomy->get_errors() );
-				$this->abort();
-				return false;
-			}
-			$taxonomy = $this->tax_repo->insert($taxonomy);
-			$this->add_transient('set_taxonomy_id', $taxonomy->get_id());
-			$this->add_log('Taxonomy ' . $taxonomy->get_name() . ' created');
-		}
-
-		if ( ! $taxonomy instanceof Entities\Taxonomy ) {
-			$this->add_error_log('Taxonomy for sets not found');
-			$this->abort();
-			return false;
-		}
-
-		$metadatum_set_id = $this->create_set_metadata( $collection->get_id(), $taxonomy->get_id() );
-		if ( ! $metadatum_set_id ) {
-			$this->add_error_log('Error creating the metadatum for sets');
-			$this->abort();
-			return false;
-		}
-
-		foreach ( $sets as $set ) {
-			$this->create_set_term( $taxonomy, $set['name'], $set['spec'] );
-		}
-
-		$total_pages = $this->estimate_total_pages( '' );
-		if ( false === $total_pages ) {
-			return false;
-		}
-
-		$this->add_collection([
-			'id'           => $collection->get_id(),
-			'mapping'      => $mapping,
-			'total_items'  => $total_pages,
-			'source_id'    => 'sets',
-			'metadatum_id' => $metadatum_set_id,
-		]);
-		return true;
-	}
-
-	/**
-	 * Returns the set to request for a queued collection ('' = no set restriction).
-	 *
-	 * @param array $collection_definition
-	 * @return string
-	 */
-	protected function get_set_spec_of( array $collection_definition ) {
-		if ( empty($collection_definition['source_id']) || 'sets' === $collection_definition['source_id'] ) {
-			return '';
-		}
-		return (string) $collection_definition['source_id'];
-	}
-
-	/**
-	 * Raises `total_items` (pages) of a queued collection when the provider keeps paging.
-	 *
-	 * @param array $collection_definition
-	 * @param int   $minimum_pages
-	 */
-	protected function ensure_total_pages( array $collection_definition, $minimum_pages ) {
-		$collections = $this->get_collections();
-		foreach ( $collections as $position => $queued ) {
-			if ( isset($queued['id']) && (int) $queued['id'] === (int) $collection_definition['id'] ) {
-				if ( empty($queued['total_items']) || (int) $queued['total_items'] < $minimum_pages ) {
-					$collections[$position]['total_items'] = $minimum_pages;
-					$this->set_collections($collections);
-				}
 				return;
 			}
+			$taxonomy = \Tainacan\Repositories\Taxonomies::get_instance()->insert( $taxonomy );
+
+			$metadatum = new Entities\Metadatum();
+			$metadatum->set_name( $name );
+			$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
+			$metadatum->set_metadata_type_options([
+				'taxonomy_id'     => $taxonomy->get_id(),
+				'allow_new_terms' => 'yes',
+				'input_type'      => 'tainacan-taxonomy-checkbox',
+			]);
+			$metadatum->set_multiple('yes');
+			$metadatum->set_collection_id( $collection_id );
+			$metadatum->set_status('publish');
+			if ( ! $metadatum->validate() ) {
+				$this->add_error_log( 'Error creating the metadatum for the sets; they will not be imported.' );
+				$this->add_error_log( $metadatum->get_errors() );
+				return;
+			}
+			$metadatum = $metadata_repo->insert( $metadatum );
+			update_post_meta( $collection_id, self::COLLECTION_SETS_META, $metadatum->get_id() );
+			$this->add_log( 'Metadatum created for the sets: ' . $metadatum->get_name() );
+		}
+
+		$collections[ $position ]['mapping'][ $metadatum->get_id() ] = self::SETS_FIELD;
+		$this->set_collections( $collections );
+		$this->add_transient( 'sets_metadatum_id', $metadatum->get_id() );
+	}
+
+	// -------------------------------------------------------------------------
+	// Step 2: records
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Fetches ONE `ListRecords` page and inserts its records.
+	 *
+	 * The page index (current collection item) only advances after a page was read. A page that
+	 * must wait (Retry-After) or be retried keeps its index; a page that fails for good, an OAI
+	 * error, or the end of the resumption tokens stops the collection.
+	 *
+	 * @return int|false
+	 */
+	public function process_collections() {
+		$collections = $this->get_collections();
+		$definition  = isset( $collections[ $this->get_current_collection() ] ) ? $collections[ $this->get_current_collection() ] : false;
+		if ( ! is_array( $definition ) || empty( $definition['id'] ) ) {
+			$this->add_error_log('Collection misconfigured');
+			return false;
+		}
+
+		if ( ! $this->get_url() ) {
+			$this->add_error_log( __( 'No OAI-PMH base URL was informed.', 'tainacan' ) );
+			return false;
+		}
+
+		if ( ! $this->is_repository_mode() && '' === $this->get_set_spec() ) {
+			$this->add_error_log( __( 'No set spec was informed. Type the set spec, or choose to import the whole repository.', 'tainacan' ) );
+			return false;
+		}
+
+		if ( null === $this->get_transient('run_id') ) {
+			$this->add_transient( 'run_id', uniqid( 'oai', true ) );
+		}
+
+		$page = (int) $this->get_current_collection_item();
+		$this->add_log( sprintf( 'Processing page %d', $page + 1 ) );
+
+		$result = $this->process_item( $page, $definition );
+
+		if ( 'retry' === $result['status'] ) {
+			return max( 1, $page );
+		}
+
+		if ( 'ok' === $result['status'] ) {
+			$this->insert( $result['records'], $this->get_current_collection() );
+
+			if ( $result['has_more'] ) {
+				$this->set_current_collection_item( $page + 1 );
+				$this->ensure_total_pages( $page + 2, $result['estimated_pages'] );
+				return $page + 1;
+			}
+		}
+
+		$this->ensure_total_pages( $page + 1, 0, true );
+		return $this->next_collection();
+	}
+
+	/**
+	 * Fetches and parses one `ListRecords` page.
+	 *
+	 * @param int   $index                 Page index (0 = first page).
+	 * @param array $collection_definition Entry of the collections queue.
+	 * @return array {
+	 *     @type string $status          'ok', 'retry' (same page again later) or 'stop' (end of the collection).
+	 *     @type array  $records         Parsed records ('ok').
+	 *     @type bool   $has_more        Whether a resumption token was returned ('ok').
+	 *     @type int    $estimated_pages Pages announced through completeListSize, or 0 ('ok').
+	 * }
+	 */
+	public function process_item( $index, $collection_definition ) {
+		if ( $this->wait_for_provider() ) {
+			return [ 'status' => 'retry' ];
+		}
+
+		if ( 0 === (int) $index ) {
+			$params = [
+				'verb'           => 'ListRecords',
+				'metadataPrefix' => self::METADATA_PREFIX,
+			];
+			if ( ! $this->is_repository_mode() ) {
+				$params['set'] = $this->get_set_spec();
+			}
+		} else {
+			$token = (string) $this->get_transient('resumption_token');
+			if ( '' === $token ) {
+				// The token is stored with the page that announced it; without it there is nothing left to request.
+				$this->add_error_log( sprintf( 'No resumption token for page %d; stopping.', (int) $index + 1 ) );
+				return [ 'status' => 'stop' ];
+			}
+			$params = [
+				'verb'            => 'ListRecords',
+				'resumptionToken' => $token,
+			];
+		}
+
+		$response = $this->fetch_oai( $params );
+
+		if ( 'wait' === $response['status'] ) {
+			return [ 'status' => 'retry' ];
+		}
+
+		if ( 'ok' === $response['status'] ) {
+			$xml = $response['xml'];
+
+			if ( isset( $xml->error ) ) {
+				$code = (string) $xml->error['code'];
+				$this->reset_attempts();
+				if ( 'noRecordsMatch' === $code ) {
+					$this->add_log('The provider has no records for this request (noRecordsMatch)');
+				} else {
+					// badResumptionToken, badArgument, cannotDisseminateFormat...: retrying the same request cannot help.
+					$this->add_error_log( sprintf( 'OAI-PMH error "%s" on page %d: %s. Stopping.', $code, (int) $index + 1, trim( (string) $xml->error ) ) );
+				}
+				$this->delete_transient('resumption_token');
+				return [ 'status' => 'stop' ];
+			}
+
+			if ( isset( $xml->ListRecords ) ) {
+				$this->reset_attempts();
+
+				$token = isset( $xml->ListRecords->resumptionToken ) ? trim( (string) $xml->ListRecords->resumptionToken ) : '';
+				$estimated_pages = 0;
+				if ( '' !== $token ) {
+					$this->add_transient( 'resumption_token', $token );
+					$complete_list_size = (int) $xml->ListRecords->resumptionToken['completeListSize'];
+					$records_in_page    = count( $xml->ListRecords->record );
+					if ( $complete_list_size > 0 && $records_in_page > 0 ) {
+						$estimated_pages = (int) ceil( $complete_list_size / $records_in_page );
+					}
+				} else {
+					$this->delete_transient('resumption_token');
+				}
+
+				$records = [];
+				foreach ( $xml->ListRecords->record as $record ) {
+					$parsed = $this->parse_record( $record );
+					if ( $parsed ) {
+						$records[] = $parsed;
+					}
+				}
+
+				return [
+					'status'          => 'ok',
+					'records'         => $records,
+					'has_more'        => '' !== $token,
+					'estimated_pages' => $estimated_pages,
+				];
+			}
+
+			$response = [ 'status' => 'failed', 'message' => 'Unexpected response: no ListRecords element found' ];
+		}
+
+		if ( $this->register_failed_attempt( 'failed' === $response['status'] ) ) {
+			return [ 'status' => 'retry' ];
+		}
+
+		$this->add_error_log( sprintf( 'Page %d failed for good (%s). Stopping.', (int) $index + 1, $response['message'] ) );
+		$this->delete_transient('resumption_token');
+		return [ 'status' => 'stop' ];
+	}
+
+	/**
+	 * Inserts the records of one page through the standard insert(), so every item is published
+	 * only after its metadata are saved and after_inserted_item() runs.
+	 *
+	 * Records already inserted by this import run (a page processed again after a retry) are skipped.
+	 *
+	 * @param array $records          Parsed records of the page.
+	 * @param int   $collection_index Index in the collections queue.
+	 * @return Entities\Item|false The last inserted item.
+	 */
+	public function insert( $records, $collection_index ) {
+		$collections = $this->get_collections();
+		$definition  = isset( $collections[ $collection_index ] ) ? $collections[ $collection_index ] : false;
+		if ( ! is_array( $records ) || ! is_array( $definition ) || empty( $definition['id'] ) ) {
+			return false;
+		}
+
+		$mapping = isset( $definition['mapping'] ) && is_array( $definition['mapping'] ) ? $definition['mapping'] : [];
+		$already_inserted = $this->get_identifiers_inserted_by_this_run( (int) $definition['id'], array_column( $records, 'identifier' ) );
+
+		$this->metadata_cache = [];
+		$last_inserted = false;
+
+		foreach ( $records as $record ) {
+			if ( '' !== $record['identifier'] && isset( $already_inserted[ $record['identifier'] ] ) ) {
+				$this->add_log( 'Skipping record already inserted by this import: ' . $record['identifier'] );
+				continue;
+			}
+
+			$processed_item = $this->values_for_mapping( $record, $mapping );
+			if ( empty( $processed_item ) ) {
+				$this->add_error_log( 'No mapped value for record ' . $record['identifier'] );
+				continue;
+			}
+
+			$this->current_record_identifier = $record['identifier'];
+			$item = parent::insert( $processed_item, $collection_index );
+			$this->current_record_identifier = '';
+
+			if ( $item ) {
+				$last_inserted = $item;
+			} else {
+				$this->add_error_log( 'Record not imported: ' . $record['identifier'] );
+			}
+		}
+
+		// Do not carry entity objects into the serialized session.
+		$this->metadata_cache = [];
+		return $last_inserted;
+	}
+
+	/**
+	 * Stores the OAI identifier and the import run on the item, once it is published.
+	 *
+	 * @param Entities\Item $inserted_item
+	 * @param int           $collection_index
+	 */
+	public function after_inserted_item( $inserted_item, $collection_index ) {
+		if ( $inserted_item instanceof Entities\Item && '' !== $this->current_record_identifier ) {
+			update_post_meta( $inserted_item->get_id(), self::ITEM_IDENTIFIER_META, $this->current_record_identifier );
+			update_post_meta( $inserted_item->get_id(), self::ITEM_RUN_META, (string) $this->get_transient('run_id') );
+		}
+	}
+
+	/**
+	 * Builds the source field => value array that the standard insert() expects.
+	 *
+	 * Every repeated element is kept: a multiple metadatum receives the whole list. A single-valued
+	 * metadatum receives the first value, except the core description, which keeps every
+	 * paragraph; dropped values are reported in the log.
+	 *
+	 * @param array $record  Output of parse_record().
+	 * @param array $mapping metadatum ID => source field.
+	 * @return array
+	 */
+	protected function values_for_mapping( array $record, array $mapping ) {
+		$fields = $record['metadata'];
+		$fields[ self::IDENTIFIER_FIELD ] = '' !== $record['identifier'] ? [ $record['identifier'] ] : [];
+		$fields[ self::SETS_FIELD ] = $this->set_names_of( $record['sets'] );
+
+		$processed_item = [];
+		foreach ( $mapping as $metadatum_id => $source_field ) {
+			if ( ! is_string( $source_field ) || isset( $processed_item[ $source_field ] ) || empty( $fields[ $source_field ] ) ) {
+				continue;
+			}
+
+			// insert() resolves the metadatum of a source field with array_search(), so the same is done here.
+			$metadatum = $this->get_mapped_metadatum( (int) array_search( $source_field, $mapping, true ) );
+			$values = array_values( $fields[ $source_field ] );
+
+			if ( ! $metadatum || $metadatum->is_multiple() || 1 === count( $values ) ) {
+				$processed_item[ $source_field ] = $metadatum && $metadatum->is_multiple() ? $values : $values[0];
+				continue;
+			}
+
+			if ( 'Tainacan\Metadata_Types\Core_Description' === $metadatum->get_metadata_type() ) {
+				$processed_item[ $source_field ] = implode( "\n\n", $values );
+				continue;
+			}
+
+			$processed_item[ $source_field ] = $values[0];
+			$this->add_log( sprintf(
+				'Record %1$s has %2$d values for %3$s, but "%4$s" accepts one: only the first was kept. Map it to a multiple metadatum to keep them all.',
+				$record['identifier'],
+				count( $values ),
+				$source_field,
+				$metadatum->get_name()
+			) );
+		}
+
+		return $processed_item;
+	}
+
+	/**
+	 * Term names for the setSpecs of a record (whole repository mode).
+	 *
+	 * @param string[] $set_specs
+	 * @return string[]
+	 */
+	protected function set_names_of( array $set_specs ) {
+		if ( ! $this->is_repository_mode() ) {
+			return [];
+		}
+		$names = (array) $this->get_transient('set_names');
+		$terms = [];
+		foreach ( $set_specs as $spec ) {
+			$terms[] = isset( $names[ $spec ] ) ? $names[ $spec ] : $spec;
+		}
+		return array_values( array_unique( $terms ) );
+	}
+
+	/**
+	 * Which of the given OAI identifiers were already inserted in the collection by this import run.
+	 *
+	 * @param int      $collection_id
+	 * @param string[] $identifiers
+	 * @return array<string, true>
+	 */
+	protected function get_identifiers_inserted_by_this_run( $collection_id, array $identifiers ) {
+		$identifiers = array_values( array_filter( array_map( 'strval', $identifiers ), 'strlen' ) );
+		$collection  = \Tainacan\Repositories\Collections::get_instance()->fetch( $collection_id );
+		if ( empty( $identifiers ) || ! $collection instanceof Entities\Collection ) {
+			return [];
+		}
+
+		$item_ids = get_posts([
+			'post_type'        => $collection->get_db_identifier(),
+			'post_status'      => 'any',
+			'posts_per_page'   => -1,
+			'fields'           => 'ids',
+			'suppress_filters' => true,
+			'no_found_rows'    => true,
+			'meta_query'       => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- bounded by the records of one page.
+				[
+					'key'   => self::ITEM_RUN_META,
+					'value' => (string) $this->get_transient('run_id'),
+				],
+				[
+					'key'     => self::ITEM_IDENTIFIER_META,
+					'value'   => $identifiers,
+					'compare' => 'IN',
+				],
+			],
+		]);
+
+		$found = [];
+		foreach ( $item_ids as $item_id ) {
+			$found[ (string) get_post_meta( $item_id, self::ITEM_IDENTIFIER_META, true ) ] = true;
+		}
+		return $found;
+	}
+
+	/**
+	 * Raises (or, at the end, fixes) the number of pages of the current collection, for the progress bar.
+	 *
+	 * @param int  $minimum_pages   Pages known to exist.
+	 * @param int  $estimated_pages Pages announced by the provider, or 0.
+	 * @param bool $is_final        Whether $minimum_pages is the final number.
+	 */
+	protected function ensure_total_pages( $minimum_pages, $estimated_pages = 0, $is_final = false ) {
+		$collections = $this->get_collections();
+		$position = $this->get_current_collection();
+		if ( ! isset( $collections[ $position ] ) ) {
+			return;
+		}
+		$current = isset( $collections[ $position ]['total_items'] ) ? (int) $collections[ $position ]['total_items'] : 0;
+		$total = $is_final ? (int) $minimum_pages : max( $current, (int) $minimum_pages, (int) $estimated_pages );
+		if ( $total !== $current ) {
+			$collections[ $position ]['total_items'] = $total;
+			$this->set_collections( $collections );
 		}
 	}
 
@@ -462,38 +858,41 @@ class Oaipmh_Importer extends Importer {
 	 *
 	 * Deleted records (`<header status="deleted">`) and records without metadata are skipped.
 	 * Dublin Core elements are keyed as `dc:<element>` (attributes such as xml:lang are ignored)
-	 * and always hold a list of values.
+	 * and always hold the list of their values, in the order of the record.
 	 *
 	 * @param \SimpleXMLElement $record
 	 * @return array|null ['identifier' => string, 'sets' => string[], 'metadata' => array<string, string[]>]
 	 */
 	protected function parse_record( \SimpleXMLElement $record ) {
-		if ( ! isset($record->header) ) {
+		if ( ! isset( $record->header ) ) {
 			return null;
 		}
 		$header = $record->header;
 		$identifier = trim( (string) $header->identifier );
 
-		if ( isset($header['status']) && 'deleted' === (string) $header['status'] ) {
-			$this->add_log('Skipping deleted record ' . $identifier);
+		if ( isset( $header['status'] ) && 'deleted' === (string) $header['status'] ) {
+			$this->add_log( 'Skipping deleted record ' . $identifier );
 			return null;
 		}
 
-		if ( ! isset($record->metadata) ) {
-			$this->add_log('Skipping record without metadata ' . $identifier);
+		if ( ! isset( $record->metadata ) ) {
+			$this->add_log( 'Skipping record without metadata ' . $identifier );
 			return null;
 		}
 
 		$sets = [];
-		if ( isset($header->setSpec) ) {
+		if ( isset( $header->setSpec ) ) {
 			foreach ( $header->setSpec as $set_spec ) {
-				$sets[] = (string) $set_spec;
+				$spec = trim( (string) $set_spec );
+				if ( '' !== $spec ) {
+					$sets[] = $spec;
+				}
 			}
 		}
 
 		$metadata = [];
 		$dc_wrapper = $record->metadata->children( self::OAI_DC_NAMESPACE );
-		if ( isset($dc_wrapper->dc) ) {
+		if ( isset( $dc_wrapper->dc ) ) {
 			$this->collect_dc_elements( $metadata, $dc_wrapper->dc->children( self::DC_NAMESPACE ) );
 		} else {
 			// Lenient fallback for providers that omit the oai_dc wrapper.
@@ -503,14 +902,14 @@ class Oaipmh_Importer extends Importer {
 			}
 		}
 
-		if ( empty($metadata) ) {
-			$this->add_log('Skipping record without Dublin Core elements ' . $identifier);
+		if ( empty( $metadata ) ) {
+			$this->add_log( 'Skipping record without Dublin Core elements ' . $identifier );
 			return null;
 		}
 
 		return [
 			'identifier' => $identifier,
-			'sets'       => $sets,
+			'sets'       => array_values( array_unique( $sets ) ),
 			'metadata'   => $metadata,
 		];
 	}
@@ -535,413 +934,76 @@ class Oaipmh_Importer extends Importer {
 	}
 
 	/**
-	 * Inserts a single parsed record as an item of the collection.
-	 *
-	 * @param array                $record     Output of parse_record().
-	 * @param Entities\Collection  $collection Target collection.
-	 * @param array                $mapping    metadatum ID => 'dc:element'.
-	 * @param array                $definition Collections queue entry (for the sets metadatum).
-	 * @return Entities\Item|false
-	 */
-	protected function insert_record( array $record, Entities\Collection $collection, array $mapping, array $definition ) {
-		$metadata = $record['metadata'];
-
-		$title = isset($metadata['dc:title'][0]) ? $metadata['dc:title'][0] : '';
-		if ( '' === $title ) {
-			$title = '' !== $record['identifier'] ? $record['identifier'] : __('Untitled', 'tainacan');
-		}
-
-		$item = new Entities\Item();
-		$item->set_collection( $collection );
-		$item->set_title( $title );
-		$item->set_description( isset($metadata['dc:description']) ? implode( "\n\n", $metadata['dc:description'] ) : '' );
-		$item->set_status('publish');
-
-		if ( ! $item->validate() ) {
-			$this->add_error_log( 'Error inserting item ' . $record['identifier'] );
-			$this->add_error_log( $item->get_errors() );
-			return false;
-		}
-		$item = $this->items_repo->insert( $item );
-		$this->add_log( 'Item inserted: ' . $title );
-
-		if ( ! empty($record['sets']) && ! empty($definition['metadatum_id']) ) {
-			$this->set_item_sets( $item, (int) $definition['metadatum_id'], $record['sets'] );
-		}
-
-		foreach ( $mapping as $metadatum_id => $source_field ) {
-			if ( empty($metadata[ $source_field ]) ) {
-				continue;
-			}
-			// Title and description map to core metadata and were already set on the item
-			// (description keeps every dc:description value; the core metadatum holds only one).
-			if ( in_array( $source_field, [ 'dc:title', 'dc:description' ], true ) ) {
-				continue;
-			}
-			$metadatum = $this->get_mapped_metadatum( (int) $metadatum_id );
-			if ( ! $metadatum ) {
-				$this->add_error_log( 'Metadatum ' . $metadatum_id . ' of the mapping not found' );
-				continue;
-			}
-
-			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
-			$values = array_values( $metadata[ $source_field ] );
-			$item_metadata->set_value( $item_metadata->is_multiple() ? $values : $values[0] );
-
-			if ( $item_metadata->validate() ) {
-				$this->item_metadata_repo->insert( $item_metadata );
-			} else {
-				$this->add_error_log( sprintf('Error saving "%s" for item %s', $metadatum->get_name(), $record['identifier']) );
-				$this->add_error_log( $item_metadata->get_errors() );
-			}
-		}
-
-		return $item;
-	}
-
-	/**
-	 * Fills the "Sets" taxonomy metadatum of an item with the terms of its setSpecs.
-	 *
-	 * @param Entities\Item $item
-	 * @param int           $metadatum_id
-	 * @param string[]      $set_specs
-	 */
-	protected function set_item_sets( Entities\Item $item, $metadatum_id, array $set_specs ) {
-		$term_ids = [];
-		foreach ( $set_specs as $set_spec ) {
-			$term_id = $this->get_transient( 'set_term_' . $set_spec );
-			if ( $term_id ) {
-				$term_ids[] = (int) $term_id;
-			}
-		}
-		if ( empty($term_ids) ) {
-			return;
-		}
-
-		$metadatum = $this->get_mapped_metadatum( $metadatum_id );
-		if ( ! $metadatum ) {
-			return;
-		}
-		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
-		$item_metadata->set_value( $term_ids );
-		if ( $item_metadata->validate() ) {
-			$this->item_metadata_repo->insert( $item_metadata );
-		} else {
-			$this->add_error_log( 'Error saving sets for item ' . $item->get_id() );
-			$this->add_error_log( $item_metadata->get_errors() );
-		}
-	}
-
-	/**
-	 * Fetches a metadatum of the mapping once per inserted page.
+	 * Fetches a metadatum of the mapping once per page.
 	 *
 	 * @param int $metadatum_id
 	 * @return Entities\Metadatum|false
 	 */
 	protected function get_mapped_metadatum( $metadatum_id ) {
 		if ( ! array_key_exists( $metadatum_id, $this->metadata_cache ) ) {
-			$metadatum = $this->metadata_repo->fetch( $metadatum_id );
+			$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch( $metadatum_id );
 			$this->metadata_cache[ $metadatum_id ] = $metadatum instanceof Entities\Metadatum ? $metadatum : false;
 		}
 		return $this->metadata_cache[ $metadatum_id ];
 	}
 
+	/**
+	 * Description passed to create_new_metadata() for a source field: the Dublin Core label,
+	 * a text type, and multiple values.
+	 *
+	 * @param string $source_field
+	 * @return string
+	 */
+	protected function describe_source_field( $source_field ) {
+		if ( self::IDENTIFIER_FIELD === $source_field ) {
+			return __( 'OAI-PMH identifier', 'tainacan' ) . '|text';
+		}
+
+		$label = ucfirst( substr( $source_field, 3 ) );
+		$mappers = \Tainacan\Mappers_Handler::get_instance();
+		$mapper_class = $mappers->check_class_name( 'dublin-core', true, $mappers::MAPPER_CLASS_PREFIX );
+		if ( $mapper_class ) {
+			$mapper = new $mapper_class();
+			if ( isset( $mapper->metadata[ $source_field ]['label'] ) ) {
+				$label = $mapper->metadata[ $source_field ]['label'];
+			}
+		}
+		return str_replace( '|', ' ', $label ) . '|text|multiple';
+	}
+
 	// -------------------------------------------------------------------------
-	// Provider discovery
+	// Options
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Lists the sets of the provider, following `ListSets` resumption tokens.
-	 *
-	 * @return array|false List of ['spec' => string, 'name' => string]; empty when the provider
-	 *                     has no set hierarchy; false (and importer aborted) on fetch errors.
+	 * @return bool
 	 */
-	protected function fetch_sets() {
-		$sets = [];
-		$params = [ 'verb' => 'ListSets' ];
-
-		for ( $page = 0; $page < self::MAX_LIST_SETS_PAGES; $page++ ) {
-			$xml = $this->fetch_xml( $this->build_request_url($params) );
-			if ( ! $xml ) {
-				$this->abort();
-				return false;
-			}
-
-			if ( isset($xml->error) ) {
-				if ( 'noSetHierarchy' === (string) $xml->error['code'] ) {
-					return [];
-				}
-				$this->add_error_log( sprintf('OAI-PMH error "%s": %s', (string) $xml->error['code'], trim((string) $xml->error)) );
-				$this->abort();
-				return false;
-			}
-
-			if ( isset($xml->ListSets->set) ) {
-				foreach ( $xml->ListSets->set as $set ) {
-					$spec = trim( (string) $set->setSpec );
-					if ( '' === $spec ) {
-						continue;
-					}
-					$name = trim( (string) $set->setName );
-					$sets[] = [
-						'spec' => $spec,
-						'name' => '' !== $name ? $name : $spec,
-					];
-				}
-			}
-
-			$token = isset($xml->ListSets->resumptionToken) ? trim( (string) $xml->ListSets->resumptionToken ) : '';
-			if ( '' === $token ) {
-				break;
-			}
-			$params = [ 'verb' => 'ListSets', 'resumptionToken' => $token ];
-		}
-
-		return $sets;
+	protected function is_repository_mode() {
+		return 'repository' === $this->get_option('source');
 	}
 
 	/**
-	 * Returns the repository name advertised by `Identify`, or a generic fallback.
+	 * The set spec typed on the form (a pasted URL with `set=` is accepted), or the `set` argument
+	 * of the URL informed as source.
 	 *
 	 * @return string
 	 */
-	protected function get_repository_name() {
-		$fallback = __('Imported repository', 'tainacan');
-		$xml = $this->fetch_xml( $this->build_request_url([ 'verb' => 'Identify' ]) );
-		if ( ! $xml || ! isset($xml->Identify->repositoryName) ) {
-			return $fallback;
-		}
-		$name = trim( (string) $xml->Identify->repositoryName );
-		return '' !== $name ? $name : $fallback;
-	}
+	protected function get_set_spec() {
+		$spec = trim( (string) $this->get_option('set_spec') );
 
-	/**
-	 * Estimates how many `ListRecords` pages a set has, from its first page.
-	 *
-	 * Uses `completeListSize` when the provider announces it; otherwise assumes two pages
-	 * whenever a resumption token is present (process_item() extends the count as it goes).
-	 *
-	 * @param string $set_spec '' for the whole repository.
-	 * @return int|false Number of pages, or false (and importer aborted) when the page cannot be fetched.
-	 */
-	protected function estimate_total_pages( $set_spec ) {
-		$params = [
-			'verb'           => 'ListRecords',
-			'metadataPrefix' => self::METADATA_PREFIX,
-		];
-		if ( '' !== $set_spec ) {
-			$params['set'] = $set_spec;
-		}
-
-		$xml = $this->fetch_xml( $this->build_request_url($params) );
-		if ( ! $xml ) {
-			$this->add_error_log('Error fetching the first page of records');
-			$this->abort();
-			return false;
-		}
-
-		if ( isset($xml->error) ) {
-			if ( 'noRecordsMatch' === (string) $xml->error['code'] ) {
-				return 0;
+		if ( false !== strpos( $spec, 'set=' ) ) {
+			$query = [];
+			parse_str( (string) wp_parse_url( $spec, PHP_URL_QUERY ), $query );
+			if ( empty( $query ) ) {
+				parse_str( ltrim( $spec, '?' ), $query );
 			}
-			$this->add_error_log( sprintf('OAI-PMH error "%s": %s', (string) $xml->error['code'], trim((string) $xml->error)) );
-			$this->abort();
-			return false;
+			$spec = isset( $query['set'] ) && is_string( $query['set'] ) ? trim( $query['set'] ) : '';
 		}
 
-		if ( ! isset($xml->ListRecords) ) {
-			return 0;
+		if ( '' === $spec ) {
+			$spec = (string) $this->get_transient('url_set_spec');
 		}
-
-		$records_in_page = count( $xml->ListRecords->record );
-		if ( ! isset($xml->ListRecords->resumptionToken) || '' === trim( (string) $xml->ListRecords->resumptionToken ) ) {
-			return $records_in_page > 0 ? 1 : 0;
-		}
-
-		$complete_list_size = (int) $xml->ListRecords->resumptionToken['completeListSize'];
-		if ( $complete_list_size > 0 && $records_in_page > 0 ) {
-			return (int) ceil( $complete_list_size / $records_in_page );
-		}
-
-		return 2;
-	}
-
-	// -------------------------------------------------------------------------
-	// Entities created by the importer
-	// -------------------------------------------------------------------------
-
-	/**
-	 * Creates the collection for a set, reusing it on later runs of the same session.
-	 *
-	 * @param string $set_spec Set identifier (or 'repository').
-	 * @param string $name     Collection name.
-	 * @return Entities\Collection|false
-	 */
-	protected function create_collection( $set_spec, $name ) {
-		$transient_key = 'collection_' . $set_spec . '_name';
-		$existing_id = $this->get_transient( $transient_key );
-		if ( $existing_id ) {
-			$existing = $this->col_repo->fetch( (int) $existing_id );
-			if ( $existing instanceof Entities\Collection ) {
-				return $existing;
-			}
-		}
-
-		$collection = new Entities\Collection();
-		$collection->set_name( '' !== trim((string) $name) ? $name : $set_spec );
-		$collection->set_status('publish');
-
-		if ( ! $collection->validate() ) {
-			$this->add_error_log( 'Error creating collection ' . $name );
-			$this->add_error_log( $collection->get_errors() );
-			$this->abort();
-			return false;
-		}
-
-		$collection = $this->col_repo->insert( $collection );
-		$this->add_log( 'Collection created: ' . $collection->get_name() );
-		$this->add_transient( $transient_key, $collection->get_id() );
-		return $collection;
-	}
-
-	/**
-	 * Creates the Dublin Core metadata of a collection from the `dublin-core` mapper.
-	 *
-	 * @param Entities\Collection $collection
-	 * @return array metadatum ID => 'dc:element'
-	 */
-	protected function create_collection_metadata( Entities\Collection $collection ) {
-		$Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
-		$mapper_class = $Tainacan_Mappers->check_class_name( 'dublin-core', true, $Tainacan_Mappers::MAPPER_CLASS_PREFIX );
-		$mapper = new $mapper_class();
-		$mapping = [];
-
-		if ( ! is_array($mapper->metadata) ) {
-			return $mapping;
-		}
-
-		$collection_id = $collection->get_id();
-		foreach ( $mapper->metadata as $slug => $mapper_metadatum ) {
-			if ( array_key_exists('core_metadatum', $mapper_metadatum) ) {
-				$method = 'get_core_' . $mapper_metadatum['core_metadatum'] . '_metadatum';
-				if ( ! method_exists($collection, $method) ) {
-					continue;
-				}
-				$core_metadatum = $collection->$method();
-				if ( ! $core_metadatum ) {
-					$this->metadata_repo->register_core_metadata( $collection, true );
-					$core_metadatum = $collection->$method();
-				}
-				if ( ! $core_metadatum instanceof Entities\Metadatum ) {
-					continue;
-				}
-				$exposer_mapping = $core_metadatum->get_exposer_mapping();
-				$exposer_mapping[ $mapper->slug ] = $slug;
-				$core_metadatum->set_exposer_mapping( $exposer_mapping );
-				if ( $core_metadatum->validate() ) {
-					$core_metadatum = $this->metadata_repo->insert( $core_metadatum );
-					$mapping[ $core_metadatum->get_id() ] = $slug;
-				}
-				continue;
-			}
-
-			$transient_key = 'collection_' . $collection_id . '_' . $slug;
-			$existing_id = $this->get_transient( $transient_key );
-			if ( $existing_id ) {
-				$mapping[ (int) $existing_id ] = $slug;
-				continue;
-			}
-
-			$metadatum = new Entities\Metadatum();
-			if ( ! empty($mapper_metadatum['metadata_type']) && class_exists( $mapper_metadatum['metadata_type'] ) ) {
-				$metadatum->set_metadata_type( $mapper_metadatum['metadata_type'] );
-			} else {
-				$metadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
-			}
-			$metadatum->set_name( $mapper_metadatum['label'] );
-			$metadatum->set_semantic_uri( $mapper->get_url($slug) );
-			$metadatum->set_exposer_mapping([ $mapper->slug => $slug ]);
-			$metadatum->set_status('publish');
-			$metadatum->set_collection_id( $collection_id );
-			$metadatum->set_slug( $slug );
-
-			if ( ! $metadatum->validate() ) {
-				$this->add_error_log( 'Error creating metadatum ' . $mapper_metadatum['label'] );
-				$this->add_error_log( $metadatum->get_errors() );
-				continue;
-			}
-			$metadatum = $this->metadata_repo->insert( $metadatum );
-			$this->add_transient( $transient_key, $metadatum->get_id() );
-			$mapping[ $metadatum->get_id() ] = $slug;
-		}
-
-		return $mapping;
-	}
-
-	/**
-	 * Creates the term of a set in the "Sets" taxonomy (once per session).
-	 *
-	 * @param Entities\Taxonomy $taxonomy
-	 * @param string            $name
-	 * @param string            $set_spec
-	 * @return bool
-	 */
-	protected function create_set_term( Entities\Taxonomy $taxonomy, $name, $set_spec ) {
-		$transient_key = 'set_term_' . $set_spec;
-		if ( $this->get_transient( $transient_key ) ) {
-			return false;
-		}
-
-		$term = new Entities\Term();
-		$term->set_taxonomy( $taxonomy->get_db_identifier() );
-		$term->set_name( '' !== trim((string) $name) ? $name : $set_spec );
-
-		if ( ! $term->validate() ) {
-			$this->add_log( 'Error creating term for set ' . $set_spec . ': ' . implode( ',', $term->get_errors() ) );
-			return false;
-		}
-
-		$inserted = $this->term_repo->insert( $term );
-		if ( is_wp_error($inserted) ) {
-			$this->add_log( $inserted->get_error_message() );
-			return false;
-		}
-
-		$this->add_transient( $transient_key, $inserted->get_id() );
-		$this->add_log( 'Added term: ' . $inserted->get_name() . ' in taxonomy: ' . $taxonomy->get_name() );
-		return true;
-	}
-
-	/**
-	 * Creates the taxonomy metadatum that holds the sets of each item (once per session).
-	 *
-	 * @param int $collection_id
-	 * @param int $taxonomy_id
-	 * @return int|false Metadatum ID.
-	 */
-	public function create_set_metadata( $collection_id, $taxonomy_id ) {
-		$existing_id = $this->get_transient('set_metadatum_id');
-		if ( $existing_id ) {
-			return (int) $existing_id;
-		}
-
-		$metadatum = new Entities\Metadatum();
-		$metadatum->set_name( $this->NAME_FOR_SETS );
-		$metadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
-		$metadatum->set_collection_id( $collection_id );
-		$metadatum->set_status('publish');
-		$metadatum->set_metadata_type_options([ 'taxonomy_id' => $taxonomy_id ]);
-		$metadatum->set_multiple('yes');
-
-		if ( ! $metadatum->validate() ) {
-			$this->add_error_log( $metadatum->get_errors() );
-			return false;
-		}
-
-		$metadatum = $this->metadata_repo->insert( $metadatum );
-		$this->add_transient( 'set_metadatum_id', $metadatum->get_id() );
-		$this->add_log( 'Metadata created: ' . $metadatum->get_name() );
-		return $metadatum->get_id();
+		return $spec;
 	}
 
 	// -------------------------------------------------------------------------
@@ -949,88 +1011,179 @@ class Oaipmh_Importer extends Importer {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Builds an OAI-PMH request URL for the stored base URL.
+	 * Requests one OAI-PMH verb and parses the answer.
 	 *
-	 * @param array $params Query parameters (verb, metadataPrefix, set, resumptionToken...).
-	 * @return string
+	 * @param array $params Query arguments (verb, metadataPrefix, set, resumptionToken).
+	 * @return array {
+	 *     @type string            $status  'ok' (with xml), 'wait' (flow control, waiting scheduled),
+	 *                                      'failed' (may be retried) or 'fatal' (retrying cannot help).
+	 *     @type \SimpleXMLElement $xml
+	 *     @type string            $message
+	 * }
 	 */
-	protected function build_request_url( array $params ) {
-		return $this->get_url() . '?' . http_build_query( $params, '', '&', PHP_QUERY_RFC3986 );
-	}
+	protected function fetch_oai( array $params ) {
+		$url = $this->get_url() . '?' . http_build_query( $params, '', '&', PHP_QUERY_RFC3986 );
+		$this->add_log( 'Fetching ' . $url );
 
-	/**
-	 * Fetches and parses an OAI-PMH response.
-	 *
-	 * @param string $url
-	 * @return \SimpleXMLElement|false
-	 */
-	protected function fetch_xml( $url ) {
-		$body = $this->requester( $url );
-		if ( false === $body ) {
-			return false;
-		}
-
-		$xml = $this->parse_xml( $body );
-		if ( ! $xml ) {
-			$this->add_error_log( 'Invalid XML received from ' . $url );
-			return false;
-		}
-		return $xml;
-	}
-
-	/**
-	 * Performs a GET request with a few retries on transport or server errors.
-	 *
-	 * @param string $link
-	 * @return string|false Response body, or false after the last failed attempt.
-	 */
-	protected function requester( $link ) {
-		$args = [
-			'timeout'     => 60,
-			'redirection' => 5,
+		$response = wp_safe_remote_get( $url, [
+			'timeout'             => 30,
+			'redirection'         => 3,
+			'limit_response_size' => $this->get_max_response_size(),
 			/**
 			 * Filters whether the OAI-PMH importer verifies SSL certificates of the provider.
 			 *
 			 * @param bool   $sslverify Default true.
-			 * @param string $link      Request URL.
+			 * @param string $url       Request URL.
 			 */
-			'sslverify'   => (bool) apply_filters( 'tainacan-oaipmh-importer-sslverify', true, $link ),
-			'user-agent'  => 'Tainacan/' . TAINACAN_VERSION . ' OAI-PMH importer; ' . home_url(),
-		];
+			'sslverify'           => (bool) apply_filters( 'tainacan-oaipmh-importer-sslverify', true, $url ),
+			'user-agent'          => 'Tainacan/' . TAINACAN_VERSION . ' OAI-PMH importer; ' . home_url(),
+		] );
 
-		for ( $attempt = 1; $attempt <= self::MAX_HTTP_ATTEMPTS; $attempt++ ) {
-			$this->add_log( sprintf('Fetching %s (attempt %d)', $link, $attempt) );
-			$response = wp_remote_get( $link, $args );
+		if ( is_wp_error( $response ) ) {
+			return [ 'status' => 'failed', 'message' => $response->get_error_message() ];
+		}
 
-			if ( is_wp_error($response) ) {
-				$this->add_log( $response->get_error_message() );
-			} else {
-				$code = (int) wp_remote_retrieve_response_code( $response );
-				if ( $code >= 200 && $code < 300 ) {
-					return (string) wp_remote_retrieve_body( $response );
-				}
-				$this->add_log( sprintf('Provider answered HTTP %d', $code) );
-				if ( $code >= 400 && $code < 500 && 429 !== $code ) {
-					break; // A client error will not change by retrying.
-				}
-			}
+		$code = (int) wp_remote_retrieve_response_code( $response );
 
-			if ( $attempt < self::MAX_HTTP_ATTEMPTS ) {
-				/**
-				 * Filters the pause, in seconds, before retrying a failed OAI-PMH request.
-				 *
-				 * @param int $seconds Default: 2 seconds times the attempt number.
-				 * @param int $attempt Attempt that just failed (1-based).
-				 */
-				$wait = (int) apply_filters( 'tainacan-oaipmh-importer-retry-wait', 2 * $attempt, $attempt );
-				if ( $wait > 0 ) {
-					sleep( $wait );
-				}
+		if ( 503 === $code || 429 === $code ) {
+			$retry_after = $this->parse_retry_after( wp_remote_retrieve_header( $response, 'retry-after' ) );
+			if ( null !== $retry_after ) {
+				return $this->schedule_flow_control_wait( $retry_after, $code );
 			}
 		}
 
-		$this->add_error_log( 'Could not fetch ' . $link );
-		return false;
+		if ( $code < 200 || $code >= 300 ) {
+			$message = sprintf( 'the provider answered HTTP %d', $code );
+			// A client error will not change by retrying (429 is handled above when it carries Retry-After).
+			return [ 'status' => ( $code >= 400 && $code < 500 && 429 !== $code ) ? 'fatal' : 'failed', 'message' => $message ];
+		}
+
+		$body = (string) wp_remote_retrieve_body( $response );
+		if ( strlen( $body ) >= $this->get_max_response_size() ) {
+			return [ 'status' => 'fatal', 'message' => sprintf( 'the response is larger than %d bytes', $this->get_max_response_size() ) ];
+		}
+
+		$xml = $this->parse_xml( $body );
+		if ( ! $xml ) {
+			return [ 'status' => 'failed', 'message' => 'invalid XML received' ];
+		}
+
+		return [ 'status' => 'ok', 'xml' => $xml ];
+	}
+
+	/**
+	 * Largest response body accepted, in bytes.
+	 *
+	 * @return int
+	 */
+	protected function get_max_response_size() {
+		/**
+		 * Filters the largest OAI-PMH response accepted by the importer, in bytes.
+		 *
+		 * @param int $bytes Default 16 MB.
+		 */
+		return max( 1024, (int) apply_filters( 'tainacan-oaipmh-importer-max-response-size', 16 * MB_IN_BYTES ) );
+	}
+
+	/**
+	 * Reads a Retry-After header: delta seconds or an HTTP date. Capped at MAX_RETRY_AFTER.
+	 *
+	 * @param string|array $header
+	 * @return int|null Seconds to wait, or null when the header is missing or invalid.
+	 */
+	protected function parse_retry_after( $header ) {
+		if ( is_array( $header ) ) {
+			$header = reset( $header );
+		}
+		$header = trim( (string) $header );
+		if ( '' === $header ) {
+			return null;
+		}
+		if ( ctype_digit( $header ) ) {
+			$seconds = (int) $header;
+		} else {
+			$timestamp = strtotime( $header );
+			if ( false === $timestamp ) {
+				return null;
+			}
+			$seconds = $timestamp - time();
+		}
+		return min( max( 0, $seconds ), self::MAX_RETRY_AFTER );
+	}
+
+	/**
+	 * Schedules the wait asked by the provider (OAI-PMH flow control) without consuming the request.
+	 *
+	 * @param int $seconds
+	 * @param int $code HTTP status.
+	 * @return array fetch_oai() result.
+	 */
+	protected function schedule_flow_control_wait( $seconds, $code ) {
+		$waits = (int) $this->get_transient('page_waits') + 1;
+		if ( $waits > self::MAX_PAGE_WAITS ) {
+			return [ 'status' => 'fatal', 'message' => sprintf( 'the provider kept answering HTTP %d after %d waits', $code, self::MAX_PAGE_WAITS ) ];
+		}
+		$this->add_transient( 'page_waits', $waits );
+		$this->add_transient( 'not_before', time() + $seconds );
+		$this->add_log( sprintf( 'The provider answered HTTP %1$d with Retry-After; waiting %2$d seconds before requesting it again', $code, $seconds ) );
+		return [ 'status' => 'wait', 'message' => '' ];
+	}
+
+	/**
+	 * Counts a failed attempt of the current request and, if attempts are left, schedules the next one.
+	 *
+	 * @param bool $can_retry False for errors that retrying cannot fix.
+	 * @return bool Whether the request will be retried.
+	 */
+	protected function register_failed_attempt( $can_retry ) {
+		$attempts = (int) $this->get_transient('page_attempts') + 1;
+		if ( ! $can_retry || $attempts >= self::MAX_PAGE_ATTEMPTS ) {
+			$this->reset_attempts();
+			return false;
+		}
+		$this->add_transient( 'page_attempts', $attempts );
+		/**
+		 * Filters the pause, in seconds, before retrying a failed OAI-PMH request.
+		 *
+		 * @param int $seconds Default: 10 seconds times the attempt number.
+		 * @param int $attempt Attempt that just failed (1-based).
+		 */
+		$wait = max( 0, (int) apply_filters( 'tainacan-oaipmh-importer-retry-wait', 10 * $attempts, $attempts ) );
+		$this->add_transient( 'not_before', time() + $wait );
+		$this->add_log( sprintf( 'Request failed (attempt %1$d of %2$d); retrying in %3$d seconds', $attempts, self::MAX_PAGE_ATTEMPTS, $wait ) );
+		return true;
+	}
+
+	/**
+	 * Clears the attempt and wait counters after a request is answered.
+	 */
+	protected function reset_attempts() {
+		$this->delete_transient('page_attempts');
+		$this->delete_transient('page_waits');
+		$this->delete_transient('not_before');
+	}
+
+	/**
+	 * Waits for a scheduled retry. A pause never exceeds MAX_SLEEP_PER_ITERATION, so a long wait
+	 * spans several iterations and the background process keeps recording heartbeats.
+	 *
+	 * @return bool True when the request must still wait (nothing is fetched in this iteration).
+	 */
+	protected function wait_for_provider() {
+		$remaining = (int) $this->get_transient('not_before') - time();
+		if ( $remaining <= 0 ) {
+			return false;
+		}
+		/**
+		 * Filters the longest pause inside one importer iteration, in seconds.
+		 *
+		 * @param int $seconds Default MAX_SLEEP_PER_ITERATION.
+		 */
+		$sleep = min( $remaining, max( 0, (int) apply_filters( 'tainacan-oaipmh-importer-max-sleep', self::MAX_SLEEP_PER_ITERATION ) ) );
+		if ( $sleep > 0 ) {
+			sleep( $sleep );
+		}
+		return $remaining > $sleep;
 	}
 
 	/**
@@ -1040,7 +1193,7 @@ class Oaipmh_Importer extends Importer {
 	 * @return \SimpleXMLElement|false
 	 */
 	protected function parse_xml( $body ) {
-		if ( ! is_string($body) || '' === trim($body) ) {
+		if ( ! is_string( $body ) || '' === trim( $body ) ) {
 			return false;
 		}
 		$previous = libxml_use_internal_errors( true );

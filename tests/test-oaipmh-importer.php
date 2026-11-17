@@ -8,8 +8,12 @@
 namespace Tainacan\Tests;
 
 /**
- * Drives the whole importer (both steps) against canned OAI-PMH responses served
- * through the `pre_http_request` filter, so no network access is needed.
+ * Drives the importer against canned OAI-PMH responses served through the
+ * `pre_http_request` filter, so no network access is needed.
+ *
+ * Every iteration runs on an importer rebuilt from the serialized state, as the
+ * background process does (Background_Importer::task()), so retries from a saved
+ * state and values kept between iterations are exercised.
  *
  * @group importer
  */
@@ -19,8 +23,10 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 
 	/**
 	 * Canned responses keyed by "verb", "verb:set=<spec>" or "verb:token=<token>".
+	 * A value is a body (HTTP 200), a full response array, or ['sequence' => [...]]
+	 * whose entries are served in order (the last one is repeated).
 	 *
-	 * @var array<string, string|array>
+	 * @var array
 	 */
 	private $responses = array();
 
@@ -32,32 +38,31 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 	private $requests = array();
 
 	/**
-	 * Installs the fake provider and disables retry pauses.
+	 * Error log entries collected from every iteration.
+	 *
+	 * @var array
 	 */
+	private $errors = array();
+
 	public function setUp(): void {
 		parent::setUp();
 		$this->responses = array();
 		$this->requests  = array();
+		$this->errors    = array();
 		add_filter( 'pre_http_request', array( $this, 'serve_fake_provider' ), 10, 3 );
 		add_filter( 'tainacan-oaipmh-importer-retry-wait', '__return_zero' );
+		add_filter( 'tainacan-oaipmh-importer-max-sleep', '__return_zero' );
 	}
 
-	/**
-	 * Removes the fake provider.
-	 */
 	public function tearDown(): void {
 		remove_filter( 'pre_http_request', array( $this, 'serve_fake_provider' ), 10 );
 		remove_filter( 'tainacan-oaipmh-importer-retry-wait', '__return_zero' );
+		remove_filter( 'tainacan-oaipmh-importer-max-sleep', '__return_zero' );
 		parent::tearDown();
 	}
 
 	/**
-	 * `pre_http_request` callback answering with the canned response for the requested verb.
-	 *
-	 * @param false|array $preempt Whether to preempt the request.
-	 * @param array       $args    Request arguments.
-	 * @param string      $url     Requested URL.
-	 * @return array
+	 * `pre_http_request` callback answering with the canned response for the request.
 	 */
 	public function serve_fake_provider( $preempt, $args, $url ) {
 		$this->requests[] = $url;
@@ -74,22 +79,17 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 		if ( ! isset( $this->responses[ $key ] ) ) {
 			return $this->http_response( 404, '' );
 		}
-		if ( is_array( $this->responses[ $key ] ) ) {
-			return $this->responses[ $key ];
+
+		$response = $this->responses[ $key ];
+		if ( is_array( $response ) && isset( $response['sequence'] ) ) {
+			$response = count( $response['sequence'] ) > 1 ? array_shift( $this->responses[ $key ]['sequence'] ) : reset( $response['sequence'] );
 		}
-		return $this->http_response( 200, $this->responses[ $key ] );
+		return is_array( $response ) ? $response : $this->http_response( 200, $response );
 	}
 
-	/**
-	 * Builds a WP_Http-like response array.
-	 *
-	 * @param int    $code HTTP status code.
-	 * @param string $body Response body.
-	 * @return array
-	 */
-	private function http_response( $code, $body ) {
+	private function http_response( $code, $body, array $headers = array() ) {
 		return array(
-			'headers'  => array(),
+			'headers'  => $headers,
 			'body'     => $body,
 			'response' => array(
 				'code'    => $code,
@@ -104,13 +104,6 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 	// OAI-PMH fixtures
 	// ----------------------------------------------------------------------
 
-	/**
-	 * Wraps a verb payload in the OAI-PMH envelope.
-	 *
-	 * @param string $verb  Requested verb.
-	 * @param string $inner XML of the verb element (or of an <error>).
-	 * @return string
-	 */
 	private function envelope( $verb, $inner ) {
 		return '<?xml version="1.0" encoding="UTF-8"?>'
 			. '<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
@@ -121,31 +114,18 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 	}
 
 	/**
-	 * Identify response.
-	 *
-	 * @param string $repository_name Repository name.
-	 * @return string
-	 */
-	private function identify( $repository_name ) {
-		return $this->envelope(
-			'Identify',
-			'<Identify><repositoryName>' . $repository_name . '</repositoryName><baseURL>' . self::BASE_URL . '</baseURL>'
-			. '<protocolVersion>2.0</protocolVersion><adminEmail>admin@example.org</adminEmail>'
-			. '<earliestDatestamp>2020-01-01T00:00:00Z</earliestDatestamp><deletedRecord>persistent</deletedRecord>'
-			. '<granularity>YYYY-MM-DDThh:mm:ssZ</granularity></Identify>'
-		);
-	}
-
-	/**
 	 * ListSets response.
 	 *
-	 * @param array $sets spec => name.
-	 * @return string
+	 * @param array  $sets  spec => name.
+	 * @param string $token Resumption token ('' for the last page).
 	 */
-	private function list_sets( array $sets ) {
+	private function list_sets( array $sets, $token = '' ) {
 		$xml = '<ListSets>';
 		foreach ( $sets as $spec => $name ) {
 			$xml .= '<set><setSpec>' . $spec . '</setSpec><setName>' . $name . '</setName></set>';
+		}
+		if ( '' !== $token ) {
+			$xml .= '<resumptionToken>' . $token . '</resumptionToken>';
 		}
 		return $this->envelope( 'ListSets', $xml . '</ListSets>' );
 	}
@@ -157,7 +137,6 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 	 * @param array  $dc         element => value|value[] (element without the dc: prefix).
 	 * @param array  $sets       setSpecs of the record header.
 	 * @param bool   $deleted    Whether the header carries status="deleted".
-	 * @return string
 	 */
 	private function record( $identifier, array $dc, array $sets = array(), $deleted = false ) {
 		$xml = '<record><header' . ( $deleted ? ' status="deleted"' : '' ) . '>'
@@ -186,93 +165,45 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 	 * ListRecords response.
 	 *
 	 * @param string[] $records            Output of record().
-	 * @param string   $token              Resumption token ('' for none; the element is still
-	 *                                     emitted empty when $complete_list_size is given).
+	 * @param string   $token              Resumption token ('' for none).
 	 * @param int|null $complete_list_size completeListSize attribute.
-	 * @param int      $cursor             cursor attribute.
-	 * @return string
 	 */
-	private function list_records( array $records, $token = '', $complete_list_size = null, $cursor = 0 ) {
+	private function list_records( array $records, $token = '', $complete_list_size = null ) {
 		$xml = '<ListRecords>' . implode( '', $records );
 		if ( '' !== $token || null !== $complete_list_size ) {
-			$attributes = null !== $complete_list_size ? ' completeListSize="' . $complete_list_size . '" cursor="' . $cursor . '"' : '';
+			$attributes = null !== $complete_list_size ? ' completeListSize="' . $complete_list_size . '"' : '';
 			$xml       .= '<resumptionToken' . $attributes . '>' . $token . '</resumptionToken>';
 		}
 		return $this->envelope( 'ListRecords', $xml . '</ListRecords>' );
 	}
 
-	/**
-	 * OAI-PMH <error> response.
-	 *
-	 * @param string $verb Requested verb.
-	 * @param string $code Error code.
-	 * @return string
-	 */
 	private function oai_error( $verb, $code ) {
 		return $this->envelope( $verb, '<error code="' . $code . '">' . $code . '</error>' );
 	}
 
 	/**
-	 * Registers the default provider: two sets, three records in "col1" split in two
-	 * pages, one active plus one deleted record in "col2".
+	 * Set "col1" in two pages (three records plus a deleted one) and set "col2" in one page.
 	 */
-	private function install_default_provider() {
-		$this->responses['Identify'] = $this->identify( 'Repositório de Teste' );
-		$this->responses['ListSets'] = $this->list_sets(
+	private function install_two_sets() {
+		$this->responses['ListRecords:set=col1'] = $this->list_records(
 			array(
-				'col1' => 'Pinturas',
-				'col2' => 'Esculturas',
-			)
-		);
-
-		$col1_page1 = array(
-			$this->record(
-				'oai:example.org:1',
-				array(
-					'title'       => 'Obra 1',
-					'creator'     => 'Artista Um',
-					'description' => array( 'Primeiro parágrafo.', 'Segundo parágrafo.' ),
-					'subject'     => array( 'pintura', 'óleo' ),
-					'date'        => '1920',
-				),
-				array( 'col1' )
+				$this->record( 'oai:example.org:1', array( 'title' => 'Obra 1', 'subject' => array( 'pintura', 'óleo' ) ), array( 'col1' ) ),
+				$this->record( 'oai:example.org:2', array( 'title' => 'Obra 2' ), array( 'col1' ) ),
 			),
-			$this->record(
-				'oai:example.org:2',
-				array(
-					'title'   => 'Obra 2',
-					'creator' => 'Artista Dois',
-				),
-				array( 'col1' )
-			),
+			'tok-col1',
+			3
 		);
-		$col1_page2 = array(
-			$this->record(
-				'oai:example.org:3',
-				array(
-					'title'   => 'Obra 3',
-					'creator' => 'Artista Três',
-				),
-				array( 'col1' )
+		$this->responses['ListRecords:token=tok-col1'] = $this->list_records(
+			array(
+				$this->record( 'oai:example.org:3', array( 'title' => 'Obra 3' ), array( 'col1' ) ),
+				$this->record( 'oai:example.org:9', array(), array( 'col1' ), true ),
 			),
+			'',
+			3
 		);
-		$col2_page  = array(
-			$this->record(
-				'oai:example.org:4',
-				array(
-					'title'   => 'Escultura 1',
-					'creator' => 'Escultor',
-				),
-				array( 'col2' )
-			),
-			$this->record( 'oai:example.org:5', array(), array( 'col2' ), true ),
+		$this->responses['ListRecords:set=col2'] = $this->list_records(
+			array( $this->record( 'oai:example.org:4', array( 'title' => 'Escultura 1' ), array( 'col2' ) ) )
 		);
-
-		$this->responses['ListRecords:set=col1']       = $this->list_records( $col1_page1, 'tok-col1', 3, 0 );
-		$this->responses['ListRecords:token=tok-col1'] = $this->list_records( $col1_page2, '', 3, 2 );
-		$this->responses['ListRecords:set=col2']       = $this->list_records( $col2_page );
-		// Whole repository (used when sets are imported as a taxonomy or do not exist).
-		$this->responses['ListRecords'] = $this->list_records( array_merge( $col1_page1, $col1_page2, $col2_page ) );
 	}
 
 	// ----------------------------------------------------------------------
@@ -281,62 +212,89 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 
 	/**
 	 * Creates an importer session for the fake provider.
-	 *
-	 * @param array $options Importer options.
-	 * @return \Tainacan\Importer\Oaipmh_Importer
 	 */
-	private function new_importer( array $options = array() ) {
-		$handler  = \Tainacan\Importer_Handler::get_instance();
-		$importer = $handler->initialize_importer( 'oaipmh_importer' );
+	private function new_importer( array $options = array(), $url = self::BASE_URL ) {
+		$importer = \Tainacan\Importer_Handler::get_instance()->initialize_importer( 'oaipmh_importer' );
 		$this->assertInstanceOf( '\Tainacan\Importer\Oaipmh_Importer', $importer );
-		$importer->set_url( self::BASE_URL . '?verb=Identify' );
-		if ( ! empty( $options ) ) {
-			$importer->set_options( $options );
-		}
+		$importer->set_url( $url );
+		$importer->set_options( $options );
 		return $importer;
 	}
 
 	/**
-	 * Runs the importer until it reports completion, as the background process would.
+	 * Creates the destination collection and adds it to the importer, as the mapping screen does:
+	 * title and description go to the core metadata, the other fields to new metadata.
 	 *
-	 * @param \Tainacan\Importer\Importer $importer Importer session.
+	 * @return \Tainacan\Entities\Collection
 	 */
-	private function run_to_completion( \Tainacan\Importer\Importer $importer ) {
-		$iterations = 0;
-		while ( false !== $importer->run() ) {
-			$this->assertLessThan( 50, ++$iterations, 'Importer did not finish; paging may be looping' );
-			if ( $importer->get_abort() ) {
-				break;
-			}
+	private function add_destination_collection( \Tainacan\Importer\Importer $importer, array $create_for = array( 'dc:subject', 'dc:identifier', 'oai:identifier' ) ) {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'OAI destination',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$mapping = array(
+			$collection->get_core_title_metadatum()->get_id()       => 'dc:title',
+			$collection->get_core_description_metadatum()->get_id() => 'dc:description',
+		);
+		foreach ( array_values( $create_for ) as $index => $field ) {
+			$mapping[ 'create_metadata' . $index ] = $field;
 		}
+
+		$this->assertTrue( $importer->add_collection( array( 'id' => $collection->get_id(), 'mapping' => $mapping, 'total_items' => null ) ) );
+		return $collection;
 	}
 
 	/**
-	 * Finds a collection created by the importer by its name.
-	 *
-	 * @param string $name Collection name.
-	 * @return \Tainacan\Entities\Collection|null
+	 * Rebuilds the importer from its serialized state, as the background process does.
 	 */
-	private function find_collection( $name ) {
-		$collections = \Tainacan\Repositories\Collections::get_instance()->fetch( array( 'posts_per_page' => -1 ), 'OBJECT' );
-		foreach ( $collections as $collection ) {
-			if ( $collection->get_name() === $name ) {
-				return $collection;
-			}
-		}
-		return null;
+	private function rebuild( array $data ) {
+		return new \Tainacan\Importer\Oaipmh_Importer( $data );
 	}
 
 	/**
-	 * Lists the items of a collection ordered by title.
+	 * Runs one iteration on an importer rebuilt from $data and returns the new state.
 	 *
-	 * @param \Tainacan\Entities\Collection $collection Collection.
-	 * @return \Tainacan\Entities\Item[]
+	 * @param array $data   Serialized importer (from _to_Array(true)).
+	 * @param mixed $result Receives the return value of run().
+	 * @return array
 	 */
+	private function iterate( array $data, &$result = null ) {
+		$importer = $this->rebuild( $data );
+		$result   = $importer->run();
+		$this->errors = array_merge( $this->errors, $importer->get_error_log() );
+		return $importer->_to_Array( true );
+	}
+
+	/**
+	 * Runs iterations until the importer finishes and returns the final state.
+	 */
+	private function run_in_background( array $data ) {
+		for ( $i = 0; $i < 100; $i++ ) {
+			$data = $this->iterate( $data, $result );
+			if ( false === $result ) {
+				return $data;
+			}
+		}
+		$this->fail( 'The importer did not finish; paging may be looping' );
+	}
+
+	/**
+	 * Error messages collected so far, as one readable string.
+	 */
+	private function error_messages() {
+		return wp_json_encode( array_column( $this->errors, 'message' ) );
+	}
+
 	private function items_of( \Tainacan\Entities\Collection $collection ) {
 		return \Tainacan\Repositories\Items::get_instance()->fetch(
 			array(
 				'posts_per_page' => -1,
+				'post_status'    => 'any',
 				'orderby'        => 'title',
 				'order'          => 'ASC',
 			),
@@ -345,13 +303,10 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 		);
 	}
 
-	/**
-	 * Finds a metadatum of a collection by its name.
-	 *
-	 * @param \Tainacan\Entities\Collection $collection Collection.
-	 * @param string                        $name       Metadatum name.
-	 * @return \Tainacan\Entities\Metadatum|null
-	 */
+	private function titles_of( array $items ) {
+		return array_map( function( $item ) { return $item->get_title(); }, $items );
+	}
+
 	private function metadatum_named( \Tainacan\Entities\Collection $collection, $name ) {
 		foreach ( \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection( $collection ) as $metadatum ) {
 			if ( $metadatum->get_name() === $name ) {
@@ -361,46 +316,13 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 		return null;
 	}
 
-	/**
-	 * Titles of a list of items, in order.
-	 *
-	 * @param \Tainacan\Entities\Item[] $items Items.
-	 * @return string[]
-	 */
-	private function titles_of( array $items ) {
-		$titles = array();
-		foreach ( $items as $item ) {
-			$titles[] = $item->get_title();
-		}
-		return $titles;
-	}
-
-	/**
-	 * Counts the requests made to the fake provider whose URL contains a string.
-	 *
-	 * @param string $needle Substring to look for.
-	 * @return int
-	 */
-	private function count_requests_containing( $needle ) {
-		$count = 0;
-		foreach ( $this->requests as $url ) {
-			if ( false !== strpos( $url, $needle ) ) {
-				++$count;
-			}
-		}
-		return $count;
-	}
-
-	/**
-	 * Reads the value of a metadatum for an item.
-	 *
-	 * @param \Tainacan\Entities\Item      $item      Item.
-	 * @param \Tainacan\Entities\Metadatum $metadatum Metadatum.
-	 * @return mixed
-	 */
 	private function value_of( \Tainacan\Entities\Item $item, \Tainacan\Entities\Metadatum $metadatum ) {
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity( $item, $metadatum );
 		return $item_metadata->get_value();
+	}
+
+	private function count_requests_containing( $needle ) {
+		return count( array_filter( $this->requests, function( $url ) use ( $needle ) { return false !== strpos( $url, $needle ); } ) );
 	}
 
 	// ----------------------------------------------------------------------
@@ -408,127 +330,256 @@ class OaipmhImporterTests extends TAINACAN_UnitTestCase {
 	// ----------------------------------------------------------------------
 
 	/**
-	 * Query strings pasted with the base URL are dropped, so verbs can be appended.
+	 * Userinfo, query string and fragment are dropped; a `set` argument is kept as the set spec.
 	 */
-	public function test_url_query_string_is_discarded() {
-		$importer = $this->new_importer();
+	public function test_url_keeps_only_scheme_host_and_path() {
+		$importer = $this->new_importer( array(), 'https://user:secret@oai.example.org/request#frag?verb=Identify' );
 		$this->assertSame( self::BASE_URL, $importer->get_url() );
+
+		$importer = $this->new_importer( array(), self::BASE_URL . '?verb=ListRecords&metadataPrefix=oai_dc&set=col2' );
+		$this->assertSame( self::BASE_URL, $importer->get_url() );
+		$this->assertSame( 'col2', $importer->get_transient( 'url_set_spec' ) );
+
+		$this->assertFalse( $importer->set_url( 'ftp://oai.example.org/request' ) );
 	}
 
 	/**
-	 * Default mode: one collection per set, records paged through resumption tokens,
-	 * deleted records skipped, Dublin Core values mapped.
+	 * One set: every page of that set is requested once, following the resumption tokens,
+	 * and ListSets is never called.
 	 */
-	public function test_imports_one_collection_per_set() {
-		$this->install_default_provider();
-		$importer = $this->new_importer( array( 'using_set' => 'collection' ) );
+	public function test_one_set_follows_the_tokens_and_fetches_each_page_once() {
+		$this->install_two_sets();
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => 'col1' ) );
+		$collection = $this->add_destination_collection( $importer );
 
-		$this->run_to_completion( $importer );
+		$data = $this->run_in_background( $importer->_to_Array( true ) );
 
-		$this->assertSame( array(), $importer->get_error_log(), 'Importer logged errors: ' . implode( ' | ', $importer->get_error_log() ) );
-
-		$pinturas = $this->find_collection( 'Pinturas' );
-		$this->assertNotNull( $pinturas, 'Collection for set col1 was not created' );
-		$items = $this->items_of( $pinturas );
-		$this->assertCount( 3, $items, 'Both pages of set col1 should be imported' );
-		$this->assertSame( array( 'Obra 1', 'Obra 2', 'Obra 3' ), $this->titles_of( $items ) );
-
-		$obra1 = $items[0];
-		$this->assertSame( "Primeiro parágrafo.\n\nSegundo parágrafo.", $obra1->get_description() );
-
-		$creator = $this->metadatum_named( $pinturas, 'Creator' );
-		$this->assertNotNull( $creator, 'Dublin Core metadata should be created on the collection' );
-		$this->assertSame( 'Artista Um', $this->value_of( $obra1, $creator ) );
-
-		$subject = $this->metadatum_named( $pinturas, 'Subject' );
-		$this->assertSame( 'pintura', $this->value_of( $obra1, $subject ), 'Single-valued metadatum keeps the first value' );
-
-		$esculturas = $this->find_collection( 'Esculturas' );
-		$this->assertNotNull( $esculturas, 'Collection for set col2 was not created' );
-		$this->assertCount( 1, $this->items_of( $esculturas ), 'Deleted record must not become an item' );
-
-		// The first page of a set is fetched for counting and again for importing; the token page only once.
+		$this->assertEquals( array( 'Obra 1', 'Obra 2', 'Obra 3' ), $this->titles_of( $this->items_of( $collection ) ), $this->error_messages() );
+		$this->assertSame( 1, $this->count_requests_containing( 'set=col1' ), 'The first page must be fetched once' );
 		$this->assertSame( 1, $this->count_requests_containing( 'resumptionToken=tok-col1' ) );
+		$this->assertSame( 0, $this->count_requests_containing( 'verb=ListSets' ) );
+		$this->assertSame( 0, $this->count_requests_containing( 'set=col2' ) );
+		$this->assertEquals( 2, $data['collections'][0]['total_items'], 'total_items counts the pages' );
+		foreach ( $this->items_of( $collection ) as $item ) {
+			$this->assertEquals( 'publish', $item->get_status() );
+		}
 	}
 
 	/**
-	 * Sets imported as terms of a "Sets" taxonomy on a single collection.
+	 * The set spec may come from a pasted ListRecords URL, in the form field or as the source URL.
 	 */
-	public function test_imports_sets_as_taxonomy_terms() {
-		$this->install_default_provider();
-		$importer = $this->new_importer( array( 'using_set' => 'taxonomy' ) );
+	public function test_set_spec_from_a_pasted_url() {
+		$this->install_two_sets();
 
-		$this->run_to_completion( $importer );
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => self::BASE_URL . '?verb=ListRecords&metadataPrefix=oai_dc&set=col2' ) );
+		$collection = $this->add_destination_collection( $importer );
+		$this->run_in_background( $importer->_to_Array( true ) );
+		$this->assertEquals( array( 'Escultura 1' ), $this->titles_of( $this->items_of( $collection ) ), $this->error_messages() );
 
-		$this->assertSame( array(), $importer->get_error_log(), 'Importer logged errors: ' . implode( ' | ', $importer->get_error_log() ) );
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => '' ), self::BASE_URL . '?verb=ListRecords&set=col2' );
+		$collection = $this->add_destination_collection( $importer );
+		$this->run_in_background( $importer->_to_Array( true ) );
+		$this->assertEquals( array( 'Escultura 1' ), $this->titles_of( $this->items_of( $collection ) ), $this->error_messages() );
+	}
 
-		$collection = $this->find_collection( 'Repositório de Teste' );
-		$this->assertNotNull( $collection, 'Collection named after the repository was not created' );
+	/**
+	 * One set mode without a set spec does not run.
+	 */
+	public function test_one_set_without_spec_does_not_request_anything() {
+		$this->install_two_sets();
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => '' ) );
+		$collection = $this->add_destination_collection( $importer );
+
+		$this->run_in_background( $importer->_to_Array( true ) );
+
+		$this->assertSame( array(), $this->requests );
+		$this->assertCount( 0, $this->items_of( $collection ) );
+		$this->assertStringContainsString( 'No set spec', $this->error_messages() );
+	}
+
+	/**
+	 * Whole repository: one unfiltered ListRecords; a record in several sets becomes one item
+	 * with one term per set, named after ListSets (read page by page, duplicated names
+	 * disambiguated by their spec, unknown specs kept as they are).
+	 */
+	public function test_whole_repository_assigns_every_set_as_a_term_named_from_list_sets() {
+		$this->responses['ListSets'] = $this->list_sets( array( 'col1' => 'Pinturas', 'col2' => 'Teses' ), 'sets-2' );
+		$this->responses['ListSets:token=sets-2'] = $this->list_sets( array( 'col3' => 'Teses', 'col4' => 'Gravuras' ) );
+		$this->responses['ListRecords'] = $this->list_records(
+			array(
+				$this->record( 'oai:example.org:1', array( 'title' => 'Obra 1' ), array( 'col1', 'col3', 'col4' ) ),
+				$this->record( 'oai:example.org:2', array( 'title' => 'Obra 2' ), array( 'col2' ) ),
+				$this->record( 'oai:example.org:3', array( 'title' => 'Obra 3' ), array( 'col9' ) ),
+			)
+		);
+
+		$importer   = $this->new_importer( array( 'source' => 'repository' ) );
+		$collection = $this->add_destination_collection( $importer );
+		$this->run_in_background( $importer->_to_Array( true ) );
+
 		$items = $this->items_of( $collection );
-		$this->assertCount( 4, $items );
+		$this->assertEquals( array( 'Obra 1', 'Obra 2', 'Obra 3' ), $this->titles_of( $items ), $this->error_messages() );
+		$this->assertSame( 1, $this->count_requests_containing( 'verb=ListRecords' ) );
+		$this->assertSame( 0, $this->count_requests_containing( 'set=' ) );
+		$this->assertSame( 2, $this->count_requests_containing( 'verb=ListSets' ) );
 
-		$sets_metadatum = $this->metadatum_named( $collection, 'Sets' );
-		$this->assertNotNull( $sets_metadatum, 'Sets taxonomy metadatum was not created' );
+		$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch( (int) get_post_meta( $collection->get_id(), \Tainacan\Importer\Oaipmh_Importer::COLLECTION_SETS_META, true ) );
+		$this->assertInstanceOf( '\Tainacan\Entities\Metadatum', $metadatum );
+		$this->assertTrue( $metadatum->is_multiple() );
+		$options  = $metadatum->get_metadata_type_options();
+		$taxonomy = \Tainacan\Repositories\Taxonomies::get_instance()->fetch( (int) $options['taxonomy_id'] );
 
-		// Items are ordered by title: "Escultura 1" comes before "Obra 1".
-		$terms = $this->value_of( $items[0], $sets_metadatum );
-		$this->assertCount( 1, $terms );
-		$this->assertSame( 'Esculturas', $terms[0]->get_name() );
-
-		$terms = $this->value_of( $items[1], $sets_metadatum );
-		$this->assertSame( 'Pinturas', $terms[0]->get_name() );
+		$expected = array(
+			'Obra 1' => array( 'Gravuras', 'Pinturas', 'Teses (col3)' ),
+			'Obra 2' => array( 'Teses (col2)' ),
+			'Obra 3' => array( 'col9' ),
+		);
+		foreach ( $items as $item ) {
+			$terms = wp_get_object_terms( $item->get_id(), $taxonomy->get_db_identifier(), array( 'fields' => 'names' ) );
+			sort( $terms );
+			$this->assertEquals( $expected[ $item->get_title() ], $terms, $item->get_title() );
+		}
 	}
 
 	/**
-	 * Providers without a set hierarchy get a single collection with every record.
+	 * Every repeated Dublin Core value is stored: multiple metadata get the whole list, the core
+	 * title the first value, the core description every paragraph. The OAI identifier is stored too.
 	 */
-	public function test_provider_without_sets_imports_into_a_single_collection() {
-		$this->install_default_provider();
-		$this->responses['ListSets'] = $this->oai_error( 'ListSets', 'noSetHierarchy' );
-		$importer                    = $this->new_importer();
+	public function test_repeated_dublin_core_values_are_all_stored() {
+		$this->responses['ListRecords:set=col1'] = $this->list_records(
+			array(
+				$this->record(
+					'oai:example.org:42',
+					array(
+						'title'       => array( 'Título principal', 'Main title' ),
+						'description' => array( 'Primeiro parágrafo.', 'Segundo parágrafo.' ),
+						'subject'     => array( 'pintura', 'óleo', 'retrato' ),
+						'identifier'  => array( 'SILVA, A. Obra. 2016.', 'http://hdl.handle.net/123/42', 'https://doi.org/10.1/42' ),
+					),
+					array( 'col1' )
+				),
+			)
+		);
 
-		$this->run_to_completion( $importer );
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => 'col1' ) );
+		$collection = $this->add_destination_collection( $importer );
+		$this->run_in_background( $importer->_to_Array( true ) );
 
-		$this->assertSame( array(), $importer->get_error_log(), 'Importer logged errors: ' . implode( ' | ', $importer->get_error_log() ) );
-		$collection = $this->find_collection( 'Repositório de Teste' );
-		$this->assertNotNull( $collection );
-		$this->assertCount( 4, $this->items_of( $collection ) );
-		$this->assertNull( $this->find_collection( 'Pinturas' ) );
+		$items = $this->items_of( $collection );
+		$this->assertCount( 1, $items, $this->error_messages() );
+		$item = $items[0];
+
+		$this->assertEquals( 'Título principal', $item->get_title() );
+		$this->assertEquals( "Primeiro parágrafo.\n\nSegundo parágrafo.", $item->get_description() );
+
+		$subject = $this->metadatum_named( $collection, 'Subject' );
+		$this->assertNotNull( $subject );
+		$this->assertTrue( $subject->is_multiple() );
+		$this->assertEquals( array( 'pintura', 'óleo', 'retrato' ), $this->value_of( $item, $subject ) );
+
+		$identifier = $this->metadatum_named( $collection, 'Identifier' );
+		$this->assertEquals( array( 'SILVA, A. Obra. 2016.', 'http://hdl.handle.net/123/42', 'https://doi.org/10.1/42' ), $this->value_of( $item, $identifier ) );
+
+		$oai_identifier = $this->metadatum_named( $collection, 'OAI-PMH identifier' );
+		$this->assertEquals( 'oai:example.org:42', $this->value_of( $item, $oai_identifier ) );
+		$this->assertEquals( 'oai:example.org:42', get_post_meta( $item->get_id(), \Tainacan\Importer\Oaipmh_Importer::ITEM_IDENTIFIER_META, true ) );
 	}
 
 	/**
-	 * A provider that answers garbage aborts the import with an error log instead of a fatal.
+	 * A page that keeps failing is retried a few times and then stops the collection, instead of
+	 * advancing to a page without a resumption token.
 	 */
-	public function test_invalid_xml_aborts_with_error_log() {
-		$this->install_default_provider();
-		$this->responses['ListSets'] = '<html>Service unavailable';
-		$importer                    = $this->new_importer();
+	public function test_a_page_that_fails_for_good_stops_the_collection() {
+		$this->install_two_sets();
+		$this->responses['ListRecords:token=tok-col1'] = $this->http_response( 500, '' );
 
-		$this->run_to_completion( $importer );
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => 'col1' ) );
+		$collection = $this->add_destination_collection( $importer );
+		$this->run_in_background( $importer->_to_Array( true ) );
 
-		$this->assertTrue( $importer->get_abort() );
-		$this->assertNotEmpty( $importer->get_error_log() );
-		$this->assertNull( $this->find_collection( 'Pinturas' ) );
+		$this->assertEquals( array( 'Obra 1', 'Obra 2' ), $this->titles_of( $this->items_of( $collection ) ) );
+		$this->assertSame( 1, $this->count_requests_containing( 'set=col1' ) );
+		$this->assertSame( \Tainacan\Importer\Oaipmh_Importer::MAX_PAGE_ATTEMPTS, $this->count_requests_containing( 'resumptionToken=tok-col1' ) );
+		$this->assertSame( 1 + \Tainacan\Importer\Oaipmh_Importer::MAX_PAGE_ATTEMPTS, $this->count_requests_containing( 'verb=ListRecords' ), 'Nothing is requested after the failed page' );
+		$this->assertStringContainsString( 'failed for good', $this->error_messages() );
 	}
 
 	/**
-	 * HTTP 5xx answers are retried, then reported; 4xx answers are not retried.
+	 * badResumptionToken cannot be fixed by retrying: the collection stops at once.
 	 */
-	public function test_http_errors_are_retried_and_reported() {
-		$this->install_default_provider();
-		$this->responses['ListSets'] = $this->http_response( 503, '' );
-		$importer                    = $this->new_importer();
+	public function test_bad_resumption_token_stops_without_retrying() {
+		$this->install_two_sets();
+		$this->responses['ListRecords:token=tok-col1'] = $this->oai_error( 'ListRecords', 'badResumptionToken' );
 
-		$this->run_to_completion( $importer );
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => 'col1' ) );
+		$collection = $this->add_destination_collection( $importer );
+		$this->run_in_background( $importer->_to_Array( true ) );
 
-		$this->assertTrue( $importer->get_abort() );
-		$this->assertSame( \Tainacan\Importer\Oaipmh_Importer::MAX_HTTP_ATTEMPTS, $this->count_requests_containing( 'verb=ListSets' ) );
+		$this->assertEquals( array( 'Obra 1', 'Obra 2' ), $this->titles_of( $this->items_of( $collection ) ) );
+		$this->assertSame( 1, $this->count_requests_containing( 'resumptionToken=tok-col1' ) );
+		$this->assertStringContainsString( 'badResumptionToken', $this->error_messages() );
+	}
 
-		$this->requests              = array();
-		$this->responses['ListSets'] = $this->http_response( 404, '' );
-		$importer                    = $this->new_importer();
-		$this->run_to_completion( $importer );
+	/**
+	 * HTTP 503 with Retry-After is flow control: the page is not consumed, the wait is scheduled
+	 * without a long sleep, and the same page is requested again once the wait is over.
+	 */
+	public function test_retry_after_does_not_consume_the_page() {
+		$page = $this->list_records( array( $this->record( 'oai:example.org:1', array( 'title' => 'Obra 1' ), array( 'col1' ) ) ) );
+		$this->responses['ListRecords:set=col1'] = array(
+			'sequence' => array(
+				$this->http_response( 503, '', array( 'retry-after' => '120' ) ),
+				$this->http_response( 200, $page ),
+			),
+		);
 
-		$this->assertSame( 1, $this->count_requests_containing( 'verb=ListSets' ), 'Client errors must not be retried' );
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => 'col1' ) );
+		$collection = $this->add_destination_collection( $importer );
+		$data       = $importer->_to_Array( true );
+
+		// Until the first request is answered with 503.
+		for ( $i = 0; $i < 5 && 0 === count( $this->requests ); $i++ ) {
+			$data = $this->iterate( $data );
+		}
+		$this->assertSame( 1, count( $this->requests ) );
+		$this->assertEquals( 0, $data['current_collection_item'], 'The page index must not advance' );
+		$this->assertGreaterThanOrEqual( time() + 100, $data['transients']['not_before'] );
+		$this->assertLessThanOrEqual( time() + 121, $data['transients']['not_before'] );
+
+		// While waiting, nothing is requested.
+		$data = $this->iterate( $data, $result );
+		$this->assertNotFalse( $result );
+		$this->assertSame( 1, count( $this->requests ) );
+		$this->assertCount( 0, $this->items_of( $collection ) );
+
+		// Once the wait is over, the same page is requested and imported.
+		$data['transients']['not_before'] = time() - 1;
+		$this->run_in_background( $data );
+		$this->assertSame( 2, $this->count_requests_containing( 'set=col1' ) );
+		$this->assertEquals( array( 'Obra 1' ), $this->titles_of( $this->items_of( $collection ) ), $this->error_messages() );
+	}
+
+	/**
+	 * When the background process retries from an older saved state, a page processed again does
+	 * not insert its records twice.
+	 */
+	public function test_a_page_processed_again_after_a_retry_does_not_duplicate_items() {
+		$this->install_two_sets();
+		$importer   = $this->new_importer( array( 'source' => 'set', 'set_spec' => 'col1' ) );
+		$collection = $this->add_destination_collection( $importer );
+		$saved      = $importer->_to_Array( true );
+
+		// Iterate until the first page was inserted, then drop that progress, as a crash before
+		// the batch is saved would.
+		$data = $saved;
+		for ( $i = 0; $i < 5 && 0 === count( $this->items_of( $collection ) ); $i++ ) {
+			$data = $this->iterate( $data );
+		}
+		$this->assertCount( 2, $this->items_of( $collection ) );
+
+		$this->run_in_background( $saved );
+
+		$this->assertEquals( array( 'Obra 1', 'Obra 2', 'Obra 3' ), $this->titles_of( $this->items_of( $collection ) ), $this->error_messages() );
+		$this->assertSame( 2, $this->count_requests_containing( 'set=col1' ) );
 	}
 }
