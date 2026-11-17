@@ -111,6 +111,7 @@ trait Admin_UI_Options {
 						'hideDashboardInfoCardSourceCodeButton' => __('Hide info card source code button', 'tainacan'),
 						'showDashboardInfoCardVideosButton' => __('Show info card videos button', 'tainacan'),
 						'hideDashboardNewsCard' => __('Hide news card', 'tainacan'),
+						'hideDashboardThemeSupportNotice' => __('Hide theme support notice', 'tainacan'),
 					)
 				),
 				'items-list' => array(
