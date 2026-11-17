@@ -134,4 +134,68 @@ class TAINACAN_REST_Reports_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 404, $response->get_status() );
 		$this->assertArrayHasKey( 'error_message', $response->get_data() );
 	}
+
+	/**
+	 * Reports are cached for a week. A report cached while its collection or
+	 * metadatum existed must answer 404 once the target is deleted.
+	 */
+	public function test_cached_report_returns_404_after_target_is_deleted() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Reports cached collection',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'Reports cached taxonomy',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                  => 'Reports cached taxonomy metadatum',
+				'status'                => 'publish',
+				'collection'            => $collection,
+				'metadata_type'         => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $taxonomy->get_id()
+				]
+			),
+			true
+		);
+
+		$collection_routes = array(
+			'/reports/collection/' . $collection->get_id() . '/summary',
+			'/reports/collection/' . $collection->get_id() . '/metadata',
+		);
+		$metadatum_route = '/reports/collection/' . $collection->get_id() . '/metadata/' . $metadatum->get_id();
+
+		// Fill the cache while everything exists.
+		foreach ( array_merge( $collection_routes, array( $metadatum_route ) ) as $route ) {
+			$response = $this->server->dispatch( new \WP_REST_Request( 'GET', $this->namespace . $route ) );
+			$this->assertEquals( 200, $response->get_status(), $route );
+		}
+
+		wp_delete_post( $metadatum->get_id(), true );
+
+		$response = $this->server->dispatch( new \WP_REST_Request( 'GET', $this->namespace . $metadatum_route ) );
+		$this->assertEquals( 404, $response->get_status(), $metadatum_route );
+		$this->assertArrayHasKey( 'metadatum_id', $response->get_data() );
+
+		wp_delete_post( $collection->get_id(), true );
+
+		foreach ( $collection_routes as $route ) {
+			$response = $this->server->dispatch( new \WP_REST_Request( 'GET', $this->namespace . $route ) );
+			$this->assertEquals( 404, $response->get_status(), $route );
+			$this->assertArrayHasKey( 'collection_id', $response->get_data(), $route );
+		}
+	}
 }

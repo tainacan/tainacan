@@ -276,7 +276,65 @@ class TAINACAN_REST_Terms extends TAINACAN_UnitApiTestCase {
 		$fetched_term = $repository->fetch($data['id'], $taxonomy->get_db_identifier());
 		$this->assertEquals($cover_page_id, $fetched_term->get_cover_page_id());
 	}
-	
+
+	/**
+	 * A user who cannot edit the taxonomy may only create a term through an item
+	 * they can edit. A non-numeric or unknown item_id must be refused with 403,
+	 * not reach $item->can_edit() on a non-item and fail with 500.
+	 */
+	public function test_create_term_with_invalid_item_id_is_forbidden() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Terms permission collection',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'Terms permission taxonomy',
+				'allow_insert' => 'yes',
+				'status'       => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                  => 'Terms permission metadatum',
+				'status'                => 'publish',
+				'collection'            => $collection,
+				'metadata_type'         => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id'     => $taxonomy->get_id()
+				]
+			),
+			true
+		);
+
+		$subscriber = $this->factory()->user->create( array( 'role' => 'subscriber' ) );
+		wp_set_current_user( $subscriber );
+
+		foreach ( array( 'not-a-number', 999999 ) as $item_id ) {
+			$request = new \WP_REST_Request(
+				'POST', $this->namespace . '/taxonomy/' . $taxonomy->get_id() . '/terms'
+			);
+			$request->set_body( wp_json_encode( array(
+				'name'         => 'Term from item ' . $item_id,
+				'metadatum_id' => $metadatum->get_id(),
+				'item_id'      => $item_id
+			) ) );
+
+			$response = $this->server->dispatch( $request );
+
+			$this->assertEquals( 403, $response->get_status(), 'item_id ' . $item_id );
+		}
+	}
 }
 
 ?>

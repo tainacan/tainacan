@@ -195,7 +195,7 @@ class REST_Reports_Controller extends REST_Controller {
 				'schema' => array($this, 'get_activities_schema'),
 			)
 		);
-		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)',
+		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadatum_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -212,7 +212,7 @@ class REST_Reports_Controller extends REST_Controller {
 								'type'				=> 'string',
 								'required' 			=> true,
 							],
-							'metadata_id' => [
+							'metadatum_id' => [
 								'description'       => __('Metadatum ID.', 'tainacan'),
 								'type'				=> 'string',
 								'required' 			=> true,
@@ -312,14 +312,17 @@ class REST_Reports_Controller extends REST_Controller {
 		if(isset($request['collection_id'])) {
 			$collection_id = $request['collection_id'];
 			
-			$key_cache_object = 'summary_' . $collection_id;
-			$cached_object = $this->get_cache_object($key_cache_object, $request);
-			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
-			
+			// Check existence before the cache: a report cached for a week must not
+			// keep answering 200 after the collection is deleted.
 			$collection = $this->collections_repository->fetch($collection_id);
 			if ( ! $collection instanceof Entities\Collection ) {
 				return $this->not_found( __('A collection with this ID was not found', 'tainacan'), 'collection_id', $collection_id );
 			}
+
+			$key_cache_object = 'summary_' . $collection_id;
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
 			$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
 			if (isset($total_items->publish) ||
 				isset($total_items->private) ||
@@ -494,16 +497,14 @@ class REST_Reports_Controller extends REST_Controller {
 			'list' => array()
 		);
 		$collection_id = $request['collection_id'];
-		$taxonomy_metadata_id = $request['metadata_id'];
+		$taxonomy_metadata_id = $request['metadatum_id'];
 		$parent_id = 0;
 		if ( isset($request['parent']) ) {
 			$parent_id = (int) $request['parent'];
 		}
 		
-		$key_cache_object = "facet_taxonomy_$taxonomy_metadata_id-$collection_id-$parent_id";
-		$cached_object = $this->get_cache_object($key_cache_object, $request);
-		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
-
+		// Check existence before the cache: a report cached for a week must not
+		// keep answering 200 after the collection or the metadatum is deleted.
 		$collection = $this->collections_repository->fetch($collection_id);
 		if ( ! $collection instanceof Entities\Collection ) {
 			return $this->not_found( __('A collection with this ID was not found', 'tainacan'), 'collection_id', $collection_id );
@@ -513,6 +514,11 @@ class REST_Reports_Controller extends REST_Controller {
 		if ( ! $metadatum instanceof Entities\Metadatum ) {
 			return $this->not_found( __('A metadatum with this ID was not found', 'tainacan'), 'metadatum_id', $taxonomy_metadata_id );
 		}
+
+		$key_cache_object = "facet_taxonomy_$taxonomy_metadata_id-$collection_id-$parent_id";
+		$cached_object = $this->get_cache_object($key_cache_object, $request);
+		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
 		$metadatum_type = $metadatum->get_metadata_type();
 		if($metadatum_type != 'Tainacan\Metadata_Types\Taxonomy') {
 			return new \WP_REST_Response([
@@ -560,14 +566,17 @@ class REST_Reports_Controller extends REST_Controller {
 		if(isset($request['collection_id'])) {
 			$collection_id = $request['collection_id'];
 
-			$key_cache_object = 'stats_collection_metadata_' . $collection_id;
-			$cached_object = $this->get_cache_object($key_cache_object, $request);
-			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
-
+			// Check existence before the cache: a report cached for a week must not
+			// keep answering 200 after the collection is deleted.
 			$collection = $this->collections_repository->fetch( $collection_id );
 			if ( ! $collection instanceof Entities\Collection ) {
 				return $this->not_found( __('A collection with this ID was not found', 'tainacan'), 'collection_id', $collection_id );
 			}
+
+			$key_cache_object = 'stats_collection_metadata_' . $collection_id;
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
 			$result_metadatum = $this->metadatum_repository->fetch_by_collection( $collection, [] );
 			$response['totals']['metadata']['total'] = count($result_metadatum);
 			$meta_ids=[];
