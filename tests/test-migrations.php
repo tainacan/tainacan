@@ -76,7 +76,11 @@ class Test_Migrations extends TAINACAN_UnitTestCase {
 		remove_filter( 'query', $recorder );
 
 		$this->assertSame( [], $alter_statements, 'No ALTER TABLE should run when every column already exists' );
-		$this->assertEqualsCanonicalizing( $before, $this->get_bg_process_columns() );
+		// assertEqualsCanonicalizing() needs PHPUnit 7.5+; the PHP 7.4 job runs PHPUnit 6.5.
+		$after = $this->get_bg_process_columns();
+		sort( $before );
+		sort( $after );
+		$this->assertEquals( $before, $after );
 	}
 
 	/**
@@ -156,6 +160,6 @@ class Test_Migrations extends TAINACAN_UnitTestCase {
 
 		$this->assertEquals( 1, get_option( '_migration_refresh_rewrite_rules_items' ) );
 		// The private helper must never be treated as a migration.
-		$this->assertFalse( get_option( '_migration_column_exists' ) );
+		$this->assertFalse( get_option( '_migration_add_missing_columns' ) );
 	}
 }

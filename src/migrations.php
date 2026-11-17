@@ -8,7 +8,7 @@ class Migrations {
 
 	static function run_migrations() {
 
-		// Only public static methods are migrations; private helpers such as column_exists() are not.
+		// Only public static methods are migrations; private helpers such as add_missing_columns() are not.
 		// (ReflectionClass::getMethods() ORs its flags, so visibility and staticness are checked separately.)
 		$methods = ( new \ReflectionClass( __CLASS__ ) )->getMethods( \ReflectionMethod::IS_PUBLIC );
 
@@ -28,31 +28,35 @@ class Migrations {
 	}
 
 	/**
-	 * Checks whether a column exists in a table of the current WordPress database.
+	 * Adds the columns that are missing from a table, in a single ALTER TABLE.
 	 *
-	 * Filtering by the connected database is required: on servers hosting several
-	 * databases, the same table/column name may exist in another schema and the
-	 * ALTER TABLE would be skipped.
+	 * The existing columns are read once with SHOW COLUMNS, which only looks at the
+	 * table of the connected database (a table with the same name in another schema
+	 * on the same server is never considered). `ADD COLUMN IF NOT EXISTS` would avoid
+	 * the read, but it is MariaDB syntax: MySQL 8 rejects it.
 	 *
 	 * @param string $table_name Full table name (with prefix)
-	 * @param string $column_name Column name
-	 * @return bool
+	 * @param array  $columns    Column name => column definition, in the order they should be added
+	 * @return void
 	 */
-	private static function column_exists( $table_name, $column_name ) {
+	private static function add_missing_columns( $table_name, $columns ) {
 		global $wpdb;
 
-		$column = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = %s AND table_name = %s AND column_name = %s",
-				$wpdb->dbname,
-				$table_name,
-				$column_name
-			)
-		);
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table names cannot be prepared; only the prefix is interpolated.
+		$existing = $wpdb->get_col( "SHOW COLUMNS FROM `$table_name`" );
 
-		return ! empty( $column );
+		$clauses = [];
+		foreach ( $columns as $column_name => $definition ) {
+			if ( ! in_array( $column_name, $existing, true ) ) {
+				$clauses[] = "ADD `$column_name` $definition";
+			}
+		}
+
+		if ( ! empty( $clauses ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- DDL built from the fixed definitions passed by the migrations.
+			$wpdb->query( "ALTER TABLE `$table_name` " . implode( ', ', $clauses ) );
+		}
 	}
-
 
 	// Migrations methods below
 
@@ -95,34 +99,13 @@ class Migrations {
 
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
 
-		if ( ! self::column_exists( $table_name, 'progress_label' ) ) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD progress_label text,
-	        ADD progress_value int
-	        ");
-		}
-
-		if ( ! self::column_exists( $table_name, 'name' ) ) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD name text NOT NULL
-	        ");
-		}
-
-		if ( ! self::column_exists( $table_name, 'output' ) ) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD output longtext
-	        ");
-		}
-
-		if ( ! self::column_exists( $table_name, 'status' ) ) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
-	        ");
-		}
+		self::add_missing_columns( $table_name, [
+			'progress_label' => 'text',
+			'progress_value' => 'int',
+			'name'           => 'text NOT NULL',
+			'output'         => 'longtext',
+			'status'         => "ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')",
+		] );
 
 	}
 
@@ -546,12 +529,7 @@ class Migrations {
 		// update default order by "creation_date" to "date"
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
 
-		if ( ! self::column_exists( $table_name, 'bg_uuid' ) ) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD bg_uuid text NULL
-	        ");
-		}
+		self::add_missing_columns( $table_name, [ 'bg_uuid' => 'text NULL' ] );
 	}
 
 	/**
@@ -615,19 +593,11 @@ class Migrations {
 		$table_name    = $wpdb->prefix . 'tnc_bg_process';
 		$database_name = DB_NAME;
 
-		// Add retry_count column if it does not exist.
-		if ( ! self::column_exists( $table_name, 'retry_count' ) ) {
-			$wpdb->query(
-				"ALTER TABLE $table_name ADD retry_count int unsigned NOT NULL default 0"
-			);
-		}
-
-		// Add max_retries column if it does not exist.
-		if ( ! self::column_exists( $table_name, 'max_retries' ) ) {
-			$wpdb->query(
-				"ALTER TABLE $table_name ADD max_retries int unsigned NOT NULL default 3"
-			);
-		}
+		// Add the retry_count and max_retries columns if they do not exist.
+		self::add_missing_columns( $table_name, [
+			'retry_count' => 'int unsigned NOT NULL default 0',
+			'max_retries' => 'int unsigned NOT NULL default 3',
+		] );
 
 		// Add an index on the status column to speed up watchdog queries.
 		$index_exists = $wpdb->get_var(
