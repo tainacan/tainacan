@@ -10,6 +10,50 @@
         <h3 id="advanced-search-heading">
             {{ $i18n.get('advanced_search') }}
         </h3>
+
+        <!-- AND/OR relation between criteria -->
+        <b-field
+                v-if="canChooseRelation"
+                :addons="false"
+                class="advanced-search-relation-field">
+            <template #label>
+                <span id="advanced-search-relation-label">{{ $i18n.get('label_match_criteria') }}</span>
+                <help-button
+                        :title="$i18n.get('label_match_criteria')"
+                        :message="$i18n.get('info_match_any_criteria')"
+                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+            </template>
+            <div
+                    role="radiogroup"
+                    aria-labelledby="advanced-search-relation-label"
+                    class="advanced-search-relation-options">
+                <b-radio-button
+                        id="advanced-search-relation-and"
+                        name="advanced-search-relation"
+                        native-value="AND"
+                        size="is-small"
+                        :model-value="effectiveRelation"
+                        @update:model-value="setRelation">
+                    {{ $i18n.get('label_match_all_criteria') }}
+                </b-radio-button>
+                <b-radio-button
+                        id="advanced-search-relation-or"
+                        name="advanced-search-relation"
+                        native-value="OR"
+                        size="is-small"
+                        :disabled="hasMixedCriteriaKinds"
+                        :model-value="effectiveRelation"
+                        @update:model-value="setRelation">
+                    {{ $i18n.get('label_match_any_criteria') }}
+                </b-radio-button>
+            </div>
+            <p
+                    v-if="hasMixedCriteriaKinds"
+                    class="help">
+                {{ $i18n.get('info_match_any_criteria_mixed') }}
+            </p>
+        </b-field>
+
         <transition-group name="filter-item">
             <b-field
                     v-for="(searchCriterion, index) in searchCriteria"
@@ -305,13 +349,34 @@
                 advancedSearchQuery: {
                     advancedSearch: true,
                     metaquery: [],
-                    taxquery: []
+                    taxquery: [],
+                    relation: 'AND'
                 },
                 isLoadingMetadata: false,
                 metadataAsObject: {},
                 metadataAsArray: [],
                 metadataSearchCancel: undefined,
                 hasUpdatedSearch: false
+            }
+        },
+        computed: {
+            definedCriteriaCount() {
+                return this.searchCriteria.filter((searchCriterion) => searchCriterion.type !== undefined).length;
+            },
+            canChooseRelation() {
+                return this.definedCriteriaCount >= 2;
+            },
+            /**
+             * WP_Query only applies `relation` inside meta_query and inside tax_query; between the two
+             * groups it is always AND. So OR is only offered when every criterion is of the same kind.
+             * Computed from the same filtered (non-empty) criteria that performAdvancedSearch sends.
+             */
+            hasMixedCriteriaKinds() {
+                const filteredQuery = this.getFilteredAdvancedSearchQuery();
+                return filteredQuery.metaquery.length > 0 && filteredQuery.taxquery.length > 0;
+            },
+            effectiveRelation() {
+                return this.hasMixedCriteriaKinds ? 'AND' : this.advancedSearchQuery.relation;
             }
         },
         mounted() {
@@ -455,22 +520,34 @@
             },
             buildAdvancedSearchQueryFromRoute() {
 
-                const hasMetaQueries = this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0;
-                const hasTaxQueries = this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0;
+                const routeMetaquery = this.$route.query.metaquery;
+                const routeTaxquery = this.$route.query.taxquery;
+                const hasMetaQueries = routeMetaquery && Object.keys(routeMetaquery).length > 0;
+                const hasTaxQueries = routeTaxquery && Object.keys(routeTaxquery).length > 0;
+
+                // A nested group means a facet filter was applied on top of an OR advanced search,
+                // e.g. (A OR B) AND C. Only the group's clauses belong to this form; the facet
+                // clauses and the URL query are left untouched.
+                const metaGroup = this.findNestedGroup(routeMetaquery);
+                const taxGroup = this.findNestedGroup(routeTaxquery);
+                const hasNestedGroup = metaGroup !== null || taxGroup !== null;
 
                 // Route query wins over any pre-built criteria
                 if (hasMetaQueries || hasTaxQueries) {
+                    const relationSources = hasNestedGroup ? [ metaGroup, taxGroup ] : [ routeMetaquery, routeTaxquery ];
+
                     this.searchCriteria = [];
                     this.advancedSearchQuery = {
                         advancedSearch: true,
                         metaquery: [],
-                        taxquery: []
+                        taxquery: [],
+                        relation: relationSources.some((group) => this.getGroupRelation(group) === 'OR') ? 'OR' : 'AND'
                     };
                 }
 
                 if (hasMetaQueries) {
 
-                    let metaquery = this.$route.query.metaquery;
+                    let metaquery = this.getGroupClauses(hasNestedGroup ? metaGroup : routeMetaquery);
 
                     for (let meta in metaquery) {
                         if (
@@ -492,7 +569,7 @@
                 }
 
                 if (hasTaxQueries) {
-                    let taxquery = this.$route.query.taxquery;
+                    let taxquery = this.getGroupClauses(hasNestedGroup ? taxGroup : routeTaxquery);
 
                     for (let tax in taxquery) {
                         if ( Object.prototype.hasOwnProperty.call(this.taxqueryOperators, taxquery[tax]['operator']) )
@@ -515,10 +592,77 @@
                 // (empty values must not hit the query). Otherwise, create an empty row.
                 if (hasMetaQueries || hasTaxQueries) {
                     this.$eventBusSearch.updateStoreFromURL();
-                    this.performAdvancedSearch();
+
+                    // A query with a nested group is already applied and would be rewritten as a flat
+                    // one if executed from the form, so it only runs again when the user submits it.
+                    if (!hasNestedGroup)
+                        this.performAdvancedSearch();
                 } else if (!this.searchCriteria.length) {
                     this.addSearchCriteria();
                 }
+            },
+            /**
+             * Returns the AND/OR relation of a query group (top-level metaquery/taxquery or a nested group).
+             */
+            getGroupRelation(group) {
+                if (group && typeof group === 'object' && typeof group.relation === 'string' && group.relation.toUpperCase() === 'OR')
+                    return 'OR';
+
+                return 'AND';
+            },
+            /**
+             * Returns the first nested group found inside a top-level metaquery/taxquery, or null.
+             */
+            findNestedGroup(group) {
+                if (!group || typeof group !== 'object')
+                    return null;
+
+                for (const key in group) {
+                    if (key !== 'relation' && this.isQueryGroup(group[key]))
+                        return group[key];
+                }
+                return null;
+            },
+            /**
+             * A nested group is an entry without its own key/taxonomy whose entries are clauses,
+             * e.g. { relation: 'OR', 0: { key, compare, value }, 1: { ... } }.
+             */
+            isQueryGroup(clause) {
+                return (
+                    clause &&
+                    typeof clause === 'object' &&
+                    clause.key === undefined &&
+                    clause.taxonomy === undefined &&
+                    Object.keys(clause).some((key) => key !== 'relation' && clause[key] && typeof clause[key] === 'object')
+                );
+            },
+            /**
+             * Returns the plain clauses of a group (top-level or nested) as an object keyed by
+             * position, skipping the `relation` entry and any nested group.
+             */
+            getGroupClauses(group) {
+                const clauses = {};
+                let position = 0;
+
+                if (!group || typeof group !== 'object')
+                    return clauses;
+
+                for (const key in group) {
+                    const clause = group[key];
+
+                    if (key === 'relation' || !clause || typeof clause !== 'object' || this.isQueryGroup(clause))
+                        continue;
+
+                    clauses[position++] = clause;
+                }
+                return clauses;
+            },
+            setRelation(relation) {
+                if (relation !== 'AND' && relation !== 'OR')
+                    return;
+
+                this.advancedSearchQuery.relation = relation;
+                this.hasUpdatedSearch = true;
             },
             /**
              * Pre-builds one criterion row per metadatum marked as
@@ -648,7 +792,8 @@
                 this.advancedSearchQuery = {
                     advancedSearch: true,
                     metaquery: [],
-                    taxquery: []
+                    taxquery: [],
+                    relation: 'AND'
                 };
                 this.hasUpdatedSearch = true;
             },
@@ -767,16 +912,11 @@
                     }).map((criterion) => Object.assign({}, criterion))
                     : [];
 
-                const filteredQuery = {
+                return {
                     advancedSearch: true,
                     metaquery: metaquery,
                     taxquery: taxquery
                 };
-
-                if (Object.keys(this.advancedSearchQuery).includes('relation'))
-                    filteredQuery.relation = this.advancedSearchQuery.relation;
-
-                return filteredQuery;
             },
             performAdvancedSearch() {
 
@@ -784,17 +924,14 @@
                 // but are not sent to the API (see tainacan/tainacan#1071).
                 const advancedSearchQuery = this.getFilteredAdvancedSearchQuery();
 
-                if (
-                    Object.keys(advancedSearchQuery.taxquery).length > 0 &&
-                    Object.keys(advancedSearchQuery.metaquery).length > 0
-                ) {
-                    advancedSearchQuery.relation = 'AND';
-                } 
+                // WP_Query only honors `relation` inside meta_query and inside tax_query (AND is its
+                // default and the two groups are always combined with AND), so the relation is only
+                // written into each group, and only when it is OR. Keeping the groups as plain arrays
+                // in the AND case preserves the URL shape the facet filters expect.
+                const relation = this.effectiveRelation;
 
-                if ( Object.keys(advancedSearchQuery.taxquery).length > 1 )
-                    Object.assign(advancedSearchQuery.taxquery, { 'relation': 'AND' });
-                else if ( Object.prototype.hasOwnProperty.call(advancedSearchQuery.taxquery, 'relation') )
-                    delete advancedSearchQuery.taxquery.relation;
+                if ( Object.keys(advancedSearchQuery.taxquery).length > 1 && relation === 'OR' )
+                    Object.assign(advancedSearchQuery.taxquery, { 'relation': 'OR' });
 
                 // Convert date values to a format (ISO_8601) that will match in database
                 if ( Object.keys(advancedSearchQuery.metaquery).length > 0 ) {
@@ -815,14 +952,9 @@
                     }
                 }
 
-                if ( Object.keys(advancedSearchQuery.metaquery).length > 1 )
-                    Object.assign(advancedSearchQuery.metaquery, { 'relation': 'AND' });
-                else if ( Object.prototype.hasOwnProperty.call(advancedSearchQuery.metaquery, 'relation') )
-                    delete advancedSearchQuery.metaquery.relation;
-                
-                if ( Object.prototype.hasOwnProperty.call(advancedSearchQuery, 'relation') && Object.keys(advancedSearchQuery).length <= 3)
-                    delete advancedSearchQuery.relation;
-                
+                if ( Object.keys(advancedSearchQuery.metaquery).length > 1 && relation === 'OR' )
+                    Object.assign(advancedSearchQuery.metaquery, { 'relation': 'OR' });
+
                 if ( Object.keys(advancedSearchQuery.metaquery).length > 0 ) {
 
                     for (let metaquery in advancedSearchQuery.metaquery) {
@@ -883,6 +1015,25 @@
             }
             .tainacan-form {
                 margin-bottom: 1.125em !important;
+            }
+            .advanced-search-relation-field {
+                margin-bottom: 1.125em;
+
+                .label {
+                    display: inline-flex;
+                    align-items: center;
+                    font-size: 0.875em;
+                    font-weight: normal;
+                    margin-bottom: 0.375em;
+                }
+                .advanced-search-relation-options {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.25em;
+                }
+                .help {
+                    margin-top: 0.375em;
+                }
             }
             .column {
                 padding: 0;
