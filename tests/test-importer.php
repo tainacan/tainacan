@@ -927,12 +927,12 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		$items = $Tainacan_Items->fetch( [], $collection, 'OBJECT' );
 		$this->assertEquals( 2, count( $items ) );
 
-		// the import order is not guaranteed, compare the sets
+		// map of title => description: assertEquals() compares it by key, so the import order does not matter
 		$imported = [];
 		foreach ( $items as $item ) {
 			$imported[ $item->get_title() ] = $item->get_description();
 		}
-		$this->assertEqualsCanonicalizing(
+		$this->assertEquals(
 			[
 				$expected_title        => $expected_description,
 				$expected_cp1252_title => $expected_cp1252_description,

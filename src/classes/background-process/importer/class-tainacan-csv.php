@@ -606,15 +606,14 @@ class CSV extends Importer {
 		}
 		switch( $this->get_option('encode') ) {
 			case 'automatic':
-				// Windows-1252 must come before ISO-8859-1: in strict mode ISO-8859-1 accepts
-				// every byte 0x80-0xFF, so it would always win and 0x80 (euro sign) or 0x93/0x94
-				// (curly quotes) would be converted to C1 control characters. Windows-1252 is a
-				// superset of the printable ISO-8859-1 range, so Latin-1 text decodes the same way.
-				$encoding = mb_detect_encoding($string, ['UTF-8', 'Windows-1252', 'ISO-8859-1'], true);
-				if ($encoding && $encoding !== 'UTF-8') {
-					return mb_convert_encoding($string, 'UTF-8', $encoding);
+				// mb_detect_encoding() changes between PHP versions (8.1+ ignores the candidate
+				// order), so only the UTF-8 check, which is stable, decides anything here.
+				if ( mb_check_encoding( $string, 'UTF-8' ) ) {
+					return $string;
 				}
-				return $string;
+				// Windows-1252 matches the printable Latin-1 range, and it is what
+				// Excel and other legacy exports actually write for 0x80-0x9F.
+				return mb_convert_encoding( $string, 'UTF-8', 'Windows-1252' );
 			case 'utf8':
 				return $string;
 			case 'iso88591':
