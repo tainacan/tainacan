@@ -806,30 +806,6 @@ class REST_Reports_Controller extends REST_Controller {
 		
 		$start = $interval['start'];
 		$end = $interval['end'];
-		/**
-		 * Temporary fallback for sites that cannot run the WP-CLI log migration command.
-		 * The TAINACAN_USE_DEPRECATED_LOGS constant must be manually defined in wp-config.php to enable this behavior.
-		 * This block will be removed in future versions once legacy support is discontinued.
-		 * 
-		 */ 
-		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-			$collection_from = '';
-			$params          = [ $start, $end ];
-			if($collection_id !== false) {
-				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-				$params          = [ 'collection_id', sanitize_text_field( (string) $collection_id ), $start, $end ];
-			}
-			return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				"SELECT count(*) as total, DATE(p.post_date) as date
-				FROM $wpdb->posts p "
-				. $collection_from // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				. " WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN %s AND %s
-				GROUP BY DATE(p.post_date)
-				ORDER BY DATE(p.post_date)",
-				...$params
-			) );
-		}
-
 		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
 		[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
 		// Date range placeholders come first. $collection_where adds collection_id = %s only when a collection is set.
@@ -856,36 +832,18 @@ class REST_Reports_Controller extends REST_Controller {
 		
 		$start = $interval['start'];
 		$end = $interval['end'];
-		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-			$collection_from = '';
-			$params          = [ $start, $end ];
-			if($collection_id !== false) {
-				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-				$params          = [ 'collection_id', sanitize_text_field( (string) $collection_id ), $start, $end ];
-			}
-			$data = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				"SELECT p.post_author  as user_id, count(*) as total, DATE(p.post_date) as date
-				FROM $wpdb->posts p "
-				. $collection_from // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				. " WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN %s AND %s
-				GROUP BY p.post_author, DATE(p.post_date)
-				ORDER BY DATE(p.post_date)",
-				...$params
-			) );
-		} else {
-			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
-			[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
-			// Date range placeholders come first. $collection_where adds collection_id = %s only when a collection is set.
-			$params = array_merge( [ $start, $end ], $collection_params );
-			$data = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- The table name comes from Logs::get_table_name(). $collection_where is 1=1 or collection_id = %s, bound after the date range.
-				"SELECT p.user_id, count(*) as total, DATE(p.date) as date FROM "
-				. $tainacan_log_table // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $tainacan_log_table comes from Logs::get_table_name(), $wpdb->prefix . 'tainacan_logs'.
-				. " p WHERE p.date BETWEEN %s AND %s AND ("
-				. $collection_where // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_where is 1=1 or collection_id = %s from build_logs_collection_where().
-				. ") GROUP BY p.user_id, DATE(p.date) ORDER BY DATE(p.date)",
-				...$params
-			) );
-		}
+		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
+		[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
+		// Date range placeholders come first. $collection_where adds collection_id = %s only when a collection is set.
+		$params = array_merge( [ $start, $end ], $collection_params );
+		$data = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- The table name comes from Logs::get_table_name(). $collection_where is 1=1 or collection_id = %s, bound after the date range.
+			"SELECT p.user_id, count(*) as total, DATE(p.date) as date FROM "
+			. $tainacan_log_table // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $tainacan_log_table comes from Logs::get_table_name(), $wpdb->prefix . 'tainacan_logs'.
+			. " p WHERE p.date BETWEEN %s AND %s AND ("
+			. $collection_where // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_where is 1=1 or collection_id = %s from build_logs_collection_where().
+			. ") GROUP BY p.user_id, DATE(p.date) ORDER BY DATE(p.date)",
+			...$params
+		) );
 		$arr = array();
 		$avatar_sizes = rest_get_avatar_sizes();
 		foreach ($data as $item) {
@@ -914,43 +872,20 @@ class REST_Reports_Controller extends REST_Controller {
 
 	private function get_activities_users($collection_id = false) {
 		global $wpdb;
-		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-			$collection_from = '';
-			if($collection_id !== false) {
-				$collection_from = "INNER JOIN {$wpdb->postmeta} pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key = %s AND pm_col.meta_value = %s)";
-			}
-			$activities_by_user_sql = "SELECT count(*) as total, p.post_author as user, pm.meta_value as action
-				FROM $wpdb->posts p
-				INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'action' "
-				. $collection_from
-				. " WHERE p.post_type='tainacan-log'
-				GROUP BY p.post_author, pm.meta_value
-				ORDER BY total DESC";
-			if($collection_id !== false) {
-				$results = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $activities_by_user_sql appends the fixed collection JOIN. Its %s tokens are the only placeholders and are bound here.
-					$activities_by_user_sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $activities_by_user_sql appends the fixed collection JOIN. Its %s tokens are the only placeholders and are bound here.
-					'collection_id',
-					sanitize_text_field( (string) $collection_id )
-				) );
-			} else {
-				$results = $wpdb->get_results( $activities_by_user_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No collection filter, so the query has no placeholders.
-			}
+		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
+		[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
+		$activities_by_user_sql = "SELECT count(*) as total, p.user_id as user, p.action as action FROM "
+			. $tainacan_log_table
+			. " p WHERE "
+			. $collection_where
+			. " GROUP BY p.user_id, p.action ORDER BY total DESC";
+		if ( ! empty( $collection_params ) ) {
+			$results = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
+				$activities_by_user_sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
+				...$collection_params
+			) );
 		} else {
-			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
-			[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
-			$activities_by_user_sql = "SELECT count(*) as total, p.user_id as user, p.action as action FROM "
-				. $tainacan_log_table
-				. " p WHERE "
-				. $collection_where
-				. " GROUP BY p.user_id, p.action ORDER BY total DESC";
-			if ( ! empty( $collection_params ) ) {
-				$results = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
-					$activities_by_user_sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
-					...$collection_params
-				) );
-			} else {
-				$results = $wpdb->get_results( $activities_by_user_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No collection filter, so $collection_where is 1=1 and the query has no placeholders.
-			}
+			$results = $wpdb->get_results( $activities_by_user_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No collection filter, so $collection_where is 1=1 and the query has no placeholders.
 		}
 		$response = [];
 		$avatar_sizes = rest_get_avatar_sizes();

@@ -1,0 +1,187 @@
+.tainacan-management-tools__intro {
+    margin-bottom: 1.5rem;
+    font-size: 0.875em;
+    max-width: 80ch;
+}
+
+.tainacan-management-tools {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.tainacan-management-tool {
+    display: flex;
+    gap: 1rem 1.875rem;
+    align-items: flex-start;
+    background-color: var(--tainacan-background-color, #fff);
+
+    &__main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    &__title {
+        margin: 0 0 0.5rem;
+        padding: 0.875em 0 0.5em;
+        font-size: 1.125em;
+        border-bottom: 1px solid var(--tainacan-gray2, #dbdbdb);
+    }
+
+    &__description {
+        margin: 0 0 1rem;
+        font-size: 0.875em;
+        line-height: 1.5;
+        max-width: 80ch;
+    }
+
+    &__error {
+        margin: 0 0 1rem !important;
+    }
+
+    &__field {
+        margin-bottom: 1rem;
+
+        input[type="text"],
+        input[type="number"] {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .description {
+            font-size: 0.75em;
+            margin-top: 0.25rem;
+            max-width: 80ch;
+        }
+
+        &--destructive .tainacan-management-tool__checkbox span {
+            color: var(--tainacan-danger, #a23939);
+        }
+    }
+
+    &__label {
+        display: block;
+        font-size: 0.875em;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    &__checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875em;
+        font-weight: 500;
+
+        input[type="checkbox"] {
+            margin: 0;
+        }
+    }
+
+    &__actions {
+        margin-top: 1.5rem;
+    }
+
+    &__status {
+        flex: 0 0 360px;
+        margin-top: 3.25rem;
+        padding: 0.75rem 1rem;
+        background-color: var(--tainacan-gray0, #f2f2f2);
+        border: 1px solid var(--tainacan-gray2, #dbdbdb);
+        border-inline-start: 4px solid var(--tainacan-gray5, #898d8f);
+        border-radius: 4px;
+        font-size: 0.875em;
+
+        &[data-status="running"],
+        &[data-status="waiting"] {
+            border-inline-start-color: var(--tainacan-secondary, #187181);
+        }
+
+        &[data-status="finished"] {
+            border-inline-start-color: var(--tainacan-success, #25a189);
+        }
+
+        &[data-status="finished-errors"],
+        &[data-status="paused"] {
+            border-inline-start-color: var(--tainacan-warning, #e69810);
+        }
+
+        &[data-status="errored"],
+        &[data-status="cancelled"] {
+            border-inline-start-color: var(--tainacan-danger, #a23939);
+        }
+    }
+
+    &__status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.5rem;
+    }
+
+    &__status-badge {
+        font-weight: 600;
+    }
+
+    &__status-id {
+        font-size: 0.875em;
+        color: var(--tainacan-gray5, #898d8f);
+    }
+
+    &__status-label:empty {
+        display: none;
+    }
+
+    &__progress {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+
+        &[hidden] {
+            display: none;
+        }
+
+        progress {
+            flex: 1 1 auto;
+            height: 0.75rem;
+        }
+    }
+
+    &__progress-value {
+        min-width: 3em;
+        text-align: end;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__status-output {
+        margin: 0.5rem 0;
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    &__status-links {
+        display: flex;
+        gap: 1rem;
+        margin: 0.5rem 0 0;
+
+        &:empty {
+            display: none;
+        }
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .tainacan-management-tool {
+        flex-direction: column;
+        align-items: stretch;
+
+        &__status {
+            flex-basis: auto;
+            margin-top: 0;
+        }
+    }
+}

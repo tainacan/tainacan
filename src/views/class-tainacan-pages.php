@@ -336,10 +336,6 @@ abstract class Pages {
 			'api_max_terms_batch'       => defined('TAINACAN_API_MAX_BATCH_TERMS') ? TAINACAN_API_MAX_BATCH_TERMS : 200,
 			'wp_elasticpress'    		=> \Tainacan\Integrations\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
-			'tainacan_use_deprecated_logs' => (
-				!defined('TAINACAN_USE_DEPRECATED_LOGS') || 
-				true === TAINACAN_USE_DEPRECATED_LOGS
-			),
 			'tainacan_enable_core_metadata_on_advanced_search' => (
 				!defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || 
 				false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH
