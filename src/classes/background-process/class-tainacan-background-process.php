@@ -33,7 +33,7 @@ abstract class Background_Process extends Background_Process_Base {
 	 * keeps the shutdown handler from closing a process that belongs to someone
 	 * else now.
 	 *
-	 * @since 1.4.2
+	 * @since 1.5.0
 	 * @var bool
 	 */
 	protected $ownership_lost = false;
@@ -537,7 +537,7 @@ abstract class Background_Process extends Background_Process_Base {
 	 *
 	 * @see https://github.com/tainacan/tainacan/issues/1285
 	 *
-	 * @since 1.4.2
+	 * @since 1.5.0
 	 *
 	 * @param int $key Process ID.
 	 * @return bool
@@ -568,7 +568,7 @@ abstract class Background_Process extends Background_Process_Base {
 	 * lock belong to the current owner, and closing the row from a stale worker is
 	 * what produced the duplicated batches reported in #1285.
 	 *
-	 * @since 1.4.2
+	 * @since 1.5.0
 	 *
 	 * @param int $key Process ID.
 	 * @return void

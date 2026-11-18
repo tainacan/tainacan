@@ -647,7 +647,7 @@ class Migrations {
 	 * in declaration order. It runs only once: if queuing fails, the migration can
 	 * still be run from the Management Tools screen or with `wp tainacan logs migrate`.
 	 *
-	 * @since 1.4.2
+	 * @since 1.5.0
 	 */
 	static function tainacan_queue_legacy_logs_migration() {
 		try {
