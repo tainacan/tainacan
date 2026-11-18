@@ -634,4 +634,34 @@ class Migrations {
 			);
 		}
 	}
+
+	/**
+	 * Queues the legacy logs migration (wp_posts -> tainacan_logs) in background.
+	 *
+	 * Logs are now always read from the tainacan_logs table, so sites that were
+	 * using the legacy repository would see an empty activity history until the
+	 * migration runs. When there are legacy logs pending, this queues the
+	 * "Legacy logs migration" Management Tool, without purging the wp_posts records.
+	 *
+	 * Must stay declared after tainacan_create_logs_table(), since migrations run
+	 * in declaration order. It runs only once: if queuing fails, the migration can
+	 * still be run from the Management Tools screen or with `wp tainacan logs migrate`.
+	 *
+	 * @since 1.4.2
+	 */
+	static function tainacan_queue_legacy_logs_migration() {
+		try {
+			$migration = new \Tainacan\Helpers\Logs_Wp_Posts_Migration();
+			if ( $migration->count_pending() <= 0 ) {
+				return;
+			}
+
+			$process = \Tainacan\GenericProcess\Management_Tools_Process::queue( 'logs_migration', [ 'purge' => false ] );
+			if ( is_wp_error( $process ) ) {
+				error_log( 'Tainacan: unable to queue the legacy logs migration: ' . $process->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			}
+		} catch ( \Throwable $e ) {
+			error_log( 'Tainacan: unable to queue the legacy logs migration: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
+	}
 }
