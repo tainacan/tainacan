@@ -129,12 +129,6 @@
       -delete_metadata(dry_run, deep)
       -delete_transients(dry_run)
     }
-    class "Logs_Wp_Posts_Migration\n<b>Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta</b>" as cli_Logs_Wp_Posts_Migration {
-      +count_pending()
-      +run_batch(batch_size)
-      +count_purgeable()
-      +purge_batch(batch_size)
-    }
     class "Cli_Logs\n<b>Manages Tainacan activity log data migration from the legacy wp_posts structure.</b>" as cli_Cli_Logs {
       +migrate(args, assoc_args)
       +purge_deprecated(args, assoc_args)
@@ -265,6 +259,14 @@
       -get_item_dc(item)
       -is_set_oai_readable(collection)
       -is_item_oai_readable(item)
+    }
+  }
+  package helpers as helpers {
+    class "Logs_Wp_Posts_Migration\n<b>Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta</b>" as helpers_Logs_Wp_Posts_Migration {
+      +count_pending()
+      +run_batch(batch_size)
+      +count_purgeable()
+      +purge_batch(batch_size)
     }
   }
   package integrations as integrations {
@@ -1245,6 +1247,14 @@
         +get_items(request)
         +get_items_permissions_check(request)
       }
+      class "REST_Management_Tools_Controller\n<b>REST API controller for the Management Tools.</b>" as api_endpoints_REST_Management_Tools_Controller {
+        +__construct()
+        #get_schema()
+        +register_routes()
+        +management_tools_permissions_check(request)
+        +get_items(request)
+        +run_command(request)
+      }
       class "REST_Background_Processes_Controller\n<b>REST API controller for managing Tainacan background processes.</b>" as api_endpoints_REST_Background_Processes_Controller {
         -table : String
         #get_schema()
@@ -2060,7 +2070,7 @@
         -init()
         +register_generic_processes()
         +register_generic_process(process)
-        +add_to_queue(process_object)
+        +add_to_queue(process_object, name)
         +unregister_generic_process(slug)
         +get_registered_generic_process()
         +get_generic_process(slug)
@@ -2069,6 +2079,28 @@
         +save_process_instance(process)
         +get_process_instance_by_session_id(session_id)
         +delete_process_instance(process)
+      }
+      class "Management_Tools_Process\n<b>Background process that runs management commands (e.g. the legacy logs migration).</b>" as background-process_generic-process_Management_Tools_Process {
+        -command : string|null
+        -command_args : array
+        +__construct(attributes)
+        {static} +get_commands()
+        {static} +find_command(id)
+        {static} +queue(command_id, args)
+        {static} +sanitize_args(command, args)
+        +init_objects()
+        +set_command(command)
+        +get_command()
+        +set_command_args(args)
+        +get_command_args()
+        +prepare_command()
+        -start_step_count(counter)
+        -add_processed(key, count)
+        +get_output()
+        +logs_migrate_step()
+        +logs_purge_step()
+        -get_batch_size()
+        -batch_result(done, processed, pending)
       }
       class "Generic_Process" as background-process_generic-process_Generic_Process {
         #id : identifier
@@ -2494,6 +2526,7 @@
   api_REST_Controller <|-- api_endpoints_REST_Item_Metadata_Controller
   api_REST_Controller <|-- api_endpoints_REST_Items_Controller
   api_REST_Controller <|-- api_endpoints_REST_Logs_Controller
+  api_REST_Controller <|-- api_endpoints_REST_Management_Tools_Controller
   api_REST_Controller <|-- api_endpoints_REST_Metadata_Controller
   api_REST_Controller <|-- api_endpoints_REST_Metadata_Sections_Controller
   api_REST_Controller <|-- api_endpoints_REST_Metadata_Types_Controller
@@ -2561,6 +2594,7 @@
   api_endpoints_REST_Logs_Controller ..> repositories_Logs
   api_endpoints_REST_Logs_Controller ..> repositories_Repository
   api_endpoints_REST_Logs_Controller ..> repositories_Terms
+  api_endpoints_REST_Management_Tools_Controller ..> background-process_generic-process_Management_Tools_Process
   api_endpoints_REST_Metadata_Controller ..> entities_Collection
   api_endpoints_REST_Metadata_Controller ..> entities_Metadatum
   api_endpoints_REST_Metadata_Controller ..> repositories_Collections
@@ -2637,8 +2671,12 @@
   background-process_generic-process_Bulk_Edit_Process ..> repositories_Metadata
   background-process_generic-process_Bulk_Edit_Process ..> repositories_Terms
   background-process_generic-process_Generic_Process <|-- background-process_generic-process_Bulk_Edit_Process
+  background-process_generic-process_Generic_Process <|-- background-process_generic-process_Management_Tools_Process
   background-process_generic-process_Generic_Process_Handler ..> background-process_generic-process_Background_Generic_Process
   background-process_generic-process_Generic_Process_Handler ..> background-process_generic-process_Generic_Process
+  background-process_generic-process_Management_Tools_Process ..> background-process_generic-process_Background_Generic_Process
+  background-process_generic-process_Management_Tools_Process ..> background-process_generic-process_Generic_Process_Handler
+  background-process_generic-process_Management_Tools_Process ..> helpers_Logs_Wp_Posts_Migration
   background-process_importer_CSV ..> entities_Collection
   background-process_importer_CSV ..> entities_Item
   background-process_importer_CSV ..> entities_Item_Metadata_Entity
@@ -2713,14 +2751,13 @@
   cli_Cli_Document ..> entities_Item
   cli_Cli_Document ..> repositories_Collections
   cli_Cli_Document ..> repositories_Items
-  cli_Cli_Logs ..> cli_Logs_Wp_Posts_Migration
+  cli_Cli_Logs ..> helpers_Logs_Wp_Posts_Migration
   cli_Cli_Move_Attachments ..> Private_Files
   cli_Cli_Move_Attachments ..> entities_Collection
   cli_Cli_Move_Attachments ..> entities_Item
   cli_Cli_Move_Attachments ..> repositories_Collections
   cli_Cli_Move_Attachments ..> repositories_Items
   cli_Cli_Move_Attachments ..> theme-helper_Theme_Helper
-  cli_Logs_Wp_Posts_Migration ..> repositories_Logs
   entities_Collection ..> entities_Collection
   entities_Collection ..> entities_Metadatum
   entities_Collection ..> repositories_Filters
@@ -2774,6 +2811,7 @@
   exposers_Exposers_Handler ..> mappers_Mappers_Handler
   exposers_JSON_LD ..> exposers_Exposers_Handler
   exposers_Xml ..> exposers_Exposers_Handler
+  helpers_Logs_Wp_Posts_Migration ..> repositories_Logs
   integrations_Elastic_Press ..> entities_Item
   integrations_Elastic_Press ..> entities_Metadatum
   integrations_Elastic_Press ..> integrations_Elastic_Press

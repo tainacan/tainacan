@@ -16,9 +16,9 @@ classDiagram
     class Background_Process { }
     class Cli_Control_Metadata { }
     class Exposers_Handler { }
+    class Management_Tools { }
     class Pdf_Extracted_Text_Quality { }
     class Cli_Garbage_Collector { }
-    class Logs_Wp_Posts_Migration { }
     class Cli_Logs { }
     class Background_Process_Base { }
     class Background_Process_Heartbeat { }
@@ -33,7 +33,6 @@ classDiagram
     class Media { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
-    Cli_Logs ..> Logs_Wp_Posts_Migration
     Cli_Move_Attachments ..> Private_Files
     Cli_Move_Attachments ..> Theme_Helper
     Exposers_Handler ..> Mappers_Handler
@@ -48,6 +47,7 @@ classDiagram
     Pages ..> Theme_Helper
     Pages <|-- Admin
     Pages <|-- Dashboard
+    Pages <|-- Management_Tools
     Pages <|-- Mobile_App
     Pages <|-- Roles_Editor
     Pages <|-- Settings

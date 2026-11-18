@@ -9,13 +9,13 @@ classDiagram
     class cli_Cli_Document { }
     class cli_Cli_Control_Metadata { }
     class cli_Cli_Garbage_Collector { }
-    class cli_Logs_Wp_Posts_Migration { }
     class cli_Cli_Logs { }
     class cli_Cli_Collection { }
     class theme_helper_Theme_Helper { }
     class oaipmh_OAIPMH_Token_Manager { }
     class oaipmh_OAIPMH_Xml_Generator { }
     class oaipmh_OAIPMH_Data_Provider { }
+    class helpers_Logs_Wp_Posts_Migration { }
     class integrations_WordPress_AI { }
     class integrations_Elastic_Press { }
     class integrations_Elastic_Press_lte4 { }
@@ -55,6 +55,7 @@ classDiagram
     class api_REST_Controller { }
     class api_endpoints_REST_Collections_Controller { }
     class api_endpoints_REST_Exposers_Controller { }
+    class api_endpoints_REST_Management_Tools_Controller { }
     class api_endpoints_REST_Background_Processes_Controller { }
     class api_endpoints_REST_Importers_Controller { }
     class api_endpoints_REST_Item_Metadata_Controller { }
@@ -91,6 +92,7 @@ classDiagram
     class background_process_exporter_traits_Exporter_Handler_Cell { }
     class background_process_generic_process_Bulk_Edit_Process { }
     class background_process_generic_process_Generic_Process_Handler { }
+    class background_process_generic_process_Management_Tools_Process { }
     class background_process_generic_process_Generic_Process { }
     class background_process_generic_process_Background_Generic_Process { }
     class background_process_importer_Flickr_Importer { }
@@ -146,6 +148,7 @@ classDiagram
     api_REST_Controller <|-- api_endpoints_REST_Item_Metadata_Controller
     api_REST_Controller <|-- api_endpoints_REST_Items_Controller
     api_REST_Controller <|-- api_endpoints_REST_Logs_Controller
+    api_REST_Controller <|-- api_endpoints_REST_Management_Tools_Controller
     api_REST_Controller <|-- api_endpoints_REST_Metadata_Controller
     api_REST_Controller <|-- api_endpoints_REST_Metadata_Sections_Controller
     api_REST_Controller <|-- api_endpoints_REST_Metadata_Types_Controller
@@ -213,6 +216,7 @@ classDiagram
     api_endpoints_REST_Logs_Controller ..> repositories_Logs
     api_endpoints_REST_Logs_Controller ..> repositories_Repository
     api_endpoints_REST_Logs_Controller ..> repositories_Terms
+    api_endpoints_REST_Management_Tools_Controller ..> background_process_generic_process_Management_Tools_Process
     api_endpoints_REST_Metadata_Controller ..> entities_Collection
     api_endpoints_REST_Metadata_Controller ..> entities_Metadatum
     api_endpoints_REST_Metadata_Controller ..> repositories_Collections
@@ -289,8 +293,12 @@ classDiagram
     background_process_generic_process_Bulk_Edit_Process ..> repositories_Metadata
     background_process_generic_process_Bulk_Edit_Process ..> repositories_Terms
     background_process_generic_process_Generic_Process <|-- background_process_generic_process_Bulk_Edit_Process
+    background_process_generic_process_Generic_Process <|-- background_process_generic_process_Management_Tools_Process
     background_process_generic_process_Generic_Process_Handler ..> background_process_generic_process_Background_Generic_Process
     background_process_generic_process_Generic_Process_Handler ..> background_process_generic_process_Generic_Process
+    background_process_generic_process_Management_Tools_Process ..> background_process_generic_process_Background_Generic_Process
+    background_process_generic_process_Management_Tools_Process ..> background_process_generic_process_Generic_Process_Handler
+    background_process_generic_process_Management_Tools_Process ..> helpers_Logs_Wp_Posts_Migration
     background_process_importer_CSV ..> entities_Collection
     background_process_importer_CSV ..> entities_Item
     background_process_importer_CSV ..> entities_Item_Metadata_Entity
@@ -365,14 +373,13 @@ classDiagram
     cli_Cli_Document ..> entities_Item
     cli_Cli_Document ..> repositories_Collections
     cli_Cli_Document ..> repositories_Items
-    cli_Cli_Logs ..> cli_Logs_Wp_Posts_Migration
+    cli_Cli_Logs ..> helpers_Logs_Wp_Posts_Migration
     cli_Cli_Move_Attachments ..> Private_Files
     cli_Cli_Move_Attachments ..> entities_Collection
     cli_Cli_Move_Attachments ..> entities_Item
     cli_Cli_Move_Attachments ..> repositories_Collections
     cli_Cli_Move_Attachments ..> repositories_Items
     cli_Cli_Move_Attachments ..> theme_helper_Theme_Helper
-    cli_Logs_Wp_Posts_Migration ..> repositories_Logs
     entities_Collection ..> entities_Collection
     entities_Collection ..> entities_Metadatum
     entities_Collection ..> repositories_Filters
@@ -426,6 +433,7 @@ classDiagram
     exposers_Exposers_Handler ..> mappers_Mappers_Handler
     exposers_JSON_LD ..> exposers_Exposers_Handler
     exposers_Xml ..> exposers_Exposers_Handler
+    helpers_Logs_Wp_Posts_Migration ..> repositories_Logs
     integrations_Elastic_Press ..> entities_Item
     integrations_Elastic_Press ..> entities_Metadatum
     integrations_Elastic_Press ..> integrations_Elastic_Press
