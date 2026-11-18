@@ -127,7 +127,7 @@ export default {
 }
 </script>
 
-<style  lang="scss" scoped>
+<style lang="scss" scoped>
 
     @use "../../../../../admin/scss/_view-mode-mosaic.scss";
 
