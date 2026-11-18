@@ -133,7 +133,7 @@ class Settings extends Pages {
 			// translators: %s: The default number of items to show in search results.
 			'description' => sprintf( __( 'Number of items to show in search results. The default is %s and larger numbers should be avoided as it impacts in your server load time.', 'tainacan' ), ( defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 96 ) ),
 			'sanitize_callback' => 'absint',
-			'default' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 12,
+			'default' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 96,
 			'forced_value' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : null
 		) );
 
