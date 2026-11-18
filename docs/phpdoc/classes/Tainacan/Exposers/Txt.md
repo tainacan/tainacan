@@ -12,13 +12,6 @@ Generate a text formated response
 ```mermaid
 classDiagram
     direction TB
-    class Txt {
-        +mappers : mixed
-        +slug : mixed
-        +name : mixed
-        +rest_request_after_callbacks(response, handler, request)
-        #array_to_txt(data, txt)
-    }
     class Exposer {
         #mappers : mixed
         +accept_no_mapper : mixed
@@ -31,6 +24,13 @@ classDiagram
         +get_description()
         +_toArray()
         +get_mappers()
+    }
+    class Txt {
+        +mappers : mixed
+        +slug : mixed
+        +name : mixed
+        +rest_request_after_callbacks(response, handler, request)
+        #array_to_txt(data, txt)
     }
     Exposer <|-- Txt
 ```

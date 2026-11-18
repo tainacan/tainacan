@@ -12,15 +12,6 @@ Generate a text formated response
 ```mermaid
 classDiagram
     direction TB
-    class JSON_LD {
-        +mappers : mixed
-        +slug : mixed
-        +name : mixed
-        #contexts : mixed
-        +rest_request_after_callbacks(response, handler, request)
-        #array_to_jsonld(data, jsonld)
-        +get_locale(obj)
-    }
     class Exposer {
         #mappers : mixed
         +accept_no_mapper : mixed
@@ -33,6 +24,15 @@ classDiagram
         +get_description()
         +_toArray()
         +get_mappers()
+    }
+    class JSON_LD {
+        +mappers : mixed
+        +slug : mixed
+        +name : mixed
+        #contexts : mixed
+        +rest_request_after_callbacks(response, handler, request)
+        #array_to_jsonld(data, jsonld)
+        +get_locale(obj)
     }
     Exposer <|-- JSON_LD
 ```

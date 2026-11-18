@@ -126,35 +126,35 @@ lightbox |
 ```mermaid
 classDiagram
     direction TB
+    class __Bulk_Edit { }
+    class Cli { }
+    class Cli_Move_Attachments { }
+    class Embed { }
+    class System_Check { }
+    class Admin_Commands { }
     class Search_Engine { }
-    class Cli_Control_Metadata { }
-    class Roles_Editor { }
-    class Background_Process_Base { }
+    class Private_Files { }
+    class Cli_Document { }
+    class Settings { }
+    class Dashboard { }
     class Pages { }
     class Admin_Bar_Items { }
-    class Cli_Collection { }
+    class Background_Process { }
+    class Cli_Control_Metadata { }
+    class Exposers_Handler { }
+    class Pdf_Extracted_Text_Quality { }
+    class Cli_Garbage_Collector { }
     class Logs_Wp_Posts_Migration { }
     class Cli_Logs { }
-    class Private_Files { }
-    class Gutenberg_Blocks { }
-    class Theme_Helper { }
-    class System_Check { }
-    class __Bulk_Edit { }
-    class Exposers_Handler { }
-    class Cli { }
-    class Dashboard { }
-    class Mappers_Handler { }
-    class Cli_Document { }
-    class Cli_Garbage_Collector { }
-    class Pdf_Extracted_Text_Quality { }
-    class Admin { }
-    class Embed { }
+    class Background_Process_Base { }
     class Background_Process_Heartbeat { }
-    class Admin_Commands { }
-    class Cli_Move_Attachments { }
+    class Cli_Collection { }
     class Mobile_App { }
-    class Settings { }
-    class Background_Process { }
+    class Gutenberg_Blocks { }
+    class Roles_Editor { }
+    class Admin { }
+    class Mappers_Handler { }
+    class Theme_Helper { }
     class Async_Request { }
     class Media { }
     Async_Request <|-- Background_Process_Base
@@ -245,28 +245,28 @@ to the dedicated tainacan_logs table. |
 classDiagram
     direction TB
     class REST_Controller { }
-    class endpoints_REST_Sequence_Edit_Controller { }
-    class endpoints_REST_Taxonomies_Controller { }
-    class endpoints_REST_Filter_Types_Controller { }
-    class endpoints_REST_Metadata_Sections_Controller { }
-    class endpoints_REST_Metadatum_Mappers_Controller { }
+    class endpoints_REST_Collections_Controller { }
+    class endpoints_REST_Exposers_Controller { }
+    class endpoints_REST_Background_Processes_Controller { }
+    class endpoints_REST_Importers_Controller { }
+    class endpoints_REST_Item_Metadata_Controller { }
+    class endpoints_REST_Metadata_Controller { }
     class endpoints_REST_Items_Controller { }
+    class endpoints_REST_Reports_Controller { }
+    class endpoints_REST_Metadata_Types_Controller { }
+    class endpoints_REST_Logs_Controller { }
+    class endpoints_REST_Metadatum_Mappers_Controller { }
     class endpoints_REST_Filters_Controller { }
     class endpoints_REST_Roles_Controller { }
     class endpoints_REST_Exporters_Controller { }
-    class endpoints_REST_Bulkedit_Controller { }
+    class endpoints_REST_Filter_Types_Controller { }
+    class endpoints_REST_Taxonomies_Controller { }
     class endpoints_REST_Facets_Controller { }
-    class endpoints_REST_Oaipmh_Controller { }
+    class endpoints_REST_Sequence_Edit_Controller { }
     class endpoints_REST_Terms_Controller { }
-    class endpoints_REST_Importers_Controller { }
-    class endpoints_REST_Exposers_Controller { }
-    class endpoints_REST_Metadata_Controller { }
-    class endpoints_REST_Logs_Controller { }
-    class endpoints_REST_Item_Metadata_Controller { }
-    class endpoints_REST_Collections_Controller { }
-    class endpoints_REST_Reports_Controller { }
-    class endpoints_REST_Background_Processes_Controller { }
-    class endpoints_REST_Metadata_Types_Controller { }
+    class endpoints_REST_Metadata_Sections_Controller { }
+    class endpoints_REST_Oaipmh_Controller { }
+    class endpoints_REST_Bulkedit_Controller { }
     REST_Controller <|-- endpoints_REST_Background_Processes_Controller
     REST_Controller <|-- endpoints_REST_Bulkedit_Controller
     REST_Controller <|-- endpoints_REST_Collections_Controller
@@ -305,28 +305,28 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class REST_Sequence_Edit_Controller { }
-    class REST_Taxonomies_Controller { }
-    class REST_Filter_Types_Controller { }
-    class REST_Metadata_Sections_Controller { }
-    class REST_Metadatum_Mappers_Controller { }
+    class REST_Collections_Controller { }
+    class REST_Exposers_Controller { }
+    class REST_Background_Processes_Controller { }
+    class REST_Importers_Controller { }
+    class REST_Item_Metadata_Controller { }
+    class REST_Metadata_Controller { }
     class REST_Items_Controller { }
+    class REST_Reports_Controller { }
+    class REST_Metadata_Types_Controller { }
+    class REST_Logs_Controller { }
+    class REST_Metadatum_Mappers_Controller { }
     class REST_Filters_Controller { }
     class REST_Roles_Controller { }
     class REST_Exporters_Controller { }
-    class REST_Bulkedit_Controller { }
+    class REST_Filter_Types_Controller { }
+    class REST_Taxonomies_Controller { }
     class REST_Facets_Controller { }
-    class REST_Oaipmh_Controller { }
+    class REST_Sequence_Edit_Controller { }
     class REST_Terms_Controller { }
-    class REST_Importers_Controller { }
-    class REST_Exposers_Controller { }
-    class REST_Metadata_Controller { }
-    class REST_Logs_Controller { }
-    class REST_Item_Metadata_Controller { }
-    class REST_Collections_Controller { }
-    class REST_Reports_Controller { }
-    class REST_Background_Processes_Controller { }
-    class REST_Metadata_Types_Controller { }
+    class REST_Metadata_Sections_Controller { }
+    class REST_Oaipmh_Controller { }
+    class REST_Bulkedit_Controller { }
 ```
 #### Classes
 
@@ -364,16 +364,16 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Item { }
-    class Collection { }
     class Metadata_Section { }
-    class Log { }
-    class Term { }
-    class Taxonomy { }
-    class Entity { }
-    class Filter { }
-    class Metadatum { }
     class Item_Metadata_Entity { }
+    class Taxonomy { }
+    class Metadatum { }
+    class Filter { }
+    class Entity { }
+    class Collection { }
+    class Term { }
+    class Item { }
+    class Log { }
     Collection ..> Collection
     Collection ..> Metadatum
     Entity ..> Collection
@@ -423,12 +423,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Background_Exporter { }
-    class CSV { }
-    class XLSX_Exporter { }
-    class Term_Exporter { }
-    class Exporter_Handler { }
     class Exporter { }
+    class Background_Exporter { }
+    class Exporter_Handler { }
+    class XLSX_Exporter { }
+    class CSV { }
+    class Term_Exporter { }
     class traits_Exporter_Handler_Cell { }
     Exporter ..> Exporter_Handler
     Exporter <|-- CSV
@@ -455,15 +455,15 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Txt { }
-    class Exposers_Handler { }
-    class Csv { }
-    class OAI_PMH { }
+    class Exposer { }
     class Html { }
+    class Exposers_Handler { }
+    class Txt { }
+    class OAI_PMH { }
+    class Csv { }
+    class JSON_LD { }
     class JSON_flat { }
     class Xml { }
-    class JSON_LD { }
-    class Exposer { }
     Exposer <|-- Csv
     Exposer <|-- Html
     Exposer <|-- JSON_LD
@@ -527,10 +527,10 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Generic_Process { }
-    class Background_Generic_Process { }
     class Bulk_Edit_Process { }
     class Generic_Process_Handler { }
+    class Generic_Process { }
+    class Background_Generic_Process { }
     Generic_Process <|-- Bulk_Edit_Process
     Generic_Process_Handler ..> Background_Generic_Process
     Generic_Process_Handler ..> Generic_Process
@@ -551,15 +551,15 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Oaipmh_Importer { }
-    class Background_Importer { }
-    class Importer_Handler { }
-    class CSV { }
     class Flickr_Importer { }
-    class Term_Importer { }
     class Test_Importer { }
-    class Youtube_Importer { }
     class Importer { }
+    class Background_Importer { }
+    class Youtube_Importer { }
+    class Oaipmh_Importer { }
+    class CSV { }
+    class Term_Importer { }
+    class Importer_Handler { }
     Importer ..> Importer_Handler
     Importer <|-- CSV
     Importer <|-- Flickr_Importer
@@ -591,9 +591,9 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Elastic_Press_lte4 { }
     class WordPress_AI { }
     class Elastic_Press { }
+    class Elastic_Press_lte4 { }
     Elastic_Press ..> Elastic_Press
     Elastic_Press ..> Elastic_Press_lte4
 ```
@@ -615,11 +615,11 @@ classDiagram
 classDiagram
     direction TB
     class Inbcm_Archive { }
-    class Dublin_Core { }
-    class Mappers_Handler { }
-    class Mapper { }
-    class Inbcm_Museological { }
     class Inbcm_Bibliographic { }
+    class Dublin_Core { }
+    class Mapper { }
+    class Mappers_Handler { }
+    class Inbcm_Museological { }
     Mapper <|-- Dublin_Core
     Mapper <|-- Inbcm_Archive
     Mapper <|-- Inbcm_Bibliographic
@@ -671,9 +671,9 @@ http://purl.org/dc/elements/1.1/ |
 ```mermaid
 classDiagram
     direction TB
+    class OAIPMH_Token_Manager { }
     class OAIPMH_Xml_Generator { }
     class OAIPMH_Data_Provider { }
-    class OAIPMH_Token_Manager { }
     OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
 ```
 #### Classes
@@ -693,17 +693,17 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Item_Metadata { }
+    class Repository { }
     class Logs { }
+    class Terms { }
     class Filters { }
     class Taxonomies { }
-    class Terms { }
-    class Metadata { }
-    class Repository { }
-    class Items { }
-    class Logs { }
-    class Item_Metadata { }
     class Collections { }
     class Metadata_Sections { }
+    class Metadata { }
+    class Logs { }
+    class Items { }
     Collections ..> Metadata
     Filters ..> Collections
     Item_Metadata ..> Items
@@ -768,12 +768,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Entity_Collections_Relation { }
     class Entity_Collection_Relation { }
     class Admin_UI_Options { }
-    class Formatter_Text { }
+    class Entity_Collections_Relation { }
     class SVG_Icon { }
     class Singleton_Instance { }
+    class Formatter_Text { }
 ```
 #### Traits
 
