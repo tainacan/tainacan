@@ -39,8 +39,9 @@ class Settings extends TAINACAN_UnitTestCase {
 
 		$field = $fields['tainacan_option_allow_rich_text_editor'];
 
-		$this->assertSame( 'Rich text editor', $field['title'] );
-		$this->assertSame( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', $field['args']['description'] );
+		$this->assertSame( 'Formatted text', $field['title'] );
+		$this->assertSame( 'Allow formatted text in text inputs', $field['args']['label'] );
+		$this->assertSame( 'Allows formatted text in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', $field['args']['description'] );
 		$this->assertFalse( $field['args']['input_disabled'] );
 		$this->assertFalse( $field['args']['default'] );
 		$this->assertNull( $field['args']['forced_value'] );
@@ -62,7 +63,7 @@ class Settings extends TAINACAN_UnitTestCase {
 		$this->assertNotContains( 'Date selectors', $headings[1] );
 		preg_match( '/<h2\b[^>]*>Input fields<\/h2>(.*?)(?=<h2\b|$)/s', $html, $section );
 		$input_fields_html = $section[1];
-		$this->assertStringContainsString( 'rich text editor', $input_fields_html );
+		$this->assertStringContainsString( 'formatted text', $input_fields_html );
 		$this->assertStringContainsString( 'datepickers', $input_fields_html );
 		$this->assertStringContainsString( 'Datepicker years before', $input_fields_html );
 		$this->assertStringContainsString( 'Datepicker years after', $input_fields_html );

@@ -270,9 +270,9 @@ class Settings extends Pages {
 		$this->create_tainacan_setting( array(
 			'id' => 'allow_rich_text_editor',
 			'section' => 'tainacan_settings_input_fields',
-			'title' => __( 'Rich text editor', 'tainacan' ),
-			'label' => __( 'Allow the rich text editor in text inputs', 'tainacan' ),
-			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
+			'title' => __( 'Formatted text', 'tainacan' ),
+			'label' => __( 'Allow formatted text in text inputs', 'tainacan' ),
+			'description' => __( 'Allows formatted text in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'input_disabled' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ),
@@ -908,7 +908,7 @@ class Settings extends Pages {
 	public function input_fields_section_description() {
 	?>
 		<p class="settings-section-description">
-			<?php esc_html_e( 'Options for input fields in Tainacan, including the rich text editor and the year range offered by datepickers in date metadata and filters.', 'tainacan' ); ?>
+			<?php esc_html_e( 'Options for input fields in Tainacan, including formatted text and the year range offered by datepickers in date metadata and filters.', 'tainacan' ); ?>
 		</p>
 	<?php
 	}
