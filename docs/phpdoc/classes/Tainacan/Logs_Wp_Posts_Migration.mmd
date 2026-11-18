@@ -1,0 +1,8 @@
+classDiagram
+    direction TB
+    class Logs_Wp_Posts_Migration {
+        +count_pending()
+        +run_batch(batch_size)
+        +count_purgeable()
+        +purge_batch(batch_size)
+    }

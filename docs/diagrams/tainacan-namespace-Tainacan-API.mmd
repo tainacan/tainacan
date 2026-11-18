@@ -3,6 +3,7 @@ classDiagram
     class REST_Controller { }
     class endpoints_REST_Collections_Controller { }
     class endpoints_REST_Exposers_Controller { }
+    class endpoints_REST_Management_Tools_Controller { }
     class endpoints_REST_Background_Processes_Controller { }
     class endpoints_REST_Importers_Controller { }
     class endpoints_REST_Item_Metadata_Controller { }
@@ -35,6 +36,7 @@ classDiagram
     REST_Controller <|-- endpoints_REST_Item_Metadata_Controller
     REST_Controller <|-- endpoints_REST_Items_Controller
     REST_Controller <|-- endpoints_REST_Logs_Controller
+    REST_Controller <|-- endpoints_REST_Management_Tools_Controller
     REST_Controller <|-- endpoints_REST_Metadata_Controller
     REST_Controller <|-- endpoints_REST_Metadata_Sections_Controller
     REST_Controller <|-- endpoints_REST_Metadata_Types_Controller
