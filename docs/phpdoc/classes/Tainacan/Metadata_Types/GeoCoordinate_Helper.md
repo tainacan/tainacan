@@ -1,10 +1,13 @@
 # GeoCoordinate_Helper
 
-Class TainacanFilterType
+Joins post meta and appends spatial WHERE clauses for `geoquery` item queries.
+
+Loaded with the GeoCoordinate metadata type via require_once. It is not a
+metadata type, so the autoloader never looks it up on its own.
 
 ***
 
-* Full name: `\GeoCoordinate_Helper`
+* Full name: `\Tainacan\Metadata_Types\GeoCoordinate_Helper`
 
 ## Class Diagram
 

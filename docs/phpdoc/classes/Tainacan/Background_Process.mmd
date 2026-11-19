@@ -2,7 +2,8 @@ classDiagram
     direction TB
     class Background_Process {
         #table : string
-        +ID : false|int
+        +ID : false
+        #ownership_lost : bool
         #prefix : string
         #action : string
         #name : string
@@ -21,6 +22,8 @@ classDiagram
         #get_batch()
         #get_batch_by_key(key)
         #handle()
+        #owns_process(key)
+        #abort_worker_ownership_lost(key)
         +delete_all_batches()
         +kill_process()
         #write_log_to_file(key, log, type)
@@ -61,6 +64,7 @@ classDiagram
         +schedule_cron_healthcheck(schedules)
         +handle_cron_healthcheck()
         +handle_cron_healthcheck_check()
+        #utc_now()
         #detect_and_cleanup_stale_processes()
         +record_heartbeat()
         #schedule_event()

@@ -315,15 +315,15 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_text = new Item_Metadata_Entity($i, $metadatum_text);
 		$item_metadata_text->set_value($value_text);
 		
-		$value_textarea = 'GOOGLE: www.google.com \n GOOGLE: https://www.google.com';
+		$value_textarea = 'GOOGLE: www.google.com \\n GOOGLE: https://www.google.com';
 		$item_metadata_textarea = new Item_Metadata_Entity($i, $metadatum_textarea);
 		$item_metadata_textarea->set_value($value_textarea);
 
-		$response_text = 'GOOGLE: <a href="http://www.google.com" target="_blank">www.google.com</a>';
-		$response_textarea = 'GOOGLE: <a href="http://www.google.com" target="_blank">www.google.com</a> \n GOOGLE: <a href="https://www.google.com" target="_blank">https://www.google.com</a>';
+		$response_text = 'GOOGLE: <a href="http://www.google.com" rel="nofollow">http://www.google.com</a>';
+		$response_textarea = $response_text . ' \\n GOOGLE: <a href="https://www.google.com" rel="nofollow">https://www.google.com</a>';
 
-		$this->assertEquals($item_metadata_text->get_value_as_html(), $response_text);
-		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $response_textarea);
+		$this->assertSame($response_text, $item_metadata_text->get_value_as_html());
+		$this->assertSame("<p>" . $response_textarea . "</p>\n", $item_metadata_textarea->get_value_as_html());
 
 		// Poor HTML entry tests
 		$badFormatted_HTML = "<p> I started my content <div> and make something else here </div> without closing its HTML properly";
@@ -331,8 +331,24 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_text->set_value($badFormatted_HTML);
 		$item_metadata_textarea->set_value($badFormatted_HTML);
 
-		$this->assertEquals($item_metadata_text->get_value_as_html(), $badFormatted_HTML ."</p>");
-		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $badFormatted_HTML ."</p>");
+		$this->assertSame($badFormatted_HTML . "</p>", $item_metadata_text->get_value_as_html());
+		$this->assertSame(force_balance_tags(wpautop($badFormatted_HTML)), $item_metadata_textarea->get_value_as_html());
+
+		$item_metadata_textarea->set_value("First paragraph\n\nSecond line\nLast line");
+		$this->assertSame("<p>First paragraph</p>\n<p>Second line<br />\nLast line</p>\n", $item_metadata_textarea->get_value_as_html());
+
+		$metadatum_textarea->set_multiple('yes');
+		$metadatum_textarea->set_html_formatting('list');
+		$item_metadata_textarea->set_value(['First']);
+		$this->assertSame("<p>First</p>\n", $item_metadata_textarea->get_value_as_html());
+		$item_metadata_textarea->set_value(['First', 'Second']);
+		$this->assertSame("<ul><li><p>First</p>\n</li><li><p>Second</p>\n</li></ul>", $item_metadata_textarea->get_value_as_html());
+
+		$metadatum_textarea->set_html_formatting('');
+		$this->assertSame(
+			'<div class="metadata-value"><p>First</p>' . "\n</div>" . $this->separator . '<div class="metadata-value"><p>Second</p>' . "\n</div>",
+			$item_metadata_textarea->get_value_as_html()
+		);
 	}
 
 	/**

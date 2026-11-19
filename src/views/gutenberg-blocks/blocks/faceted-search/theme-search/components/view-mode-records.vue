@@ -121,7 +121,7 @@
                                         :key="metadatumIndex">
                                     <span 
                                             v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')"
-                                            :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
+                                            :class="{ 'metadata-type-textarea': column.metadata_type_object.component === 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <div      
                                                 class="metadata-value"
@@ -209,7 +209,7 @@ export default {
 }
 </script>
 
-<style  lang="scss" scoped>
+<style lang="scss" scoped>
 
     @use "../../../../../admin/scss/_view-mode-records.scss";
 
@@ -217,5 +217,4 @@ export default {
         padding: 0.6em 0.875em;
     }
 </style>
-
 

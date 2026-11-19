@@ -1,5 +1,5 @@
 > [!NOTE]
-> _NOTICE_ This page describes the roles & caps structure for Tainacan versions older than 0.15. If you use earlier versions, check the [Roles and Capabilities](/dev/roles-capabilities.md) page.
+> _NOTICE_ This page describes the roles & caps structure for Tainacan versions older than 0.15. If you use earlier versions, check the [Roles and Capabilities](roles-capabilities.md) page.
 
 # Tainacan Users Permissions
 

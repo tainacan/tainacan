@@ -138,7 +138,6 @@
 
     import { mapActions } from 'vuex';
     import { tainacanApi, CancelToken, isCancel } from '../../js/axios';
-
     export default {
         name: "ExporterEditionForm",
         data() {
@@ -180,6 +179,10 @@
                     this.selectedMapping = this.exporterSession.mapping_selected;
                     
                     this.isLoading = false;
+                })
+                .catch((error) => {
+                    this.applyApiFormError(error);
+                    this.isLoading = false;
                 });
 
             if (this.selectedCollection != undefined)
@@ -203,7 +206,7 @@
                         }
                     }
                 );
-            });
+            }).catch(() => {});
         },
         beforeUnmount() {
             this.cancelCollectionSearch();
@@ -215,6 +218,13 @@
                 'updateExporterSession',
                 'runExporterSession'
             ]),
+            applyApiFormError(error) {
+                const data = error && error.response && error.response.data;
+                const message = data && typeof data.error_message === 'string' ? data.error_message : '';
+                if (message)
+                    this.$claimApiError(error);
+                this.formErrorMessage = message;
+            },
             fetchSelectedCollection(id) {
                 return tainacanApi.get('/collections/' + id + '?fetch_only=name,id')
                     .then(res => {
@@ -360,14 +370,14 @@
                                     this.$router.push(this.$routerHelper.getProcessesPath(bgp.bg_process_id));
                                 })
                                 .catch((error) => {
-                                    this.formErrorMessage = error.error_message;
+                                    this.applyApiFormError(error);
                                     this.runButtonLoading = false;
                                 });
                         }
 
                     })
                     .catch((error) => {
-                        this.formErrorMessage = error.error_message;
+                        this.applyApiFormError(error);
                         this.runButtonLoading = false;
                     }); 
             },

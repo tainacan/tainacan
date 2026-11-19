@@ -128,7 +128,6 @@ class Metadata_Section extends Entity {
 		return $this->get_is_conditional_section() == 'yes';
 	}
 
-
 	/**
 	 * Set the metadata section name
 	 *

@@ -4,6 +4,25 @@ namespace Tainacan\Repositories;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+/**
+ * DEPRECATED - NOT LOADED ANYMORE. Kept only for reference and will be removed.
+ *
+ * Legacy logs repository, which stored the activity logs as posts (post type
+ * 'tainacan-log') in the wp_posts/wp_postmeta tables. It was used as a fallback
+ * while the TAINACAN_USE_DEPRECATED_LOGS constant was supported.
+ *
+ * Logs are now always stored in the tainacan_logs table (see class-tainacan-logs.php).
+ * Legacy logs can be migrated with the "Legacy logs migration" Management Tool
+ * or with the `wp tainacan logs migrate` WP-CLI command.
+ *
+ * The early return below guarantees this file never declares a second
+ * Repositories\Logs class, even if it is included by mistake.
+ *
+ * @deprecated 1.5.0
+ */
+_deprecated_file( basename( __FILE__ ), '1.5.0', 'class-tainacan-logs.php' );
+return;
+
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 
@@ -23,6 +42,7 @@ class Logs extends Repository {
 	private $current_diff = null;
 	private $current_deleting_entity;
 	private $current_action;
+	private $current_attachment_delete_log;
 
 	protected function init() {
 

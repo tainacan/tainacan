@@ -1,10 +1,10 @@
 # Customizing the Items List
 
-A lot can be done for adding Tainacan support to your theme using the template hierarchy logic mentioned in the section [Custom Templates](/dev/custom-templates.md). While this might be enough you may be interested in tweaking a bit more of the appearance of the most complex page that Tainacan offers to you: **The Items List Page**. Check the example bellow, of the child theme of [TwentyTwenty](https://wordpress.org/themes/twentytwenty/ ':ignore') that implemented a basic `archive-items.php`:
+A lot can be done for adding Tainacan support to your theme using the template hierarchy logic mentioned in the section [Custom Templates](custom-templates.md). While this might be enough you may be interested in tweaking a bit more of the appearance of the most complex page that Tainacan offers to you: **The Items List Page**. Check the example bellow, of the child theme of [TwentyTwenty](https://wordpress.org/themes/twentytwenty/ ':ignore') that implemented a basic `archive-items.php`:
 
 ![Template added to the items list page.](./_assets/images/the-vue-items-list-component-1-new.png)
 
-Looks like a powerful faceted search interface, but we definitely could make some adjustments to match better with our parent theme. It turns out that this page works in a much different strategy, which is explained in detail in [the "Vue Items List Component" section](/dev/the-vue-items-list-component.md). 
+Looks like a powerful faceted search interface, but we definitely could make some adjustments to match better with our parent theme. It turns out that this page works in a much different strategy, which is explained in detail in [the "Vue Items List Component" section](the-vue-items-list-component.md). 
 
 > To summarize, **the Items List returned by _tainacan_the_faceted_search()_ is actually a Vue.js component**, rendered on the client-side. Most of its code is shared with the admin panel version of the items list. 
 
@@ -12,8 +12,8 @@ Looks like a powerful faceted search interface, but we definitely could make som
 
 Luckily for theme developers, a lot of customization options are offered since Tainacan 0.16. There are two types of customizations that can easily be applied:
 
-* [Passing `php` variables do the template function call](/dev/customizing-the-items-list#passing-php-variables-to-tainacan_the_faceted_search);
-* [Passing `css` variables to the items list class](/dev/customizing-the-items-list#passing-css-variables-to-the-items-list-class);
+* [Passing `php` variables do the template function call](customizing-the-items-list.md#passing-php-variables-to-tainacan_the_faceted_search);
+* [Passing `css` variables to the items list class](customizing-the-items-list.md#passing-css-variables-to-the-items-list-class);
 
 Here are three examples of template results after playing with this variables:
 
@@ -39,7 +39,7 @@ Lets see how this is possible:
 
 ### Passing `php` variables to _tainacan_the_faceted_search()_
 
-As seen in our introdution of [introduction about creating compatible theme](/dev/creating-compatible-themes). Having a rich faceted search items list is as simple as creating a file with three lines. The magic is done by the `tainacan_the_faceted_search()` helper function, which renders the Vue.js component. Not surprisingly, this function offers several customization variables, that we describe bellow:
+As seen in our introdution of [introduction about creating compatible theme](creating-compatible-themes.md). Having a rich faceted search items list is as simple as creating a file with three lines. The magic is done by the `tainacan_the_faceted_search()` helper function, which renders the Vue.js component. Not surprisingly, this function offers several customization variables, that we describe bellow:
 
 | Variable name                                | Type        | Default        | Description                          |
 |----------------------------------------------|-------------|-------------|--------------------------------------|
@@ -311,7 +311,7 @@ So here are a few examples of customizations that you can do, now that you under
     }
     ```
     Of course, you need to take care of margins and paddings here too, depending on how much you are changing these values;
-3. __Ajust the list container according to site margin__. In many themes, a page has a lateral margin, that keeps content inside a container of a certain `max-width`, which can leave the items list a bit...tight. The best way to handle this is to have a [Custom Template](/dev/custom-templates.md) for the items list that provides proper container classes for the list section. If you are not able to do that, you can still solve it with negative margins and a bit of work:
+3. __Ajust the list container according to site margin__. In many themes, a page has a lateral margin, that keeps content inside a container of a certain `max-width`, which can leave the items list a bit...tight. The best way to handle this is to have a [Custom Template](custom-templates.md) for the items list that provides proper container classes for the list section. If you are not able to do that, you can still solve it with negative margins and a bit of work:
     ```css
     /* Replace $max-width by your container max-width. Remember that it may change according to the screen size, which can be adapted with media queries. /*
     /* The items list container */

@@ -43,8 +43,8 @@ classDiagram
     class Entity {
         #repository : Repository
         -errors : array
-        #post_type : string|false
-        #capability_type : string|false
+        #post_type : string
+        #capability_type : string
         +WP_Post : WP_Post
         -validated : bool
         +cap : object

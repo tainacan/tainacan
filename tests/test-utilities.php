@@ -129,45 +129,40 @@ class TestUtilities extends TAINACAN_UnitTestCase {
 	}
 
 	function test_replace_links_to_clickable_tag() {
-
 		$text = new \Tainacan\Metadata_Types\Text;
 
-		$text_no_links = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.";
-		$text_no_links_expected = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.";
-		$text_no_links_response = $text->make_clickable_links($text_no_links);
-		$this->assertEquals($text_no_links_expected, $text_no_links_response);
+		$this->assertSame(
+			'Plain text without a URL.',
+			$text->make_clickable_links('Plain text without a URL.')
+		);
+		$this->assertSame(
+			'External <a href="http://google.com" rel="nofollow">http://google.com</a> and <a href="https://www.tainacan.org/" rel="nofollow">https://www.tainacan.org/</a>',
+			$text->make_clickable_links('External http://google.com and https://www.tainacan.org/')
+		);
+		$this->assertSame(
+			'Bare <a href="http://www.abc.com" rel="nofollow">http://www.abc.com</a> and email <a href="mailto:hello@example.net">hello@example.net</a>',
+			$text->make_clickable_links('Bare www.abc.com and email hello@example.net')
+		);
+		$this->assertSame(
+			'<a href="https://example.net/path">Existing link</a> then <a href="http://google.com" rel="nofollow">http://google.com</a>',
+			$text->make_clickable_links('<a href="https://example.net/path">Existing link</a> then http://google.com')
+		);
+		$this->assertSame(
+			'See (<a href="http://google.com/path" rel="nofollow">http://google.com/path</a>).',
+			$text->make_clickable_links('See (http://google.com/path).')
+		);
+	}
 
-		$text_simple_link = "Lorem https://www.tainacan.org/ ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.";
-		$text_simple_link_expected = 'Lorem <a href="https://www.tainacan.org/" target="_blank">https://www.tainacan.org/</a> ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra sapien quis nunc vulputate dictum. Pellentesque id euismod mauris.';
-		$text_simple_link_response = $text->make_clickable_links($text_simple_link);
-		$this->assertEquals($text_simple_link_expected, $text_simple_link_response);
+	function test_make_clickable_links_internal_url() {
+		$text = new \Tainacan\Metadata_Types\Text;
+		$url = home_url('/inside/');
+		// WordPress 5.9 adds nofollow to internal URLs; 6.2+ does not.
+		$rel = version_compare( get_bloginfo('version'), '6.2', '<' ) ? ' rel="nofollow"' : '';
 
-		$text_multiple_links = 'Lorem https://www.tainacan.org ipsum dolor sit amet http://www.tainacan.org' .
-													' ftp://www.teste.com.br consectetur adipiscing elit. ftps://www.teste.com.br Sed pharetra sapien quis nunc vulputate dictum.' .
-													' www.simple.com.br ' .
-													' www.simple.com ' .
-													' www.simple.org ' .
-													' Pellentesque id //ww.lair.com.br of a http://wwwliar.com.br euismod mauris. //pegadinha.com.br ';
-		
-		$text_multiple_links_expected =  'Lorem <a href="https://www.tainacan.org" target="_blank">https://www.tainacan.org</a> ipsum dolor sit amet <a href="http://www.tainacan.org" target="_blank">http://www.tainacan.org</a>' .
-													' <a href="ftp://www.teste.com.br" target="_blank">ftp://www.teste.com.br</a> consectetur adipiscing elit. <a href="ftps://www.teste.com.br" target="_blank">ftps://www.teste.com.br</a> Sed pharetra sapien quis nunc vulputate dictum.' .
-													' <a href="http://www.simple.com.br" target="_blank">www.simple.com.br</a> ' . 
-													' <a href="http://www.simple.com" target="_blank">www.simple.com</a> ' .
-													' <a href="http://www.simple.org" target="_blank">www.simple.org</a> ' .
-													' Pellentesque id //ww.lair.com.br of a <a href="http://wwwliar.com.br" target="_blank">http://wwwliar.com.br</a> euismod mauris. //pegadinha.com.br ';
-
-		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
-		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
-
-		$text_multiple_links = 'Lorem <a href="https://www.tainacan.org" target="_blank">https://www.tainacan.org</a> Lorem https://tainacan.org hahahahahahhttps://tainacan.org hahaha ';
-		$text_multiple_links_expected = 'Lorem <a href="https://www.tainacan.org" target="_blank">https://www.tainacan.org</a> Lorem <a href="https://tainacan.org" target="_blank">https://tainacan.org</a> hahahahahah<a href="https://tainacan.org" target="_blank">https://tainacan.org</a> hahaha ';
-		$text_multiple_links_response = $text->make_clickable_links($text_multiple_links);
-		$this->assertEquals($text_multiple_links_expected, $text_multiple_links_response);
-
-		$text_input = 'If you type only www.abc.com without the http the link.';
-		$text_input_expected = 'If you type only <a href="http://www.abc.com" target="_blank">www.abc.com</a> without the http the link.';
-		$text_input_response = $text->make_clickable_links($text_input);
-		$this->assertEquals($text_input_expected, $text_input_response);
+		$this->assertSame(
+			'Internal <a href="' . $url . '"' . $rel . '>' . $url . '</a>',
+			$text->make_clickable_links('Internal ' . $url)
+		);
 	}
 
 	function test_maybe_unserialize_array() {

@@ -15,7 +15,7 @@ classDiagram
     class Numeric {
         +__construct()
         +get_form_labels()
-        +validate_options(filter)
+        +validate(item_metadata)
     }
 ```
 
@@ -469,6 +469,16 @@ public set_manage_multiple_input(mixed $manage_multiple_input): mixed
 | Parameter                | Type      | Description |
 |--------------------------|-----------|-------------|
 | `$manage_multiple_input` | **mixed** |             |
+
+***
+
+### allows_links
+
+Whether stored values and queries for this type may keep anchor tags.
+
+```php
+public allows_links(): bool
+```
 
 ***
 

@@ -69,6 +69,7 @@ trait Admin_UI_Options {
 						'hideNavigationSettingsButton' => __('Hide "Settings" button in side menu', 'tainacan'),
 						'hideNavigationRolesButton' => __('Hide "Roles" button in side menu', 'tainacan'),
 						'hideNavigationSystemCheckButton' => __('Hide "System Check" button in side menu', 'tainacan'),
+						'hideNavigationManagementToolsButton' => __('Hide "Management Tools" button in side menu', 'tainacan'),
 					)
 				),
 				'dashboard' => array(

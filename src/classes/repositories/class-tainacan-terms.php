@@ -175,11 +175,14 @@ class Terms extends Repository {
 		return $new_entity;
 	}
 
-	// TODO: Is this workaround ok to avoid getting htmlentities ?
+	// Decode only the ampersand entity so names such as "R&D" display with a
+	// literal "&". Decoding "<" and ">" here would turn a name stored as
+	// "&lt;img ...&gt;" back into a live HTML tag, which is later injected with
+	// v-html in the admin term lists and facets (stored XSS).
 	function get_mapped_property($entity, $prop) {
 		$property = parent::get_mapped_property($entity, $prop);
 		if ($prop == 'name' || $prop == 'description') {
-			$property = wp_specialchars_decode($property);
+			$property = str_replace('&amp;', '&', $property);
 		}
 		return $property;
 	}

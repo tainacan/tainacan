@@ -46,20 +46,43 @@
 
                     <!-- Description -------------------------------- --> 
                     <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_description')"
-                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                            :addons="false"
+                            :label-for="isRichTextEditorAllowed ? undefined : 'tainacan-text-description'"
+                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                             :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'description')" 
+                        <template #label>
+                            <span id="tainacan-text-description-label">
+                                {{ $i18n.get('label_description') }}
+                            </span>
+                        </template>
+                        <help-button
+                                :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
+                        <component
+                                :is="'tainacan-rich-text-editor'"
+                                v-if="isRichTextEditorAllowed"
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                :invalid="editFormErrors['description'] != undefined"
+                                aria-labelledby="tainacan-text-description-label"
+                                :aria-describedby="editFormErrors['description'] != undefined ? 'tainacan-text-description-error' : undefined"
+                                :placeholder="$i18n.get('instruction_collection_description')"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 type="textarea"
                                 rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
+                        <template
+                                v-if="editFormErrors['description'] != undefined"
+                                #message>
+                            <span id="tainacan-text-description-error">
+                                {{ editFormErrors['description'] }}
+                            </span>
+                        </template>
                     </b-field>
 
                     <!-- Collection Taxonomies options ------------------------ -->
@@ -341,7 +364,7 @@
                                     </div>
                                 </b-field>
                                 <b-field
-                                        v-if="Object.values(form.item_enabled_document_types).some((aDocumentType) => aDocumentType.enabled === 'yes')"
+                                        v-if="hasSomeDocumentTypeEnabled"
                                         :addons="false" 
                                         :label="$i18n.getHelperTitle('collections', 'item_document_label')">
                                     <help-button 
@@ -350,6 +373,21 @@
                                     <b-input
                                             id="tainacan-text-item-document-label"
                                             v-model="form.item_document_label" />
+                                </b-field>
+                                <b-field
+                                        v-if="hasSomeDocumentTypeEnabled"
+                                        :addons="false"
+                                        :label="$i18n.getHelperTitle('collections', 'item_require_document')">
+                                    &nbsp;
+                                    <b-switch
+                                            id="tainacan-checkbox-item-require-document"
+                                            v-model="form.item_require_document"
+                                            size="is-small"
+                                            true-value="yes"
+                                            false-value="no" />
+                                    <help-button
+                                            :title="$i18n.getHelperTitle('collections', 'item_require_document')"
+                                            :message="$i18n.getHelperMessage('collections', 'item_require_document')" />
                                 </b-field>
                             </div>
 
@@ -1048,9 +1086,9 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <p class="help is-danger">
+                <span class="help is-danger">
                     {{ formErrorMessage }}
-                </p>
+                </span>
                 <div 
                         style="margin-inline-start: auto;"
                         class="control is-hidden-mobile">
@@ -1105,7 +1143,6 @@ import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import { permalinkGetter, formHooks } from '../../js/mixins';
 import { CancelToken, isCancel } from '../../js/axios';
-
 export default {
     name: 'CollectionEditionForm',
     components: {
@@ -1158,6 +1195,7 @@ export default {
                 },
                 item_publication_label: this.$i18n.get('label_publication_data'),
                 item_document_label: this.$i18n.get( 'Document', 'tainacan' ),
+                item_require_document: 'no',
                 item_thumbnail_label: this.$i18n.get( 'Thumbnail', 'tainacan' ),
                 item_enable_thumbnail: 'yes',
                 item_attachment_label: this.$i18n.get( 'Attachments', 'tainacan' ),
@@ -1187,6 +1225,7 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
+            isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             //collections: [],              DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
             //isFetchingCollections: true,  DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
@@ -1213,6 +1252,9 @@ export default {
     computed: {
         hasCoverPage() {
             return !!(this.coverPage && this.coverPage.id && this.coverPage.title);
+        },
+        hasSomeDocumentTypeEnabled() {
+            return Object.values(this.form.item_enabled_document_types).some((aDocumentType) => aDocumentType.enabled === 'yes');
         },
         ...mapGetters('metadata', {
             'metadata': 'getMetadata'
@@ -1319,6 +1361,7 @@ export default {
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                 this.form.item_publication_label = this.collection.item_publication_label;
                 this.form.item_document_label = this.collection.item_document_label;
+                this.form.item_require_document = this.collection.item_require_document;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                 this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
                 this.form.item_attachment_label = this.collection.item_attachment_label;
@@ -1436,6 +1479,8 @@ export default {
                 item_enabled_document_types: this.form.item_enabled_document_types,
                 item_publication_label: this.form.item_publication_label,
                 item_document_label: this.form.item_document_label,
+                // The switch is hidden when no document type is enabled, so the document can not be required
+                item_require_document: this.hasSomeDocumentTypeEnabled ? this.form.item_require_document : 'no',
                 item_thumbnail_label: this.form.item_thumbnail_label,
                 item_enable_thumbnail: this.form.item_enable_thumbnail,
                 item_attachment_label: this.form.item_attachment_label,
@@ -1480,6 +1525,7 @@ export default {
                     this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                     this.form.item_publication_label = this.collection.item_publication_label;
                     this.form.item_document_label = this.collection.item_document_label;
+                    this.form.item_require_document = this.collection.item_require_document;
                     this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                     this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
                     this.form.item_attachment_label = this.collection.item_attachment_label;
@@ -1506,13 +1552,16 @@ export default {
                             this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
                     }
                 })
-                .catch((errors) => {
-                    
-                    for (let error of errors.errors) {     
-                        for (let attribute of Object.keys(error))
-                            this.editFormErrors[attribute] = error[attribute];
+                .catch((error) => {
+                    const errors = error.response && error.response.data;
+                    if (errors && errors.errors) {
+                        this.$claimApiError(error);
+                        for (let fieldError of errors.errors) {
+                            for (let attribute of Object.keys(fieldError))
+                                this.editFormErrors[attribute] = fieldError[attribute];
+                        }
+                        this.formErrorMessage = errors.error_message;
                     }
-                    this.formErrorMessage = errors.error_message;
 
                     this.isLoading = false;
                 });     
@@ -1556,6 +1605,7 @@ export default {
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                 this.form.item_publication_label = this.collection.item_publication_label;
                 this.form.item_document_label = this.collection.item_document_label;
+                this.form.item_require_document = this.collection.item_require_document;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
                 this.form.item_enable_thumbnail = this.collection.item_enable_thumbnail;
                 this.form.item_attachment_label = this.collection.item_attachment_label;
@@ -1811,7 +1861,13 @@ export default {
                             // Not every metadata can be used for sorting
                             this.sortingMetadata = JSON.parse(JSON.stringify(this.metadata));
 
-                            // Adds creation date as it is the default
+                            // Core dates are not metadata, so they are appended as sort options.
+                            this.sortingMetadata.push({
+                                name: this.$i18n.get('label_modification_date'),
+                                metadata_type: undefined,
+                                slug: 'modification_date',
+                                id: 'modified'
+                            });
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadata_type: undefined,
@@ -2261,7 +2317,7 @@ export default {
 
         .help {
             display: inline-flex;
-            font-size: 1.0em;
+            font-size: 0.813em;
             margin-top: 0;
             margin-inline-start: 24px;
 
@@ -2293,4 +2349,3 @@ export default {
     }
 
 </style>
-

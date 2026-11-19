@@ -363,7 +363,7 @@
                         </div>
                         <div class="sorting-options-container-orderby">
                             <template 
-                                    v-for="metadatum of sortingMetadata"
+                                    v-for="metadatum of sortingOptions"
                                     :key="metadatum.slug">
                                 <b-dropdown-item
                                         v-if="metadatum != undefined"
@@ -900,7 +900,16 @@
                 'metaKey': 'getMetaKey'
             }),
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified');
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified' && this.orderBy != 'relevance');
+            },
+            sortingOptions() {
+                if (!this.searchQuery || !this.$eventBusSearch.isSearchRelevanceEnabled())
+                    return this.sortingMetadata;
+
+                return [{
+                    name: this.$i18n.get('label_relevance'),
+                    slug: 'relevance'
+                }].concat(this.sortingMetadata);
             },
             showLoading() {
                 return this.isLoadingItems || this.isLoadingMetadata;
@@ -974,32 +983,13 @@
                     }
                     
                     // Order By (required extra work to deal with custom metadata ordering)
-                    if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
-                        let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
-                        let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
-                    
-                        if (orderBy && orderBy != 'name') {
-                        
-                            // Previously was stored as a metadata object, now it is a orderby object
-                            if (orderBy.slug || typeof orderBy == 'string')
-                                orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
-
-                            if (orderBy.orderby)
-                                Object.keys(orderBy).forEach((paramKey) => {
-                                    this.$route.query[paramKey] = orderBy[paramKey];
-                                });
-                            else
-                                this.$route.query.orderby = 'date'
-                            
-                        } else {
-                            this.$route.query.orderby = 'date';
-                            this.$userPrefs.set(orderByKey, { 
-                                slug: 'creation_date',
-                                name: this.$i18n.get('label_creation_date')
-                            }).catch(() => { });
-                        }
+                    const orderByWasMissing = this.$route.query.orderby == undefined;
+                    if (orderByWasMissing || (to.params.collectionId != from.params.collectionId)) {
+                        this.assignOrderByFromPreference();
                     } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
                         this.$route.query.orderby = 'date'
+                    } else if ( this.$route.query.orderby == 'modification_date' ) {
+                        this.$route.query.orderby = 'modified'
                     }
                     
                     // Admin View Modes
@@ -1021,6 +1011,8 @@
                     // Passes the current URL to store
                     this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                     this.$eventBusSearch.applyPerWordSearchDefaultIfNeeded();
+                    if (this.$eventBusSearch.syncRelevanceWithRoute(from && from.query, this.$route.query, orderByWasMissing))
+                        this.$eventBusSearch.updateURLQueries();
 
                     // Advanced Search
                     if (this.$route.query && this.$route.query.advancedSearch)
@@ -1104,29 +1096,24 @@
 
             let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
 
+            // The watcher compares the route just left with the route just entered, so it
+            // does not run for the route that created this page. The first items fetch
+            // reads the store before addFetchOnly's URL replace reaches that watcher.
+            // A search link with no sort becomes relevance here. The saved sort is
+            // written first so clearing the search can restore it.
+            if (!currentQuery.orderby && this.$eventBusSearch.hasTextSearch(currentQuery)) {
+                this.assignOrderByFromPreference();
+                this.$eventBusSearch.updateStoreFromURL();
+                if (this.$eventBusSearch.switchToSearchRelevance(true))
+                    this.$eventBusSearch.updateURLQueries();
+            }
+
             if (currentQuery && currentQuery.advancedSearch)
                 this.openAdvancedSearch = !!currentQuery.advancedSearch;
 
-            this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
-                this.openAdvancedSearch = openAdvancedSearch;
-            });
-
-            this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
-                
-                if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
-
-                    if ((this.$refs['search-control'].classList.contains('floating-search-control')))
-                        this.$refs['search-control'].classList.remove('floating-search-control');
-                    
-                    this.$refs['items-page-container'].scrollTo({ top: 0, behavior: 'smooth'});
-                }
-
-                this.isLoadingItems = isLoadingItems;
-            });
-
-            this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
-                this.hasFiltered = hasFiltered;
-            });
+            this.$emitter.on('openAdvancedSearch', this.onOpenAdvancedSearch);
+            this.$eventBusSearchEmitter.on('isLoadingItems', this.onIsLoadingItems);
+            this.$eventBusSearchEmitter.on('hasFiltered', this.onHasFiltered);
 
         },
         mounted() {  
@@ -1179,6 +1166,23 @@
 
         },
         methods: {
+            onOpenAdvancedSearch(openAdvancedSearch) {
+                this.openAdvancedSearch = openAdvancedSearch;
+            },
+            onIsLoadingItems(isLoadingItems) {
+                if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
+
+                    if ((this.$refs['search-control'].classList.contains('floating-search-control')))
+                        this.$refs['search-control'].classList.remove('floating-search-control');
+                    
+                    this.$refs['items-page-container'].scrollTo({ top: 0, behavior: 'smooth'});
+                }
+
+                this.isLoadingItems = isLoadingItems;
+            },
+            onHasFiltered(hasFiltered) {
+                this.hasFiltered = hasFiltered;
+            },
             ...mapActions('collection', [
                 'fetchCollectionBasics'
             ]),
@@ -1253,6 +1257,37 @@
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
+            },
+            /**
+             * Writes the saved orderby onto the route query when the URL did not carry one.
+             * The route watcher and the first load of a search link both use this.
+             */
+            assignOrderByFromPreference() {
+                let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
+                let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
+
+                if (orderBy && orderBy != 'name') {
+
+                    // Previously was stored as a metadata object, now it is a orderby object
+                    if (orderBy.slug || typeof orderBy == 'string')
+                        orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                    if (orderBy.orderby)
+                        Object.keys(orderBy).forEach((paramKey) => {
+                            this.$route.query[paramKey] = orderBy[paramKey];
+                        });
+                    else if (typeof orderBy == 'string')
+                        this.$route.query.orderby = orderBy;
+                    else
+                        this.$route.query.orderby = 'date'
+
+                } else {
+                    this.$route.query.orderby = 'date';
+                    this.$userPrefs.set(orderByKey, {
+                        slug: 'creation_date',
+                        name: this.$i18n.get('label_creation_date')
+                    }).catch(() => { });
+                }
             },
             /**
              * First items fetch must wait for fetch_only (set by prepareMetadata / addFetchOnly).
@@ -1719,15 +1754,13 @@
                 
             }, 750),
             removeEventListeners() {
-                // Component
-                this.$emitter.off();
                 // Window
                 window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
-                this.$emitter.off('openAdvancedSearch');
+                this.$emitter.off('openAdvancedSearch', this.onOpenAdvancedSearch);
                 // $eventBusSearch
-                this.$eventBusSearchEmitter.off('isLoadingItems');
-                this.$eventBusSearchEmitter.off('hasFiltered');
+                this.$eventBusSearchEmitter.off('isLoadingItems', this.onIsLoadingItems);
+                this.$eventBusSearchEmitter.off('hasFiltered', this.onHasFiltered);
             }
         }
     }

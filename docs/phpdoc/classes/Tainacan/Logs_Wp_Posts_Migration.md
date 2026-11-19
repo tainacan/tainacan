@@ -11,6 +11,19 @@ can be run multiple times safely without side effects.
 
 * Full name: `\Tainacan\Logs_Wp_Posts_Migration`
 
+## Class Diagram
+
+```mermaid
+classDiagram
+    direction TB
+    class Logs_Wp_Posts_Migration {
+        +count_pending()
+        +run_batch(batch_size)
+        +count_purgeable()
+        +purge_batch(batch_size)
+    }
+```
+
 ## Methods
 
 ### count_pending

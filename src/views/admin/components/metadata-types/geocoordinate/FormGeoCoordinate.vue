@@ -130,12 +130,15 @@
                 maximumZoom: Number,
                 initialLatitude: Number,
                 initialLongitude: Number,
+                initialPositionType: '',
+                initialPositionMessage: '',
             }
         },
         computed: {
             setError(){
-                if ( this.errors && this.errors.initial_position !== '' )
-                    this.setErrorsAttributes( 'is-danger', this.errors.initial_position );
+                const message = this.errors && this.errors.initial_position;
+                if (typeof message === 'string' && message !== '')
+                    this.setErrorsAttributes( 'is-danger', message );
                 else
                     this.setErrorsAttributes( '', '' );
                 return true;

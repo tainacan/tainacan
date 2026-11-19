@@ -525,6 +525,16 @@ public set_manage_multiple_input(mixed $manage_multiple_input): mixed
 
 ***
 
+### allows_links
+
+Whether stored values and queries for this type may keep anchor tags.
+
+```php
+public allows_links(): bool
+```
+
+***
+
 ### get_slug
 
 Gets a slug based on the class name to represent the metadata type
@@ -558,6 +568,6 @@ public static make_clickable_links(mixed $text): string
 
 **Return Value:**
 
-Texts with url's transformed in html tag <a>
+Texts with url's and emails transformed in html tag <a>. It uses WordPress function make_clickable() to do this.
 
 ***

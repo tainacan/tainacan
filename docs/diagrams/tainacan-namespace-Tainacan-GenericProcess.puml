@@ -45,7 +45,7 @@
     -init()
     +register_generic_processes()
     +register_generic_process(process)
-    +add_to_queue(process_object)
+    +add_to_queue(process_object, name)
     +unregister_generic_process(slug)
     +get_registered_generic_process()
     +get_generic_process(slug)
@@ -54,6 +54,28 @@
     +save_process_instance(process)
     +get_process_instance_by_session_id(session_id)
     +delete_process_instance(process)
+  }
+  class "Management_Tools_Process\n<b>Background process that runs management commands (e.g. the legacy logs migration).</b>" as Management_Tools_Process {
+    -command : string|null
+    -command_args : array
+    +__construct(attributes)
+    {static} +get_commands()
+    {static} +find_command(id)
+    {static} +queue(command_id, args)
+    {static} +sanitize_args(command, args)
+    +init_objects()
+    +set_command(command)
+    +get_command()
+    +set_command_args(args)
+    +get_command_args()
+    +prepare_command()
+    -start_step_count(counter)
+    -add_processed(key, count)
+    +get_output()
+    +logs_migrate_step()
+    +logs_purge_step()
+    -get_batch_size()
+    -batch_result(done, processed, pending)
   }
   class "Generic_Process" as Generic_Process {
     #id : identifier
@@ -101,6 +123,9 @@
     +task(batch)
   }
   Generic_Process <|-- Bulk_Edit_Process
+  Generic_Process <|-- Management_Tools_Process
   Generic_Process_Handler ..> Background_Generic_Process
   Generic_Process_Handler ..> Generic_Process
+  Management_Tools_Process ..> Background_Generic_Process
+  Management_Tools_Process ..> Generic_Process_Handler
 @enduml

@@ -947,8 +947,11 @@
 
                     this.dispatchBulkEditionProcedure(queuedCriteria[index])
                         .then(() => dispatchSequentially(index + 1))
-                        .catch(() => {
+                        .catch((error) => {
                             this.isApplying = false;
+                            const data = error.response && error.response.data;
+                            if (data && data.error_message)
+                                this.$showApiError(error, data.error_message);
                             this.$console.error('Error dispatching bulk edit procedure: ' + queuedCriteria[index]);
                         });
                 };

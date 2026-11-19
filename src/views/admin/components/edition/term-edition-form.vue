@@ -129,7 +129,17 @@
                                         :message="$i18n.get('info_help_term_description')"
                                         extra-classes="tainacan-repository-tooltip" />
                             </label>
+                            <component
+                                    :is="'tainacan-rich-text-editor'"
+                                    v-if="isRichTextEditorAllowed"
+                                    id="tainacan-term-description"
+                                    v-model="form.description"
+                                    name="description"
+                                    :invalid="formErrors['description'] !== '' && formErrors['description'] !== undefined"
+                                    @focus="clearErrors('description')" />
                             <b-input
+                                    v-else
+                                    id="tainacan-term-description"
                                     v-model="form.description"
                                     type="textarea"
                                     name="description"
@@ -388,6 +398,7 @@
                 committedCoverPageTitle: '',
                 coverPageEditPath: '',
                 totalPages: 0,
+                isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 newPagePath: tainacan_plugin.wp_admin_url + 'post-new.php?post_type=page'
             }
         },
@@ -501,12 +512,16 @@
                             this.isLoading = false;
                             this.$emit('close');
                         })
-                        .catch((errors) => {
+                        .catch((error) => {
                             this.isLoading = false;
+                            const errors = error.response && error.response.data;
+                            if (!errors || !errors.errors)
+                                return;
 
-                            for (let error of errors.errors) {
-                                for (let metadatum of Object.keys(error)) {
-                                   Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
+                            this.$claimApiError(error);
+                            for (let fieldError of errors.errors) {
+                                for (let metadatum of Object.keys(fieldError)) {
+                                   Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + fieldError[metadatum] + '\n' });
                                 }
                             }
                         });
@@ -536,10 +551,14 @@
                             this.$emit('on-edition-finished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
                             this.$emit('close');
                         })
-                        .catch((errors) => {
-                            for (let error of errors.errors) {
-                                for (let metadatum of Object.keys(error)) {
-                                    Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
+                        .catch((error) => {
+                            const errors = error.response && error.response.data;
+                            if (errors && errors.errors) {
+                                this.$claimApiError(error);
+                                for (let fieldError of errors.errors) {
+                                    for (let metadatum of Object.keys(fieldError)) {
+                                        Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + fieldError[metadatum] + '\n' });
+                                    }
                                 }
                             }
                             this.isLoading = false;
@@ -980,5 +999,3 @@
     }
 
 </style>
-
-

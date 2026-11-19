@@ -529,6 +529,22 @@ class Item extends Entity {
 			$is_valid = false;
 		}
 
+		$collection = $this->get_collection();
+		if ( $collection && $collection->get_item_require_document() === 'yes' ) {
+			// A document can only be required if the collection allows at least one document type.
+			$enabled_document_types = array_filter(
+				(array) $collection->get_item_enabled_document_types(),
+				function ( $document_type ) {
+					return isset( $document_type['enabled'] ) && $document_type['enabled'] === 'yes';
+				}
+			);
+
+			if ( ! empty( $enabled_document_types ) && ( $this->get_document_type() === 'empty' || empty( $this->get_document() ) ) ) {
+				$this->add_error( 'document', __( 'The document is required', 'tainacan' ) );
+				$is_valid = false;
+			}
+		}
+
 		$arrayItemMetadata = $this->get_metadata(['parent'=>'any', 'include_control_metadata_types' => 'true']);
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
@@ -1244,30 +1260,11 @@ class Item extends Entity {
 			$rules = $metadata_section->get_conditional_section_rules();
 
 			if ( !empty($rules) ) {
-				foreach ( $rules as $meta_id => $meta_values_conditional ) {
-					$meta_values = [];
+				foreach ( $rules as $meta_id => $rule_values ) {
 					$metadatum = new \Tainacan\Entities\Metadatum($meta_id);
-					$metadatum_type = $metadatum->get_metadata_type_object();
+					$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum);
 
-					if ( $metadatum_type->get_primitive_type() == 'term' ) {
-						$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum);
-						
-						if ( $metadatum->is_multiple() )  {
-							$term_values = $item_metadata->get_value();
-							$meta_values = array_map(function($term) {
-								return $term->get_id();
-							}, $term_values);
-						} else {
-							$term_values = $item_metadata->get_value();
-							$meta_values = empty($term_values) ? [] : [ $term_values->get_id() ];
-						}
-
-					} else {
-						$item_id = $this->get_id();
-						$meta_values = get_post_meta( $item_id, $meta_id );
-					}
-
-					if ( !array_intersect($meta_values, $meta_values_conditional) )
+					if ( ! $item_metadata->matches_conditional_values( $rule_values ) )
 						return $return;
 				}
 			}

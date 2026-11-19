@@ -31,6 +31,13 @@ class Generic_Process_Handler {
 			'class_name' => '\Tainacan\GenericProcess\Bulk_Edit_Process'
 		]);
 
+		$this->register_generic_process([
+			'name' => 'Management tools',
+			'description' => __('Management tools', 'tainacan'),
+			'slug' => 'management_tools',
+			'class_name' => '\Tainacan\GenericProcess\Management_Tools_Process'
+		]);
+
 		do_action('tainacan-register-generic_process');
 	}
 
@@ -45,12 +52,22 @@ class Generic_Process_Handler {
 		return true;
 	}
 	
-	function add_to_queue(\Tainacan\GenericProcess\Generic_Process $process_object) {
+	/**
+	 * Adds a process to the background queue.
+	 *
+	 * @param \Tainacan\GenericProcess\Generic_Process $process_object
+	 * @param string|null $name Name displayed in the processes list. Defaults to the registered process name.
+	 * @return \Tainacan\Background_Generic_Process|false
+	 */
+	function add_to_queue(\Tainacan\GenericProcess\Generic_Process $process_object, $name = null) {
 		$data = $process_object->_to_Array(true);
-		$process = $this->get_generic_process_by_object($process_object);
-		
+		if ( empty($name) ) {
+			$process = $this->get_generic_process_by_object($process_object);
+			$name = $process['name'];
+		}
+
 		/* translators: %s is the name of the process */
-		$process_name = sprintf( __('%s processing', 'tainacan'), $process['name'] );
+		$process_name = sprintf( __('%s processing', 'tainacan'), $name );
 
 		$bg_process = $this->bg_process->data($data)->set_name($process_name)->save();
 		if ( is_wp_error($bg_process->dispatch()) ) {

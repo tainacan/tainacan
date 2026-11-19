@@ -97,6 +97,7 @@
     import TainacanTaxonomyTagInput from './TainacanTaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacanApi } from '../../../js/axios';
+    import { rememberTermAncestors, rememberTerms } from '../../../js/conditional-sections';
     import { mapActions } from 'vuex';
     import { defineAsyncComponent } from 'vue';
 
@@ -198,6 +199,7 @@
 
 
                 if ( this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input' ) {
+                    rememberTerms(Array.isArray(this.value) ? this.value : [this.value]);
                     values = this.value.map(term => term.id).filter(term => term !== undefined);
                     this.valueComponent = (values.length > 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;
 
@@ -205,6 +207,7 @@
                     
                     // This first scenario happens in the item edition form, as the item metadata returns the terms as objects
                     const valuesInArray = Array.isArray(this.value) ? this.value : [this.value];
+                    rememberTerms(valuesInArray);
                     if ( valuesInArray[0] && valuesInArray[0] && valuesInArray[0].id ) {
                         values = valuesInArray.map((term) => { return { label: term.name, value: term.id } });
                         this.valueComponent = values;
@@ -223,6 +226,7 @@
                             all: true,
                             include: valuesInArray
                         }).then((res) => {
+                            rememberTerms(res.terms);
                             values = res.terms.map((term) => { return { label: term.name, value: term.id } });
                             this.valueComponent = values;
                             this.isFetchingTerms = false;    
@@ -236,6 +240,7 @@
                 }
             },
             addRecentlyCreatedTerm(term) {
+                rememberTermAncestors(term);
                 if (term && term.id) {
 
                     this.isAddingNewTermVaue = true;
