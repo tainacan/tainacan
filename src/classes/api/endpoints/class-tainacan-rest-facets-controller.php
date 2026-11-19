@@ -130,23 +130,28 @@ class REST_Facets_Controller extends REST_Controller {
 					$metadatum_options = $metadatum->get_metadata_type_options();
 					$taxonomy_id = $metadatum_options['taxonomy_id'];
 					$taxonomy_slug = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
-					if( isset($request['current_query']['taxquery']) ){
+					if( isset($request['current_query']['taxquery']) && is_array($request['current_query']['taxquery']) ){
 						foreach( $request['current_query']['taxquery'] as $taxquery ){
-							if( $taxquery['taxonomy'] === $taxonomy_slug ){
-								$include = $taxquery['terms'];
+							if( is_array($taxquery) && isset($taxquery['taxonomy']) && isset($taxquery['terms']) && $taxquery['taxonomy'] === $taxonomy_slug ){
+								// several clauses on the same taxonomy (e.g. joined by OR): select all their terms
+								$include = array_merge( $include, (array) $taxquery['terms'] );
 							}
 						}
 					}
 				} else {
-					if( isset($request['current_query']['metaquery']) ){
+					if( isset($request['current_query']['metaquery']) && is_array($request['current_query']['metaquery']) ){
 						foreach( $request['current_query']['metaquery'] as $metaquery ){
-							if( $metaquery['key'] == $metadatum_id ){
-								$include = $metaquery['value'];
+							if( is_array($metaquery) && isset($metaquery['key']) && isset($metaquery['value']) && $metaquery['key'] == $metadatum_id ){
+								// several clauses on the same metadatum (e.g. joined by OR): select all their values.
+								// A scalar value becomes a one-element array, since the repository only includes arrays.
+								$include = array_merge( $include, (array) $metaquery['value'] );
 							}
 						}
 					}
 				}
 			}
+
+			$include = array_values( array_unique( $include ) );
 
 			$parent_id = 0;
 			if ( isset($request['parent']) ) {
