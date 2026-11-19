@@ -51,10 +51,15 @@ class Management_Tools extends Pages {
 		wp_enqueue_script(
 			'tainacan-management-tools',
 			$TAINACAN_BASE_URL . '/assets/js/tainacan_management_tools.js',
-			[ 'tainacan-admin-navigation-menu' ],
+			[],
 			TAINACAN_VERSION,
 			true
 		);
+
+		// The navigation script is registered later, from render_page(). Localize
+		// tainacan_user here so this script can read the API URL and nonce without
+		// depending on a handle that is not registered yet (WordPress 6.9.1).
+		wp_localize_script( 'tainacan-management-tools', 'tainacan_user', $this->get_admin_js_user_data() );
 
 		wp_localize_script( 'tainacan-management-tools', 'tainacan_management_tools', [
 			'i18n' => [

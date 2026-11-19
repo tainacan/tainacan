@@ -34,15 +34,18 @@ composer install
 ./generate_docs.sh
 ```
 
-In the [tainacan-docker](https://github.com/tainacan/tainacan-docker) environment:
+In the [tainacan-docker](https://github.com/tainacan/tainacan-docker) environment, run it in the builder container. That container has the plugin repository mounted read-write at `/repo`. The `wordpress` container mounts only `src/` and mounts it read-only, so this script cannot run there.
+
+From the `tainacan-docker` directory, after [`make test`](setup-local.md) has prepared the WordPress test library at least once:
 
 ```bash
-docker exec -it tainacan_fpm_apache bash
-cd /src/tainacan && composer install && ./generate_docs.sh
+docker compose --profile watch run --rm --no-deps \
+  -e WP_TESTS_DIR=/tmp/wp-tests/wordpress-tests-lib \
+  builder ./generate_docs.sh
 ```
 
-The script writes into `docs/` (`phpdoc/`, `actions.md`, `filters.md`, `openapi.json`, `diagrams/`). phpDocumentor itself is downloaded as a phar on first run; other tools come from Composer dev dependencies.
+The script writes into `docs/` (`phpdoc/`, `actions.md`, `filters.md`, `openapi.json`, `diagrams/`). phpDocumentor itself is downloaded as a phar on first run; other tools come from Composer dev dependencies, which the script installs when they are missing.
 
-OpenAPI export uses the same WordPress test bootstrap as PHPUnit (`tests/bootstrap-config.php` + `tests/bin/install-wp-tests.sh`).
+OpenAPI export uses the same WordPress test bootstrap as PHPUnit (`tests/bootstrap-config.php` and the library installed by `tests/bin/install-wp-tests.sh`). `make test` creates both.
 
 Generated docs are published via the [Tainacan Wiki](https://github.com/tainacan/tainacan-wiki) under `/dev/`, which loads this folder externally.
