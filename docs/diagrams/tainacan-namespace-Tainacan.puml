@@ -290,6 +290,19 @@
     +filter_check_items_request(response, request)
     {static} +get_exposer_urls(base_url)
   }
+  class "Management_Tools\n<b>Management Tools admin page.</b>" as Management_Tools {
+    #get_page_slug()
+    +init()
+    +add_admin_menu()
+    +admin_enqueue_css()
+    +admin_enqueue_js()
+    #get_help_tabs()
+    +render_page_content()
+    +get_commands()
+    +get_processes_page_url()
+    +render_command_card(id, command)
+    -render_param_field(command_id, param)
+  }
   class "Pdf_Extracted_Text_Quality\n<b>Basic quality gate for PDF text extracted via Smalot PdfParser.</b>" as Pdf_Extracted_Text_Quality {
     {static} +is_usable(text)
     {static} -passes_heuristics(text)
@@ -305,12 +318,6 @@
     -delete_terms_taxonomies(dry_run, deep)
     -delete_metadata(dry_run, deep)
     -delete_transients(dry_run)
-  }
-  class "Logs_Wp_Posts_Migration\n<b>Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta</b>" as Logs_Wp_Posts_Migration {
-    +count_pending()
-    +run_batch(batch_size)
-    +count_purgeable()
-    +purge_batch(batch_size)
   }
   class "Cli_Logs\n<b>Manages Tainacan activity log data migration from the legacy wp_posts structure.</b>" as Cli_Logs {
     +migrate(args, assoc_args)
@@ -567,7 +574,6 @@
   }
   Async_Request <|-- Background_Process_Base
   Background_Process_Base <|-- Background_Process
-  Cli_Logs ..> Logs_Wp_Posts_Migration
   Cli_Move_Attachments ..> Private_Files
   Cli_Move_Attachments ..> Theme_Helper
   Exposers_Handler ..> Mappers_Handler
@@ -582,6 +588,7 @@
   Pages ..> Theme_Helper
   Pages <|-- Admin
   Pages <|-- Dashboard
+  Pages <|-- Management_Tools
   Pages <|-- Mobile_App
   Pages <|-- Roles_Editor
   Pages <|-- Settings

@@ -350,7 +350,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$obj` | `\Tainacan\Entities\Log` | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L457-L476)
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 447](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L447-L466)
 
 ---------------------------------
 <br>
@@ -369,7 +369,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$obj` | `\Tainacan\Entities\Log` | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L457-L478)
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 447](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L447-L468)
 
 ---------------------------------
 <br>
@@ -390,7 +390,7 @@ Argument | Type | Description
 `[]` |  | 
 `false` |  | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L457-L523)
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 447](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L447-L513)
 
 ---------------------------------
 <br>
@@ -409,7 +409,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$obj` | `\Tainacan\Entities\Log` | 
 
-Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 457](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L457-L524)
+Source: [class-tainacan-logs.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php), [line 447](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-logs.php#L447-L514)
 
 ---------------------------------
 <br>
@@ -734,7 +734,7 @@ Source: [class-tainacan-exporter-handler.php](https://github.com/tainacan/tainac
 ## `tainacan-register-generic_process` <!-- {docsify-ignore} -->
 
 
-Source: [class-tainacan-generic-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php), [line 34](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php#L34-L34)
+Source: [class-tainacan-generic-handler.php](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php), [line 41](https://github.com/tainacan/tainacan/blob/master/src/classes/background-process/generic-process/class-tainacan-generic-handler.php#L41-L41)
 
 ---------------------------------
 <br>
