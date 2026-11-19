@@ -1345,7 +1345,7 @@ return apply_filters( 'tainacan-i18n', [
 		],
 		'collection-settings' => [
 			'title'   => __( 'Collection settings', 'tainacan' ),
-			'content' => '<p>' . __( 'These are the settings of this collection: name, description, status, images, address and moderators, and which metadata it inherits from a parent collection. Public collections are visible to visitors; private ones stay limited to their author and moderators.', 'tainacan' ) . '</p>',
+			'content' => '<p>' . __( 'Here you set this collection\'s name, description, slug and status, its thumbnail and header image, and an optional cover page. The same screen sets how the item list is shown, how the item form behaves, and whether visitors can submit items. A published collection is visible to everyone; a private one is visible only to you and to people with permission.', 'tainacan' ) . '</p>',
 			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/collections'
 		],
 		'taxonomies' => [
