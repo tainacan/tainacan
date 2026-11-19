@@ -394,6 +394,13 @@ class REST_Importers_Controller extends REST_Controller {
 			], 400);
 		}
 
+		if (method_exists($importer, 'validate_options') && true !== ($validation = $importer->validate_options())) {
+			return new \WP_REST_Response([
+				'error_message' => $validation,
+				'session_id' => $session_id
+			], 400);
+		}
+
 		$process = $Tainacan_Importer_Handler->add_to_queue($importer);
 
 		if (false === $process) {

@@ -23,7 +23,10 @@
                 <div 
                         v-if="exporterSession.options_form"
                         class="column is-gapless">
-                    <form id="exporterOptionsForm">
+                    <form
+                            id="exporterOptionsForm"
+                            @input="checkOptionsForm"
+                            @change="checkOptionsForm">
                         <div v-html="exporterSession.options_form" />
                     </form>
                 </div>
@@ -157,6 +160,7 @@
                 sendEmail: '0',
                 runButtonLoading: false,
                 exporterSession: {},
+                optionsFormIsValid: true,
                 formErrorMessage: '',
                 isLoading: false
             }
@@ -179,6 +183,7 @@
                     this.selectedMapping = this.exporterSession.mapping_selected;
                     
                     this.isLoading = false;
+                    this.$nextTick(this.checkOptionsForm);
                 })
                 .catch((error) => {
                     this.applyApiFormError(error);
@@ -381,8 +386,18 @@
                         this.runButtonLoading = false;
                     }); 
             },
+            checkOptionsForm() {
+                const formElement = document.getElementById('exporterOptionsForm');
+                if (!formElement) {
+                    this.optionsFormIsValid = !this.exporterSession.options_form;
+                    return;
+                }
+                const controls = formElement.querySelectorAll('input, select, textarea');
+                this.optionsFormIsValid = Array.from(controls).every((control) => control.checkValidity());
+            },
             formIsValid(){
                 return (
+                    this.optionsFormIsValid &&
                     ((this.exporterSession.manual_collection && this.selectedCollection) || !this.exporterSession.manual_collection) &&
                     ((!this.exporterSession.accept_no_mapping && this.selectedMapping) ||
                         this.exporterSession.accept_no_mapping) &&

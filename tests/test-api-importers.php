@@ -80,4 +80,71 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertStringNotContainsString( 'root:x:0:0', wp_json_encode( $source_response->get_data() ) );
 	}
 
+	private function count_bg_processes() {
+		global $wpdb;
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}tnc_bg_process" );
+	}
+
+	private function run_importer( $slug, $options = [] ) {
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$importer = $Tainacan_Importer_Handler->initialize_importer( $slug );
+		$importer->set_options( $options );
+		$Tainacan_Importer_Handler->save_importer_instance( $importer );
+
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/importers/session/' . $importer->get_id() . '/run' );
+		return $this->server->dispatch( $request );
+	}
+
+	public function test_run_rejects_terms_importer_without_taxonomy() {
+		$before = $this->count_bg_processes();
+		$response = $this->run_importer( 'terms' );
+
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertEquals( 'Select an existing taxonomy or enter a name for the new one.', $response->get_data()['error_message'] );
+		$this->assertEquals( $before, $this->count_bg_processes() );
+	}
+
+	public function test_run_rejects_terms_importer_with_unknown_taxonomy() {
+		$before = $this->count_bg_processes();
+		$response = $this->run_importer( 'terms', [ 'select_taxonomy' => 'tnc_tax_999999' ] );
+
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertEquals( 'The selected taxonomy was not found.', $response->get_data()['error_message'] );
+		$this->assertEquals( $before, $this->count_bg_processes() );
+	}
+
+	public function test_run_queues_terms_importer_with_new_taxonomy() {
+		$response = $this->run_importer( 'terms', [ 'new_taxonomy' => 'Nova taxonomia' ] );
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertArrayHasKey( 'bg_process_id', $response->get_data() );
+	}
+
+	public function test_run_rejects_terms_importer_with_invalid_delimiter() {
+		$before = $this->count_bg_processes();
+
+		foreach ( [ '', ';;' ] as $delimiter ) {
+			$response = $this->run_importer( 'terms', [
+				'new_taxonomy' => 'Nova taxonomia',
+				'delimiter'    => $delimiter,
+			] );
+
+			$this->assertEquals( 400, $response->get_status() );
+			$this->assertEquals( 'The CSV delimiter must be a single character.', $response->get_data()['error_message'] );
+			$this->assertEquals( $before, $this->count_bg_processes() );
+		}
+	}
+
+	public function test_run_rejects_csv_importer_with_invalid_delimiter() {
+		$before = $this->count_bg_processes();
+
+		foreach ( [ '', ';;' ] as $delimiter ) {
+			$response = $this->run_importer( 'csv', [ 'delimiter' => $delimiter ] );
+
+			$this->assertEquals( 400, $response->get_status() );
+			$this->assertEquals( 'The CSV delimiter must be a single character.', $response->get_data()['error_message'] );
+			$this->assertEquals( $before, $this->count_bg_processes() );
+		}
+	}
+
 }
