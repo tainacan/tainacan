@@ -398,9 +398,7 @@ export const updateItemDocumentContentIndex = ({}, { itemId, documentContentInde
 export const sendAttachment = ( { commit }, { item_id, file }) => {
     commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
-        axios.wpApi.post('/media/?post=' + item_id, file, {
-            headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
-        })
+        axios.uploadMediaFile({ file, postId: item_id })
             .then( res => {
                 let attachment = res.data;
                 commit('setSingleAttachment', attachment);
@@ -410,6 +408,21 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
             .catch(error => {
                 reject( error.response );
             });
+    });
+};
+
+/**
+ * Uploads a file to be used as the item document via WordPress media API.
+ * Unlike `sendAttachment`, it does not add the raw media response to the attachments list,
+ * which expects the Tainacan attachment format and is reloaded once the document is set.
+ * Dispatches `item/sendDocumentFile`.
+ * @returns {Promise<Object>} Resolves with uploaded media data; rejects with the request error.
+ */
+export const sendDocumentFile = ( {}, { item_id, file, onUploadProgress }) => {
+    return new Promise(( resolve, reject ) => {
+        axios.uploadMediaFile({ file, postId: item_id, onUploadProgress })
+            .then( res => resolve( res.data ) )
+            .catch( error => reject( error ) );
     });
 };
 

@@ -144,7 +144,18 @@ wpAbilitiesApi.interceptors.response.use(
     (error) => tainacanErrorHandler(error)
 );
 
+// Uploads a file to the WordPress media library the same way the media modal does: as multipart
+// form data, so WordPress handles it from $_FILES (wp_handle_upload) and applies the upload limits.
+export const uploadMediaFile = ({ file, postId, onUploadProgress }) => {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    if (postId)
+        formData.append('post', postId);
+
+    return wpApi.post('/media/', formData, { onUploadProgress });
+};
+
 export const CancelToken = axios.CancelToken;
 export const isCancel = axios.isCancel;
 export const all = axios.all;
-export default { tainacanApi, wpApi, wpAbilitiesApi, wpAjax, CancelToken, isCancel, all, tainacanErrorHandler };
+export default { tainacanApi, wpApi, wpAbilitiesApi, wpAjax, CancelToken, isCancel, all, tainacanErrorHandler, uploadMediaFile };
