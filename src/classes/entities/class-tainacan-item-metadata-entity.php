@@ -595,6 +595,15 @@ class Item_Metadata_Entity extends Entity {
 			}
 		}
 
+		$is_term = is_object( $classMetadatumType ) && $classMetadatumType->get_primitive_type() == 'term';
+		$taxonomy_slug = null;
+		if ( $is_term ) {
+			$taxonomy_id = $classMetadatumType->get_option( 'taxonomy_id' );
+			if ( is_numeric( $taxonomy_id ) ) {
+				$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( (int) $taxonomy_id );
+			}
+		}
+
 		if ($this->is_multiple()) {
 			if (is_array($value)) {
 				$cardinality = $metadatum->get_cardinality();
@@ -612,25 +621,39 @@ class Item_Metadata_Entity extends Entity {
 						$one_filled = true;
 
 					if ($this->is_collection_key()) {
-						if ( !isset($dupe_array[$val]) ) {
-							$dupe_array[$val] = 1;
+						$val_key = ( $val instanceof \Tainacan\Entities\Entity ) ? $val->get_id() : $val;
+
+						if ( !isset($dupe_array[$val_key]) ) {
+							$dupe_array[$val_key] = 1;
 						} else
-						if (++$dupe_array[$val] > 1) {
+						if (++$dupe_array[$val_key] > 1) {
 							/* translators: %s is the metadatum name */
 							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 							return false;
 						}
 
 						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-						$test = $Tainacan_Items->fetch([
-							'meta_query' => [
-								[
-									'key'   => $this->metadatum->get_id(),
-									'value' => $val
-								]
-							],
-							'post__not_in' => [$item->get_id()]
-						], $item->get_collection());
+						if ( $is_term && $taxonomy_slug ) {
+							$test = $Tainacan_Items->fetch([
+								'tax_query' => [
+									[
+										'taxonomy' => $taxonomy_slug,
+										'terms'    => $val_key
+									]
+								],
+								'post__not_in' => [$item->get_id()]
+							], $item->get_collection());
+						} else {
+							$test = $Tainacan_Items->fetch([
+								'meta_query' => [
+									[
+										'key'   => $this->metadatum->get_id(),
+										'value' => $val_key
+									]
+								],
+								'post__not_in' => [$item->get_id()]
+							], $item->get_collection());
+						}
 
 						if ($test->have_posts()) {	
 							/* translators: %s is the metadatum name */
@@ -668,6 +691,7 @@ class Item_Metadata_Entity extends Entity {
 			}
 			
 			if ($this->is_collection_key()) {
+				$value_key = ( $value instanceof \Tainacan\Entities\Entity ) ? $value->get_id() : $value;
 				$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 				if($metadatum->get_parent()) {
 					$patent_metadatum = \tainacan_metadata()->fetch( $metadatum->get_parent(), 'OBJECT' );
@@ -676,7 +700,7 @@ class Item_Metadata_Entity extends Entity {
 						$test = get_post_meta( $item->get_id(), $this->metadatum->get_id(), true);
 						$rows = $wpdb->get_results(
 							$wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s AND meta_value = %s AND meta_id <> %d",
-							$item->get_id(), $this->metadatum->get_id(), $value, $this->get_meta_id()),
+							$item->get_id(), $this->metadatum->get_id(), $value_key, $this->get_meta_id()),
 						ARRAY_A );
 						if ( is_array( $rows ) &&  count($rows) > 0 ) {
 							if( !$this->get_meta_id() ) {
@@ -694,15 +718,27 @@ class Item_Metadata_Entity extends Entity {
 						}
 					}
 				}
-				$test = $Tainacan_Items->fetch([
-					'meta_query' => [
-						[
-							'key'   => $this->metadatum->get_id(),
-							'value' => $value
+				if ( $is_term && $taxonomy_slug ) {
+					$test = $Tainacan_Items->fetch([
+						'tax_query' => [
+							[
+								'taxonomy' => $taxonomy_slug,
+								'terms'    => $value_key
+							]
 						],
-					],
-					'post__not_in' => [$item->get_id()]
-				], $item->get_collection());
+						'post__not_in' => [$item->get_id()]
+					], $item->get_collection());
+				} else {
+					$test = $Tainacan_Items->fetch([
+						'meta_query' => [
+							[
+								'key'   => $this->metadatum->get_id(),
+								'value' => $value_key
+							],
+						],
+						'post__not_in' => [$item->get_id()]
+					], $item->get_collection());
+				}
 
 				if ($test->have_posts()) {
 					// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
