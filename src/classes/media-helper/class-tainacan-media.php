@@ -828,7 +828,17 @@ class Media {
 	}
 
 	public function get_attachment_html_url($attachment_id) {
-		return site_url( $this->attachment_html_url_base . '/' . (int) $attachment_id );
+		/**
+		 * Filters the attachment viewer URL used by the media gallery lightbox.
+		 *
+		 * @param string $url           Default Tainacan attachment viewer URL.
+		 * @param int    $attachment_id Attachment ID.
+		 */
+		return apply_filters(
+			'tainacan-get-attachment-html-url',
+			site_url( $this->attachment_html_url_base . '/' . (int) $attachment_id ),
+			(int) $attachment_id
+		);
 	}
 
 	public function attachment_page() {
