@@ -134,16 +134,16 @@
                             <td
                                     class="table-creation column-default-width"
                                     :label="$i18n.get('label_queued_on')"
-                                    :aria-label="$i18n.get('label_queued_on') + ': ' + getDate(bgProcess.queued_on)">
+                                    :aria-label="$i18n.get('label_queued_on') + ': ' + getUTCDate(bgProcess.queued_on)">
                                 <p
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
-                                            content: getDate(bgProcess.queued_on),
+                                            content: getUTCDate(bgProcess.queued_on),
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }">
-                                    {{ getDate(bgProcess.queued_on) }}
+                                    {{ getUTCDate(bgProcess.queued_on) }}
                                 </p>
                             </td>
 
@@ -151,17 +151,17 @@
                             <td
                                     class="table-modification column-default-width"
                                     :label="$i18n.get('label_last_processed_on')"
-                                    :aria-label="$i18n.get('label_last_processed_on') + ': ' + getDate(bgProcess.processed_last)">
+                                    :aria-label="$i18n.get('label_last_processed_on') + ': ' + getUTCDate(bgProcess.processed_last)">
                                 <p
                                         v-tooltip="{
                                             delay: { show: 500, hide: 300 },
-                                            content: getDate(bgProcess.processed_last),
+                                            content: getUTCDate(bgProcess.processed_last),
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                         :class="{ 'is-not-processed': !hasValidDate(bgProcess.processed_last) }">
-                                    {{ getDate(bgProcess.processed_last) }}
+                                    {{ getUTCDate(bgProcess.processed_last) }}
                                 </p>
                             </td>
 
@@ -281,7 +281,45 @@
                                     </span>
                                     <div
                                             class="output-card-body"
-                                            v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_process_summary')" />
+                                            :class="{
+                                                'has-unavailable-exporter-file':
+                                                    bgProcess.output_files_expired ||
+                                                    bgProcess.output_files_download_allowed === false
+                                            }"
+                                            :aria-label="
+                                                bgProcess.output_files_expired
+                                                    ? $i18n.get('label_exporter_file_expired')
+                                                    : $i18n.get('label_process_summary')
+                                            ">
+                                        <div
+                                                v-html="
+                                                    bgProcess.output
+                                                        ? bgProcess.output
+                                                        : $i18n.get('label_no_process_summary')
+                                                " />
+
+                                        <p
+                                                v-if="bgProcess.output_files_expired"
+                                                class="has-text-danger">
+                                            {{ $i18n.get('label_exporter_file_expired') }}
+                                        </p>
+
+                                        <p
+                                                v-else-if="bgProcess.output_files_download_allowed === false"
+                                                class="has-text-danger">
+                                            {{ $i18n.get('label_exporter_file_download_not_allowed') }}
+                                        </p>
+
+                                        <p
+                                                v-else-if="bgProcess.output_files_expires_at"
+                                                class="exporter-file-expiration-notice">
+                                            {{ $i18n.get('label_exporter_file_expiration_notice') }}
+                                            <strong>
+                                                {{ $i18n.get('label_exporter_file_available_until') }}
+                                                {{ getDate(bgProcess.output_files_expires_at) }}
+                                            </strong>
+                                        </p>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -433,6 +471,13 @@
                         beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     }
                 });
+            },
+            getUTCDate(rawDate) {
+                if (!this.hasValidDate(rawDate)) {
+                    return this.getDate(rawDate);
+                }
+
+                return moment.utc(rawDate).local().format(this.dateFormat);
             },
             getDate(rawDate) {
                 // A process that has never been processed has a zero/empty
@@ -678,6 +723,9 @@
                     &:last-child {
                         margin-bottom: 0;
                     }
+                }
+                &.has-unavailable-exporter-file :deep(a) {
+                    display: none;
                 }
             }
         }

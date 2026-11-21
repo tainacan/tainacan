@@ -51,6 +51,15 @@ class Exporter_Handler {
 			]);
 		}
 
+		$this->register_exporter([
+			'name' => __('Activity History (CSV or JSON)', 'tainacan'),
+			'description' => __('Export the complete activity history to a CSV or JSON file.', 'tainacan'),
+			'slug' => 'logscsv',
+			'class_name' => '\Tainacan\Exporter\Logs_Exporter',
+			'manual_mapping' => false,
+			'manual_collection' => false
+		]);
+
 		do_action('tainacan-register-exporters', $this);
 
 		add_action( 'tainacan-enqueue-admin-scripts', array($this, 'enqueue_scripts') );
