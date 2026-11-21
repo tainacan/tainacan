@@ -281,7 +281,45 @@
                                     </span>
                                     <div
                                             class="output-card-body"
-                                            v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_process_summary')" />
+                                            :class="{
+                                                'has-unavailable-exporter-file':
+                                                    bgProcess.output_files_expired ||
+                                                    bgProcess.output_files_download_allowed === false
+                                            }"
+                                            :aria-label="
+                                                bgProcess.output_files_expired
+                                                    ? $i18n.get('label_exporter_file_expired')
+                                                    : $i18n.get('label_process_summary')
+                                            ">
+                                        <div
+                                                v-html="
+                                                    bgProcess.output
+                                                        ? bgProcess.output
+                                                        : $i18n.get('label_no_process_summary')
+                                                " />
+
+                                        <p
+                                                v-if="bgProcess.output_files_expired"
+                                                class="has-text-danger">
+                                            {{ $i18n.get('label_exporter_file_expired') }}
+                                        </p>
+
+                                        <p
+                                                v-else-if="bgProcess.output_files_download_allowed === false"
+                                                class="has-text-danger">
+                                            {{ $i18n.get('label_exporter_file_download_not_allowed') }}
+                                        </p>
+
+                                        <p
+                                                v-else-if="bgProcess.output_files_expires_at"
+                                                class="exporter-file-expiration-notice">
+                                            {{ $i18n.get('label_exporter_file_expiration_notice') }}
+                                            <strong>
+                                                {{ $i18n.get('label_exporter_file_available_until') }}
+                                                {{ getDate(bgProcess.output_files_expires_at) }}
+                                            </strong>
+                                        </p>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -678,6 +716,9 @@
                     &:last-child {
                         margin-bottom: 0;
                     }
+                }
+                &.has-unavailable-exporter-file :deep(a) {
+                    display: none;
                 }
             }
         }
