@@ -195,7 +195,7 @@ class REST_Reports_Controller extends REST_Controller {
 				'schema' => array($this, 'get_activities_schema'),
 			)
 		);
-		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)',
+		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadatum_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -212,7 +212,7 @@ class REST_Reports_Controller extends REST_Controller {
 								'type'				=> 'string',
 								'required' 			=> true,
 							],
-							'metadata_id' => [
+							'metadatum_id' => [
 								'description'       => __('Metadatum ID.', 'tainacan'),
 								'type'				=> 'string',
 								'required' 			=> true,
@@ -312,11 +312,17 @@ class REST_Reports_Controller extends REST_Controller {
 		if(isset($request['collection_id'])) {
 			$collection_id = $request['collection_id'];
 			
+			// Check existence before the cache: a report cached for a week must not
+			// keep answering 200 after the collection is deleted.
+			$collection = $this->collections_repository->fetch($collection_id);
+			if ( ! $collection instanceof Entities\Collection ) {
+				return $this->not_found( __('A collection with this ID was not found', 'tainacan'), 'collection_id', $collection_id );
+			}
+
 			$key_cache_object = 'summary_' . $collection_id;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
-			
-			$collection = $this->collections_repository->fetch($collection_id);
+
 			$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
 			if (isset($total_items->publish) ||
 				isset($total_items->private) ||
@@ -450,6 +456,9 @@ class REST_Reports_Controller extends REST_Controller {
 		);
 		$taxonomy_id = $request['taxonomy_id'];
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+		if ( ! $taxonomy instanceof Entities\Taxonomy ) {
+			return $this->not_found( __('A taxonomy with this ID was not found', 'tainacan'), 'taxonomy_id', $taxonomy_id );
+		}
 		$taxonomy_identifier = $taxonomy->get_db_identifier();
 		$taxonomy_total_terms = wp_count_terms(array('taxonomy' => $taxonomy_identifier, 'hide_empty' => false) );
 		$limit = 100;
@@ -488,17 +497,28 @@ class REST_Reports_Controller extends REST_Controller {
 			'list' => array()
 		);
 		$collection_id = $request['collection_id'];
-		$taxonomy_metadata_id = $request['metadata_id'];
+		$taxonomy_metadata_id = $request['metadatum_id'];
 		$parent_id = 0;
 		if ( isset($request['parent']) ) {
 			$parent_id = (int) $request['parent'];
 		}
 		
+		// Check existence before the cache: a report cached for a week must not
+		// keep answering 200 after the collection or the metadatum is deleted.
+		$collection = $this->collections_repository->fetch($collection_id);
+		if ( ! $collection instanceof Entities\Collection ) {
+			return $this->not_found( __('A collection with this ID was not found', 'tainacan'), 'collection_id', $collection_id );
+		}
+
+		$metadatum = $this->metadatum_repository->fetch($taxonomy_metadata_id);
+		if ( ! $metadatum instanceof Entities\Metadatum ) {
+			return $this->not_found( __('A metadatum with this ID was not found', 'tainacan'), 'metadatum_id', $taxonomy_metadata_id );
+		}
+
 		$key_cache_object = "facet_taxonomy_$taxonomy_metadata_id-$collection_id-$parent_id";
 		$cached_object = $this->get_cache_object($key_cache_object, $request);
 		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
-		$metadatum = $this->metadatum_repository->fetch($taxonomy_metadata_id);
 		$metadatum_type = $metadatum->get_metadata_type();
 		if($metadatum_type != 'Tainacan\Metadata_Types\Taxonomy') {
 			return new \WP_REST_Response([
@@ -546,11 +566,17 @@ class REST_Reports_Controller extends REST_Controller {
 		if(isset($request['collection_id'])) {
 			$collection_id = $request['collection_id'];
 
+			// Check existence before the cache: a report cached for a week must not
+			// keep answering 200 after the collection is deleted.
+			$collection = $this->collections_repository->fetch( $collection_id );
+			if ( ! $collection instanceof Entities\Collection ) {
+				return $this->not_found( __('A collection with this ID was not found', 'tainacan'), 'collection_id', $collection_id );
+			}
+
 			$key_cache_object = 'stats_collection_metadata_' . $collection_id;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
-			$collection = new Entities\Collection( $collection_id );
 			$result_metadatum = $this->metadatum_repository->fetch_by_collection( $collection, [] );
 			$response['totals']['metadata']['total'] = count($result_metadatum);
 			$meta_ids=[];
@@ -780,30 +806,6 @@ class REST_Reports_Controller extends REST_Controller {
 		
 		$start = $interval['start'];
 		$end = $interval['end'];
-		/**
-		 * Temporary fallback for sites that cannot run the WP-CLI log migration command.
-		 * The TAINACAN_USE_DEPRECATED_LOGS constant must be manually defined in wp-config.php to enable this behavior.
-		 * This block will be removed in future versions once legacy support is discontinued.
-		 * 
-		 */ 
-		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-			$collection_from = '';
-			$params          = [ $start, $end ];
-			if($collection_id !== false) {
-				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-				$params          = [ 'collection_id', sanitize_text_field( (string) $collection_id ), $start, $end ];
-			}
-			return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				"SELECT count(*) as total, DATE(p.post_date) as date
-				FROM $wpdb->posts p "
-				. $collection_from // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				. " WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN %s AND %s
-				GROUP BY DATE(p.post_date)
-				ORDER BY DATE(p.post_date)",
-				...$params
-			) );
-		}
-
 		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
 		[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
 		// Date range placeholders come first. $collection_where adds collection_id = %s only when a collection is set.
@@ -830,36 +832,18 @@ class REST_Reports_Controller extends REST_Controller {
 		
 		$start = $interval['start'];
 		$end = $interval['end'];
-		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-			$collection_from = '';
-			$params          = [ $start, $end ];
-			if($collection_id !== false) {
-				$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key = %s AND pm.meta_value = %s)";
-				$params          = [ 'collection_id', sanitize_text_field( (string) $collection_id ), $start, $end ];
-			}
-			$data = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				"SELECT p.post_author  as user_id, count(*) as total, DATE(p.post_date) as date
-				FROM $wpdb->posts p "
-				. $collection_from // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_from is empty or the fixed collection JOIN. Its %s tokens are bound by this prepare(), before the date range.
-				. " WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN %s AND %s
-				GROUP BY p.post_author, DATE(p.post_date)
-				ORDER BY DATE(p.post_date)",
-				...$params
-			) );
-		} else {
-			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
-			[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
-			// Date range placeholders come first. $collection_where adds collection_id = %s only when a collection is set.
-			$params = array_merge( [ $start, $end ], $collection_params );
-			$data = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- The table name comes from Logs::get_table_name(). $collection_where is 1=1 or collection_id = %s, bound after the date range.
-				"SELECT p.user_id, count(*) as total, DATE(p.date) as date FROM "
-				. $tainacan_log_table // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $tainacan_log_table comes from Logs::get_table_name(), $wpdb->prefix . 'tainacan_logs'.
-				. " p WHERE p.date BETWEEN %s AND %s AND ("
-				. $collection_where // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_where is 1=1 or collection_id = %s from build_logs_collection_where().
-				. ") GROUP BY p.user_id, DATE(p.date) ORDER BY DATE(p.date)",
-				...$params
-			) );
-		}
+		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
+		[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
+		// Date range placeholders come first. $collection_where adds collection_id = %s only when a collection is set.
+		$params = array_merge( [ $start, $end ], $collection_params );
+		$data = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- The table name comes from Logs::get_table_name(). $collection_where is 1=1 or collection_id = %s, bound after the date range.
+			"SELECT p.user_id, count(*) as total, DATE(p.date) as date FROM "
+			. $tainacan_log_table // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $tainacan_log_table comes from Logs::get_table_name(), $wpdb->prefix . 'tainacan_logs'.
+			. " p WHERE p.date BETWEEN %s AND %s AND ("
+			. $collection_where // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $collection_where is 1=1 or collection_id = %s from build_logs_collection_where().
+			. ") GROUP BY p.user_id, DATE(p.date) ORDER BY DATE(p.date)",
+			...$params
+		) );
 		$arr = array();
 		$avatar_sizes = rest_get_avatar_sizes();
 		foreach ($data as $item) {
@@ -888,43 +872,20 @@ class REST_Reports_Controller extends REST_Controller {
 
 	private function get_activities_users($collection_id = false) {
 		global $wpdb;
-		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-			$collection_from = '';
-			if($collection_id !== false) {
-				$collection_from = "INNER JOIN {$wpdb->postmeta} pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key = %s AND pm_col.meta_value = %s)";
-			}
-			$activities_by_user_sql = "SELECT count(*) as total, p.post_author as user, pm.meta_value as action
-				FROM $wpdb->posts p
-				INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'action' "
-				. $collection_from
-				. " WHERE p.post_type='tainacan-log'
-				GROUP BY p.post_author, pm.meta_value
-				ORDER BY total DESC";
-			if($collection_id !== false) {
-				$results = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $activities_by_user_sql appends the fixed collection JOIN. Its %s tokens are the only placeholders and are bound here.
-					$activities_by_user_sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $activities_by_user_sql appends the fixed collection JOIN. Its %s tokens are the only placeholders and are bound here.
-					'collection_id',
-					sanitize_text_field( (string) $collection_id )
-				) );
-			} else {
-				$results = $wpdb->get_results( $activities_by_user_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No collection filter, so the query has no placeholders.
-			}
+		$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
+		[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
+		$activities_by_user_sql = "SELECT count(*) as total, p.user_id as user, p.action as action FROM "
+			. $tainacan_log_table
+			. " p WHERE "
+			. $collection_where
+			. " GROUP BY p.user_id, p.action ORDER BY total DESC";
+		if ( ! empty( $collection_params ) ) {
+			$results = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
+				$activities_by_user_sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
+				...$collection_params
+			) );
 		} else {
-			$tainacan_log_table = Repositories\Logs::get_instance()->get_table_name();
-			[ $collection_where, $collection_params ] = $this->build_logs_collection_where( $collection_id );
-			$activities_by_user_sql = "SELECT count(*) as total, p.user_id as user, p.action as action FROM "
-				. $tainacan_log_table
-				. " p WHERE "
-				. $collection_where
-				. " GROUP BY p.user_id, p.action ORDER BY total DESC";
-			if ( ! empty( $collection_params ) ) {
-				$results = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
-					$activities_by_user_sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $activities_by_user_sql uses Logs::get_table_name() and collection_id = %s from build_logs_collection_where().
-					...$collection_params
-				) );
-			} else {
-				$results = $wpdb->get_results( $activities_by_user_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No collection filter, so $collection_where is 1=1 and the query has no placeholders.
-			}
+			$results = $wpdb->get_results( $activities_by_user_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- No collection filter, so $collection_where is 1=1 and the query has no placeholders.
 		}
 		$response = [];
 		$avatar_sizes = rest_get_avatar_sizes();
@@ -962,6 +923,16 @@ class REST_Reports_Controller extends REST_Controller {
 	 * @var string
 	 */
 	private $prefix_transient_cahce = 'reports_tnc_v2_';
+
+	/**
+	 * Builds the 404 payload used when a requested entity does not exist.
+	 */
+	private function not_found( $message, $key, $id ) {
+		return new \WP_REST_Response([
+			'error_message' => $message,
+			$key            => $id
+		], 404);
+	}
 
 	private function get_cache_object($key, $request) {
 		if ( !isset($request['force']) || $request['force'] == 'no' ) {

@@ -20,7 +20,7 @@ Building selection flows is a relatively easy task if you're familiar with our [
 
 ## How It Works
 
-As an example we'll be demonstrating the usage of the `tainacan_multiple_item_selection_modal`, since it's the most complex one. Users will be familiar with this component if they ever used the [Items List](../blocks-items.md#lista-de-itens-da-coleção) or the [Carousel Items List](../blocks-items.md#carrossel-de-itens) Gutenberg blocks.
+As an example we'll be demonstrating the usage of the `tainacan_multiple_item_selection_modal`, since it's the most complex one. Users will be familiar with this component if they ever used the [Items List](/blocks-items.md#lista-de-itens-da-coleção) or the [Carousel Items List](/blocks-items.md#carrossel-de-itens) Gutenberg blocks.
 
 ## Setup
 

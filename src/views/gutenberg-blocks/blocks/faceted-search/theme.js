@@ -116,7 +116,11 @@ export default (element) => {
                     defaultOrder: getDataAttribute(blockElement, 'default-order', tainacan_plugin.default_order),
                     defaultOrderBy: (() => {
                         const defaultOrderByValue = maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby', tainacan_plugin.default_orderby));
-                        return defaultOrderByValue === 'creation_date' ? 'date' : defaultOrderByValue;
+                        if (defaultOrderByValue === 'creation_date')
+                            return 'date';
+                        if (defaultOrderByValue === 'modification_date')
+                            return 'modified';
+                        return defaultOrderByValue;
                     })(),
                     defaultOrderByMeta: getDataAttribute(blockElement, 'default-orderby-meta'),
                     defaultOrderByType: maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby-type')),

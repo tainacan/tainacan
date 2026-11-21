@@ -3,16 +3,6 @@
 namespace Tainacan\Repositories;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-/**
- * Temporary fallback for sites that cannot run the WP-CLI log migration command.
- * The TAINACAN_USE_DEPRECATED_LOGS constant must be manually defined in wp-config.php to enable this behavior.
- * This block will be removed in future versions once legacy support is discontinued.
- * 
- */ 
-if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-    require_once __DIR__ . '/class-tainacan-logs-deprecated.php';
-    return;
-}
 
 use Tainacan\Entities;
 use Tainacan\Entities\Entity;
@@ -32,6 +22,7 @@ class Logs extends Repository {
 	private $current_diff = null;
 	private $current_deleting_entity;
 	private $current_action;
+	private $current_attachment_delete_log;
 
 	protected function init() {
 

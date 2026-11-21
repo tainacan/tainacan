@@ -48,6 +48,7 @@ classDiagram
         +schedule_cron_healthcheck(schedules)
         +handle_cron_healthcheck()
         +handle_cron_healthcheck_check()
+        #utc_now()
         #detect_and_cleanup_stale_processes()
         +record_heartbeat()
         #schedule_event()
@@ -453,6 +454,28 @@ public handle_cron_healthcheck_check(): mixed
 ```
 
 If there is an open process, not running, and not scheduled. schedule it.
+
+***
+
+### utc_now
+
+Current UTC time, in the format used by the DATETIME columns.
+
+```php
+protected utc_now(): string
+```
+
+Every timestamp written by a background process (queued_on, processed_last)
+and every comparison against those columns must go through this method.
+Before 1.5.0 record_heartbeat() used current_time( 'mysql' ), which returns
+the site's local time, while the watchdog compared it against gmdate().
+On any site west of UTC a heartbeat written right now was already older than
+the stale timeout, so the watchdog closed live processes and they were
+re-dispatched while the original worker kept running.
+
+**See Also:**
+
+* https://github.com/tainacan/tainacan/issues/1285
 
 ***
 

@@ -45,8 +45,8 @@ class Core_Description extends Metadata_Type {
 				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
 			],
 			'use_rich_text_editor' => [
-				'title' => __( 'Use rich text editor', 'tainacan' ),
-				'description' => __( 'Replaces the textarea with the rich text editor when it is enabled for Tainacan. HTML saved in this field is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
+				'title' => __( 'Use formatted text editor', 'tainacan' ),
+				'description' => __( 'Replaces the textarea with the formatted text editor when it is enabled for Tainacan. HTML saved in this field is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
 			]
 		];
 	}

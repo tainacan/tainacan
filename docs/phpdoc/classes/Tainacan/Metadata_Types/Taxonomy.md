@@ -40,8 +40,8 @@ classDiagram
     class Entity {
         #repository : Repository
         -errors : array
-        #post_type : string|false
-        #capability_type : string|false
+        #post_type : string
+        #capability_type : string
         +WP_Post : WP_Post
         -validated : bool
         +cap : object
@@ -254,30 +254,30 @@ HTML fragment.
 ### get_term_hierarchy_html
 
 ```php
-private get_term_hierarchy_html(\Tainacan\Entities\Term $term, \Tainacan\Entities\Item $item = null): mixed
+private get_term_hierarchy_html(\Tainacan\Entities\Term $term, ?\Tainacan\Entities\Item $item = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$term`   | **\Tainacan\Entities\Term** |             |
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                         | Description |
+|-----------|------------------------------|-------------|
+| `$term`   | **\Tainacan\Entities\Term**  |             |
+| `$item`   | **?\Tainacan\Entities\Item** |             |
 
 ***
 
 ### term_to_html
 
 ```php
-private term_to_html(mixed $term, \Tainacan\Entities\Item $item = null): mixed
+private term_to_html(mixed $term, ?\Tainacan\Entities\Item $item = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$term`   | **mixed**                   |             |
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                         | Description |
+|-----------|------------------------------|-------------|
+| `$term`   | **mixed**                    |             |
+| `$item`   | **?\Tainacan\Entities\Item** |             |
 
 ***
 

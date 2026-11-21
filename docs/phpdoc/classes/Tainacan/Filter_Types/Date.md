@@ -13,9 +13,14 @@ Class TainacanFilterType
 classDiagram
     direction TB
     class Date {
+        -format : mixed
+        +output_date_format : mixed
         +__construct()
         +get_form_labels()
-        +validate_options(filter)
+        +validate(item_metadata)
+        +get_value_as_html(item_metadata)
+        -format_date_value(value)
+        -format_error_msg(value)
     }
 ```
 

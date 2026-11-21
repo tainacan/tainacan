@@ -84,7 +84,7 @@
                                 <!-- Metadata -------------------------------- -->
                                 <div class="metadata-area">
                                     <div 
-                                            v-for="(metadataSection, sectionIndex) of metadataSections"
+                                            v-for="(metadataSection, sectionIndex) of visibleMetadataSections"
                                             :key="sectionIndex">
                                         <div class="metadata-section-header section-label">
                                             <label>
@@ -122,7 +122,6 @@
                                                     </span>
                                                     <button 
                                                             v-if="!$adminOptions.hideItemSingleActivities &&
-                                                                !isUsingDeprecatedLogs &&
                                                                 $userCaps.hasCapability('tnc_rep_read_logs') &&
                                                                 itemMetadatum.metadatum.metadata_type_object.component != 'tainacan-compound'"
                                                             v-tooltip="{
@@ -529,6 +528,7 @@
 
 <script>
     import {mapActions, mapGetters} from 'vuex';
+    import { conditionalSectionIsHidden } from '../../js/conditional-sections';
     import FileItem from '../../components/other/file-item.vue';
     import ActivitiesPage from '../lists/activities-page.vue';
     import ExposersModal from '../../components/modals/exposers-modal.vue';
@@ -552,8 +552,7 @@
                 open: true,
                 urls_open: false,
                 entityName: 'item',
-                activeTab: 'metadata',
-                isUsingDeprecatedLogs: tainacan_plugin.tainacan_use_deprecated_logs
+                activeTab: 'metadata'
             }
         },
         computed: {
@@ -628,6 +627,12 @@
             },
             shouldDisplayItemSingleAttachments() {
                 return !this.$adminOptions.hideItemSingleAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
+            },
+            visibleMetadataSections() {
+                if (!Array.isArray(this.metadataSections))
+                    return [];
+
+                return this.metadataSections.filter(metadataSection => !this.isSectionHidden(metadataSection));
             }
         },
         created() {
@@ -716,6 +721,9 @@
                 this.fetchItemMetadata(this.itemId).then(() => {
                     this.isLoading = false;
                 });
+            },
+            isSectionHidden(metadataSection) {
+                return conditionalSectionIsHidden(metadataSection, this.itemMetadata);
             },
             openExposersModal() {
                 const modalTrigger = this.$modalFocusA11y.captureTrigger();

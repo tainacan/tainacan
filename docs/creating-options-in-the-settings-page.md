@@ -20,7 +20,7 @@ To understand deeply how WordPress handles option registration and settings fiel
 - [add_settings_field()](https://developer.wordpress.org/reference/functions/add_settings_field/)
 
 > [!NOTE]
-> These are general purpose options, that usually must be available accross the plugin or even the entire website, which is why they are stored using WordPress Options API. However you may be interested on storing extra data binded to some of the Tainacan entities, such as collections, items, metadata, etc. In that case, read the [Admin Form Hook](/dev/admin-form-hooks.md) documentation to see how you can add fields to each of their Admin fields.
+> These are general purpose options, that usually must be available accross the plugin or even the entire website, which is why they are stored using WordPress Options API. However you may be interested on storing extra data binded to some of the Tainacan entities, such as collections, items, metadata, etc. In that case, read the [Admin Form Hook](admin-form-hooks.md) documentation to see how you can add fields to each of their Admin fields.
 
 ## Basic Usage
 
@@ -347,4 +347,4 @@ Key benefits:
 - **Consistent styling** - Matches Tainacan's admin interface
 - **Easy maintenance** - Centralized settings management
 
-For more information, refer to the [WordPress Settings API documentation](https://developer.wordpress.org/plugins/settings/) and the [Tainacan core Settings class](https://github.com/tainacan/tainacan/blob/master/src/views/settings/class-tainacan-settings.php). For a broader map of plugin extension APIs, see the [Plugin Development Guidelines](/dev/plugin-development-guidelines.md).
+For more information, refer to the [WordPress Settings API documentation](https://developer.wordpress.org/plugins/settings/) and the [Tainacan core Settings class](https://github.com/tainacan/tainacan/blob/master/src/views/settings/class-tainacan-settings.php). For a broader map of plugin extension APIs, see the [Plugin Development Guidelines](plugin-development-guidelines.md).

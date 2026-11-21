@@ -16,6 +16,38 @@ to handle DB updates in the background.
 ```mermaid
 classDiagram
     direction TB
+    class Background_Process {
+        #table : string
+        +ID : false
+        #ownership_lost : bool
+        #prefix : string
+        #action : string
+        #name : string
+        #default_max_retries : int
+        +__construct()
+        +get_id()
+        +get_name()
+        +set_name(name)
+        +save(priority)
+        +update(key, batch)
+        +open(key)
+        +close(key, status)
+        #get_retry_state(key, status)
+        +delete(key)
+        #is_queue_empty()
+        #get_batch()
+        #get_batch_by_key(key)
+        #handle()
+        #owns_process(key)
+        #abort_worker_ownership_lost(key)
+        +delete_all_batches()
+        +kill_process()
+        #write_log_to_file(key, log, type)
+        #write_log(key, log)
+        #write_error_log(key, log)
+        -recursive_stingify_log_array(log, break)
+        -has_errors(key)
+    }
     class Background_Process_Base {
         #action : string
         #start_time : int
@@ -48,41 +80,13 @@ classDiagram
         +schedule_cron_healthcheck(schedules)
         +handle_cron_healthcheck()
         +handle_cron_healthcheck_check()
+        #utc_now()
         #detect_and_cleanup_stale_processes()
         +record_heartbeat()
         #schedule_event()
         #clear_scheduled_event()
         +cancel_process()
         +debug(message)
-    }
-    class Background_Process {
-        #table : string
-        +ID : false|int
-        #prefix : string
-        #action : string
-        #name : string
-        #default_max_retries : int
-        +__construct()
-        +get_id()
-        +get_name()
-        +set_name(name)
-        +save(priority)
-        +update(key, batch)
-        +open(key)
-        +close(key, status)
-        #get_retry_state(key, status)
-        +delete(key)
-        #is_queue_empty()
-        #get_batch()
-        #get_batch_by_key(key)
-        #handle()
-        +delete_all_batches()
-        +kill_process()
-        #write_log_to_file(key, log, type)
-        #write_log(key, log)
-        #write_error_log(key, log)
-        -recursive_stingify_log_array(log, break)
-        -has_errors(key)
     }
     class Async_Request {
         #prefix : string
@@ -120,6 +124,21 @@ ID of the process in the database
 ```php
 public false|int $ID
 ```
+
+***
+
+### ownership_lost
+
+Whether this worker lost the ownership of the process it was running.
+
+```php
+protected bool $ownership_lost
+```
+
+Set when another request took the process over, typically after the
+watchdog re-queued it. It stops this worker before its next iteration and
+keeps the shutdown handler from closing a process that belongs to someone
+else now.
 
 ***
 
@@ -382,6 +401,53 @@ within server memory and time limit constraints.
 
 Tainacan comments: This is where we changed the mos from otiginal class.
 Each batch is a single array of data. There is no queue inside a batch.
+
+***
+
+### owns_process
+
+Whether this request still owns the given process.
+
+```php
+protected owns_process(int $key): bool
+```
+
+A worker owns a process while the row is still 'running' and the process
+lock still holds the value this request stored in lock_process(). Ownership
+is lost when someone else closes and re-queues the process (the watchdog
+after a false stale detection, for example) or when another request takes
+the lock after unlock_process(). Continuing to run in that situation leaves
+two workers writing the same batch and the same output.
+
+**Parameters:**
+
+| Parameter | Type    | Description |
+|-----------|---------|-------------|
+| `$key`    | **int** | Process ID. |
+
+**See Also:**
+
+* https://github.com/tainacan/tainacan/issues/1285
+
+***
+
+### abort_worker_ownership_lost
+
+Stop this worker because another request owns the process now.
+
+```php
+protected abort_worker_ownership_lost(int $key): void
+```
+
+Nothing is updated, closed or unlocked here on purpose: the row and the
+lock belong to the current owner, and closing the row from a stale worker is
+what produced the duplicated batches reported in #1285.
+
+**Parameters:**
+
+| Parameter | Type    | Description |
+|-----------|---------|-------------|
+| `$key`    | **int** | Process ID. |
 
 ***
 
@@ -834,6 +900,28 @@ public handle_cron_healthcheck_check(): mixed
 ```
 
 If there is an open process, not running, and not scheduled. schedule it.
+
+***
+
+### utc_now
+
+Current UTC time, in the format used by the DATETIME columns.
+
+```php
+protected utc_now(): string
+```
+
+Every timestamp written by a background process (queued_on, processed_last)
+and every comparison against those columns must go through this method.
+Before 1.5.0 record_heartbeat() used current_time( 'mysql' ), which returns
+the site's local time, while the watchdog compared it against gmdate().
+On any site west of UTC a heartbeat written right now was already older than
+the stale timeout, so the watchdog closed live processes and they were
+re-dispatched while the original worker kept running.
+
+**See Also:**
+
+* https://github.com/tainacan/tainacan/issues/1285
 
 ***
 

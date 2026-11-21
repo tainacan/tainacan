@@ -1861,7 +1861,13 @@ export default {
                             // Not every metadata can be used for sorting
                             this.sortingMetadata = JSON.parse(JSON.stringify(this.metadata));
 
-                            // Adds creation date as it is the default
+                            // Core dates are not metadata, so they are appended as sort options.
+                            this.sortingMetadata.push({
+                                name: this.$i18n.get('label_modification_date'),
+                                metadata_type: undefined,
+                                slug: 'modification_date',
+                                id: 'modified'
+                            });
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadata_type: undefined,

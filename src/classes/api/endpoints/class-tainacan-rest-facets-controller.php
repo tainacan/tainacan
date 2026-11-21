@@ -24,8 +24,6 @@ class REST_Facets_Controller extends REST_Controller {
 	 */
 	public function __construct() {
 		$this->rest_base = 'facets';
-		$this->total_pages = 0;
-		$this->total_items = 0;
 		parent::__construct();
         add_action('init', array(&$this, 'init_objects'), 11);
 	}
@@ -107,6 +105,12 @@ class REST_Facets_Controller extends REST_Controller {
 			}
 			$query_args = $this->prepare_filters($query_args);
 
+			// current_query is not a registered REST argument, so sentence arrives as the
+			// query-string value. The string "false" must not be treated as a phrase search.
+			if ( is_array( $query_args ) && array_key_exists( 'sentence', $query_args ) ) {
+				$query_args['sentence'] = rest_sanitize_boolean( $query_args['sentence'] );
+			}
+
 			if ( isset($request['hideempty']) && $request['hideempty'] == 0 ) {
 				$query_args = false;
 			}
@@ -179,7 +183,12 @@ class REST_Facets_Controller extends REST_Controller {
 							$second_arg = $val['taxonomy'];
 						}
 						$entity = $metadatum_type_object->get_repository()->fetch( (int) $val['value'], $second_arg );
-						
+
+						// The referenced entity may no longer exist (e.g. a deleted item still indexed as a value).
+						if ( ! $entity instanceof Entities\Entity || ! $entity->get_id() ) {
+							return $val;
+						}
+
 						$add_attt_item = function($array_item, $item) {
 							$array_item['thumbnail'] = $item->get_thumbnail();
 							return $array_item;
@@ -189,7 +198,7 @@ class REST_Facets_Controller extends REST_Controller {
 						remove_filter( 'tainacan-item-to-array', $add_attt_item, 10);
 
 						return $val;
-						
+
 					}, $all_values['values']);
 				}
 
@@ -264,6 +273,13 @@ class REST_Facets_Controller extends REST_Controller {
 							'parent' => [
 								'type' => 'string',
 								'description' => __( 'Parent term id, if coming from a Taxonomy metadata type that has hierarchy.', 'tainacan' ),
+							],
+							'ancestors' => [
+								'type' => 'array',
+								'description' => __( 'Ancestor term ids, nearest parent first, when the facet comes from a hierarchical taxonomy.', 'tainacan' ),
+								'items' => [
+									'type' => 'integer',
+								],
 							],
 							'total_items' => [
 								'type' => 'integer',

@@ -15,36 +15,6 @@ and operations within Tainacan including entity modifications.
 ```mermaid
 classDiagram
     direction TB
-    class Logs {
-        +entities_type : mixed
-        -current_diff : mixed
-        -current_deleting_entity : mixed
-        -current_action : mixed
-        #init()
-        #_get_map()
-        +register_post_type()
-        +fetch(args, _output)
-        +fetch_count(args)
-        -build_where(args)
-        -normalize_date_bound(date, bound)
-        -row_to_entity(row)
-        +get_table_name()
-        +insert(obj)
-        +update(object, new_values)
-        +fetch_last()
-        +insert_attachment(post_ID)
-        +pre_delete_attachment(attachment_id)
-        +delete_attachment(attachment_id)
-        +pre_insert_entity(unsaved)
-        -prepare_item_metadata_diff(unsaved)
-        +__temporary_multivalue_separator(sep)
-        +insert_entity(entity)
-        +pre_delete_entity(entity, permanent)
-        +delete_entity(entity, permanent)
-        -insert_item_metadata(entity)
-        +filter_log_title(title)
-        +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
-    }
     class Repository {
         +entities_type : string
         #use_logs : bool
@@ -87,6 +57,38 @@ classDiagram
         -current_diff : mixed
         -current_deleting_entity : mixed
         -current_action : mixed
+        -current_attachment_delete_log : mixed
+        #init()
+        #_get_map()
+        +register_post_type()
+        +fetch(args, _output)
+        +fetch_count(args)
+        -build_where(args)
+        -normalize_date_bound(date, bound)
+        -row_to_entity(row)
+        +get_table_name()
+        +insert(obj)
+        +update(object, new_values)
+        +fetch_last()
+        +insert_attachment(post_ID)
+        +pre_delete_attachment(attachment_id)
+        +delete_attachment(attachment_id)
+        +pre_insert_entity(unsaved)
+        -prepare_item_metadata_diff(unsaved)
+        +__temporary_multivalue_separator(sep)
+        +insert_entity(entity)
+        +pre_delete_entity(entity, permanent)
+        +delete_entity(entity, permanent)
+        -insert_item_metadata(entity)
+        +filter_log_title(title)
+        +tainacan_set_log_slug(override, slug, post_ID, post_status, post_type, post_parent)
+    }
+    class Logs {
+        +entities_type : mixed
+        -current_diff : mixed
+        -current_deleting_entity : mixed
+        -current_action : mixed
+        -current_attachment_delete_log : mixed
         #init()
         #_get_map()
         +register_post_type()
@@ -144,6 +146,14 @@ private $current_deleting_entity
 
 ```php
 private $current_action
+```
+
+***
+
+### current_attachment_delete_log
+
+```php
+private $current_attachment_delete_log
 ```
 
 ***

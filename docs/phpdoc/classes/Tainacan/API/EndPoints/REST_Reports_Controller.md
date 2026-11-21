@@ -38,6 +38,7 @@ classDiagram
         -get_activities_general(collection_id, interval)
         -get_activities_general_by_user(collection_id, interval)
         -get_activities_users(collection_id)
+        -not_found(message, key, id)
         -get_cache_object(key, request)
         -set_cache_object(key, data)
         +get_endpoint_args_for_item_schema(method)
@@ -341,6 +342,24 @@ private get_activities_users(mixed $collection_id = false): mixed
 | Parameter        | Type      | Description |
 |------------------|-----------|-------------|
 | `$collection_id` | **mixed** |             |
+
+***
+
+### not_found
+
+Builds the 404 payload used when a requested entity does not exist.
+
+```php
+private not_found(mixed $message, mixed $key, mixed $id): mixed
+```
+
+**Parameters:**
+
+| Parameter  | Type      | Description |
+|------------|-----------|-------------|
+| `$message` | **mixed** |             |
+| `$key`     | **mixed** |             |
+| `$id`      | **mixed** |             |
 
 ***
 
