@@ -18,9 +18,9 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * The early return below guarantees this file never declares a second
  * Repositories\Logs class, even if it is included by mistake.
  *
- * @deprecated 1.4.2
+ * @deprecated 1.5.0
  */
-_deprecated_file( basename( __FILE__ ), '1.4.2', 'class-tainacan-logs.php' );
+_deprecated_file( basename( __FILE__ ), '1.5.0', 'class-tainacan-logs.php' );
 return;
 
 use Tainacan\Entities;

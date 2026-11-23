@@ -582,7 +582,7 @@ abstract class Background_Process_Base extends Async_Request {
 	 *
 	 * Every timestamp written by a background process (queued_on, processed_last)
 	 * and every comparison against those columns must go through this method.
-	 * Before 1.4.2 record_heartbeat() used current_time( 'mysql' ), which returns
+	 * Before 1.5.0 record_heartbeat() used current_time( 'mysql' ), which returns
 	 * the site's local time, while the watchdog compared it against gmdate().
 	 * On any site west of UTC a heartbeat written right now was already older than
 	 * the stale timeout, so the watchdog closed live processes and they were
@@ -590,7 +590,7 @@ abstract class Background_Process_Base extends Async_Request {
 	 *
 	 * @see https://github.com/tainacan/tainacan/issues/1285
 	 *
-	 * @since 1.4.2
+	 * @since 1.5.0
 	 * @return string
 	 */
 	protected function utc_now() {

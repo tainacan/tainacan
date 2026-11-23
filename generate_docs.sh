@@ -4,9 +4,10 @@ set -euo pipefail
 # Generate developer documentation into docs/ (phpdoc, hooks, openapi, diagrams).
 # Run from the plugin repository root or call this script directly.
 #
-# Example (Docker):
-#   docker exec -it tainacan_fpm_apache bash
-#   cd /src/tainacan && ./generate_docs.sh
+# Example (tainacan-docker, from that repository, after `make test` once):
+#   docker compose --profile watch run --rm --no-deps \
+#     -e WP_TESTS_DIR=/tmp/wp-tests/wordpress-tests-lib \
+#     builder ./generate_docs.sh
 
 PLUGIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$PLUGIN_ROOT/docs/scripts"
