@@ -65,6 +65,7 @@ classDiagram
         +tainacan_get_item(post_id)
         +add_social_meta()
         +get_adjacent_items()
+        -get_adjacent_item_url(item, position)
         +get_tainacan_items_carousel(args)
         +get_tainacan_dynamic_items_list(args)
         +get_tainacan_related_items_list(args)
@@ -827,6 +828,34 @@ public get_adjacent_items(): array
 **Return Value:**
 
 containing the next and previous item
+
+***
+
+### get_adjacent_item_url
+
+URL of a neighboring item, with the list arguments added as their own parameters.
+
+```php
+private get_adjacent_item_url(\Tainacan\Entities\Item $item, int $position): string
+```
+
+The neighbor permalink already names that item. Query vars that name the
+current item (plain permalinks) or a draft (`p`, `post_type`) are removed
+first, along with vars that name the page hosting the list (`page_id`,
+`tainacan_repository_archive`). `name` is kept: it is the public title
+filter, and WordPress only copies a permalink into the internal `name`
+query var inside parse_request, never into $_GET. add_query_arg() then
+joins the list arguments with "?" or "&", so the URL keeps a single query
+string. Values are encoded up front because add_query_arg() does not
+encode the arguments it is given, including the nested metaquery arrays
+the lists send.
+
+**Parameters:**
+
+| Parameter   | Type                        | Description                                   |
+|-------------|-----------------------------|-----------------------------------------------|
+| `$item`     | **\Tainacan\Entities\Item** | Neighbor item.                                |
+| `$position` | **int**                     | Zero-based position of that item in the list. |
 
 ***
 
