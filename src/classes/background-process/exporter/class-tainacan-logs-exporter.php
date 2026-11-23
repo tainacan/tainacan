@@ -110,8 +110,6 @@ class Logs_Exporter extends Exporter {
 		}
 
 		$repository = \Tainacan\Repositories\Logs::get_instance();
-		$legacy = ! defined( 'TAINACAN_USE_DEPRECATED_LOGS' )
-			|| TAINACAN_USE_DEPRECATED_LOGS !== false;
 
 		$columns = [
 			'ID', 'date', 'user_id', 'user_name', 'action',
@@ -143,7 +141,7 @@ class Logs_Exporter extends Exporter {
 					? 0
 					: (int) $latest[0]->get_id(),
 				'processed' => 0,
-				'legacy' => $legacy,
+				'legacy' => false,
 				'format' => $this->get_export_format(),
 			];
 
@@ -197,7 +195,7 @@ class Logs_Exporter extends Exporter {
 
 		$file_key = $this->get_export_file_key( $format );
 
-		if ( $state['legacy'] !== $legacy ) {
+		if ( ! empty( $state['legacy'] ) ) {
 			throw new \RuntimeException(
 				'The log storage changed during the export.'
 			);
@@ -211,35 +209,11 @@ class Logs_Exporter extends Exporter {
 			'posts_per_page' => self::BATCH_SIZE,
 			'orderby' => 'ID',
 			'order' => 'ASC',
+			'id_after' => $state['last_id'],
+			'id_before' => $state['max_id'],
 		];
 
-		if ( $legacy ) {
-			$args['tainacan_logs_export_cursor'] = true;
-			$args['no_found_rows'] = true;
-
-			$where = function ( $sql, $query ) use ( $wpdb, $state ) {
-				if ( $query->get( 'tainacan_logs_export_cursor' ) ) {
-					$sql .= $wpdb->prepare(
-						" AND {$wpdb->posts}.ID > %d AND {$wpdb->posts}.ID <= %d",
-						$state['last_id'],
-						$state['max_id']
-					);
-				}
-				return $sql;
-			};
-
-			add_filter( 'posts_where', $where, 10, 2 );
-
-			try {
-				$logs = $repository->fetch( $args, 'OBJECT' );
-			} finally {
-				remove_filter( 'posts_where', $where, 10 );
-			}
-		} else {
-			$args['id_after'] = $state['last_id'];
-			$args['id_before'] = $state['max_id'];
-			$logs = $repository->fetch( $args );
-		}
+		$logs = $repository->fetch( $args );
 
 		if ( $wpdb->last_error ) {
 			throw new \RuntimeException(

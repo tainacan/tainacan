@@ -7,6 +7,24 @@ class TAINACAN_Logs_Exporter extends TAINACAN_UnitTestCase {
 
 	private $paths = [];
 
+	public function setUp(): void {
+		parent::setUp();
+
+		global $wpdb;
+
+		$table = \Tainacan\Repositories\Logs::get_instance()->get_table_name();
+
+		// Clear only the test database logs, preserving transaction behavior.
+		$result = $wpdb->query(
+				"DELETE FROM `{$table}`"
+		);
+
+		$this->assertNotFalse(
+				$result,
+				'Unable to prepare an empty activity history for the test.'
+		);
+	}
+
 	public function tearDown(): void {
 		foreach ( $this->paths as $path ) {
 			if ( file_exists( $path ) ) {
