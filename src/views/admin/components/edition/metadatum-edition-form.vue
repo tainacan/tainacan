@@ -233,33 +233,16 @@
                             </b-field>
 
                             <b-field
-                                    v-if="form.metadata_type_object.component != 'tainacan-compound'"
-                                    :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
-                                    :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
-                                <b-checkbox
-                                        v-model="form.collection_key"
-                                        true-value="yes"
-                                        false-value="no"
-                                        name="collection_key"
-                                        @update:model-value="clearErrors('collection_key')">
-                                    {{ $i18n.get('label_unique_value') }}
-                                    <help-button
-                                            :title="$i18n.getHelperTitle('metadata', 'collection_key')"
-                                            :message="$i18n.getHelperMessage('metadata', 'collection_key')"
-                                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                                </b-checkbox>
-                            </b-field>
-
-                            <b-field
                                     v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0"
                                     :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
-                                    :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
+                                    :message="multipleFieldMessage">
                                 <b-checkbox
                                         v-model="form.multiple"
                                         true-value="yes"
                                         false-value="no"
                                         name="multiple"
-                                        @update:model-value="clearErrors('multiple')">
+                                        :disabled="isMultipleDisabled"
+                                        @update:model-value="clearErrors('multiple'); clearErrors('collection_key')">
                                     {{ $i18n.get('label_allow_multiple') }}
                                     <help-button
                                             :title="$i18n.getHelperTitle('metadata', 'multiple')"
@@ -362,6 +345,25 @@
                                     </transition>
                                 </b-field>
                             </transition>
+
+                            <b-field
+                                    v-if="form.metadata_type_object.component != 'tainacan-compound'"
+                                    :type="(formErrors['collection_key'] != undefined || hasBothMultipleAndCollectionKey) ? 'is-danger' : ''"
+                                    :message="collectionKeyFieldMessage">
+                                <b-checkbox
+                                        v-model="form.collection_key"
+                                        true-value="yes"
+                                        false-value="no"
+                                        name="collection_key"
+                                        :disabled="isCollectionKeyDisabled"
+                                        @update:model-value="clearErrors('collection_key'); clearErrors('multiple')">
+                                    {{ $i18n.get('label_unique_value') }}
+                                    <help-button
+                                            :title="$i18n.getHelperTitle('metadata', 'collection_key')"
+                                            :message="$i18n.getHelperMessage('metadata', 'collection_key')"
+                                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                </b-checkbox>
+                            </b-field>
 
                         </b-field>
 
@@ -587,6 +589,33 @@
                 showCardinalityOptions: false,
                 isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
                 showHTMLFormattingOptions: false
+            }
+        },
+        computed: {
+            hasBothMultipleAndCollectionKey() {
+                return this.form.multiple == 'yes' && this.form.collection_key == 'yes';
+            },
+            isMultipleDisabled() {
+                return this.form.collection_key == 'yes' && this.form.multiple != 'yes';
+            },
+            isCollectionKeyDisabled() {
+                return this.form.multiple == 'yes' && this.form.collection_key != 'yes';
+            },
+            multipleFieldMessage() {
+                if (this.formErrors['multiple'] != undefined)
+                    return this.formErrors['multiple'];
+                if (this.isMultipleDisabled)
+                    return this.$i18n.get('info_multiple_disabled_by_collection_key');
+                return '';
+            },
+            collectionKeyFieldMessage() {
+                if (this.formErrors['collection_key'] != undefined)
+                    return this.formErrors['collection_key'];
+                if (this.hasBothMultipleAndCollectionKey)
+                    return this.$i18n.get('info_collection_key_and_multiple_error');
+                if (this.isCollectionKeyDisabled)
+                    return this.$i18n.get('info_collection_key_disabled_by_multiple');
+                return '';
             }
         },
         watch: {
