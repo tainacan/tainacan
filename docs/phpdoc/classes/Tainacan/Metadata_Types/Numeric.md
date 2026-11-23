@@ -15,7 +15,7 @@ classDiagram
     class Numeric {
         +__construct()
         +get_form_labels()
-        +validate(item_metadata)
+        +validate_options(filter)
     }
 ```
 

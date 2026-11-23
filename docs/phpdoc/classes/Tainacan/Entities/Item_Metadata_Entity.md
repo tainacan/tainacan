@@ -43,6 +43,7 @@ classDiagram
         +is_collection_key()
         +is_required()
         +validate()
+        -resolve_term_id(term_value, taxonomy_slug)
     }
     class Entity {
         #repository : Repository
@@ -84,6 +85,7 @@ classDiagram
     }
     Entity ..> Entity
     Entity <|-- Item_Metadata_Entity
+    Item_Metadata_Entity ..> Entity
     Item_Metadata_Entity ..> Item_Metadata_Entity
 ```
 
@@ -471,6 +473,27 @@ Returns whether metadata value is valid
 ```php
 public validate(): bool
 ```
+
+***
+
+### resolve_term_id
+
+Resolves a term value to its term ID the same way save_terms_metadatum_value() does.
+
+```php
+private resolve_term_id(mixed $term_value, string $taxonomy_slug): int|null
+```
+
+**Parameters:**
+
+| Parameter        | Type       | Description                           |
+|------------------|------------|---------------------------------------|
+| `$term_value`    | **mixed**  | A Term entity, term ID, or term name. |
+| `$taxonomy_slug` | **string** | The taxonomy database identifier.     |
+
+**Return Value:**
+
+The term ID if the term exists, or null otherwise.
 
 ***
 

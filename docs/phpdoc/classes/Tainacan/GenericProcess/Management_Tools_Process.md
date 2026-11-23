@@ -23,28 +23,6 @@ To add a new command: add its definition to get_commands() and implement its ste
 ```mermaid
 classDiagram
     direction TB
-    class Management_Tools_Process {
-        -command : string
-        -command_args : array
-        +__construct(attributes)
-        +$get_commands()
-        +$find_command(id)
-        +$queue(command_id, args)
-        +$sanitize_args(command, args)
-        +init_objects()
-        +set_command(command)
-        +get_command()
-        +set_command_args(args)
-        +get_command_args()
-        +prepare_command()
-        -start_step_count(counter)
-        -add_processed(key, count)
-        +get_output()
-        +logs_migrate_step()
-        +logs_purge_step()
-        -get_batch_size()
-        -batch_result(done, processed, pending)
-    }
     class Generic_Process {
         #id : identifier
         #steps : array
@@ -84,6 +62,28 @@ classDiagram
         +_to_Array(short)
         +finished()
         +run()
+    }
+    class Management_Tools_Process {
+        -command : string
+        -command_args : array
+        +__construct(attributes)
+        +$get_commands()
+        +$find_command(id)
+        +$queue(command_id, args)
+        +$sanitize_args(command, args)
+        +init_objects()
+        +set_command(command)
+        +get_command()
+        +set_command_args(args)
+        +get_command_args()
+        +prepare_command()
+        -start_step_count(counter)
+        -add_processed(key, count)
+        +get_output()
+        +logs_migrate_step()
+        +logs_purge_step()
+        -get_batch_size()
+        -batch_result(done, processed, pending)
     }
     Generic_Process <|-- Management_Tools_Process
 ```

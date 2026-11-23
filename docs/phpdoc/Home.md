@@ -126,37 +126,37 @@ lightbox |
 ```mermaid
 classDiagram
     direction TB
-    class __Bulk_Edit { }
-    class Cli { }
-    class Cli_Move_Attachments { }
-    class Embed { }
-    class System_Check { }
-    class Admin_Commands { }
-    class Search_Engine { }
-    class Private_Files { }
-    class Cli_Document { }
-    class Settings { }
-    class Dashboard { }
-    class Pages { }
-    class Admin_Bar_Items { }
-    class Background_Process { }
-    class Cli_Control_Metadata { }
-    class Exposers_Handler { }
-    class Management_Tools { }
-    class Pdf_Extracted_Text_Quality { }
-    class Cli_Garbage_Collector { }
-    class Cli_Logs { }
-    class Background_Process_Base { }
-    class Background_Process_Heartbeat { }
-    class Cli_Collection { }
-    class Mobile_App { }
-    class Gutenberg_Blocks { }
-    class Roles_Editor { }
-    class Admin { }
-    class Mappers_Handler { }
-    class Theme_Helper { }
-    class Async_Request { }
     class Media { }
+    class Background_Process { }
+    class Settings { }
+    class Cli_Garbage_Collector { }
+    class Management_Tools { }
+    class Admin_Bar_Items { }
+    class Dashboard { }
+    class Gutenberg_Blocks { }
+    class Background_Process_Heartbeat { }
+    class Async_Request { }
+    class Cli_Logs { }
+    class Cli_Control_Metadata { }
+    class Admin_Commands { }
+    class Pdf_Extracted_Text_Quality { }
+    class Cli_Move_Attachments { }
+    class Pages { }
+    class Roles_Editor { }
+    class System_Check { }
+    class Mobile_App { }
+    class Private_Files { }
+    class Mappers_Handler { }
+    class Admin { }
+    class Cli_Document { }
+    class Theme_Helper { }
+    class Embed { }
+    class Cli_Collection { }
+    class Search_Engine { }
+    class __Bulk_Edit { }
+    class Exposers_Handler { }
+    class Cli { }
+    class Background_Process_Base { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
     Cli_Move_Attachments ..> Private_Files
@@ -244,29 +244,29 @@ classDiagram
 classDiagram
     direction TB
     class REST_Controller { }
-    class endpoints_REST_Collections_Controller { }
-    class endpoints_REST_Exposers_Controller { }
-    class endpoints_REST_Management_Tools_Controller { }
+    class endpoints_REST_Metadata_Types_Controller { }
     class endpoints_REST_Background_Processes_Controller { }
-    class endpoints_REST_Importers_Controller { }
+    class endpoints_REST_Oaipmh_Controller { }
+    class endpoints_REST_Filters_Controller { }
+    class endpoints_REST_Management_Tools_Controller { }
     class endpoints_REST_Item_Metadata_Controller { }
+    class endpoints_REST_Collections_Controller { }
+    class endpoints_REST_Logs_Controller { }
     class endpoints_REST_Metadata_Controller { }
     class endpoints_REST_Items_Controller { }
-    class endpoints_REST_Reports_Controller { }
-    class endpoints_REST_Metadata_Types_Controller { }
-    class endpoints_REST_Logs_Controller { }
-    class endpoints_REST_Metadatum_Mappers_Controller { }
-    class endpoints_REST_Filters_Controller { }
-    class endpoints_REST_Roles_Controller { }
-    class endpoints_REST_Exporters_Controller { }
+    class endpoints_REST_Importers_Controller { }
+    class endpoints_REST_Bulkedit_Controller { }
+    class endpoints_REST_Terms_Controller { }
     class endpoints_REST_Filter_Types_Controller { }
+    class endpoints_REST_Roles_Controller { }
+    class endpoints_REST_Sequence_Edit_Controller { }
+    class endpoints_REST_Reports_Controller { }
+    class endpoints_REST_Metadatum_Mappers_Controller { }
     class endpoints_REST_Taxonomies_Controller { }
     class endpoints_REST_Facets_Controller { }
-    class endpoints_REST_Sequence_Edit_Controller { }
-    class endpoints_REST_Terms_Controller { }
+    class endpoints_REST_Exposers_Controller { }
+    class endpoints_REST_Exporters_Controller { }
     class endpoints_REST_Metadata_Sections_Controller { }
-    class endpoints_REST_Oaipmh_Controller { }
-    class endpoints_REST_Bulkedit_Controller { }
     REST_Controller <|-- endpoints_REST_Background_Processes_Controller
     REST_Controller <|-- endpoints_REST_Bulkedit_Controller
     REST_Controller <|-- endpoints_REST_Collections_Controller
@@ -306,29 +306,29 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class REST_Collections_Controller { }
-    class REST_Exposers_Controller { }
-    class REST_Management_Tools_Controller { }
+    class REST_Metadata_Types_Controller { }
     class REST_Background_Processes_Controller { }
-    class REST_Importers_Controller { }
+    class REST_Oaipmh_Controller { }
+    class REST_Filters_Controller { }
+    class REST_Management_Tools_Controller { }
     class REST_Item_Metadata_Controller { }
+    class REST_Collections_Controller { }
+    class REST_Logs_Controller { }
     class REST_Metadata_Controller { }
     class REST_Items_Controller { }
-    class REST_Reports_Controller { }
-    class REST_Metadata_Types_Controller { }
-    class REST_Logs_Controller { }
-    class REST_Metadatum_Mappers_Controller { }
-    class REST_Filters_Controller { }
-    class REST_Roles_Controller { }
-    class REST_Exporters_Controller { }
+    class REST_Importers_Controller { }
+    class REST_Bulkedit_Controller { }
+    class REST_Terms_Controller { }
     class REST_Filter_Types_Controller { }
+    class REST_Roles_Controller { }
+    class REST_Sequence_Edit_Controller { }
+    class REST_Reports_Controller { }
+    class REST_Metadatum_Mappers_Controller { }
     class REST_Taxonomies_Controller { }
     class REST_Facets_Controller { }
-    class REST_Sequence_Edit_Controller { }
-    class REST_Terms_Controller { }
+    class REST_Exposers_Controller { }
+    class REST_Exporters_Controller { }
     class REST_Metadata_Sections_Controller { }
-    class REST_Oaipmh_Controller { }
-    class REST_Bulkedit_Controller { }
 ```
 #### Classes
 
@@ -367,16 +367,16 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Metadata_Section { }
-    class Item_Metadata_Entity { }
-    class Taxonomy { }
-    class Metadatum { }
-    class Filter { }
-    class Entity { }
     class Collection { }
     class Term { }
     class Item { }
+    class Item_Metadata_Entity { }
+    class Entity { }
+    class Metadata_Section { }
     class Log { }
+    class Metadatum { }
+    class Taxonomy { }
+    class Filter { }
     Collection ..> Collection
     Collection ..> Metadatum
     Entity ..> Collection
@@ -395,6 +395,7 @@ classDiagram
     Item ..> Item_Metadata_Entity
     Item ..> Metadata_Section
     Item ..> Metadatum
+    Item_Metadata_Entity ..> Entity
     Item_Metadata_Entity ..> Item
     Item_Metadata_Entity ..> Item_Metadata_Entity
     Item_Metadata_Entity ..> Metadatum
@@ -426,12 +427,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Exporter { }
     class Background_Exporter { }
+    class Exporter { }
+    class Term_Exporter { }
+    class CSV { }
     class Exporter_Handler { }
     class XLSX_Exporter { }
-    class CSV { }
-    class Term_Exporter { }
     class traits_Exporter_Handler_Cell { }
     Exporter ..> Exporter_Handler
     Exporter <|-- CSV
@@ -458,15 +459,15 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Exposer { }
     class Html { }
-    class Exposers_Handler { }
     class Txt { }
     class OAI_PMH { }
-    class Csv { }
-    class JSON_LD { }
-    class JSON_flat { }
     class Xml { }
+    class Exposer { }
+    class Csv { }
+    class JSON_flat { }
+    class JSON_LD { }
+    class Exposers_Handler { }
     Exposer <|-- Csv
     Exposer <|-- Html
     Exposer <|-- JSON_LD
@@ -530,11 +531,11 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Background_Generic_Process { }
+    class Generic_Process { }
+    class Management_Tools_Process { }
     class Bulk_Edit_Process { }
     class Generic_Process_Handler { }
-    class Management_Tools_Process { }
-    class Generic_Process { }
-    class Background_Generic_Process { }
     Generic_Process <|-- Bulk_Edit_Process
     Generic_Process <|-- Management_Tools_Process
     Generic_Process_Handler ..> Background_Generic_Process
@@ -577,15 +578,15 @@ to the dedicated tainacan_logs table. |
 ```mermaid
 classDiagram
     direction TB
-    class Flickr_Importer { }
     class Test_Importer { }
-    class Importer { }
-    class Background_Importer { }
-    class Youtube_Importer { }
-    class Oaipmh_Importer { }
-    class CSV { }
     class Term_Importer { }
     class Importer_Handler { }
+    class Background_Importer { }
+    class Youtube_Importer { }
+    class Flickr_Importer { }
+    class Oaipmh_Importer { }
+    class CSV { }
+    class Importer { }
     Importer ..> Importer_Handler
     Importer <|-- CSV
     Importer <|-- Flickr_Importer
@@ -640,11 +641,11 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Inbcm_Archive { }
-    class Inbcm_Bibliographic { }
-    class Dublin_Core { }
     class Mapper { }
+    class Inbcm_Archive { }
+    class Dublin_Core { }
     class Mappers_Handler { }
+    class Inbcm_Bibliographic { }
     class Inbcm_Museological { }
     Mapper <|-- Dublin_Core
     Mapper <|-- Inbcm_Archive
@@ -697,9 +698,9 @@ http://purl.org/dc/elements/1.1/ |
 ```mermaid
 classDiagram
     direction TB
+    class OAIPMH_Data_Provider { }
     class OAIPMH_Token_Manager { }
     class OAIPMH_Xml_Generator { }
-    class OAIPMH_Data_Provider { }
     OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
 ```
 #### Classes
@@ -719,17 +720,17 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Item_Metadata { }
-    class Repository { }
-    class Logs { }
-    class Terms { }
-    class Filters { }
-    class Taxonomies { }
     class Collections { }
-    class Metadata_Sections { }
-    class Metadata { }
+    class Item_Metadata { }
     class Logs { }
+    class Repository { }
+    class Terms { }
+    class Metadata_Sections { }
+    class Taxonomies { }
     class Items { }
+    class Logs { }
+    class Metadata { }
+    class Filters { }
     Collections ..> Metadata
     Filters ..> Collections
     Item_Metadata ..> Items
@@ -794,12 +795,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Entity_Collection_Relation { }
-    class Admin_UI_Options { }
-    class Entity_Collections_Relation { }
-    class SVG_Icon { }
-    class Singleton_Instance { }
     class Formatter_Text { }
+    class Entity_Collection_Relation { }
+    class SVG_Icon { }
+    class Entity_Collections_Relation { }
+    class Admin_UI_Options { }
+    class Singleton_Instance { }
 ```
 #### Traits
 
