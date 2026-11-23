@@ -13,12 +13,12 @@
                             v-if="!option.isChild"
                             class="b-checkbox checkbox is-small">
                         <input 
-                                v-model="selected"
+                                :checked="selected.some(selectedTerm => String(selectedTerm) === String(option.value))"
                                 :value="option.value"
                                 :data-filter-option-value="String(option.value)"
                                 type="checkbox"
-                                @input="resetPage"> 
-                        <span class="check" /> 
+                                @change="toggleSelectedTerm(option.value)">
+                        <span class="check" />
                         <span class="control-label">
                             <span 
                                     v-tooltip="{
@@ -81,13 +81,8 @@
                     :is-taxonomy="true"
                     :query="query"
                     :current-collection-id="currentCollectionId"
-                    @input="(newSelected) => {
-                        const existingValue = selected.indexOf(newSelected); 
-                        if (existingValue >= 0)
-                            selected.splice(existingValue, 1);
-                        else
-                            selected.push(newSelected);
-                    }" />
+                    @input="toggleSelectedTerm"
+                    @select-all="setColumnSelectedTerms($event)" />
         </template>
     </div>
 </template>
@@ -95,6 +90,7 @@
 <script>
     import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
     import { filterTypeMixin, dynamicFilterTypeMixin, progressiveCheckboxMixin } from '../../../js/filter-types-mixin';
+    import { toRef } from 'vue';
 
     export default {
         components: { CheckboxRadioFilterInput },
@@ -112,6 +108,8 @@
                 isLoadingOptions: true,
                 options: [],
                 selected: [],
+                suppressedSelectedValues: [],
+                parentSelectionsBeforeColumnSelect: {},
                 taxonomy: '',
                 taxonomyId: ''
             }
@@ -124,6 +122,12 @@
         watch: {
             selected: {
                 handler(newVal, oldVal) {
+                    const suppressedIndex = this.suppressedSelectedValues.indexOf(newVal);
+                    if (suppressedIndex >= 0) {
+                        this.suppressedSelectedValues.splice(suppressedIndex, 1);
+                        return;
+                    }
+
                     const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
                         return element === oldVal[index]; 
                     });
@@ -252,7 +256,51 @@
                     
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
 
-                this.selected = index >= 0 ? this.query.taxquery[ index ].terms : [];
+                this.setSelectedTerms(index >= 0 ? this.query.taxquery[ index ].terms : []);
+            },
+            setSelectedTerms(terms, shouldEmit = false) {
+                const normalizedTerms = Array.isArray(terms)
+                    ? Array.from(new Map(terms.map(term => {
+                        const normalizedTerm = isNaN(Number(term)) ? term : Number(term);
+                        return [String(normalizedTerm), normalizedTerm];
+                    })).values())
+                    : [];
+                const isEqual = this.selected.length === normalizedTerms.length &&
+                    this.selected.every((term, index) => String(term) === String(normalizedTerms[index]));
+
+                if (isEqual)
+                    return;
+
+                this.suppressedSelectedValues.push(normalizedTerms);
+                this.selected = normalizedTerms;
+                if (shouldEmit) {
+                    this.onSelect();
+                    this.resetPage();
+                }
+            },
+            toggleSelectedTerm(termId) {
+                const selectedId = isNaN(Number(termId)) ? termId : Number(termId);
+                delete this.parentSelectionsBeforeColumnSelect[String(selectedId)];
+                const isSelected = this.selected.some(selected => String(selected) === String(selectedId));
+                const updatedSelection = isSelected
+                    ? this.selected.filter(selected => String(selected) !== String(selectedId))
+                    : [...this.selected, selectedId];
+                this.setSelectedTerms(updatedSelection, true);
+            },
+            setColumnSelectedTerms({ terms, parentId, selectingAll }) {
+                const parentKey = String(parentId);
+                const updatedSelection = Array.isArray(terms) ? terms.slice() : [];
+                const parentIndex = updatedSelection.findIndex(term => String(term) === parentKey);
+
+                if (selectingAll && parentIndex >= 0) {
+                    this.parentSelectionsBeforeColumnSelect[parentKey] = updatedSelection[parentIndex];
+                    updatedSelection.splice(parentIndex, 1);
+                } else if (!selectingAll && Object.prototype.hasOwnProperty.call(this.parentSelectionsBeforeColumnSelect, parentKey)) {
+                    updatedSelection.push(this.parentSelectionsBeforeColumnSelect[parentKey]);
+                    delete this.parentSelectionsBeforeColumnSelect[parentKey];
+                }
+
+                this.setSelectedTerms(updatedSelection, true);
             },
             onSelect() {
                 this.$emit('input', {
@@ -272,6 +320,7 @@
                         filter: this.filter,
                         taxonomyId: this.taxonomyId,
                         selected: this.selected,
+                        selectedRef: toRef(this, 'selected'),
                         metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,
                         collectionId: this.collectionId,
@@ -282,13 +331,8 @@
                         appliedCheckBoxModal: () => {
                             this.loadOptions();
                         },
-                        input: (newSelected) => {
-                            const existingValue = this.selected.indexOf(newSelected); 
-                            if (existingValue >= 0)
-                                this.selected.splice(existingValue, 1);
-                            else
-                                this.selected.push(newSelected);
-                        },
+                        input: (newSelected) => this.toggleSelectedTerm(newSelected),
+                        selectAll: (selection) => this.setColumnSelectedTerms(selection),
                         beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                     },
                     width: 'max(768px, calc(100% - (4 * var(--tainacan-one-column))))',
