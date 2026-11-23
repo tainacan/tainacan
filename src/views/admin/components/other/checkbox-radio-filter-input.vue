@@ -100,7 +100,7 @@
                                                     :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                                     :checked="isOptionSelected(option.value)"
                                                     type="checkbox"
-                                                    @input="$emit('input', $event.target.value)"> 
+                                                    @input="toggleOption($event.target.value)">
                                             <span class="check" /> 
                                             <span class="control-label">
                                                 <span 
@@ -174,7 +174,7 @@
                                                     :value="option.value"
                                                     :checked="isOptionSelected(option.value)"
                                                     type="checkbox"
-                                                    @input="$emit('input', $event.target.value)"> 
+                                                    @input="toggleOption($event.target.value)">
                                             <span class="check" /> 
                                             <span class="control-label">
                                                 <span 
@@ -236,6 +236,24 @@
                                         class="column-label">
                                     {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                                 </p>
+                                <label
+                                        v-if="Number(finderColumn.parentId) > 0 && (finderColumn.totalChildren > 0 || finderColumn.children.length > 0 || finderColumn.hasMoreChildren)"
+                                        class="b-checkbox checkbox is-small column-select-all">
+                                    <input
+                                            type="checkbox"
+                                            :checked="isColumnFullySelected(finderColumn)"
+                                            :indeterminate="isColumnPartiallySelected(finderColumn)"
+                                            :disabled="finderColumn.isLoadingMore || finderColumn.isSelectingAll"
+                                            @change="toggleColumnSelection(finderColumn, key)">
+                                    <span class="check" />
+                                    <span class="control-label">
+                                        <span
+                                                v-if="finderColumn.isSelectingAll"
+                                                class="column-select-all-spinner"
+                                                aria-hidden="true" />
+                                        {{ isColumnFullySelected(finderColumn) ? $i18n.get('label_clear_selection') : $i18n.get('label_select_all') }}
+                                    </span>
+                                </label>
                                 <ul v-if="finderColumn.children.length">
                                     <b-field
                                             v-for="(option, index) in finderColumn.children"
@@ -246,12 +264,14 @@
                                             class="tainacan-li-checkbox-modal">
                                         <label  
                                                 class="b-checkbox checkbox"
-                                                @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
+                                                @click="handleTaxonomyOptionClick($event, option, key, index)">
                                             <input 
                                                     :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                                     :checked="isOptionSelected(option.value)"
+                                                    :disabled="!(Number(option.total_items) > 0) && !isOptionSelected(option.value)"
                                                     type="checkbox"
-                                                    @input="$emit('input', $event.target.value)"> 
+                                                    @click.stop="getOptionChildren(option, key, index)"
+                                                    @input="toggleOption($event.target.value)">
                                             <span class="check" /> 
                                             <span class="control-label">
                                                 <span 
@@ -334,25 +354,24 @@
                             :aria-labelledby="shouldShowTabs ? 'selected-items-label' : undefined"
                             style="min-height: 56px;">
                         <div 
-                                v-if="(selected instanceof Array ? selected.length > 0 : selected) && !isSelectedTermsLoading"        
+                                v-if="selectedTerms.length > 0 && !isSelectedTermsLoading"
                                 class="modal-card-body tainacan-tags-container">    
                             <div class="tainacan-tags-container--list">
                                 <template
-                                        v-for="(term, index) in (selected instanceof Array ? selected : [selected])"
+                                        v-for="(term, index) in selectedTerms"
                                         :key="index">
                                     <b-tag
-                                            v-if="selected instanceof Array ? true : selected != ''"
                                             attached
                                             closable
                                             :class="isModal ? '' : 'is-small'"
-                                            @close="$emit('input', term)">
+                                            @close="toggleOption(term)">
                                         <span v-html="(isTaxonomy || metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                                     </b-tag>
                                 </template>
                             </div>
                             
                             <section 
-                                    v-if="(selected instanceof Array ? selected.length <= 0 : !selected) && !isSelectedTermsLoading"
+                                    v-if="selectedTerms.length <= 0 && !isSelectedTermsLoading"
                                     class="section">
                                 <div class="content has-text-dark has-text-centered">
                                     <p>
@@ -413,6 +432,10 @@
             metadatumId: [Number, String],
             metadatum: Object,
             selected: Array,
+            selectedRef: {
+                type: Object,
+                default: null
+            },
             currentCollectionId: [Number, String],
             isTaxonomy: {
                 type: Boolean,
@@ -430,15 +453,17 @@
             'input',
             'close',
             'appliedCheckBoxModal',
-            'beforeClose'
+            'beforeClose',
+            'selectAll'
         ],
         data() {
             return {
                 finderColumns: [],
+                columnRequestVersions: {},
+                pendingColumnRequests: {},
                 itemActive: false,
                 isColumnLoading: false,
                 loadingComponent: undefined,
-                totalRemaining: {},
                 hierarchicalPath: [],
                 searchResults: [],
                 optionName: '',
@@ -461,6 +486,9 @@
             }
         },
         computed: {
+            selectedTerms() {
+                return this.selectedRef ? this.selectedRef.value : (this.selected || []);
+            },
             shouldShowTabs() {
                 return this.isModal && this.hasToDisplaySearchBar;
             },
@@ -471,7 +499,7 @@
                         id: 'all-items'
                     },
                     {
-                        label: (this.isTaxonomy ? this.$i18n.get('label_selected_terms') : this.$i18n.get('label_selected_metadatum_values')) + (Array.isArray(this.selected) && this.selected.length ? (' (' + this.selected.length + ')') : ''),
+                        label: (this.isTaxonomy ? this.$i18n.get('label_selected_terms') : this.$i18n.get('label_selected_metadatum_values')) + (this.selectedTerms.length ? (' (' + this.selectedTerms.length + ')') : ''),
                         id: 'selected-items'
                     }
                 ];
@@ -492,11 +520,6 @@
         },
         created() {
             this.initializeValues();
-                
-            if (this.isTaxonomy)
-                this.getOptionChildren();
-            else
-                this.isCheckboxListLoading = true;
             
             this.$emitter.on('updateTaxonomyInputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatumId) {
@@ -537,11 +560,11 @@
                 }
             },
             shouldShowMoreButton(key) {
-                return this.totalRemaining[key].remaining === true || (this.finderColumns[key].children.length < this.totalRemaining[key].remaining);
+                return !!(this.finderColumns[key] && this.finderColumns[key].hasMoreChildren && !this.finderColumns[key].isLoadingMore);
             },
             fetchSelectedLabels() {
                 
-                let selected = this.selected instanceof Array ? this.selected : [this.selected];
+                let selected = this.selectedTerms;
 
                 if (this.taxonomyId && selected.length) {
 
@@ -792,35 +815,31 @@
                 if (key != undefined)
                     this.finderColumns.length = key + 1;
             },
-            createColumn(res, column, label) {
-                let children = res.data.values;
-
-                this.totalRemaining = Object.assign({}, this.totalRemaining, {
-                    [`${column == undefined ? 0 : column + 1}`]: {
-                        remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term.value == children[children.length - 1].value : false) : res.headers['x-wp-total'],
-                    }
-                });
-                
-                let first = undefined;
-
-                if (children.length > 0) {
-                    for (let f in this.finderColumns) {
-                        if (this.finderColumns[f].children[0].value == children[0].value) {
-                            first = f;
-                            break;
-                        }
-                    }
-                }
-
-                const isNewColumn = first === undefined;
-                // Calculate the actual column index: use 'first' if replacing, or current length if adding new
-                // This is more accurate than 'column + 1' which assumes sequential navigation
-                const columnIndex = first !== undefined ? first : this.finderColumns.length;
-
-                if (first != undefined)
-                    this.finderColumns.splice(first, 1, { label: label, children: children, lastTerm: res.data.last_term.es_term });
-                else
-                    this.finderColumns.push({ label: label, children: children, lastTerm: res.data.last_term.es_term });
+            createColumn(res, column, label, parentId) {
+                const children = Array.isArray(res.data.values) ? res.data.values : [];
+                const responseTotal = Number(res.headers && res.headers['x-wp-total']);
+                const totalChildren = this.isUsingElasticSearch
+                    ? null
+                    : Number.isFinite(responseTotal) ? responseTotal : null;
+                const hasMoreChildren = this.isUsingElasticSearch
+                    ? !!(res.data.last_term && res.data.last_term.es_term)
+                    : Number.isFinite(totalChildren)
+                        ? children.length < totalChildren
+                        : children.length >= this.maxNumOptionsCheckboxFinderColumns;
+                const lastTerm = res.data.last_term && res.data.last_term.es_term ? res.data.last_term.es_term : '';
+                const columnIndex = column === undefined ? 0 : column + 1;
+                const isNewColumn = !this.finderColumns[columnIndex] || this.finderColumns[columnIndex].isLoading;
+                const nextColumn = {
+                    label: label,
+                    children: children,
+                    parentId: Number(parentId) || 0,
+                    lastTerm: lastTerm,
+                    totalChildren: totalChildren,
+                    hasMoreChildren: hasMoreChildren,
+                    isLoadingMore: false,
+                    isSelectingAll: false
+                };
+                this.finderColumns.splice(columnIndex, this.finderColumns.length - columnIndex, nextColumn);
                 
                 // Accessibility: Focus new column only on user interaction, not initial load
                 // No announcement needed - the button already shows child count, focus movement and aria-label provide context
@@ -841,94 +860,247 @@
                     });
                 }
             },
-            appendMore(options, key, lastTerm) {
+            appendMore(options, key, lastTerm, hasMoreChildren, totalChildren) {
                 for (let option of options)
                     this.finderColumns[key].children.push(option);
                 
                 this.finderColumns[key].lastTerm = lastTerm;
+                this.finderColumns[key].hasMoreChildren = hasMoreChildren;
+                this.finderColumns[key].totalChildren = totalChildren;
             },
+            isColumnFullySelected(column) {
+                const selectableChildren = column.children.filter(option => Number(option.total_items) > 0);
+                return !column.hasMoreChildren && selectableChildren.length > 0 && selectableChildren.every(option => this.isOptionSelected(option.value));
+            },
+            isColumnPartiallySelected(column) {
+                return column.children.some(option => Number(option.total_items) > 0 && this.isOptionSelected(option.value)) && !this.isColumnFullySelected(column);
+            },
+            async toggleColumnSelection(column, key) {
+                if (column.isLoadingMore || column.isSelectingAll) {
+                    return;
+                }
+
+                column.isSelectingAll = true;
+                try {
+                    while (column.hasMoreChildren) {
+                        const childrenCountBeforeLoad = column.children.length;
+                        if (!await this.loadNextColumnPage(column, key))
+                            return;
+                        if (column.children.length <= childrenCountBeforeLoad)
+                            return;
+                    }
+
+                    const columnValues = column.children
+                        .filter(option => Number(option.total_items) > 0)
+                        .map(option => isNaN(Number(option.value)) ? option.value : Number(option.value));
+                    const allColumnValueSet = new Set(column.children.map(option => String(option.value)));
+                    const selectedValues = this.selectedTerms.slice();
+                    const isFullySelected = this.isColumnFullySelected(column);
+                    const updatedSelection = selectedValues.filter(value => !allColumnValueSet.has(String(value)));
+
+                    if (!isFullySelected) {
+                        const selectedValueSet = new Set(updatedSelection.map(value => String(value)));
+                        for (const value of columnValues) {
+                            if (!selectedValueSet.has(String(value)))
+                                updatedSelection.push(value);
+                        }
+                    }
+
+                    const uniqueSelection = Array.from(new Map(updatedSelection.map(value => [String(value), value])).values());
+                    this.$emit('selectAll', {
+                        terms: uniqueSelection,
+                        parentId: column.parentId,
+                        selectingAll: !isFullySelected
+                    });
+                } finally {
+                    column.isSelectingAll = false;
+                }
+            },
+            async loadNextColumnPage(column, key) {
+                if (!column.hasMoreChildren || column.isLoadingMore)
+                    return !column.hasMoreChildren;
+
+                const parent = column.parentId;
+                const offset = column.children.length;
+                const requestKey = `${key}|${parent}|${offset}|${column.lastTerm || ''}`;
+                const requestVersion = this.columnRequestVersions[key] || 0;
+                if (this.pendingColumnRequests[requestKey])
+                    return false;
+
+                column.isLoadingMore = true;
+                this.isColumnLoading = true;
+                this.pendingColumnRequests[requestKey] = true;
+
+                const queryItems = { current_query: this.query };
+                const hideEmpty = Number(parent) > 0 ? 'hideempty=0&' : '';
+                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&${hideEmpty}${qs.stringify(queryItems)}`;
+                if (column.lastTerm)
+                    query += '&last_term=' + encodeURIComponent(column.lastTerm);
+
+                let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
+                if (this.collectionId == 'default')
+                    route = `/facets/${this.metadatumId}${query}`;
+
+                try {
+                    const res = await tainacanApi.get(route);
+                    if (this.finderColumns[key] !== column || this.columnRequestVersions[key] !== requestVersion)
+                        return false;
+
+                    const responseTotal = Number(res.headers && res.headers['x-wp-total']);
+                    const totalChildren = this.isUsingElasticSearch
+                        ? null
+                        : Number.isFinite(responseTotal) ? responseTotal : null;
+                    const lastTerm = res.data.last_term && res.data.last_term.es_term ? res.data.last_term.es_term : '';
+                    const loadedChildren = column.children.length + res.data.values.length;
+                    const hasMoreChildren = this.isUsingElasticSearch
+                        ? !!lastTerm
+                        : Number.isFinite(totalChildren)
+                            ? loadedChildren < totalChildren
+                            : res.data.values.length >= this.maxNumOptionsCheckboxFinderColumns;
+                    this.appendMore(res.data.values, key, lastTerm, hasMoreChildren, totalChildren);
+                    this.hasToDisplaySearchBar = !this.isSearching && (this.isUsingElasticSearch || this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some(value => value.total_children != undefined && value.total_children != 0));
+                    return true;
+                } catch (error) {
+                    this.$console.error(error);
+                    return false;
+                } finally {
+                    delete this.pendingColumnRequests[requestKey];
+                    if (this.finderColumns[key] === column && this.columnRequestVersions[key] === requestVersion) {
+                        column.isLoadingMore = false;
+                        this.isColumnLoading = false;
+                    }
+                }
+            },
+
             getOptionChildren(option, key, index) {
-                
-                let query_items = { 'current_query': this.query };
+                const parent = option ? option.value : 0;
+                const columnIndex = key === undefined ? 0 : key + 1;
 
                 if (key != undefined)
                     this.addToHierarchicalPath(key, index, option);
 
-                let parent = 0;
+                if (option && option.total_children != undefined && Number(option.total_children) === 0) {
+                    this.removeLevelsAfter(columnIndex - 1);
+                    this.isColumnLoading = false;
+                    return;
+                }
 
-                if (option)
-                    parent = option.value;
+                const currentColumn = this.finderColumns[columnIndex];
 
-                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&${qs.stringify(query_items)}`
+
+                if (currentColumn &&
+                        String(currentColumn.parentId) === String(parent) &&
+                        (currentColumn.isLoading || !currentColumn.hasMoreChildren)) {
+                    this.removeLevelsAfter(columnIndex);
+                    return;
+                }
+
+                const requestVersion = (this.columnRequestVersions[columnIndex] || 0) + 1;
+                this.columnRequestVersions[columnIndex] = requestVersion;
+
+
+                this.removeLevelsAfter(columnIndex - 1);
+
+                const loadingColumn = {
+                    label: option ? option.label : null,
+                    children: [],
+                    parentId: Number(parent) || 0,
+                    lastTerm: '',
+                    totalChildren: 0,
+                    hasMoreChildren: false,
+                    isLoading: true,
+                    isLoadingMore: false,
+                    isSelectingAll: false
+                };
+
+                this.finderColumns.splice(
+                    columnIndex,
+                    this.finderColumns.length - columnIndex,
+                    loadingColumn
+                );
+
+                const query_items = { 'current_query': this.query };
+                const requestKey = `${columnIndex}|${parent}|0`;
+                this.pendingColumnRequests[requestKey] = true;
+
+                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&${Number(parent) > 0 ? 'hideempty=0&' : ''}${qs.stringify(query_items)}`;
 
                 this.isColumnLoading = true;
+
                 let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
                 if (this.collectionId == 'default')
-                    route = `/facets/${this.metadatumId}${query}`
-                
+                    route = `/facets/${this.metadatumId}${query}`;
+
                 tainacanApi.get(route)
                     .then(res => {
+                        const responseColumn = this.finderColumns[columnIndex];
 
-                        this.hasToDisplaySearchBar = !this.isSearching && (this.isUsingElasticSearch || this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some((aValue) => aValue.total_children != undefined && aValue.total_children != 0));
+                        if (
+                            this.columnRequestVersions[columnIndex] !== requestVersion ||
+                            !responseColumn ||
+                            String(responseColumn.parentId) !== String(Number(parent) || 0) ||
+                            !responseColumn.isLoading
+                        ) {
+                            return;
+                        }
 
-                        this.removeLevelsAfter(key);
-                        this.createColumn(res, key, option ? option.label : null);
+                        const values = Array.isArray(res.data.values) ? res.data.values : [];
+
+                        this.hasToDisplaySearchBar = !this.isSearching &&
+                            (this.isUsingElasticSearch ||
+                            this.hasToDisplaySearchBar ||
+                            res.headers['x-wp-totalpages'] > 1 ||
+                            values.some((aValue) =>
+                                aValue.total_children != undefined &&
+                                aValue.total_children != 0
+                            ));
+
+                        this.createColumn(
+                            res,
+                            key,
+                            option ? option.label : null,
+                            parent
+                        );
 
                         this.isColumnLoading = false;
                     })
-                    .catch(() => {
-                        
+                    .catch(error => {
+                        if (!isCancel(error))
+                            this.$console.error(error);
+                    })
+                    .finally(() => {
+                        delete this.pendingColumnRequests[requestKey];
 
-                        this.isColumnLoading = false;
+                        if (this.columnRequestVersions[columnIndex] === requestVersion) {
+                            const loadedColumn = this.finderColumns[columnIndex];
+
+                            if (loadedColumn)
+                                loadedColumn.isLoading = false;
+
+                            this.isColumnLoading = false;
+                        }
                     });
+            },
 
+            handleTaxonomyOptionClick(event, option, key, index) {
+                if (event.target.closest && event.target.closest('input[type="checkbox"]'))
+                    return;
+
+                this.getOptionChildren(option, key, index);
             },
             getMoreOptions(finderColumn, key) {
-
-                if (finderColumn.children && finderColumn.children.length > 0) {
-                    let parent = finderColumn.children[0].parent;
-                    let offset = finderColumn.children.length;
-                    let query_items = { 'current_query': this.query };
-
-                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&${qs.stringify(query_items)}`
-
-                    if (finderColumn.lastTerm)
-                        query += '&last_term=' + encodeURIComponent(finderColumn.lastTerm)
-
-                    this.isColumnLoading = true;
-
-                    let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
-
-                    if (this.collectionId == 'default')
-                        route = `/facets/${this.metadatumId}${query}`
-
-                    tainacanApi.get(route)
-                        .then(res => {
-                            this.appendMore(res.data.values, key, res.data.last_term.es_term);
-                            
-                            this.hasToDisplaySearchBar = !this.isSearching && (this.isUsingElasticSearch || this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some((aValue) => aValue.total_children != undefined && aValue.total_children != 0));
-
-                            this.totalRemaining = Object.assign({}, this.totalRemaining, {
-                                [`${key}`]: {
-                                    remaining: this.isUsingElasticSearch ? (res.data.values.length > 0 ? (res.data.last_term.value == res.data.values[res.data.values.length - 1].value) : false) : res.headers['x-wp-total'],
-                                }
-                            });
-
-                            this.isColumnLoading = false;
-                        })
-                        .catch(() => {
-                            
-
-                            this.isColumnLoading = false;
-                        });
-                }
+                return this.loadNextColumnPage(finderColumn, key);
+            },
+            toggleOption(value) {
+                const normalizedValue = isNaN(Number(value)) ? value : Number(value);
+                this.$emit('input', normalizedValue);
             },
             isOptionSelected(optionValue) {
-                if (Array.isArray(this.selected))
-                    return this.selected.find(aSelected => aSelected == optionValue)
+                if (Array.isArray(this.selectedTerms))
+                    return this.selectedTerms.some(aSelected => String(aSelected) === String(optionValue))
                 else
-                    return optionValue == this.selected;
+                    return optionValue == this.selectedTerms;
             },
             closeModal() {
                 this.$emit('close');
@@ -948,7 +1120,7 @@
                         compare: 'IN',
                         metadatum_id: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
                         collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
-                        terms: this.selected
+                        terms: this.selectedTerms
                     });         
                 } else {
                     this.$eventBusSearchEmitter.emit('input', {
@@ -956,7 +1128,7 @@
                         compare: 'IN',
                         metadatum_id: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,
                         collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
-                        value: this.selected,
+                        value: this.selectedTerms,
                     });
                 }
 
@@ -970,6 +1142,19 @@
 </script>
 
 <style lang="scss" scoped>
+
+    .column-select-all-spinner {
+        animation: spinAround 500ms infinite linear;
+        border: 2px solid var(--tainacan-gray2);
+        border-radius: 50%;
+        border-inline-end-color: transparent;
+        border-top-color: transparent;
+        display: inline-block;
+        height: 1em;
+        margin-inline-end: 0.25em;
+        vertical-align: middle;
+        width: 1em;
+    }
 
     .tainacan-modal-content {
         width: auto;
@@ -1110,11 +1295,11 @@
     }
 
     .tainacan-finder-column {
-        border-right: solid 1px var(--tainacan-input-border-color);        
-        flex-basis: auto;
-        flex-grow: 1;
-        max-width: 600px;
+        border-right: solid 1px var(--tainacan-input-border-color);
+        flex: 1 1 0;
+        max-width: none;
         min-width: 200px;
+        box-sizing: border-box;
         margin: 0;
         padding: 0em;
         transition: width 0.2s ease;
