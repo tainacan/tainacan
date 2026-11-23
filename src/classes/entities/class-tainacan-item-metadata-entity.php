@@ -621,7 +621,8 @@ class Item_Metadata_Entity extends Entity {
 						$one_filled = true;
 
 					if ($this->is_collection_key()) {
-						$val_key = ( $val instanceof \Tainacan\Entities\Entity ) ? $val->get_id() : $val;
+						$term_id = ( $is_term && $taxonomy_slug ) ? $this->resolve_term_id( $val, $taxonomy_slug ) : null;
+						$val_key = $term_id ?? ( ( $val instanceof \Tainacan\Entities\Entity ) ? $val->get_id() : $val );
 
 						if ( !isset($dupe_array[$val_key]) ) {
 							$dupe_array[$val_key] = 1;
@@ -634,15 +635,16 @@ class Item_Metadata_Entity extends Entity {
 
 						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 						if ( $is_term && $taxonomy_slug ) {
-							$test = $Tainacan_Items->fetch([
+							$test = $term_id ? $Tainacan_Items->fetch([
 								'tax_query' => [
 									[
-										'taxonomy' => $taxonomy_slug,
-										'terms'    => $val_key
+										'taxonomy'         => $taxonomy_slug,
+										'terms'            => $term_id,
+										'include_children' => false
 									]
 								],
 								'post__not_in' => [$item->get_id()]
-							], $item->get_collection());
+							], $item->get_collection()) : null;
 						} else {
 							$test = $Tainacan_Items->fetch([
 								'meta_query' => [
@@ -655,7 +657,7 @@ class Item_Metadata_Entity extends Entity {
 							], $item->get_collection());
 						}
 
-						if ($test->have_posts()) {	
+						if ($test && $test->have_posts()) {	
 							/* translators: %s is the metadatum name */
 							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 							return false;
@@ -691,7 +693,8 @@ class Item_Metadata_Entity extends Entity {
 			}
 			
 			if ($this->is_collection_key()) {
-				$value_key = ( $value instanceof \Tainacan\Entities\Entity ) ? $value->get_id() : $value;
+				$term_id = ( $is_term && $taxonomy_slug ) ? $this->resolve_term_id( $value, $taxonomy_slug ) : null;
+				$value_key = $term_id ?? ( ( $value instanceof \Tainacan\Entities\Entity ) ? $value->get_id() : $value );
 				$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 				if($metadatum->get_parent()) {
 					$patent_metadatum = \tainacan_metadata()->fetch( $metadatum->get_parent(), 'OBJECT' );
@@ -719,15 +722,16 @@ class Item_Metadata_Entity extends Entity {
 					}
 				}
 				if ( $is_term && $taxonomy_slug ) {
-					$test = $Tainacan_Items->fetch([
+					$test = $term_id ? $Tainacan_Items->fetch([
 						'tax_query' => [
 							[
-								'taxonomy' => $taxonomy_slug,
-								'terms'    => $value_key
+								'taxonomy'         => $taxonomy_slug,
+								'terms'            => $term_id,
+								'include_children' => false
 							]
 						],
 						'post__not_in' => [$item->get_id()]
-					], $item->get_collection());
+					], $item->get_collection()) : null;
 				} else {
 					$test = $Tainacan_Items->fetch([
 						'meta_query' => [
@@ -740,7 +744,7 @@ class Item_Metadata_Entity extends Entity {
 					], $item->get_collection());
 				}
 
-				if ($test->have_posts()) {
+				if ($test && $test->have_posts()) {
 					// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
 					$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 					return false;
@@ -750,5 +754,25 @@ class Item_Metadata_Entity extends Entity {
 			$this->set_as_valid();
 			return true;
 		}
+	}
+
+	/**
+	 * Resolves a term value to its term ID the same way save_terms_metadatum_value() does.
+	 *
+	 * @param mixed  $term_value    A Term entity, term ID, or term name.
+	 * @param string $taxonomy_slug The taxonomy database identifier.
+	 * @return int|null The term ID if the term exists, or null otherwise.
+	 */
+	private function resolve_term_id( $term_value, $taxonomy_slug ) {
+		if ( $term_value instanceof Term ) {
+			return $term_value->get_id();
+		}
+
+		$exists = \Tainacan\Repositories\Terms::get_instance()->term_exists( $term_value, $taxonomy_slug, null, true );
+		if ( ! $exists && is_numeric( $term_value ) ) {
+			$exists = \Tainacan\Repositories\Terms::get_instance()->term_exists( (int) $term_value, $taxonomy_slug, null, true );
+		}
+
+		return ( $exists && isset( $exists->term_id ) ) ? (int) $exists->term_id : null;
 	}
 }
