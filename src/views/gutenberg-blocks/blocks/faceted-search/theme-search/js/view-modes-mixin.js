@@ -97,9 +97,18 @@ export const viewModesMixin = {
                 if ( this.$route && this.$route.href && this.$route.href.split('?') && this.$route.href.split('?').length )
                     this.queries['ref'] = this.$route.href;
 
+                // The route query also names the page that hosts the list. Those vars
+                // must not follow the item: page_id (or p) makes WP_Query open that
+                // page, and tainacan_repository_archive forces the repository template.
+                // "name" stays, because it is the items title filter.
+                const linkQueries = Object.assign({}, this.queries);
+                ['page_id', 'pagename', 'p', 'preview', 'preview_id', 'preview_nonce', 'tainacan_repository_archive'].forEach(key => {
+                    delete linkQueries[key];
+                });
+
                 // Plain permalinks and drafts already have a query string in item.url.
                 const separator = (typeof itemUrl === 'string' && itemUrl.indexOf('?') !== -1) ? '&' : '?';
-                return itemUrl + separator + qs.stringify(this.queries);
+                return itemUrl + separator + qs.stringify(linkQueries);
             }
             return itemUrl;
         },

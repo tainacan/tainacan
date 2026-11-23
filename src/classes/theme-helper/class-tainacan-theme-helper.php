@@ -1555,10 +1555,14 @@ class Theme_Helper {
 	 *
 	 * The neighbor permalink already names that item. Query vars that name the
 	 * current item (plain permalinks) or a draft (`p`, `post_type`) are removed
-	 * first. add_query_arg() then joins the list arguments with "?" or "&", so
-	 * the URL keeps a single query string. Values are encoded up front because
-	 * add_query_arg() does not encode the arguments it is given, including the
-	 * nested metaquery arrays the lists send.
+	 * first, along with vars that name the page hosting the list (`page_id`,
+	 * `tainacan_repository_archive`). `name` is kept: it is the public title
+	 * filter, and WordPress only copies a permalink into the internal `name`
+	 * query var inside parse_request, never into $_GET. add_query_arg() then
+	 * joins the list arguments with "?" or "&", so the URL keeps a single query
+	 * string. Values are encoded up front because add_query_arg() does not
+	 * encode the arguments it is given, including the nested metaquery arrays
+	 * the lists send.
 	 *
 	 * @param Entities\Item $item     Neighbor item.
 	 * @param int           $position Zero-based position of that item in the list.
@@ -1568,7 +1572,16 @@ class Theme_Helper {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only list query, re-encoded into the neighbor URL.
 		$query = wp_unslash( $_GET );
 
-		unset( $query['p'], $query['page_id'], $query['name'], $query['pagename'], $query['post_type'], $query['preview'], $query['preview_id'], $query['preview_nonce'] );
+		unset(
+			$query['p'],
+			$query['page_id'],
+			$query['pagename'],
+			$query['post_type'],
+			$query['preview'],
+			$query['preview_id'],
+			$query['preview_nonce'],
+			$query['tainacan_repository_archive']
+		);
 
 		$post_ids = array( (int) $item->get_id(), (int) get_queried_object_id() );
 		foreach ( $post_ids as $post_id ) {

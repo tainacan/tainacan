@@ -149,6 +149,103 @@ class Test_Adjacent_Items extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * `name` is the public title filter. It must stay on the next URL, or the
+	 * following page walks the unfiltered collection and `pos` points elsewhere.
+	 */
+	public function test_title_filter_name_stays_on_the_neighbor_url() {
+		$this->set_permalink_structure( '/%postname%/' );
+
+		$collection = $this->create_collection( 'Named adjacent' );
+		$first      = $this->create_dated_item( $collection, 'Shared', '2020-01-01 00:00:00' );
+		$this->create_dated_item( $collection, 'Other', '2020-01-02 00:00:00' );
+		$middle     = $this->create_dated_item( $collection, 'Shared', '2020-01-03 00:00:00' );
+		$last       = $this->create_dated_item( $collection, 'Shared', '2020-01-04 00:00:00' );
+
+		$args = $this->list_args( $collection->get_id(), 1 );
+		$args['orderby'] = 'date';
+		$args['order']   = 'ASC';
+		$args['name']    = 'Shared';
+		$this->open_item_from_list( $middle, $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+
+		$this->assert_neighbor_url( $last, $adjacent['next']['url'], array(
+			'pos'  => '2',
+			'name' => 'Shared',
+		) );
+		$this->assert_neighbor_url( $first, $adjacent['previous']['url'], array(
+			'pos'  => '0',
+			'name' => 'Shared',
+		) );
+
+		$this->go_to( $adjacent['next']['url'] );
+		$from_next = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+
+		$this->assert_neighbor_url( $middle, $from_next['previous']['url'], array(
+			'pos'  => '1',
+			'name' => 'Shared',
+		) );
+	}
+
+	/**
+	 * page_id and tainacan_repository_archive belong to the page that hosts the
+	 * list. Carrying either one makes the item URL open that page, or the
+	 * repository archive, instead of the item.
+	 */
+	public function test_host_page_query_vars_do_not_follow_the_neighbor() {
+		$this->set_permalink_structure( '' );
+
+		$collection = $this->create_collection( 'Host page adjacent' );
+		$items      = $this->create_items( $collection, array(
+			'Alpha' => 'publish',
+			'Beta'  => 'publish',
+			'Gamma' => 'publish',
+		) );
+
+		$args = $this->list_args( $collection->get_id(), 1 );
+		$args['page_id'] = 42;
+		$args['tainacan_repository_archive'] = 1;
+		$this->open_item_from_list( $items['Beta'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+		$vars     = $this->query_vars_from_url( $adjacent['next']['url'] );
+
+		$this->assertSame( 'Gamma', $adjacent['next']['title'] );
+		$this->assertArrayNotHasKey( 'page_id', $vars );
+		$this->assertArrayNotHasKey( 'tainacan_repository_archive', $vars );
+		$this->assertSame( '2', (string) $vars['pos'] );
+	}
+
+	/**
+	 * A draft under plain permalinks already uses "?post_type=&p=". The list
+	 * arguments have to be joined with "&".
+	 */
+	public function test_plain_permalink_draft_keeps_a_single_query_string() {
+		$this->set_permalink_structure( '' );
+
+		$collection = $this->create_collection( 'Plain draft adjacent' );
+		$items      = $this->create_items( $collection, array(
+			'Alpha' => 'publish',
+			'Beta'  => 'draft',
+			'Gamma' => 'publish',
+		) );
+
+		$args = $this->list_args( $collection->get_id(), 0 );
+		$args['status'] = 'any';
+		$this->open_item_from_list( $items['Alpha'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+
+		$this->assertSame( 'Beta', $adjacent['next']['title'] );
+		$this->assert_neighbor_url( $items['Beta'], $adjacent['next']['url'], array(
+			'pos'       => '1',
+			'post_type' => $collection->get_db_identifier(),
+			'p'         => (string) $items['Beta']->get_id(),
+		) );
+		$this->assertSame( false, strpos( $adjacent['next']['url'], '?pos=' ) );
+	}
+
+	/**
 	 * In a repository list the neighbor can belong to another collection,
 	 * so its query var is a different key from the current item's.
 	 */
@@ -211,6 +308,30 @@ class Test_Adjacent_Items extends TAINACAN_UnitTestCase {
 			);
 		}
 		return $items;
+	}
+
+	/**
+	 * @param \Tainacan\Entities\Collection $collection Collection that owns the item.
+	 * @param string                         $title      Item title.
+	 * @param string                         $date       MySQL post date.
+	 * @return \Tainacan\Entities\Item
+	 */
+	private function create_dated_item( $collection, $title, $date ) {
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => $title,
+				'status'     => 'publish',
+				'collection' => $collection,
+			),
+			true
+		);
+		wp_update_post( array(
+			'ID'            => $item->get_id(),
+			'post_date'     => $date,
+			'post_date_gmt' => $date,
+		) );
+		return $item;
 	}
 
 	/**
