@@ -1519,8 +1519,7 @@ class Theme_Helper {
 
 					if (!empty($item)  && $item instanceof \Tainacan\Entities\Item) {
 						$adjacent_items['previous'] = [
-							// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Building navigation URL from original query parameters (read-only operation)
-							'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position-2])),
+							'url' => $this->get_adjacent_item_url( $item, $current_position - 2 ),
 							'title' => $item->get_title(),
 							'thumbnail' => $item->get_thumbnail()
 						];
@@ -1539,8 +1538,7 @@ class Theme_Helper {
 
 				if (!empty($item) && $item instanceof \Tainacan\Entities\Item) {
 					$adjacent_items['next'] = [
-						// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Building navigation URL from original query parameters (read-only operation)
-						'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position])),
+						'url' => $this->get_adjacent_item_url( $item, $current_position ),
 						'title' => $item->get_title(),
 						'thumbnail' => $item->get_thumbnail()
 					];
@@ -1550,6 +1548,53 @@ class Theme_Helper {
 		}
 
 		return $adjacent_items;
+	}
+
+	/**
+	 * URL of a neighboring item, with the list arguments added as their own parameters.
+	 *
+	 * The neighbor permalink already names that item. Query vars that name the
+	 * current item (plain permalinks) or a draft (`p`, `post_type`) are removed
+	 * first. add_query_arg() then joins the list arguments with "?" or "&", so
+	 * the URL keeps a single query string. Values are encoded up front because
+	 * add_query_arg() does not encode the arguments it is given, including the
+	 * nested metaquery arrays the lists send.
+	 *
+	 * @param Entities\Item $item     Neighbor item.
+	 * @param int           $position Zero-based position of that item in the list.
+	 * @return string
+	 */
+	private function get_adjacent_item_url( Entities\Item $item, $position ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only list query, re-encoded into the neighbor URL.
+		$query = wp_unslash( $_GET );
+
+		unset( $query['p'], $query['page_id'], $query['name'], $query['pagename'], $query['post_type'], $query['preview'], $query['preview_id'], $query['preview_nonce'] );
+
+		$post_ids = array( (int) $item->get_id(), (int) get_queried_object_id() );
+		foreach ( $post_ids as $post_id ) {
+			if ( $post_id <= 0 ) {
+				continue;
+			}
+			$type = get_post_type_object( (string) get_post_type( $post_id ) );
+			if ( $type && is_string( $type->query_var ) && '' !== $type->query_var ) {
+				unset( $query[ $type->query_var ] );
+			}
+		}
+
+		foreach ( array_keys( $query ) as $key ) {
+			if ( is_string( $key ) && $this->is_post_type_a_collection( $key ) ) {
+				unset( $query[ $key ] );
+			}
+		}
+
+		$query['pos'] = $position;
+
+		$permalink = get_permalink( $item->get_id() );
+		if ( ! is_string( $permalink ) || '' === $permalink ) {
+			return '';
+		}
+
+		return add_query_arg( urlencode_deep( $query ), $permalink );
 	}
 	
 	/**

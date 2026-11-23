@@ -96,8 +96,10 @@ export const viewModesMixin = {
 
                 if ( this.$route && this.$route.href && this.$route.href.split('?') && this.$route.href.split('?').length )
                     this.queries['ref'] = this.$route.href;
-                
-                return itemUrl + '?' + qs.stringify(this.queries);
+
+                // Plain permalinks and drafts already have a query string in item.url.
+                const separator = (typeof itemUrl === 'string' && itemUrl.indexOf('?') !== -1) ? '&' : '?';
+                return itemUrl + separator + qs.stringify(this.queries);
             }
             return itemUrl;
         },
