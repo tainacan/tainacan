@@ -1,11 +1,20 @@
 @startuml class-diagram
-  class "Inbcm_Archive" as Inbcm_Archive {
+  class "Mapper" as Mapper {
     +slug : 
     +name : 
     +allow_extra_metadata : 
+    +context_url : 
+    +type : 
+    +metadata : array
+    +prefix : 
+    +sufix : 
+    +header : 
+    +show_ui : 
+    +_toArray()
+    +get_url(meta_slug)
     +__construct()
   }
-  class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
+  class "Inbcm_Archive" as Inbcm_Archive {
     +slug : 
     +name : 
     +allow_extra_metadata : 
@@ -20,21 +29,6 @@
     +prefixes : 
     +XML_namespace : 
     +XML_append_root : 
-    +__construct()
-  }
-  class "Mapper" as Mapper {
-    +slug : 
-    +name : 
-    +allow_extra_metadata : 
-    +context_url : 
-    +type : 
-    +metadata : array
-    +prefix : 
-    +sufix : 
-    +header : 
-    +show_ui : 
-    +_toArray()
-    +get_url(meta_slug)
     +__construct()
   }
   class "Mappers_Handler" as Mappers_Handler {
@@ -56,6 +50,12 @@
     +check_class_name(class_name, root, prefix)
     +create_mapped_collection(collection, request)
     +filter_item_api_response(item_arr, item, request)
+  }
+  class "Inbcm_Bibliographic" as Inbcm_Bibliographic {
+    +slug : 
+    +name : 
+    +allow_extra_metadata : 
+    +__construct()
   }
   class "Inbcm_Museological" as Inbcm_Museological {
     +slug : 
