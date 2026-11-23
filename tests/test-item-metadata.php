@@ -215,6 +215,223 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$n_item_metadata2->set_value($value);
 		$this->assertFalse($n_item_metadata2->validate(), 'Collection key should not validate another item metadatada with the same value');
 	}
+
+	function test_collection_key_cannot_be_multiple(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste',
+				'description' => 'No description',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'              => 'metadado',
+				'description'       => 'descricao',
+				'collection'        => $collection,
+				'collection_key'    => 'yes',
+				'multiple'          => 'yes',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			)
+		);
+
+		$this->assertFalse($metadatum->validate(), 'Metadatum should not validate with unique value and multiple values at the same time');
+		$errors = $metadatum->get_errors();
+		$this->assertIsArray($errors);
+		$this->assertArrayHasKey('collection_key', $errors[0]);
+
+		$metadatum->set_multiple('no');
+		$this->assertTrue($metadatum->validate(), 'Metadatum should validate with unique value only');
+	}
+
+	function test_collection_key_taxonomy(){
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste',
+				'description' => 'No description',
+			),
+			true
+		);
+
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'collections' => [$collection],
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'              => 'metadado',
+				'description'       => 'descricao',
+				'collection'        => $collection,
+				'collection_key'    => 'yes',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'            => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no'
+				]
+			),
+			true
+		);
+
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'Red',
+			),
+			true
+		);
+
+		$other_term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'Blue',
+			),
+			true
+		);
+
+		$i = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$i2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'other item',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item_metadata = new Item_Metadata_Entity($i, $metadatum);
+		$item_metadata->set_value($term->get_id());
+		$this->assertTrue($item_metadata->validate());
+		$Tainacan_Item_Metadata->insert($item_metadata);
+
+		// Value loaded from database is a Term object
+		$saved_item_metadata = new Item_Metadata_Entity($i, $metadatum);
+		$this->assertTrue($saved_item_metadata->validate(), 'the saved term should validate for the same item');
+
+		$n_item_metadata = new Item_Metadata_Entity($i2, $metadatum);
+		$n_item_metadata->set_value($term->get_id());
+		$this->assertFalse($n_item_metadata->validate(), 'Collection key should not validate another item with the same term');
+
+		$n_item_metadata->set_value($other_term->get_id());
+		$this->assertTrue($n_item_metadata->validate(), 'Collection key should validate another item with a different term');
+	}
+
+	function test_collection_key_multiple_taxonomy_saved_before_validation(){
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste',
+				'description' => 'No description',
+			),
+			true
+		);
+
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'collections' => [$collection],
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'              => 'metadado',
+				'description'       => 'descricao',
+				'collection'        => $collection,
+				'multiple'          => 'yes',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'            => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no'
+				]
+			),
+			true
+		);
+
+		// Metadata created before the unique value and multiple values rule may still have both enabled
+		update_post_meta($metadatum->get_id(), 'collection_key', 'yes');
+		$metadatum = $Tainacan_Metadata->fetch($metadatum->get_id());
+		$this->assertTrue($metadatum->is_collection_key() && $metadatum->is_multiple());
+
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'Red',
+			),
+			true
+		);
+
+		$i = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$i2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'other item',
+				'description' => 'adasdasdsa',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item_metadata = new Item_Metadata_Entity($i, $metadatum);
+		$item_metadata->set_value([$term->get_id()]);
+		$this->assertTrue($item_metadata->validate());
+		$Tainacan_Item_Metadata->insert($item_metadata);
+
+		// Value loaded from database is a list of Term objects, which used to cause a fatal error
+		$saved_item_metadata = new Item_Metadata_Entity($i, $metadatum);
+		$this->assertTrue($saved_item_metadata->validate(), 'the saved terms should validate for the same item');
+
+		$n_item_metadata = new Item_Metadata_Entity($i2, $metadatum);
+		$n_item_metadata->set_value([$term->get_id()]);
+		$this->assertFalse($n_item_metadata->validate(), 'Collection key should not validate another item with the same term');
+	}
 	
 	function test_fetch(){
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
