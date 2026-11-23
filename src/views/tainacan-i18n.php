@@ -1246,6 +1246,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_thumbnail_alt_ai_decorative'               => __( 'The image was identified as decorative. Alternative text was cleared.', 'tainacan' ),
 	/* translators: %s: maximum document content size in kilobytes */
 	'info_document_content_index_truncated_%s'    => __( 'The document content exceeded the maximum size (%s characters) and was truncated.', 'tainacan' ),
+	'info_collection_key_disabled_by_multiple'       => __( 'Cannot be enabled when multiple values are allowed.', 'tainacan' ),
+	'info_multiple_disabled_by_collection_key'       => __( 'Cannot be enabled when unique value across items is enabled.', 'tainacan' ),
+	'info_collection_key_and_multiple_error'         => __( 'Metadata cannot have unique value and allow multiple values at the same time', 'tainacan' ),
 	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

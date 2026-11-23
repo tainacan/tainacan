@@ -124,7 +124,7 @@ class Metadata extends Repository {
 			],
 			'collection_key'        => [
 				'map'         => 'meta',
-				'title'       => __( 'Unique value', 'tainacan' ),
+				'title'       => __( 'Unique value across items', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Metadata value should be unique accross all items in this collection', 'tainacan' ),
 				'on_error'    => __( 'You cannot have two items with the same value for this metadatum', 'tainacan' ),
