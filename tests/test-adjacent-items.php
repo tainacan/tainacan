@@ -300,7 +300,8 @@ class Test_Adjacent_Items extends TAINACAN_UnitTestCase {
 	}
 
 	/**
-	 * An author keeps their own draft and does not receive someone else's.
+	 * An author reaches their own draft when another author's draft sits between them.
+	 * The other author's title is not disclosed. pos stays the index in that same list.
 	 */
 	public function test_author_sees_their_own_draft_and_not_another_authors() {
 		$this->set_permalink_structure( '/%postname%/' );
@@ -311,29 +312,40 @@ class Test_Adjacent_Items extends TAINACAN_UnitTestCase {
 		$author->add_cap( 'tnc_col_' . $collection->get_id() . '_edit_items' );
 
 		$items = $this->create_items( $collection, array(
-			'Able'  => 'draft',
-			'Mine'  => 'draft',
-			'Theirs' => 'draft',
+			'A Able'   => 'draft',
+			'B Theirs' => 'draft',
+			'C Mine'   => 'draft',
 		) );
 		wp_update_post( array(
-			'ID'          => $items['Able']->get_id(),
+			'ID'          => $items['A Able']->get_id(),
 			'post_author' => $author_id,
 		) );
 		wp_update_post( array(
-			'ID'          => $items['Mine']->get_id(),
+			'ID'          => $items['C Mine']->get_id(),
 			'post_author' => $author_id,
 		) );
 
-		$args = $this->list_args( $collection->get_id(), 1 );
+		$args = $this->list_args( $collection->get_id(), 0 );
 		$args['status'] = 'draft';
 		wp_set_current_user( $author_id );
-		$this->open_item_from_list( $items['Mine'], $args );
+		$this->open_item_from_list( $items['A Able'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+		$next     = $this->query_vars_from_url( $adjacent['next']['url'] );
+
+		$this->assertNull( $adjacent['previous'] );
+		$this->assertSame( 'C Mine', $adjacent['next']['title'] );
+		$this->assertSame( '2', $next['pos'] );
+		$this->assertSame( 'draft', $next['status'] );
+
+		$args['pos'] = 2;
+		$this->open_item_from_list( $items['C Mine'], $args );
 
 		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
 
-		$this->assertSame( 'Able', $adjacent['previous']['title'] );
+		$this->assertSame( 'A Able', $adjacent['previous']['title'] );
+		$this->assertSame( '0', $this->query_vars_from_url( $adjacent['previous']['url'] )['pos'] );
 		$this->assertNull( $adjacent['next'] );
-		$this->assertSame( 'draft', $this->query_vars_from_url( $adjacent['previous']['url'] )['status'] );
 	}
 
 	/**
@@ -383,6 +395,67 @@ class Test_Adjacent_Items extends TAINACAN_UnitTestCase {
 		$this->assertArrayNotHasKey( 'metakey', $vars );
 		$this->assertArrayNotHasKey( 'metavalue', $vars );
 		$this->assertArrayNotHasKey( 'metacompare', $vars );
+	}
+
+	/**
+	 * orderby[meta_value_num] is an array. After a private metakey is dropped,
+	 * that sort must not stay on the query or on the next URL.
+	 */
+	public function test_private_metakey_does_not_keep_an_array_orderby() {
+		$this->set_permalink_structure( '/%postname%/' );
+
+		$collection = $this->create_collection( 'Private orderby adjacent' );
+		$section    = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'       => 'Private',
+				'collection' => $collection,
+				'status'     => 'private',
+			),
+			true
+		);
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                => 'Secret',
+				'collection'          => $collection,
+				'metadata_type'       => 'Tainacan\Metadata_Types\Text',
+				'metadata_section_id' => $section->get_id(),
+			),
+			true
+		);
+		$items = $this->create_items( $collection, array(
+			'Alpha' => 'publish',
+			'Beta'  => 'publish',
+			'Gamma' => 'publish',
+		) );
+
+		$args = $this->list_args( $collection->get_id(), 0 );
+		$args['metakey'] = (string) $metadatum->get_id();
+		$args['orderby'] = array(
+			'title'          => 'ASC',
+			'meta_value_num' => 'ASC',
+		);
+		wp_set_current_user( 0 );
+		$this->open_item_from_list( $items['Alpha'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+		$vars     = $this->query_vars_from_url( $adjacent['next']['url'] );
+
+		$this->assertSame( 'Beta', $adjacent['next']['title'] );
+		$this->assertSame( 'title', $vars['orderby'] );
+		$this->assertArrayNotHasKey( 'metakey', $vars );
+		$this->assertStringNotContainsString( 'meta_value_num', $adjacent['next']['url'] );
+
+		$args['orderby'] = array( 'meta_value_num' => 'ASC' );
+		$this->open_item_from_list( $items['Alpha'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+		$vars     = $this->query_vars_from_url( $adjacent['next']['url'] );
+
+		$this->assertNotNull( $adjacent['next'] );
+		$this->assertArrayNotHasKey( 'orderby', $vars );
+		$this->assertArrayNotHasKey( 'metakey', $vars );
 	}
 
 	/**

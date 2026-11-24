@@ -1465,9 +1465,10 @@ class Theme_Helper {
 	 * The query string is the list the visitor came from. Unless they may edit
 	 * other people's items in that collection (or manage Tainacan), filters on
 	 * a status, an author, or a metadatum or taxonomy they cannot read are
-	 * removed before the query runs. The item that comes back is returned only
-	 * when they can read it. The neighbor URL is built from that same narrowed
-	 * query, so a dropped status or metakey is not forwarded either.
+	 * removed before the query runs. An unreadable row is skipped, and the
+	 * neighbor is the next item they can read, at that item's own index. The
+	 * neighbor URL is built from that same narrowed query, so a dropped status
+	 * or metakey is not forwarded either.
 	 *
 	 * @return array{next: array|null, previous: array|null}
 	 */
@@ -1524,51 +1525,103 @@ class Theme_Helper {
 			$fetch_args['taxquery'] = $term_query;
 		}
 
-		$fetch_args['perpage'] = '1';
+		// The neighbor scan chooses its own page. perpage here would only shrink that page.
+		unset( $fetch_args['perpage'] );
 		global $tainacan_rest_items_controller;
 		$fetch_args = $tainacan_rest_items_controller->process_request_filters( $fetch_args );
 
 		if ( $current_position > 1 ) {
-			$previous_args                  = $fetch_args;
-			$previous_args['paged']         = $current_position - 1;
-			$adjacent_items['previous']     = $this->read_adjacent_item( $previous_args, $entity, $current_position - 2, $request );
+			$adjacent_items['previous'] = $this->read_adjacent_item( $fetch_args, $entity, $current_position - 2, -1, $request );
 		}
 
-		$next_args              = $fetch_args;
-		$next_args['paged']     = $current_position + 1;
-		$adjacent_items['next'] = $this->read_adjacent_item( $next_args, $entity, $current_position, $request );
+		$adjacent_items['next'] = $this->read_adjacent_item( $fetch_args, $entity, $current_position, 1, $request );
 
 		return $adjacent_items;
 	}
 
 	/**
-	 * One neighbor, when the visitor may read that item.
+	 * Nearest item in one direction that the visitor may read.
 	 *
-	 * @param array                              $args     Mapped fetch arguments.
-	 * @param Entities\Collection|array          $entity   Collection the list belongs to, or an empty array.
-	 * @param int                                $position Zero-based position in the list.
-	 * @param array                              $query    List query that may be forwarded to the URL.
+	 * One unreadable row must not end the walk. With status=draft kept for
+	 * someone who can edit the collection, a single collection does not run
+	 * Items::_filter_where(), so the page still contains every draft. The
+	 * next row can be another author's draft, and the one after it this
+	 * author's. can_read() hides the title, then the scan continues.
+	 *
+	 * A posts_where of public statuses OR post_author = current user would
+	 * also skip that row. With status=any the author half includes that
+	 * user's trash and auto-drafts. can_read() does not.
+	 *
+	 * The scan stops after one REST page of rows. pos is an index in this
+	 * same list, including the rows that were skipped, so the next request
+	 * starts from the item the link opened.
+	 *
+	 * @param array                     $args   Mapped fetch arguments.
+	 * @param Entities\Collection|array $entity Collection the list belongs to, or an empty array.
+	 * @param int                       $start  Zero-based index of the first candidate.
+	 * @param int                       $step   1 toward the next item, -1 toward the previous.
+	 * @param array                     $query  List query that may be forwarded to the URL.
 	 * @return array|null
 	 */
-	private function read_adjacent_item( $args, $entity, $position, array $query ) {
-		$items = \Tainacan\Repositories\Items::get_instance()->fetch( $args, $entity, 'WP_Query' );
-		if ( ! $items instanceof \WP_Query || ! $items->have_posts() ) {
+	private function read_adjacent_item( $args, $entity, $start, $step, array $query ) {
+		$start = (int) $start;
+		$step  = (int) $step;
+		if ( $start < 0 || ( 1 !== $step && -1 !== $step ) ) {
 			return null;
 		}
 
-		$items->the_post();
-		$item = new Entities\Item( $items->post );
-		\wp_reset_postdata();
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+		$limit = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE ) ? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
+		if ( $limit < 1 ) {
+			$limit = 96;
+		}
 
-		if ( ! $item->can_read() ) {
+		if ( $step < 0 ) {
+			$from = max( 0, $start - $limit + 1 );
+			$take = $start - $from + 1;
+		} else {
+			$from = $start;
+			$take = $limit;
+		}
+
+		$page_args = $args;
+		// pos already addresses the row. A visitor offset or paged would shift it,
+		// and WP_Query gives offset precedence over paged, including offset 0.
+		unset( $page_args['paged'], $page_args['offset'] );
+		$page_args['offset']         = $from;
+		$page_args['posts_per_page'] = $take;
+
+		$items = \Tainacan\Repositories\Items::get_instance()->fetch( $page_args, $entity, 'WP_Query' );
+		if ( ! $items instanceof \WP_Query || empty( $items->posts ) ) {
 			return null;
 		}
 
-		return array(
-			'url'       => $this->get_adjacent_item_url( $item, $position, $query ),
-			'title'     => $item->get_title(),
-			'thumbnail' => $item->get_thumbnail(),
-		);
+		$posts = $items->posts;
+		if ( $step < 0 ) {
+			$posts = array_reverse( $posts );
+		}
+
+		foreach ( $posts as $offset_in_page => $post ) {
+			if ( ! $post instanceof \WP_Post ) {
+				continue;
+			}
+			$index = $step > 0
+				? $from + $offset_in_page
+				: $from + count( $items->posts ) - 1 - $offset_in_page;
+
+			$item = new Entities\Item( $post );
+			if ( ! $item->can_read() ) {
+				continue;
+			}
+
+			return array(
+				'url'       => $this->get_adjacent_item_url( $item, $index, $query ),
+				'title'     => $item->get_title(),
+				'thumbnail' => $item->get_thumbnail(),
+			);
+		}
+
+		return null;
 	}
 
 	/**
@@ -1616,9 +1669,10 @@ class Theme_Helper {
 	 * List arguments a visitor who does not see the whole list may keep.
 	 *
 	 * Status and author stay only for someone who edits this collection, so an
-	 * author can keep walking their own drafts. can_read() on the result still
-	 * drops a draft they do not own. A metavalue left behind after its key is
-	 * removed matches every meta field, so the value and the compare go with the key.
+	 * author can keep walking their own drafts. can_read() still skips a draft
+	 * they do not own. A metavalue left behind after its key is removed matches
+	 * every meta field, so the value and the compare go with the key. A sort
+	 * that names that key goes too, including orderby sent as an array.
 	 *
 	 * @param array                    $args       Raw list arguments.
 	 * @param Entities\Collection|null $collection List collection.
@@ -1643,9 +1697,73 @@ class Theme_Helper {
 		}
 
 		if ( ! isset( $args['metakey'] ) || ! $this->navigation_metadatum_is_queryable( $args['metakey'], $collection ) ) {
+			$rejected_key = isset( $args['metakey'] ) ? $args['metakey'] : '';
 			unset( $args['metakey'], $args['metavalue'], $args['metavaluenum'], $args['metacompare'] );
-			if ( isset( $args['orderby'] ) && in_array( $args['orderby'], array( 'meta_value', 'meta_value_num' ), true ) ) {
+			$args = $this->drop_rejected_metadata_orderby( $args, $rejected_key );
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Remove a sort that still names metadata this visitor may not query.
+	 *
+	 * The faceted search sends orderby as the string meta_value or
+	 * meta_value_num. orderby[meta_value_num]=ASC arrives as an array, and a
+	 * string comparison leaves it in place. parse_fetch_args() passes that
+	 * array to array_key_exists(), which throws on PHP 8, and the same array
+	 * would be copied onto the next URL. The key is already gone, so this
+	 * does not filter by the private field. It must not sort by it either.
+	 *
+	 * One column left over is written back as a string. Items::fetch() reads
+	 * the direction from `order`, and parse_fetch_args() cannot map an array.
+	 * Several columns are left untouched: that is the same array orderby this
+	 * helper already forwarded for a key the visitor may read.
+	 *
+	 * @param array $args         List arguments, after the rejected key was removed.
+	 * @param mixed $rejected_key Metakey that was removed, or an empty string.
+	 * @return array
+	 */
+	private function drop_rejected_metadata_orderby( array $args, $rejected_key ) {
+		if ( ! isset( $args['orderby'] ) ) {
+			return $args;
+		}
+
+		$blocked = array( 'meta_value', 'meta_value_num' );
+		if ( is_scalar( $rejected_key ) && '' !== (string) $rejected_key ) {
+			$blocked[] = (string) $rejected_key;
+		}
+
+		if ( is_string( $args['orderby'] ) ) {
+			if ( in_array( $args['orderby'], $blocked, true ) ) {
 				unset( $args['orderby'] );
+			}
+			return $args;
+		}
+
+		if ( ! is_array( $args['orderby'] ) ) {
+			unset( $args['orderby'] );
+			return $args;
+		}
+
+		foreach ( array_keys( $args['orderby'] ) as $column ) {
+			if ( in_array( (string) $column, $blocked, true ) ) {
+				unset( $args['orderby'][ $column ] );
+			}
+		}
+
+		if ( array() === $args['orderby'] ) {
+			unset( $args['orderby'] );
+			return $args;
+		}
+
+		if ( 1 === count( $args['orderby'] ) ) {
+			foreach ( $args['orderby'] as $column => $direction ) {
+				$args['orderby'] = (string) $column;
+				if ( is_string( $direction ) && in_array( strtoupper( $direction ), array( 'ASC', 'DESC' ), true ) ) {
+					$args['order'] = strtoupper( $direction );
+				}
+				break;
 			}
 		}
 
