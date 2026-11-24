@@ -13,7 +13,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
         body['parent_meta_id'] = parent_meta_id;
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, body)
+        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, body, { params: { context: 'edit' } })
             .then( res => {
                 let itemMetadatum = res.data;
                 commit('setSingleMetadatum', itemMetadatum);
@@ -29,12 +29,15 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
 /**
  * Fetches all metadata values for an item and replaces cached item metadata.
  * Dispatches `item/fetchItemMetadata`.
+ * @param {number|string|Object} item Item ID or options with an item ID and edit context.
  * @returns {Promise<Array>} Resolves with the item metadata array; rejects with the request error.
  */
-export const fetchItemMetadata = ({ commit }, item_id) => {
+export const fetchItemMetadata = ({ commit }, item) => {
+    const { itemId = item, contextEdit } = item ?? {};
+    const params = contextEdit ? { context: 'edit' } : undefined;
     commit('cleanItemMetadata');
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get('/item/' + item_id + '/metadata')
+        axios.tainacanApi.get(`/item/${itemId}/metadata`, { params })
         .then(res => {
             let itemMetadata = res.data;
             commit('setItemMetadata', itemMetadata);
@@ -51,9 +54,10 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
  * Dispatches `item/fetchItemMetadatum`.
  * @returns {Promise<Object|null>} Resolves with the updated metadatum or null when no metadatum payload is returned; rejects on request error.
  */
-export const fetchItemMetadatum = ({ commit }, { item_id, metadatum_id }) => {
+export const fetchItemMetadatum = ({ commit }, { item_id, metadatum_id, contextEdit }) => {
+    const params = contextEdit ? { context: 'edit' } : undefined;
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get('/item/' + item_id + '/metadata/' + metadatum_id)
+        axios.tainacanApi.get(`/item/${item_id}/metadata/${metadatum_id}`, { params })
             .then(res => {
                 const updatedItemMetadatum = res.data;
                 if (updatedItemMetadatum && updatedItemMetadatum.metadatum) {

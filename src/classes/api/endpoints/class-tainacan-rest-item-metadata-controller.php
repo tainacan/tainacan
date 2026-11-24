@@ -140,12 +140,25 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 * @return array|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$item_arr = $item->_toArray(true, true);
+		$item_arr         = $item->_toArray( true, true );
+		$displayed_values = $item_arr['value'] ?? null;
 
-		if ($request['context'] === 'edit') {
+		if ( 'edit' === $request['context'] ) {
 			// Item metadata permissions are checked against the owning item, not a post ID on the metadata entity.
-			$item_arr['current_user_can_edit'] = $item->get_item()->can_edit();
+			$item_arr['current_user_can_edit']   = $item->get_item()->can_edit();
 			$item_arr['current_user_can_delete'] = $item->get_item()->can_delete();
+
+			$metadata_type = $item->get_metadatum()->get_metadata_type_object();
+			// Types that manage the whole list (checkbox selections) compare it with their raw options, so they keep the displayed values.
+			if ( $item_arr['current_user_can_edit'] && ! $item->get_errors() && $item->is_multiple() &&
+				is_array( $displayed_values ) && 'string' === $metadata_type->get_primitive_type() && ! $metadata_type->get_manage_multiple_input() ) {
+				$stored_values = $item->get_value();
+				// The form resends the whole list, so it needs the stored value of each untouched input.
+				if ( is_array( $stored_values ) && $stored_values !== $displayed_values &&
+					Entities\Item_Metadata_Entity::decode_plain_text_entities( $stored_values ) === $displayed_values ) {
+					$item_arr['value_as_stored'] = $stored_values;
+				}
+			}
 		}
 
 		return $item_arr;
@@ -461,6 +474,12 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				'value' => array(
 					'type' => ['array', 'string', 'integer', 'boolean', 'object'],
 					'description' => __( 'Value', 'tainacan' ),
+				),
+				'value_as_stored' => array(
+					'type'        => 'array',
+					'items'       => array( 'type' => 'string' ),
+					'context'     => array( 'edit' ),
+					'description' => __( 'Stored values of a multiple text metadatum when they differ from the displayed values.', 'tainacan' ),
 				),
 				'value_as_string' => array(
 					'type' => 'string',

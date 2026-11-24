@@ -240,6 +240,7 @@
         data(){
             return {
                 values: [],
+                storedValues: null,
                 errorMessage: '',
                 isHighlightedMetadatum: false,
                 invalidEmptyMultivalueIndex: []
@@ -342,13 +343,19 @@
             // 'this.values' is always an array for this component, even if it is single valued.
             setInitialValues() {
                 if (this.itemMetadatum) {
-                    if (this.itemMetadatum.value instanceof Array)
-                        this.values = this.itemMetadatum.value.slice(0); // This way we garantee this.values is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
-                    else
+                    if (Array.isArray(this.itemMetadatum.value)) {
+                        const stored = this.itemMetadatum.value_as_stored;
+                        this.values = this.itemMetadatum.value.slice();
+                        // Components that manage the whole list replace it at once and compare it with their raw options.
+                        this.storedValues = stored && !this.manageMultipleInput ? stored.slice() : null;
+                    } else {
                         this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
+                    }
                 }
             },
             updateValue(value, index, isStoredSuggestion) {
+                if (this.storedValues && (value !== this.values[index] || isStoredSuggestion === true))
+                    this.storedValues[index] = value;
                 this.values[index] = value;
 
                 if (index === 0)
@@ -364,7 +371,18 @@
 
                 // The stored suggestion can match the decoded API value of a different string.
                 const isStoredTextSuggestion = this.metadatumComponent === 'tainacan-text' && isStoredSuggestion === true;
-                if ( !isStoredTextSuggestion && this.itemMetadatum.value !== null && this.itemMetadatum.value !== false ) {
+                const valuesToSave = this.storedValues || this.values;
+                const savedValues = this.itemMetadatum.value_as_stored || this.itemMetadatum.value;
+                if (this.storedValues || this.itemMetadatum.value_as_stored) {
+                    const displayedValues = this.itemMetadatum.value;
+                    // Typed text may have been encoded by the server when the previous request saved it.
+                    // Without stored values (none when the form loaded), the values to save are the displayed ones.
+                    if (Array.isArray(savedValues) && valuesToSave.length === savedValues.length && valuesToSave.every((value, index) =>
+                        value === savedValues[index] ||
+                        (!isStoredTextSuggestion && value === this.values[index] && value === displayedValues[index])
+                    ))
+                        return;
+                } else if ( !isStoredTextSuggestion && this.itemMetadatum.value !== null && this.itemMetadatum.value !== false ) {
                     
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
@@ -444,17 +462,21 @@
                 this.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
-                    values: this.values ? this.values : '',
+                    values: this.storedValues ? valuesToSave.slice() : (valuesToSave || ''),
                     parentMetaId: this.itemMetadatum.parent_meta_id,
                     parentId: this.itemMetadatum.metadatum.parent != undefined ? this.itemMetadatum.metadatum.parent : 0
                 });
             },
             addValue(){
                 this.values.push('');
+                if (this.storedValues)
+                    this.storedValues.push('');
                 this.performValueChange();
             },
             removeValue(index) {
                 this.values.splice(index, 1);
+                if (this.storedValues)
+                    this.storedValues.splice(index, 1);
                 this.performValueChange();
                 this.invalidEmptyMultivalueIndex = [];
             },

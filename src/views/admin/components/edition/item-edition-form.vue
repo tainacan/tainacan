@@ -1295,7 +1295,8 @@ export default {
 
             this.fetchItemMetadatum({
                 item_id: requestItemId,
-                metadatum_id: requestMetadatumId
+                metadatum_id: requestMetadatumId,
+                contextEdit: true
             })
                 .then(() => {
                     const currentIndividualRenderNonce = this.metadataFieldsIndividualRenderNonce[requestMetadatumId] || 0;
@@ -1515,7 +1516,7 @@ export default {
             });
         },
         loadItemMetadata() {
-            this.fetchItemMetadata(this.itemId)
+            this.fetchItemMetadata({ itemId: this.itemId, contextEdit: true })
                 .then((metadata) => {
                     this.metadataCollapses = [];
 

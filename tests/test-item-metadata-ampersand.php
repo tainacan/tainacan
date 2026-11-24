@@ -82,6 +82,60 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( 'Humb. & Bonpl.', $this->read_rest( $description )['value'] );
 	}
 
+	/**
+	 * An edit round trip must keep the database representation of untouched values.
+	 */
+	public function test_editing_one_value_preserves_other_stored_values() {
+		$metadatum = $this->create_metadatum( 'Text', array( 'multiple' => 'yes' ) );
+		$stored    = 'Lima &amp;amp; Alves';
+		$this->save_value( $metadatum, array( $stored, 'Original' ) );
+
+		$list_route = $this->namespace . '/item/' . $this->amp_item->get_id() . '/metadata';
+		$request    = new \WP_REST_Request( 'GET', $list_route );
+		$request->set_param( 'context', 'edit' );
+		$response = $this->server->dispatch( $request );
+		$this->assertSame( 200, $response->get_status() );
+		$listed_values = array_column( $response->get_data(), 'value_as_stored' );
+		$this->assertContains( array( $stored, 'Original' ), $listed_values );
+
+		$data = $this->read_rest( $metadatum );
+		$this->assertSame( array( 'Lima &amp; Alves', 'Original' ), $data['value'] );
+		$this->assertSame( array( $stored, 'Original' ), $data['value_as_stored'] );
+
+		$route   = $list_route . '/' . $metadatum->get_id();
+		$request = new \WP_REST_Request( 'GET', $route );
+		$this->assertArrayNotHasKey( 'value_as_stored', $this->server->dispatch( $request )->get_data() );
+
+		$request = new \WP_REST_Request( 'PUT', $route );
+		$request->set_param( 'context', 'edit' );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body( wp_json_encode( array( 'values' => array( $data['value_as_stored'][0], 'Updated & saved' ) ) ) );
+		$response = $this->server->dispatch( $request );
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( array( $stored, 'Updated &amp; saved' ), $response->get_data()['value_as_stored'] );
+		$this->assertSame( array( $stored, 'Updated &amp; saved' ), get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
+	}
+
+	/**
+	 * Checkbox selections compare the whole list with their raw options, so they only get the displayed values.
+	 */
+	public function test_checkbox_selection_does_not_get_stored_values() {
+		$metadatum = $this->create_metadatum( 'Selectbox', array(
+			'multiple'              => 'yes',
+			'metadata_type_options' => array(
+				'options'    => array( 'R&D', 'P&G' ),
+				'input_type' => 'tainacan-selectbox-checkbox',
+			),
+		) );
+		$this->save_value( $metadatum, array( 'R&D' ) );
+		$this->assertSame( array( 'R&amp;D' ), get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
+
+		$data = $this->read_rest( $metadatum );
+		$this->assertTrue( $data['metadatum']['metadata_type_object']['manage_multiple_input'] );
+		$this->assertSame( array( 'R&D' ), $data['value'] );
+		$this->assertArrayNotHasKey( 'value_as_stored', $data );
+	}
+
 	public function test_rest_value_returns_ampersand_for_compound_children() {
 		$compound = $this->create_metadatum( 'Compound' );
 		$child = $this->create_metadatum( 'Text', [ 'parent' => $compound->get_id() ] );
