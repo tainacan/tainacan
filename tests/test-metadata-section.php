@@ -530,6 +530,18 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$this->assertNotFalse( strpos( $render( $child ), 'Painting details' ) );
 		$this->assertNotFalse( strpos( $render( $grandchild ), 'Painting details' ) );
 
+		$section->set_conditional_section_rules( array(
+			$metadatum->get_id() => array( (string) $child->get_id(), (string) $sibling->get_id() ),
+		) );
+		$this->assertTrue( $section->validate(), json_encode( $section->get_errors() ) );
+		$sections->update( $section );
+
+		$this->assertSame( '', $render( $parent ) );
+		$this->assertSame( '', $render( $other ) );
+		$this->assertNotFalse( strpos( $render( $child ), 'Painting details' ) );
+		$this->assertNotFalse( strpos( $render( $grandchild ), 'Painting details' ) );
+		$this->assertNotFalse( strpos( $render( $sibling ), 'Painting details' ) );
+
 		$metadatum->set_multiple( 'yes' );
 		$this->assertTrue( $metadatum->validate(), json_encode( $metadatum->get_errors() ) );
 		\Tainacan\Repositories\Metadata::get_instance()->update( $metadatum );
@@ -637,7 +649,7 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 				'collection'    => $collection,
 				'metadata_type' => 'Tainacan\Metadata_Types\Selectbox',
 				'metadata_type_options' => array(
-					'options' => array( '7', '42' ),
+					'options' => array( '7', '42', '99' ),
 				),
 			),
 			true
@@ -690,6 +702,16 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$this->assertSame( '', $render( '42', 'A' ) );
 		$this->assertSame( '', $render( '7', 'B' ) );
 		$this->assertNotFalse( strpos( $render( '7', 'A' ), 'Code details' ) );
+
+		$section->set_conditional_section_rules( array(
+			$code->get_id() => array( '7', '42' ),
+		) );
+		$this->assertTrue( $section->validate(), json_encode( $section->get_errors() ) );
+		\Tainacan\Repositories\Metadata_Sections::get_instance()->update( $section );
+
+		$this->assertNotFalse( strpos( $render( '7', 'B' ), 'Code details' ) );
+		$this->assertNotFalse( strpos( $render( '42', 'B' ), 'Code details' ) );
+		$this->assertSame( '', $render( '99', 'A' ) );
 	}
 
 }
