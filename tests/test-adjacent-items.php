@@ -275,6 +275,117 @@ class Test_Adjacent_Items extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * An anonymous visitor asking for drafts walks the public list instead.
+	 * The draft title is not disclosed, and status does not follow the link.
+	 */
+	public function test_anonymous_visitor_does_not_receive_a_draft_neighbor() {
+		$this->set_permalink_structure( '/%postname%/' );
+
+		$collection = $this->create_collection( 'Anonymous draft adjacent' );
+		$items      = $this->create_items( $collection, array(
+			'Alpha' => 'publish',
+			'Beta'  => 'draft',
+			'Gamma' => 'publish',
+		) );
+
+		$args = $this->list_args( $collection->get_id(), 0 );
+		$args['status'] = 'draft';
+		wp_set_current_user( 0 );
+		$this->open_item_from_list( $items['Alpha'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+
+		$this->assertSame( 'Gamma', $adjacent['next']['title'] );
+		$this->assertArrayNotHasKey( 'status', $this->query_vars_from_url( $adjacent['next']['url'] ) );
+	}
+
+	/**
+	 * An author keeps their own draft and does not receive someone else's.
+	 */
+	public function test_author_sees_their_own_draft_and_not_another_authors() {
+		$this->set_permalink_structure( '/%postname%/' );
+
+		$collection = $this->create_collection( 'Author draft adjacent' );
+		$author_id  = $this->factory()->user->create( array( 'role' => 'subscriber' ) );
+		$author     = get_user_by( 'id', $author_id );
+		$author->add_cap( 'tnc_col_' . $collection->get_id() . '_edit_items' );
+
+		$items = $this->create_items( $collection, array(
+			'Able'  => 'draft',
+			'Mine'  => 'draft',
+			'Theirs' => 'draft',
+		) );
+		wp_update_post( array(
+			'ID'          => $items['Able']->get_id(),
+			'post_author' => $author_id,
+		) );
+		wp_update_post( array(
+			'ID'          => $items['Mine']->get_id(),
+			'post_author' => $author_id,
+		) );
+
+		$args = $this->list_args( $collection->get_id(), 1 );
+		$args['status'] = 'draft';
+		wp_set_current_user( $author_id );
+		$this->open_item_from_list( $items['Mine'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+
+		$this->assertSame( 'Able', $adjacent['previous']['title'] );
+		$this->assertNull( $adjacent['next'] );
+		$this->assertSame( 'draft', $this->query_vars_from_url( $adjacent['previous']['url'] )['status'] );
+	}
+
+	/**
+	 * A metakey the visitor cannot read is dropped, value included, so the
+	 * public order is what decides the neighbor.
+	 */
+	public function test_anonymous_visitor_does_not_filter_by_a_private_metadata_section() {
+		$this->set_permalink_structure( '/%postname%/' );
+
+		$collection = $this->create_collection( 'Private meta adjacent' );
+		$section    = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'       => 'Private',
+				'collection' => $collection,
+				'status'     => 'private',
+			),
+			true
+		);
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                => 'Secret',
+				'collection'          => $collection,
+				'metadata_type'       => 'Tainacan\Metadata_Types\Text',
+				'metadata_section_id' => $section->get_id(),
+			),
+			true
+		);
+		$items = $this->create_items( $collection, array(
+			'Alpha' => 'publish',
+			'Beta'  => 'publish',
+			'Gamma' => 'publish',
+		) );
+
+		$args = $this->list_args( $collection->get_id(), 0 );
+		$args['metakey']     = (string) $metadatum->get_id();
+		$args['metavalue']   = 'secret';
+		$args['metacompare'] = 'LIKE';
+		wp_set_current_user( 0 );
+		$this->open_item_from_list( $items['Alpha'], $args );
+
+		$adjacent = \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+		$vars     = $this->query_vars_from_url( $adjacent['next']['url'] );
+
+		$this->assertSame( 'Beta', $adjacent['next']['title'] );
+		$this->assertArrayNotHasKey( 'metakey', $vars );
+		$this->assertArrayNotHasKey( 'metavalue', $vars );
+		$this->assertArrayNotHasKey( 'metacompare', $vars );
+	}
+
+	/**
 	 * @param string $name Collection name.
 	 * @return \Tainacan\Entities\Collection
 	 */
