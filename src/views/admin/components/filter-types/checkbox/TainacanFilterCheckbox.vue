@@ -91,7 +91,7 @@
 </template>
 
 <script>
-    import { isCancel } from '../../../js/axios';
+    import { isCancel } from '../../../js/axios/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin, progressiveCheckboxMixin } from '../../../js/filter-types-mixin';
     import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
 

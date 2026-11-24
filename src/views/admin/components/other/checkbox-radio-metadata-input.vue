@@ -414,7 +414,7 @@
 <script>
     import { nextTick } from 'vue';
     import qs from 'qs';
-    import { tainacanApi, isCancel } from '../../js/axios';
+    import { tainacanApi, isCancel } from '../../js/axios/axios';
     import { rememberTerms } from '../../js/conditional-sections';
     import { dynamicFilterTypeMixin } from '../../js/filter-types-mixin';
 

@@ -1,5 +1,5 @@
 import qs from 'qs';
-import axios, { isCancel } from './axios';
+import axios, { isCancel } from './axios/axios';
 import CustomDialog from '../components/other/custom-dialog.vue'
 
 const tainacanSanitize = function(htmlString) {

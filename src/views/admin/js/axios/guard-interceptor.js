@@ -135,16 +135,9 @@ export function inspectRestRequest(config, locationHref) {
 
     const allowedRestRoute = root ? root.searchParams.get('rest_route') : null;
 
-    const tunneledMethod = config && config.tainacanTunneledMethod
-        ? String(config.tainacanTunneledMethod).toUpperCase()
-        : '';
-
     for (const [key, value] of target.searchParams.entries()) {
-        if (key === '_method' || key.startsWith('_method[')) {
-            if (!tunneledMethod || String(value).toUpperCase() !== tunneledMethod)
-                return { ok: false, message: 'Blocked an unsafe REST request.' };
-            continue;
-        }
+        if (key === '_method' || key.startsWith('_method['))
+            return { ok: false, message: 'Blocked an unsafe REST request.' };
 
         if (key !== 'rest_route' && !key.startsWith('rest_route['))
             continue;
@@ -167,14 +160,12 @@ export function inspectRestRequest(config, locationHref) {
 }
 
 /**
- * Axios request interceptor. A `_method` parameter is accepted only when this
- * client marked the request with tainacanTunneledMethod. That keeps PUT, PATCH
- * and DELETE working whichever request interceptor Axios runs first.
+ * Axios request interceptor. Rejects a request that would retarget the REST route or method.
  *
  * @param {object} config
  * @returns {object|Promise<never>}
  */
-export function guardRestRequest(config) {
+export function guardInterceptor(config) {
     const inspection = inspectRestRequest(config);
     if (!inspection.ok)
         return Promise.reject(unsafeRequestError(inspection.message));

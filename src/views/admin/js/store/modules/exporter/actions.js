@@ -1,4 +1,4 @@
-import { tainacanApi } from '../../../axios';
+import { tainacanApi } from '../../../axios/axios';
 
 /**
  * Builds a REST path from a template. Each inserted value must be hexadecimal,

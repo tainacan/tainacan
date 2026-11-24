@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { guardRestRequest } from './rest-request-guard';
+import { guardInterceptor } from './guard-interceptor';
+import { tunnelInterceptor } from './tunnel-interceptor';
 
 // Simpler version of the i18n plugin to translate error feedback messages
 const i18nGet = function (key) {
@@ -67,29 +68,11 @@ tainacanApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
-// This Axios version runs request interceptors in reverse registration order, so
-// the guard registered below runs before this rewrite. tainacanTunneledMethod lets
-// the guard accept this _method if a later Axios version runs interceptors in
-// registration order instead. See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
-tainacanApi.interceptors.request.use((config) => {
-    const tunnelingMethods = ['put', 'patch', 'delete'];
-  
-    if (config.method && tunnelingMethods.includes(config.method.toLowerCase())) {
-      const originalMethod = config.method.toUpperCase();
-  
-      // Force request to POST
-      config.method = 'post';
-      config.tainacanTunneledMethod = originalMethod;
-  
-      // Add _method param to URL
-      const url = new URL(config.url, window.location.origin);
-      url.searchParams.set('_method', originalMethod);
-      config.url = url.pathname + url.search;
-    }
-  
-    return config;
-});
-tainacanApi.interceptors.request.use(guardRestRequest);
+// PUT, PATCH and DELETE are sent as POST. WordPress reads X-HTTP-Method-Override
+// when the URL has no _method parameter.
+// https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
+tainacanApi.interceptors.request.use(tunnelInterceptor);
+tainacanApi.interceptors.request.use(guardInterceptor);
 
 // WordPress JSON API axios
 export const wpApi= axios.create({
@@ -102,27 +85,9 @@ wpApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
-// Same tunneling as tainacanApi. The guard accepts _method only when
-// tainacanTunneledMethod was set here.
-wpApi.interceptors.request.use((config) => {
-    const tunnelingMethods = ['put', 'patch', 'delete'];
-  
-    if (config.method && tunnelingMethods.includes(config.method.toLowerCase())) {
-      const originalMethod = config.method.toUpperCase();
-  
-      // Force request to POST
-      config.method = 'post';
-      config.tainacanTunneledMethod = originalMethod;
-  
-      // Add _method param to URL
-      const url = new URL(config.url, window.location.origin);
-      url.searchParams.set('_method', originalMethod);
-      config.url = url.pathname + url.search;
-    }
-  
-    return config;
-});
-wpApi.interceptors.request.use(guardRestRequest);
+// Same tunneling as tainacanApi.
+wpApi.interceptors.request.use(tunnelInterceptor);
+wpApi.interceptors.request.use(guardInterceptor);
 
 // WordPress AJAX axios
 export const wpAjax = axios.create({
@@ -131,7 +96,7 @@ export const wpAjax = axios.create({
 if (tainacan_user.nonce) {
     wpAjax.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
-wpAjax.interceptors.request.use(guardRestRequest);
+wpAjax.interceptors.request.use(guardInterceptor);
 wpAjax.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
@@ -145,7 +110,7 @@ export const wpAbilitiesApi = axios.create({
 if (tainacan_user.nonce) {
     wpAbilitiesApi.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
-wpAbilitiesApi.interceptors.request.use(guardRestRequest);
+wpAbilitiesApi.interceptors.request.use(guardInterceptor);
 wpAbilitiesApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)

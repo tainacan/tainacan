@@ -1,5 +1,5 @@
 import qs from 'qs';
-import axios from './axios';
+import axios from './axios/axios';
 import { mapGetters } from 'vuex';
 
 export const filterTypeMixin = {

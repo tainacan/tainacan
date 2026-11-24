@@ -60,7 +60,7 @@
 </template>
 
 <script>
-    import { isCancel } from '../../../js/axios';
+    import { isCancel } from '../../../js/axios/axios';
     import { dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
     import { IMaskDirective } from 'vue-imask';
 

@@ -1142,7 +1142,7 @@ import { mapGetters, mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import { permalinkGetter, formHooks } from '../../js/mixins';
-import { CancelToken, isCancel } from '../../js/axios';
+import { CancelToken, isCancel } from '../../js/axios/axios';
 export default {
     name: 'CollectionEditionForm',
     components: {

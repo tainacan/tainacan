@@ -1,4 +1,4 @@
-import { tainacanApi } from '../../../axios';
+import { tainacanApi } from '../../../axios/axios';
 
 /**
  * Dispatches `exposer/fetchAvailableExposers`.
