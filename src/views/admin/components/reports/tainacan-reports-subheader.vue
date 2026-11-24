@@ -93,8 +93,6 @@
                                 :title="$i18n.get('label_increase_zoom')">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -118,8 +116,6 @@
                                 :title="$i18n.get('label_decrease_zoom')">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -143,8 +139,6 @@
                                 :title="$i18n.get('label_zoom_by_selection')">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -172,8 +166,6 @@
                                 :title="$i18n.get('label_pan_selection')">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -202,8 +194,6 @@
                                 :title="$i18n.get('label_reset_zoom')">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -228,8 +218,6 @@
                                 :title="$i18n.get('label_chart_export_options')">
                             <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -322,11 +310,25 @@ export default { }
         .icon svg {
             color: var(--tainacan-gray4, #505253);
             margin-inline-start: -0.5rem;   
+            stroke-width: initial;
+            fill: none;
             cursor: default;
         }
-        [class^="apexcharts-"][class$="-icon"] svg {
-            width: 18px;
-            height: 18px;
+        // Paths are drawn in a 24×24 viewBox. ApexCharts sizes these
+        // legend icons to a 24px hit target, so the rendered box has to
+        // shrink with the svg.
+        .tainacan-reports-subheader-box__content--three-columns {
+            .icon,
+            [class^="apexcharts-"][class$="-icon"] {
+                width: 18px;
+                height: 18px;
+                line-height: 18px;
+            }
+
+            [class^="apexcharts-"][class$="-icon"] svg {
+                width: 100%;
+                height: 100%;
+            }
         }
     }
 </style>

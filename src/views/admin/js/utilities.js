@@ -175,6 +175,7 @@ export const OrderByHelperFunctions = () => {
                         case 'created_by': return 'author_name'
                         case 'title': return 'title'
                         case 'description': return 'description'
+                        case 'relevance': return 'relevance'
                         default: return metadatum;
                     }
                 } else {
@@ -185,6 +186,7 @@ export const OrderByHelperFunctions = () => {
                         case 'created_by': return { orderby: 'author_name' }
                         case 'title': return { orderby: 'title' }
                         case 'description': return { orderby: 'description' }
+                        case 'relevance': return 'relevance'
                         default: return metadatum;
                     }
                 }
@@ -226,6 +228,9 @@ export const OrderByHelperFunctions = () => {
                     break;
                 case 'description':
                     labelKey = 'label_description';
+                    break;
+                case 'relevance':
+                    labelKey = 'label_relevance';
                     break;
                 default:
                     labelKey = orderByValue;

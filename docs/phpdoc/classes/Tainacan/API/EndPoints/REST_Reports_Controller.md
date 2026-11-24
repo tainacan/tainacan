@@ -38,6 +38,7 @@ classDiagram
         -get_activities_general(collection_id, interval)
         -get_activities_general_by_user(collection_id, interval)
         -get_activities_users(collection_id)
+        -not_found(message, key, id)
         -get_cache_object(key, request)
         -set_cache_object(key, data)
         +get_endpoint_args_for_item_schema(method)
@@ -344,6 +345,24 @@ private get_activities_users(mixed $collection_id = false): mixed
 
 ***
 
+### not_found
+
+Builds the 404 payload used when a requested entity does not exist.
+
+```php
+private not_found(mixed $message, mixed $key, mixed $id): mixed
+```
+
+**Parameters:**
+
+| Parameter  | Type      | Description |
+|------------|-----------|-------------|
+| `$message` | **mixed** |             |
+| `$key`     | **mixed** |             |
+| `$id`      | **mixed** |             |
+
+***
+
 ### get_cache_object
 
 ```php
@@ -570,15 +589,18 @@ public add_support_to_tax_query_like(mixed $args): mixed
 
 ### sanitize_value
 
+Sanitize query values as post HTML. Anchor tags are removed unless the field stores rich text.
+
 ```php
-protected sanitize_value(mixed $value): mixed
+protected sanitize_value(mixed $value, bool $remove_links = true): mixed
 ```
 
 **Parameters:**
 
-| Parameter | Type      | Description |
-|-----------|-----------|-------------|
-| `$value`  | **mixed** |             |
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$value`        | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
 
 ***
 

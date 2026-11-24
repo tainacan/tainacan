@@ -608,12 +608,20 @@ class CSV extends Importer {
 	 * get the encode option and return as expected
 	 */
 	private function handle_encoding($string) {
+		// blank lines yield null cells; nothing to convert
+		if ($string === null || $string === '') {
+			return $string;
+		}
 		switch( $this->get_option('encode') ) {
 			case 'automatic':
-				$encoding = mb_detect_encoding($string, ['UTF-8', 'ISO-8859-1', 'Windows-1252'], true);
-				if ($encoding && $encoding !== 'UTF-8') {
-					return mb_convert_encoding($value, 'UTF-8', $encoding);
+				// mb_detect_encoding() changes between PHP versions (8.1+ ignores the candidate
+				// order), so only the UTF-8 check, which is stable, decides anything here.
+				if ( mb_check_encoding( $string, 'UTF-8' ) ) {
+					return $string;
 				}
+				// Windows-1252 matches the printable Latin-1 range, and it is what
+				// Excel and other legacy exports actually write for 0x80-0x9F.
+				return mb_convert_encoding( $string, 'UTF-8', 'Windows-1252' );
 			case 'utf8':
 				return $string;
 			case 'iso88591':

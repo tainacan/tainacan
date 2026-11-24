@@ -415,6 +415,7 @@
     import { nextTick } from 'vue';
     import qs from 'qs';
     import { tainacanApi, isCancel } from '../../js/axios';
+    import { rememberTerms } from '../../js/conditional-sections';
     import { dynamicFilterTypeMixin } from '../../js/filter-types-mixin';
 
     export default {
@@ -523,7 +524,17 @@
 
             this.expandResultsSection = this.shouldBeginWithListExpanded;
             
-            this.$emitter.on('updateTaxonomyInputs', ($event) => { 
+            this.$emitter.on('updateTaxonomyInputs', this.onUpdateTaxonomyInputs);
+            
+        },
+        beforeUnmount() {
+            this.$emitter.off('updateTaxonomyInputs', this.onUpdateTaxonomyInputs);
+            // Cancels previous Request
+            if (this.getOptionsValuesCancel != undefined)
+                this.getOptionsValuesCancel.cancel('Get options request canceled.');
+        },
+        methods: {
+            onUpdateTaxonomyInputs($event) {
                 if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';
@@ -537,15 +548,7 @@
                         this.activeTab = 1;
                     }
                 }
-            });
-            
-        },
-        beforeUnmount() {
-            // Cancels previous Request
-            if (this.getOptionsValuesCancel != undefined)
-                this.getOptionsValuesCancel.cancel('Get options request canceled.');
-        },
-        methods: {
+            },
             getOptionInputId(optionKey) {
                 if (!this.inputId)
                     return undefined;
@@ -583,6 +586,7 @@
                         this.isSelectedTermsLoading = true;
                         tainacanApi.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                             .then((res) => {
+                                rememberTerms(res.data);
                                 for (const term of res.data)
                                     this.saveSelectedTagName(
                                         term.id,
@@ -622,7 +626,7 @@
             },
             saveSelectedTagName(value, label, link){
                 if (!this.selectedTagsName[value])
-                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href=' + link + ' target="_blank">' + label + '</a>') : label) });
+                    Object.assign( this.selectedTagsName, { [`${value}`]: (link ? ('<a href="' + link + '" target="_blank">' + label + '</a>') : label) });
             },
             previousPage() {
 
@@ -736,6 +740,7 @@
 
                     tainacanApi.get(route)
                         .then((res) => {
+                            rememberTerms(res.data.values);
                             this.searchResults = res.data.values;
                             this.isLoadingSearch = false;
 
@@ -808,6 +813,7 @@
             },
             createColumn(res, column, label) {
                 let children = res.data.values;
+                rememberTerms(children);
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column + 1}`]: {
@@ -876,6 +882,7 @@
                 }); 
             },
             appendMore(options, key, lastTerm) {
+                rememberTerms(options);
                 for (let option of options)
                     this.finderColumns[key].children.push(option);
                 

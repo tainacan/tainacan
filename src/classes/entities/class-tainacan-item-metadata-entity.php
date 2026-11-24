@@ -31,11 +31,11 @@ class Item_Metadata_Entity extends Entity {
 	
 	/**
 	 * 
-	 * @param Item   $item    Item Entity
-	 * @param Metadatum  $metadatum   Metadatum Entity
+	 * @param Item|null   $item    Item Entity
+	 * @param Metadatum|null  $metadatum   Metadatum Entity
 	 * @param int $meta_id ID for a specific meta row 
 	 */
-	function __construct(Item $item = null, Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
+	function __construct(?Item $item = null, ?Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
 		$this->set_item($item);
 		$this->set_metadatum($metadatum);
 
@@ -347,10 +347,10 @@ class Item_Metadata_Entity extends Entity {
 	/**
 	 * Define the item
 	 *
-	 * @param Item $item
+	 * @param Item|null $item
 	 * @return void
 	 */
-	function set_item(Item $item = null) {
+	function set_item(?Item $item = null) {
 		$this->item = $item;
 	}
 	
@@ -367,10 +367,10 @@ class Item_Metadata_Entity extends Entity {
 	/**
 	 * Define the metadatum
 	 *
-	 * @param Metadatum $metadatum
+	 * @param Metadatum|null $metadatum
 	 * @return void
 	 */
-	function set_metadatum(Metadatum $metadatum = null) {
+	function set_metadatum(?Metadatum $metadatum = null) {
 		$this->metadatum = $metadatum;
 	}
 	
@@ -469,6 +469,64 @@ class Item_Metadata_Entity extends Entity {
 		$this->has_value = (is_array($value)) ? !empty(array_filter($value)) : (is_numeric($value) || !empty($value));
 		return $this->has_value;
 	}
+
+	/**
+	 * Whether the stored values satisfy one conditional-section rule.
+	 *
+	 * A hierarchical taxonomy term matches a rule term when it is that term or
+	 * a descendant of it. Other metadata match the stored value exactly.
+	 *
+	 * @param array $rule_values Values configured on the section for this metadatum.
+	 * @return bool
+	 */
+	function matches_conditional_values( $rule_values ) {
+		$rule_values   = (array) $rule_values;
+		$stored_values = $this->get_value();
+
+		if ( $stored_values instanceof Term ) {
+			$stored_values = [ $stored_values->get_id() ];
+		} elseif ( is_array( $stored_values ) ) {
+			$stored_values = array_map( function( $value ) {
+				return $value instanceof Term ? $value->get_id() : $value;
+			}, $stored_values );
+		} elseif ( $stored_values === null || $stored_values === false || $stored_values === '' ) {
+			$stored_values = [];
+		} else {
+			$stored_values = [ $stored_values ];
+		}
+
+		$metadatum_type = $this->get_metadatum()->get_metadata_type_object();
+
+		if ( ! $metadatum_type || $metadatum_type->get_primitive_type() != 'term' ) {
+			return (bool) array_intersect( $stored_values, $rule_values );
+		}
+
+		$taxonomy_id = $metadatum_type->get_option( 'taxonomy_id' );
+		if ( ! is_numeric( $taxonomy_id ) ) {
+			return (bool) array_intersect( $stored_values, $rule_values );
+		}
+
+		$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( (int) $taxonomy_id );
+		if ( ! is_taxonomy_hierarchical( $taxonomy_slug ) ) {
+			return (bool) array_intersect( $stored_values, $rule_values );
+		}
+
+		$rules = array_map( 'intval', $rule_values );
+		foreach ( $stored_values as $stored_id ) {
+			$stored_id = (int) $stored_id;
+			if ( $stored_id <= 0 ) {
+				continue;
+			}
+			if ( in_array( $stored_id, $rules, true ) ) {
+				return true;
+			}
+			if ( array_intersect( get_ancestors( $stored_id, $taxonomy_slug, 'taxonomy' ), $rules ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	/**
 	 * Return true if metadatum is multiple, else return false
@@ -537,6 +595,15 @@ class Item_Metadata_Entity extends Entity {
 			}
 		}
 
+		$is_term = is_object( $classMetadatumType ) && $classMetadatumType->get_primitive_type() == 'term';
+		$taxonomy_slug = null;
+		if ( $is_term ) {
+			$taxonomy_id = $classMetadatumType->get_option( 'taxonomy_id' );
+			if ( is_numeric( $taxonomy_id ) ) {
+				$taxonomy_slug = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( (int) $taxonomy_id );
+			}
+		}
+
 		if ($this->is_multiple()) {
 			if (is_array($value)) {
 				$cardinality = $metadatum->get_cardinality();
@@ -554,27 +621,43 @@ class Item_Metadata_Entity extends Entity {
 						$one_filled = true;
 
 					if ($this->is_collection_key()) {
-						if ( !isset($dupe_array[$val]) ) {
-							$dupe_array[$val] = 1;
+						$term_id = ( $is_term && $taxonomy_slug ) ? $this->resolve_term_id( $val, $taxonomy_slug ) : null;
+						$val_key = $term_id ?? ( ( $val instanceof \Tainacan\Entities\Entity ) ? $val->get_id() : $val );
+
+						if ( !isset($dupe_array[$val_key]) ) {
+							$dupe_array[$val_key] = 1;
 						} else
-						if (++$dupe_array[$val] > 1) {
+						if (++$dupe_array[$val_key] > 1) {
 							/* translators: %s is the metadatum name */
 							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 							return false;
 						}
 
 						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-						$test = $Tainacan_Items->fetch([
-							'meta_query' => [
-								[
-									'key'   => $this->metadatum->get_id(),
-									'value' => $val
-								]
-							],
-							'post__not_in' => [$item->get_id()]
-						], $item->get_collection());
+						if ( $is_term && $taxonomy_slug ) {
+							$test = $term_id ? $Tainacan_Items->fetch([
+								'tax_query' => [
+									[
+										'taxonomy'         => $taxonomy_slug,
+										'terms'            => $term_id,
+										'include_children' => false
+									]
+								],
+								'post__not_in' => [$item->get_id()]
+							], $item->get_collection()) : null;
+						} else {
+							$test = $Tainacan_Items->fetch([
+								'meta_query' => [
+									[
+										'key'   => $this->metadatum->get_id(),
+										'value' => $val_key
+									]
+								],
+								'post__not_in' => [$item->get_id()]
+							], $item->get_collection());
+						}
 
-						if ($test->have_posts()) {	
+						if ($test && $test->have_posts()) {	
 							/* translators: %s is the metadatum name */
 							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 							return false;
@@ -610,6 +693,8 @@ class Item_Metadata_Entity extends Entity {
 			}
 			
 			if ($this->is_collection_key()) {
+				$term_id = ( $is_term && $taxonomy_slug ) ? $this->resolve_term_id( $value, $taxonomy_slug ) : null;
+				$value_key = $term_id ?? ( ( $value instanceof \Tainacan\Entities\Entity ) ? $value->get_id() : $value );
 				$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 				if($metadatum->get_parent()) {
 					$patent_metadatum = \tainacan_metadata()->fetch( $metadatum->get_parent(), 'OBJECT' );
@@ -618,7 +703,7 @@ class Item_Metadata_Entity extends Entity {
 						$test = get_post_meta( $item->get_id(), $this->metadatum->get_id(), true);
 						$rows = $wpdb->get_results(
 							$wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s AND meta_value = %s AND meta_id <> %d",
-							$item->get_id(), $this->metadatum->get_id(), $value, $this->get_meta_id()),
+							$item->get_id(), $this->metadatum->get_id(), $value_key, $this->get_meta_id()),
 						ARRAY_A );
 						if ( is_array( $rows ) &&  count($rows) > 0 ) {
 							if( !$this->get_meta_id() ) {
@@ -636,17 +721,30 @@ class Item_Metadata_Entity extends Entity {
 						}
 					}
 				}
-				$test = $Tainacan_Items->fetch([
-					'meta_query' => [
-						[
-							'key'   => $this->metadatum->get_id(),
-							'value' => $value
+				if ( $is_term && $taxonomy_slug ) {
+					$test = $term_id ? $Tainacan_Items->fetch([
+						'tax_query' => [
+							[
+								'taxonomy'         => $taxonomy_slug,
+								'terms'            => $term_id,
+								'include_children' => false
+							]
 						],
-					],
-					'post__not_in' => [$item->get_id()]
-				], $item->get_collection());
+						'post__not_in' => [$item->get_id()]
+					], $item->get_collection()) : null;
+				} else {
+					$test = $Tainacan_Items->fetch([
+						'meta_query' => [
+							[
+								'key'   => $this->metadatum->get_id(),
+								'value' => $value_key
+							],
+						],
+						'post__not_in' => [$item->get_id()]
+					], $item->get_collection());
+				}
 
-				if ($test->have_posts()) {
+				if ($test && $test->have_posts()) {
 					// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
 					$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 					return false;
@@ -656,5 +754,25 @@ class Item_Metadata_Entity extends Entity {
 			$this->set_as_valid();
 			return true;
 		}
+	}
+
+	/**
+	 * Resolves a term value to its term ID the same way save_terms_metadatum_value() does.
+	 *
+	 * @param mixed  $term_value    A Term entity, term ID, or term name.
+	 * @param string $taxonomy_slug The taxonomy database identifier.
+	 * @return int|null The term ID if the term exists, or null otherwise.
+	 */
+	private function resolve_term_id( $term_value, $taxonomy_slug ) {
+		if ( $term_value instanceof Term ) {
+			return $term_value->get_id();
+		}
+
+		$exists = \Tainacan\Repositories\Terms::get_instance()->term_exists( $term_value, $taxonomy_slug, null, true );
+		if ( ! $exists && is_numeric( $term_value ) ) {
+			$exists = \Tainacan\Repositories\Terms::get_instance()->term_exists( (int) $term_value, $taxonomy_slug, null, true );
+		}
+
+		return ( $exists && isset( $exists->term_id ) ) ? (int) $exists->term_id : null;
 	}
 }

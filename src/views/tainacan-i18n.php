@@ -268,6 +268,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_disabled'                                 => __( 'Disabled', 'tainacan' ),
 	'label_creation'                                 => __( 'Creation', 'tainacan' ),
 	'label_creation_date'                            => __( 'Creation date', 'tainacan' ),
+	'label_relevance'                                => __( 'Relevance', 'tainacan' ),
 	'label_modification_date'                        => __( 'Modification date', 'tainacan' ),
 	'label_collection_items'                         => __( 'Collection Items', 'tainacan' ),
 	'label_collection_metadata'                      => __( 'Collection Metadata', 'tainacan' ),
@@ -870,6 +871,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_click_to_see_%s_child_term'	 	 => __( 'Click to see %s child term', 'tainacan'),
 	'instruction_click_to_load_filter'				 => __( 'Click to load the filter', 'tainacan' ),
 	'instruction_collection_description'			 => __( 'Enter the collection description here...', 'tainacan' ),
+	'instruction_rich_text_editor_toolbar_shortcut'		 => __( 'Keyboard: press Alt+F10 (Option+F10) to access the editor toolbar.', 'tainacan' ),
+	'instruction_rich_text_editor_toolbar_shortcut_screen_reader' => __( 'Formatted text editor keyboard instructions: press Alt+F10 (Option+F10) to access the toolbar. Use arrow keys to move between toolbar controls and Tab to move between toolbar groups.', 'tainacan' ),
 	'instruction_collection_name'					 => __( 'Enter the collection name here...', 'tainacan' ),
 	'instruction_click_to_easily_see'				 => __( 'Click to easily see', 'tainacan' ),
 	'instruction_create_item_select_status'		 	 => __( 'Select a status for the item visiblity on the site. Remember, whichever you select will still be restricted by the collection status as well.', 'tainacan' ),
@@ -1243,6 +1246,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_thumbnail_alt_ai_decorative'               => __( 'The image was identified as decorative. Alternative text was cleared.', 'tainacan' ),
 	/* translators: %s: maximum document content size in kilobytes */
 	'info_document_content_index_truncated_%s'    => __( 'The document content exceeded the maximum size (%s characters) and was truncated.', 'tainacan' ),
+	'info_collection_key_disabled_by_multiple'       => __( 'Cannot be enabled when multiple values are allowed.', 'tainacan' ),
+	'info_multiple_disabled_by_collection_key'       => __( 'Cannot be enabled when unique value across items is enabled.', 'tainacan' ),
+	'info_collection_key_and_multiple_error'         => __( 'Metadata cannot have unique value and allow multiple values at the same time', 'tainacan' ),
 	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
@@ -1342,7 +1348,7 @@ return apply_filters( 'tainacan-i18n', [
 		],
 		'collection-settings' => [
 			'title'   => __( 'Collection settings', 'tainacan' ),
-			'content' => '<p>' . __( 'These are the settings of this collection: name, description, status, images, address and moderators, and which metadata it inherits from a parent collection. Public collections are visible to visitors; private ones stay limited to their author and moderators.', 'tainacan' ) . '</p>',
+			'content' => '<p>' . __( 'Here you set this collection\'s name, description, slug and status, its thumbnail and header image, and an optional cover page. The same screen sets how the item list is shown, how the item form behaves, and whether visitors can submit items. A published collection is visible to everyone; a private one is visible only to you and to people with permission.', 'tainacan' ) . '</p>',
 			'link'    => 'https://tainacan.github.io/tainacan-wiki/#/collections'
 		],
 		'taxonomies' => [

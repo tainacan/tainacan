@@ -531,7 +531,7 @@ function tainacan_get_the_collection_description() {
 	 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
 	 * to generate links. Might be a good idea to move this to a helper function in the future.
 	 */
-	$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($collection->get_description()));
+	$description = wpautop(\Tainacan\Metadata_Types\Textarea::make_clickable_links($collection->get_description()));
 	return apply_filters('tainacan-get-collection-description', wp_kses_post( $description ), $collection);
 }
 
@@ -1170,7 +1170,7 @@ function tainacan_get_the_term_description() {
 	 * Reuses the Trait Formatter_Text method that is used in the Textarea metadata type class
 	 * to generate links. Might be a good idea to move this to a helper function in the future.
 	 */
-	$description = nl2br(\Tainacan\Metadata_Types\Textarea::make_clickable_links($term->description));
+	$description = wpautop(\Tainacan\Metadata_Types\Textarea::make_clickable_links($term->description));
 	return apply_filters('tainacan-get-term-description', wp_kses_post( $description ), $term);
 }
 

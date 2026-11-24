@@ -360,28 +360,10 @@ class REST_Logs_Controller extends REST_Controller {
 		$logs = Repositories\Logs::get_instance()->fetch($args);
 		$response = [];
 		$total_logs = 0;
-		/**
-		 * Temporary fallback for sites that cannot run the WP-CLI log migration command.
-		 * The TAINACAN_USE_DEPRECATED_LOGS constant must be manually defined in wp-config.php to enable this behavior.
-		 * This block will be removed in future versions once legacy support is discontinued.
-		 * 
-		 */ 
-		if (!defined('TAINACAN_USE_DEPRECATED_LOGS') || TAINACAN_USE_DEPRECATED_LOGS !== false) {
-			if($logs->have_posts()){
-				while ($logs->have_posts()){
-					$logs->the_post();
-					$log = new Entities\Log($logs->post);
-					array_push($response, $this->prepare_item_for_response($log, $request));
-				}
-				wp_reset_postdata();
-			}
-			$total_logs  = $logs->found_posts;
-		} else {
-			$total_logs = Repositories\Logs::get_instance()->fetch_count($args);
-			if($logs) {
-				foreach($logs as $log) {
-					array_push($response, $this->prepare_item_for_response($log, $request));
-				}
+		$total_logs = Repositories\Logs::get_instance()->fetch_count($args);
+		if($logs) {
+			foreach($logs as $log) {
+				array_push($response, $this->prepare_item_for_response($log, $request));
 			}
 		}
 

@@ -1,39 +1,8 @@
 @startuml class-diagram
-  class "XLSX_Exporter" as XLSX_Exporter {
-    -collection_name : 
-    -spreadsheet : 
-    -filePath : 
-    -tempFilePath : 
-    +__construct(attributes)
-    +initialize_writer()
-    +finalize_writer()
-    +process_collections()
-    -process_header(current_collection_item, collection_definition)
-    -process_footer(current_collection_item, collection_definition)
-    -get_items(index, collection_definition)
-    +process_item(item, metadata)
-    +addRowToSheet(rowData, sheetIndex)
-    +get_file_path()
-    +get_file_name()
-    +get_content_type()
-    +filter_multivalue_separator(separator)
-    +filter_hierarchy_separator(separator)
-    -get_collections_names()
-    +get_output()
-    +output_header()
-    +options_form()
-  }
-  class "CSV" as CSV {
-    -collection_name : 
-    +__construct(attributes)
-    +filter_multivalue_separator(separator)
-    +filter_hierarchy_separator(separator)
-    +process_item(item, metadata)
-    +output_header()
-    +output_footer()
-    -get_collections_names()
-    +get_output()
-    +options_form()
+  class "Background_Exporter" as Background_Exporter {
+    #action : string
+    +__construct()
+    +task(batch)
   }
   class "Exporter" as Exporter {
     #id : identifier
@@ -139,10 +108,17 @@
     +exporting_terms()
     +get_terms_recursively(term_repo, taxonomy, parent, level)
   }
-  class "Background_Exporter" as Background_Exporter {
-    #action : string
-    +__construct()
-    +task(batch)
+  class "CSV" as CSV {
+    -collection_name : 
+    +__construct(attributes)
+    +filter_multivalue_separator(separator)
+    +filter_hierarchy_separator(separator)
+    +process_item(item, metadata)
+    +output_header()
+    +output_footer()
+    -get_collections_names()
+    +get_output()
+    +options_form()
   }
   class "Exporter_Handler" as Exporter_Handler {
     #bg_exporter : Background_Exporter
@@ -160,6 +136,30 @@
     +save_exporter_instance(exporter)
     +get_exporter_instance_by_session_id(session_id)
     +delete_exporter_instance(exporter)
+  }
+  class "XLSX_Exporter" as XLSX_Exporter {
+    -collection_name : 
+    -spreadsheet : 
+    -filePath : 
+    -tempFilePath : 
+    +__construct(attributes)
+    +initialize_writer()
+    +finalize_writer()
+    +process_collections()
+    -process_header(current_collection_item, collection_definition)
+    -process_footer(current_collection_item, collection_definition)
+    -get_items(index, collection_definition)
+    +process_item(item, metadata)
+    +addRowToSheet(rowData, sheetIndex)
+    +get_file_path()
+    +get_file_name()
+    +get_content_type()
+    +filter_multivalue_separator(separator)
+    +filter_hierarchy_separator(separator)
+    -get_collections_names()
+    +get_output()
+    +output_header()
+    +options_form()
   }
   package traits as traits {
     class "Exporter_Handler_Cell" as traits_Exporter_Handler_Cell {

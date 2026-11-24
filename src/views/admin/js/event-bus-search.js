@@ -11,6 +11,7 @@ export default {
             collectionId: undefined,
             defaultOrder: 'ASC',
             defaultOrderBy: 'date',
+            orderBeforeRelevance: null,
             taxonomy: undefined,
             termId: undefined,
             searchCancel: undefined,
@@ -119,15 +120,7 @@ export default {
                 }
             },
             setOrderBy(orderBy) { 
-                let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
-
-                if (orderBy.metakey) {
-                    if (!app.config.globalProperties.$userPrefs.get(prefsOrderBy) || orderBy.metakey != app.config.globalProperties.$userPrefs.get(prefsOrderBy).metakey)
-                        app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
-                } else {
-                    if (orderBy != app.config.globalProperties.$userPrefs.get(prefsOrderBy))
-                        app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
-                }
+                this.rememberOrderByPreference(orderBy);
                 
                 app.config.globalProperties.$store.dispatch('search/setOrderBy', orderBy);
                 this.updateURLQueries();
@@ -143,16 +136,8 @@ export default {
                 this.updateURLQueries();
             },
             setOrderAndOrderBy(order, orderBy) {
-                let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
+                this.rememberOrderByPreference(orderBy);
 
-                if (orderBy.metakey) {
-                    if (!app.config.globalProperties.$userPrefs.get(prefsOrderBy) || orderBy.metakey != app.config.globalProperties.$userPrefs.get(prefsOrderBy).metakey)
-                        app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
-                } else {
-                    if (orderBy != app.config.globalProperties.$userPrefs.get(prefsOrderBy))
-                        app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
-                }
-                
                 let prefsOrder = this.collectionId != undefined ? 'order_' + this.collectionId : 'order';
                 if (app.config.globalProperties.$userPrefs.get(prefsOrder) != order) {
                     app.config.globalProperties.$userPrefs.set(prefsOrder, order)
@@ -184,8 +169,109 @@ export default {
                 }
             },
             setSearchQuery(searchQuery) {
-                app.config.globalProperties.$store.dispatch('search/setSearchQuery', searchQuery);
+                const store = app.config.globalProperties.$store;
+                const previous = store.getters['search/getSearchQuery'];
+                const hadSearch = previous != undefined && String(previous).trim() !== '';
+                const hasSearch = searchQuery != undefined && String(searchQuery).trim() !== '';
+
+                store.dispatch('search/setSearchQuery', searchQuery);
+
+                if (!hadSearch && hasSearch)
+                    this.switchToSearchRelevance(true);
+                else if (hadSearch && !hasSearch)
+                    this.restoreOrderAfterSearch();
+
                 this.updateURLQueries();
+            },
+            /**
+             * Relevance is the sort while a textual search is active and the visitor
+             * has not already chosen another one. The previous sort is kept aside
+             * and is not written to the saved preference.
+             */
+            isSearchRelevanceEnabled() {
+                if (typeof tainacan_plugin === 'undefined' || tainacan_plugin.search_relevance_enabled === undefined)
+                    return true;
+
+                const value = tainacan_plugin.search_relevance_enabled;
+                return value === true || value === 'true' || value === '1' || value === 1;
+            },
+            switchToSearchRelevance(shouldSwitch) {
+                if (!shouldSwitch || !this.isSearchRelevanceEnabled())
+                    return false;
+
+                const store = app.config.globalProperties.$store;
+                const query = store.getters['search/getPostQuery'] || {};
+                if (query.orderby === 'relevance')
+                    return false;
+
+                const snapshot = { orderby: query.orderby || this.defaultOrderBy || 'date' };
+                if (query.metakey)
+                    snapshot.metakey = query.metakey;
+                if (query.metatype)
+                    snapshot.metatype = query.metatype;
+                this.orderBeforeRelevance = snapshot;
+
+                store.dispatch('search/setOrderBy', 'relevance');
+                return true;
+            },
+            restoreOrderAfterSearch() {
+                const store = app.config.globalProperties.$store;
+                const query = store.getters['search/getPostQuery'] || {};
+                if (query.orderby !== 'relevance') {
+                    this.orderBeforeRelevance = null;
+                    return false;
+                }
+
+                const remembered = this.orderBeforeRelevance;
+                this.orderBeforeRelevance = null;
+                if (remembered && remembered.orderby && remembered.orderby !== 'relevance')
+                    store.dispatch('search/setOrderBy', remembered.metakey ? remembered : remembered.orderby);
+                else
+                    store.dispatch('search/clearOrderBy');
+                return true;
+            },
+            hasTextSearch(query) {
+                if (!query)
+                    return false;
+                const value = query.search || query.s;
+                return value != undefined && String(value).trim() !== '';
+            },
+            /**
+             * Relevance follows the URL. A search that arrives without a sort becomes
+             * relevance. A search that leaves while relevance is still selected restores
+             * the sort kept aside. Returns true when the store sort changed.
+             */
+            syncRelevanceWithRoute(previousQuery, nextQuery, orderByWasMissing) {
+                if (!this.isSearchRelevanceEnabled()) {
+                    const query = app.config.globalProperties.$store.getters['search/getPostQuery'] || {};
+                    if (query.orderby === 'relevance')
+                        return this.restoreOrderAfterSearch();
+                    return false;
+                }
+
+                const hadSearch = this.hasTextSearch(previousQuery);
+                const hasSearch = this.hasTextSearch(nextQuery);
+
+                if (hadSearch && !hasSearch)
+                    return this.restoreOrderAfterSearch();
+
+                return this.switchToSearchRelevance(!!orderByWasMissing && hasSearch);
+            },
+            rememberOrderByPreference(orderBy) {
+                if (orderBy == undefined || orderBy === '' || orderBy === 'relevance')
+                    return;
+                if (orderBy.orderby === 'relevance' || orderBy.slug === 'relevance')
+                    return;
+
+                let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
+                const stored = app.config.globalProperties.$userPrefs.get(prefsOrderBy);
+
+                if (orderBy.metakey) {
+                    if (!stored || orderBy.metakey != stored.metakey)
+                        app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                } else if (orderBy != stored) {
+                    app.config.globalProperties.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                }
             },
             setViewMode(viewMode) {
                 app.config.globalProperties.$store.dispatch('search/setViewMode', viewMode);

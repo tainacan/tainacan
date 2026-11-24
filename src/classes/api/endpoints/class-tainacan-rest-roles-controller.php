@@ -15,6 +15,7 @@ use \Tainacan\API\REST_Controller;
  * @since 1.0.0
  */
 class REST_Roles_Controller extends REST_Controller {
+	private $core_roles;
 
 
 	/**

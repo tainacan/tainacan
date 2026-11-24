@@ -15,11 +15,41 @@ storing the actual data content for specific metadata fields.
 ```mermaid
 classDiagram
     direction TB
+    class Item_Metadata_Entity {
+        #post_type : mixed
+        #repository : string
+        #item : mixed
+        +__construct(item, metadatum, meta_id, parent_meta_id)
+        +get_multivalue_prefix()
+        +get_multivalue_suffix()
+        +get_multivalue_separator()
+        +get_value_as_html()
+        +get_value_as_string()
+        +get_value_as_array()
+        +_toArray(formatted_values, cascade)
+        +set_item(item)
+        +set_value(value)
+        +set_metadatum(metadatum)
+        +set_meta_id(meta_id)
+        +set_parent_meta_id(parent_meta_id)
+        +get_item()
+        +get_metadatum()
+        +get_meta_id()
+        +get_parent_meta_id()
+        +get_value()
+        +has_value()
+        +matches_conditional_values(rule_values)
+        +is_multiple()
+        +is_collection_key()
+        +is_required()
+        +validate()
+        -resolve_term_id(term_value, taxonomy_slug)
+    }
     class Entity {
         #repository : Repository
         -errors : array
-        #post_type : string|false
-        #capability_type : string|false
+        #post_type : string
+        #capability_type : string
         +WP_Post : WP_Post
         -validated : bool
         +cap : object
@@ -53,36 +83,9 @@ classDiagram
         +get_capabilities()
         +diff(which)
     }
-    class Item_Metadata_Entity {
-        #post_type : mixed
-        #repository : string
-        #item : mixed
-        +__construct(item, metadatum, meta_id, parent_meta_id)
-        +get_multivalue_prefix()
-        +get_multivalue_suffix()
-        +get_multivalue_separator()
-        +get_value_as_html()
-        +get_value_as_string()
-        +get_value_as_array()
-        +_toArray(formatted_values, cascade)
-        +set_item(item)
-        +set_value(value)
-        +set_metadatum(metadatum)
-        +set_meta_id(meta_id)
-        +set_parent_meta_id(parent_meta_id)
-        +get_item()
-        +get_metadatum()
-        +get_meta_id()
-        +get_parent_meta_id()
-        +get_value()
-        +has_value()
-        +is_multiple()
-        +is_collection_key()
-        +is_required()
-        +validate()
-    }
     Entity ..> Entity
     Entity <|-- Item_Metadata_Entity
+    Item_Metadata_Entity ..> Entity
     Item_Metadata_Entity ..> Item_Metadata_Entity
 ```
 
@@ -171,17 +174,17 @@ protected $value
 Create an instance of Entity
 
 ```php
-public __construct(\Tainacan\Entities\Item $item = null, \Tainacan\Entities\Metadatum $metadatum = null, int $meta_id = null, mixed $parent_meta_id = null): mixed
+public __construct(\Tainacan\Entities\Item|null $item = null, \Tainacan\Entities\Metadatum|null $metadatum = null, int $meta_id = null, mixed $parent_meta_id = null): mixed
 ```
 
 **Parameters:**
 
-| Parameter         | Type                             | Description                |
-|-------------------|----------------------------------|----------------------------|
-| `$item`           | **\Tainacan\Entities\Item**      | Item Entity                |
-| `$metadatum`      | **\Tainacan\Entities\Metadatum** | Metadatum Entity           |
-| `$meta_id`        | **int**                          | ID for a specific meta row |
-| `$parent_meta_id` | **mixed**                        |                            |
+| Parameter         | Type                                   | Description                |
+|-------------------|----------------------------------------|----------------------------|
+| `$item`           | **\Tainacan\Entities\Item\|null**      | Item Entity                |
+| `$metadatum`      | **\Tainacan\Entities\Metadatum\|null** | Metadatum Entity           |
+| `$meta_id`        | **int**                                | ID for a specific meta row |
+| `$parent_meta_id` | **mixed**                              |                            |
 
 ***
 
@@ -274,14 +277,14 @@ the representation of this object as an array
 Define the item
 
 ```php
-public set_item(\Tainacan\Entities\Item $item = null): void
+public set_item(\Tainacan\Entities\Item|null $item = null): void
 ```
 
 **Parameters:**
 
-| Parameter | Type                        | Description |
-|-----------|-----------------------------|-------------|
-| `$item`   | **\Tainacan\Entities\Item** |             |
+| Parameter | Type                              | Description |
+|-----------|-----------------------------------|-------------|
+| `$item`   | **\Tainacan\Entities\Item\|null** |             |
 
 ***
 
@@ -306,14 +309,14 @@ public set_value(mixed $value): void
 Define the metadatum
 
 ```php
-public set_metadatum(\Tainacan\Entities\Metadatum $metadatum = null): void
+public set_metadatum(\Tainacan\Entities\Metadatum|null $metadatum = null): void
 ```
 
 **Parameters:**
 
-| Parameter    | Type                             | Description |
-|--------------|----------------------------------|-------------|
-| `$metadatum` | **\Tainacan\Entities\Metadatum** |             |
+| Parameter    | Type                                   | Description |
+|--------------|----------------------------------------|-------------|
+| `$metadatum` | **\Tainacan\Entities\Metadatum\|null** |             |
 
 ***
 
@@ -414,6 +417,25 @@ public has_value(): bool
 
 ***
 
+### matches_conditional_values
+
+Whether the stored values satisfy one conditional-section rule.
+
+```php
+public matches_conditional_values(array $rule_values): bool
+```
+
+A hierarchical taxonomy term matches a rule term when it is that term or
+a descendant of it. Other metadata match the stored value exactly.
+
+**Parameters:**
+
+| Parameter      | Type      | Description                                          |
+|----------------|-----------|------------------------------------------------------|
+| `$rule_values` | **array** | Values configured on the section for this metadatum. |
+
+***
+
 ### is_multiple
 
 Return true if metadatum is multiple, else return false
@@ -451,6 +473,27 @@ Returns whether metadata value is valid
 ```php
 public validate(): bool
 ```
+
+***
+
+### resolve_term_id
+
+Resolves a term value to its term ID the same way save_terms_metadatum_value() does.
+
+```php
+private resolve_term_id(mixed $term_value, string $taxonomy_slug): int|null
+```
+
+**Parameters:**
+
+| Parameter        | Type       | Description                           |
+|------------------|------------|---------------------------------------|
+| `$term_value`    | **mixed**  | A Term entity, term ID, or term name. |
+| `$taxonomy_slug` | **string** | The taxonomy database identifier.     |
+
+**Return Value:**
+
+The term ID if the term exists, or null otherwise.
 
 ***
 

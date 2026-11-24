@@ -818,6 +818,7 @@ import { mapActions, mapGetters } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import { permalinkGetter, formHooks } from '../../js/mixins';
 import { itemMetadataMixin } from '../../js/item-metadata-mixin';
+import { conditionalSectionsForItemMetadata, conditionalSectionsFrom } from '../../js/conditional-sections';
 
 import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
@@ -1189,20 +1190,7 @@ export default {
                  * Creates the conditional metadata set to later watch values
                  * of certain metadata that control sections visibility.
                  */
-                this.conditionalSections = {};
-                for (let metadataSection of metadataSections) {
-                    if ( metadataSection.is_conditional_section == 'yes') { 
-                        const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
-                        if ( conditionalSectionId.length ) {
-                            this.conditionalSections[metadataSection.id] = {
-                                sectionId: metadataSection.id,
-                                metadatumId: conditionalSectionId[0],
-                                metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
-                                hide: true
-                            };
-                        }
-                    }
-                }
+                this.conditionalSections = conditionalSectionsFrom(metadataSections);
             })
             .catch((error) => {
                 this.isLoadingMetadataSections = false;
@@ -1534,14 +1522,7 @@ export default {
                     }
                     
                     /* Sets initial state for conditional sections based on metadatum values */
-                    for (let conditionalSectionId in this.conditionalSections) {
-                        const currentItemMetadatum = metadata.find(anItemMetadatum => anItemMetadatum.metadatum.id == this.conditionalSections[conditionalSectionId].metadatumId);
-                        if (currentItemMetadatum) {
-                            const itemMetadatumValues = Array.isArray(currentItemMetadatum.value) ? currentItemMetadatum.value : [ currentItemMetadatum.value ];
-                            const conditionalValues = Array.isArray(this.conditionalSections[conditionalSectionId].metadatumValues) ? this.conditionalSections[conditionalSectionId].metadatumValues : [this.conditionalSections[conditionalSectionId].metadatumValues];
-                            this.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
-                        }
-                    }
+                    this.conditionalSections = conditionalSectionsForItemMetadata(this.conditionalSections, metadata);
                     
                     /**
                      * Fires action tainacan_item_edition_metadata_loaded

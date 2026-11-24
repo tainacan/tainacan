@@ -1,0 +1,65 @@
+classDiagram
+    direction TB
+    class Generic_Process {
+        #id : identifier
+        #steps : array
+        #transients : array
+        #abort : bool
+        #current_step : mixed
+        #in_step_count : mixed
+        #log : mixed
+        #error_log : mixed
+        #array_attributes : array
+        +__construct(attributes)
+        +get_id()
+        +get_current_step()
+        +set_current_step(value)
+        +get_in_step_count()
+        +set_in_step_count(value)
+        +set_steps(steps)
+        +get_steps()
+        #get_transients()
+        #set_transients(data)
+        +add_transient(key, data)
+        +delete_transient(key)
+        +get_transient(key)
+        +get_log()
+        +get_error_log()
+        +add_log(message)
+        +add_error_log(message)
+        +is_finished()
+        #cancel_abort()
+        #abort()
+        +get_abort()
+        +get_progress_label()
+        +get_progress_value()
+        #set_current_step_total(value)
+        #set_step_total(step, value)
+        #next_step()
+        +_to_Array(short)
+        +finished()
+        +run()
+    }
+    class Management_Tools_Process {
+        -command : string
+        -command_args : array
+        +__construct(attributes)
+        +$get_commands()
+        +$find_command(id)
+        +$queue(command_id, args)
+        +$sanitize_args(command, args)
+        +init_objects()
+        +set_command(command)
+        +get_command()
+        +set_command_args(args)
+        +get_command_args()
+        +prepare_command()
+        -start_step_count(counter)
+        -add_processed(key, count)
+        +get_output()
+        +logs_migrate_step()
+        +logs_purge_step()
+        -get_batch_size()
+        -batch_result(done, processed, pending)
+    }
+    Generic_Process <|-- Management_Tools_Process

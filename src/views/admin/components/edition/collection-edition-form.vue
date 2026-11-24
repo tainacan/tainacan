@@ -46,20 +46,43 @@
 
                     <!-- Description -------------------------------- --> 
                     <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_description')"
-                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                            :addons="false"
+                            :label-for="isRichTextEditorAllowed ? undefined : 'tainacan-text-description'"
+                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''"
                             :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'description')" 
+                        <template #label>
+                            <span id="tainacan-text-description-label">
+                                {{ $i18n.get('label_description') }}
+                            </span>
+                        </template>
+                        <help-button
+                                :title="$i18n.getHelperTitle('collections', 'description')"
                                 :message="$i18n.getHelperMessage('collections', 'description')" />
+                        <component
+                                :is="'tainacan-rich-text-editor'"
+                                v-if="isRichTextEditorAllowed"
+                                id="tainacan-text-description"
+                                v-model="form.description"
+                                :invalid="editFormErrors['description'] != undefined"
+                                aria-labelledby="tainacan-text-description-label"
+                                :aria-describedby="editFormErrors['description'] != undefined ? 'tainacan-text-description-error' : undefined"
+                                :placeholder="$i18n.get('instruction_collection_description')"
+                                @focus="clearErrors('description')" />
                         <b-input
+                                v-else
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 type="textarea"
                                 rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 @focus="clearErrors('description')" />
+                        <template
+                                v-if="editFormErrors['description'] != undefined"
+                                #message>
+                            <span id="tainacan-text-description-error">
+                                {{ editFormErrors['description'] }}
+                            </span>
+                        </template>
                     </b-field>
 
                     <!-- Collection Taxonomies options ------------------------ -->
@@ -1202,6 +1225,7 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
+            isRichTextEditorAllowed: tainacan_plugin.tainacan_allow_rich_text_editor === '1',
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             //collections: [],              DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
             //isFetchingCollections: true,  DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
@@ -1837,7 +1861,13 @@ export default {
                             // Not every metadata can be used for sorting
                             this.sortingMetadata = JSON.parse(JSON.stringify(this.metadata));
 
-                            // Adds creation date as it is the default
+                            // Core dates are not metadata, so they are appended as sort options.
+                            this.sortingMetadata.push({
+                                name: this.$i18n.get('label_modification_date'),
+                                metadata_type: undefined,
+                                slug: 'modification_date',
+                                id: 'modified'
+                            });
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadata_type: undefined,
@@ -2319,4 +2349,3 @@ export default {
     }
 
 </style>
-

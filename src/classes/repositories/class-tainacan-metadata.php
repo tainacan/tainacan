@@ -124,7 +124,7 @@ class Metadata extends Repository {
 			],
 			'collection_key'        => [
 				'map'         => 'meta',
-				'title'       => __( 'Unique value', 'tainacan' ),
+				'title'       => __( 'Unique value across items', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Metadata value should be unique accross all items in this collection', 'tainacan' ),
 				'on_error'    => __( 'You cannot have two items with the same value for this metadatum', 'tainacan' ),
@@ -1442,7 +1442,9 @@ class Metadata extends Repository {
 					)
 				);
 
-				$label = wp_specialchars_decode($r->name);
+				// Decode only "&amp;"; see Terms::get_mapped_property(). Decoding "<"
+				// and ">" would reintroduce the stored XSS through facet labels.
+				$label = str_replace('&amp;', '&', $r->name);
 				$total_items = null;
 
 				if ( $args['count_items'] ) {
@@ -1471,6 +1473,7 @@ class Metadata extends Repository {
 					'taxonomy' => $taxonomy_slug,
 					'taxonomy_id' => $taxonomy_id,
 					'parent' => $r->parent,
+					'ancestors' => get_ancestors( (int) $r->term_id, $taxonomy_slug, 'taxonomy' ),
 					'total_items' => $total_items,
 					'type' => 'Taxonomy',
 					'description' => term_description($r->term_id),

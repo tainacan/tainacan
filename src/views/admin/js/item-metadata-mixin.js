@@ -1,4 +1,5 @@
 import { mapActions } from 'vuex';
+import { conditionalSectionShouldHide } from './conditional-sections';
 export const itemMetadataMixin = {
     created() {
         this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
@@ -50,7 +51,7 @@ export const itemMetadataMixin = {
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0])  ? values[0] : values,
-                    parent_meta_id: parentMetaId ? parentMetaId : null
+					parent_meta_id: parentMetaId ? parentMetaId : null
                 })
                     .then(() => { 
                         this.isUpdatingValues = false;
@@ -119,10 +120,17 @@ export const itemMetadataMixin = {
              */
             let updatedConditionalSections = JSON.parse(JSON.stringify(this.conditionalSections));
             for (let conditionalSectionId in updatedConditionalSections) {
-                if ( updatedConditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
-                    const conditionalValues = Array.isArray(updatedConditionalSections[conditionalSectionId].metadatumValues) ? updatedConditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
-                    updatedConditionalSections[conditionalSectionId].hide = Array.isArray(values) ? values.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(values) < 0 ;
-                }
+                const record = updatedConditionalSections[conditionalSectionId];
+                const rules = Array.isArray(record.rules) ? record.rules : [];
+                let touched = false;
+                rules.forEach(rule => {
+                    if (rule.metadatumId == metadatumId) {
+                        rule.matched = !conditionalSectionShouldHide(values, rule.metadatumValues, rule.hierarchical);
+                        touched = true;
+                    }
+                });
+                if (touched)
+                    record.hide = rules.some(rule => !rule.matched);
             }
             this.conditionalSections = updatedConditionalSections;
         },

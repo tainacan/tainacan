@@ -3,7 +3,7 @@
 //window.underscore = _.noConflict();
 
 // Main imports
-import { createApp, h } from 'vue';
+import { createApp, h, defineAsyncComponent } from 'vue';
 import {
     Field,
     Input,
@@ -101,6 +101,7 @@ export default (element) => {
 
             const emitter = mitt();
             app.config.globalProperties.$emitter = emitter;
+            app.config.globalProperties.$richTextEditor = true;
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
@@ -195,6 +196,9 @@ export default (element) => {
             ];
             const availableLocales = ['en', 'es', 'fr', 'pt-br', 'de'];
             const browserLanguage = navigator.language.toLocaleLowerCase();
+            const chartDefaults = {
+                fontFamily: 'Roboto, "Source Sans", Helvetica, sans-serif'
+            };
 
             if (availableLocales.indexOf(browserLanguage) >= 0) {
                 let localeConfig;
@@ -206,11 +210,16 @@ export default (element) => {
                     case 'de': localeConfig = deLocaleConfig; break;
                     case 'en': default: localeConfig = enLocaleConfig; break;
                 }
-                window.Apex.chart = {
-                    defaultLocale: browserLanguage,
-                    locales: [ localeConfig ]
-                }
+                chartDefaults.defaultLocale = browserLanguage;
+                chartDefaults.locales = [ localeConfig ];
             }
+
+            window.Apex.chart = chartDefaults;
+            // ApexCharts titles default to weight 900. The admin loads Roboto
+            // only through 700 and uses 500 for headings.
+            window.Apex.title = { style: { fontWeight: 500 } };
+            window.Apex.xaxis = { title: { style: { fontWeight: 500 } } };
+            window.Apex.yaxis = { title: { style: { fontWeight: 500 } } };
 
             app.use(VueApexCharts);
 
@@ -226,6 +235,7 @@ export default (element) => {
             app.component('HelpButton', HelpButton);
             app.component('TainacanProgressiveImage', TainacanProgressiveImage);
             app.component('TainacanTitle', TainacanTitle);
+            app.component('TainacanRichTextEditor', defineAsyncComponent(() => import('../components/other/tainacan-rich-text-editor.vue')));
             app.component('TainacanExternalLink', TainacanExternalLink)
             
             // Event bus are needed to facilate comunication between child-parent-child components

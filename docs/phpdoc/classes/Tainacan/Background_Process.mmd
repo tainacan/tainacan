@@ -2,7 +2,8 @@ classDiagram
     direction TB
     class Background_Process {
         #table : string
-        +ID : false|int
+        +ID : false
+        #ownership_lost : bool
         #prefix : string
         #action : string
         #name : string
@@ -21,6 +22,8 @@ classDiagram
         #get_batch()
         #get_batch_by_key(key)
         #handle()
+        #owns_process(key)
+        #abort_worker_ownership_lost(key)
         +delete_all_batches()
         +kill_process()
         #write_log_to_file(key, log, type)
@@ -28,6 +31,19 @@ classDiagram
         #write_error_log(key, log)
         -recursive_stingify_log_array(log, break)
         -has_errors(key)
+    }
+    class Async_Request {
+        #prefix : string
+        #action : string
+        #identifier : mixed
+        #data : array
+        +__construct()
+        +data(data)
+        +dispatch()
+        #get_query_args()
+        #get_query_url()
+        #get_post_args()
+        +maybe_handle()
     }
     class Background_Process_Base {
         #action : string
@@ -61,25 +77,13 @@ classDiagram
         +schedule_cron_healthcheck(schedules)
         +handle_cron_healthcheck()
         +handle_cron_healthcheck_check()
+        #utc_now()
         #detect_and_cleanup_stale_processes()
         +record_heartbeat()
         #schedule_event()
         #clear_scheduled_event()
         +cancel_process()
         +debug(message)
-    }
-    class Async_Request {
-        #prefix : string
-        #action : string
-        #identifier : mixed
-        #data : array
-        +__construct()
-        +data(data)
-        +dispatch()
-        #get_query_args()
-        #get_query_url()
-        #get_post_args()
-        +maybe_handle()
     }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process

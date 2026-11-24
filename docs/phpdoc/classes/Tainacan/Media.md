@@ -15,7 +15,7 @@ including custom image sizes, attachment pages, and content indexing.
 classDiagram
     direction TB
     class Media {
-        -file_name : string|null
+        -file_name : string
         -attachment_html_url_base : string
         +content_index_meta : string
         +content_index_last : string

@@ -551,6 +551,12 @@ class Metadatum extends Entity {
 			}
 		}
 
+		// You cant have a metadatum with unique value and multiple values at the same time
+		if ( $this->is_collection_key() && $this->is_multiple() ) {
+			$this->add_error('collection_key', __('Metadata cannot have unique value and allow multiple values at the same time', 'tainacan'));
+			return false;
+		}
+
 		// You cant have a required metadatum inside a conditional section
 		if ( $this->is_required() ) {
 			$meta_section_id = $this->get_metadata_section_id();
