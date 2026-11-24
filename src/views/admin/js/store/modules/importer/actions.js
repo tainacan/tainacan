@@ -1,5 +1,26 @@
 import axios from '../../../axios';
 
+/**
+ * Builds a REST path from a template. Each inserted value must be hexadecimal,
+ * the same shape the importer session routes accept. The value is encoded
+ * before it is joined to the path. Returns null when one is not.
+ * @param {TemplateStringsArray} strings
+ * @param {...unknown} values
+ * @returns {string|null}
+ */
+function hexPath(strings, ...values) {
+    let path = strings[0];
+
+    for (let index = 0; index < values.length; index++) {
+        const id = String(values[index] == null ? '' : values[index]);
+        if (!/^[0-9a-f]+$/.test(id))
+            return null;
+        path += encodeURIComponent(id) + strings[index + 1];
+    }
+
+    return path;
+}
+
 // IMPORTER ----------------------------------------------------
 /**
  * Dispatches `importer/fetchAvailableImporters`.
@@ -27,7 +48,13 @@ export const fetchAvailableImporters = ({ commit }) => {
 export const fetchImporter = ( { commit }, importerId ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacanApi.get('importers/session/' +  importerId)
+        const endpoint = hexPath`importers/session/${importerId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.get(endpoint)
             .then( res => {
                 let importer = res.data;
                 commit('setImporter', importer);
@@ -67,7 +94,13 @@ export const sendImporter = ( { commit }, importerTypeSlug) => {
 export const updateImporter = ( { commit }, { sessionId, options }) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacanApi.put('importers/session/' + sessionId, options)
+        const endpoint = hexPath`importers/session/${sessionId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.put(endpoint, options)
             .then( res => {
                 let importer = res.data;
                 commit('setImporter', importer);
@@ -85,7 +118,13 @@ export const updateImporter = ( { commit }, { sessionId, options }) => {
  */
 export const updateImporterCollection = ( { commit }, { sessionId, collection }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacanApi.put('importers/session/' + sessionId, {
+        const endpoint = hexPath`importers/session/${sessionId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.put(endpoint, {
             collection: collection
         })
             .then( res => {
@@ -105,7 +144,13 @@ export const updateImporterCollection = ( { commit }, { sessionId, collection })
  */
 export const updateImporterURL = ( { commit }, { sessionId, url }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacanApi.put('importers/session/' + sessionId, {
+        const endpoint = hexPath`importers/session/${sessionId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.put(endpoint, {
             url: url
         })
             .then( res => {
@@ -126,7 +171,13 @@ export const updateImporterURL = ( { commit }, { sessionId, url }) => {
 export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacanApi.put('importers/session/' + sessionId, {
+        const endpoint = hexPath`importers/session/${sessionId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.put(endpoint, {
             options
         })
             .then( res => {
@@ -150,7 +201,13 @@ export const updateImporterFile = ( { commit }, { sessionId, file }) => {
         let formData = new FormData();
         formData.append('file', file)
 
-        axios.tainacanApi.post('importers/session/' + sessionId + '/file', formData, {
+        const endpoint = hexPath`importers/session/${sessionId}/file`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.post(endpoint, formData, {
                 headers: { 
                     'Content-Type': 'multipart/form-data;', 
                     'Content-Disposition': 'form-data; filename=' + file.name + '; filesize=' + file.size}, 
@@ -172,7 +229,13 @@ export const updateImporterFile = ( { commit }, { sessionId, file }) => {
  */
 export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get('/importers/session/' + sessionId + '/source_info')
+        const endpoint = hexPath`/importers/session/${sessionId}/source_info`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.get(endpoint)
         .then((res) => {
             let importerSourceInfo = res.data;
             commit('setImporterSourceInfo', importerSourceInfo);
@@ -191,7 +254,13 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
 export const runImporter = ( { dispatch } , importerId ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacanApi.post('importers/session/' + importerId + '/run')
+        const endpoint = hexPath`importers/session/${importerId}/run`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.post(endpoint)
             .then( res => {
                 let backgroundProcessId = res.data;
                 dispatch('bgprocess/fetchProcesses', { }, { root: true });
@@ -210,7 +279,13 @@ export const runImporter = ( { dispatch } , importerId ) => {
 export const fetchMappingImporter = ( { commit }, { sessionId, collection } ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacanApi.get('importers/session/' +  sessionId + '/get_mapping/' + collection)
+        const endpoint = hexPath`importers/session/${sessionId}/get_mapping/${collection}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid session id.'));
+            return;
+        }
+
+        axios.tainacanApi.get(endpoint)
             .then( res => {
                 let mapping = res.data;
                 commit('setMappingImporter', mapping);

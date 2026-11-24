@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { guardRestRequest } from './rest-request-guard';
 
 // Simpler version of the i18n plugin to translate error feedback messages
 const i18nGet = function (key) {
@@ -66,9 +67,10 @@ tainacanApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
-// Converts PUT, PATCH and DELETE requests to POST requests with _method param
-// This is necessary in some environments such as the WordPress Playground
-// See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
+// This Axios version runs request interceptors in reverse registration order, so
+// the guard registered below runs before this rewrite. tainacanTunneledMethod lets
+// the guard accept this _method if a later Axios version runs interceptors in
+// registration order instead. See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
 tainacanApi.interceptors.request.use((config) => {
     const tunnelingMethods = ['put', 'patch', 'delete'];
   
@@ -77,6 +79,7 @@ tainacanApi.interceptors.request.use((config) => {
   
       // Force request to POST
       config.method = 'post';
+      config.tainacanTunneledMethod = originalMethod;
   
       // Add _method param to URL
       const url = new URL(config.url, window.location.origin);
@@ -86,6 +89,7 @@ tainacanApi.interceptors.request.use((config) => {
   
     return config;
 });
+tainacanApi.interceptors.request.use(guardRestRequest);
 
 // WordPress JSON API axios
 export const wpApi= axios.create({
@@ -98,9 +102,8 @@ wpApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
-// Converts PUT, PATCH and DELETE requests to POST requests with _method param
-// This is necessary in some environments such as the WordPress Playground
-// See https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
+// Same tunneling as tainacanApi. The guard accepts _method only when
+// tainacanTunneledMethod was set here.
 wpApi.interceptors.request.use((config) => {
     const tunnelingMethods = ['put', 'patch', 'delete'];
   
@@ -109,6 +112,7 @@ wpApi.interceptors.request.use((config) => {
   
       // Force request to POST
       config.method = 'post';
+      config.tainacanTunneledMethod = originalMethod;
   
       // Add _method param to URL
       const url = new URL(config.url, window.location.origin);
@@ -118,6 +122,7 @@ wpApi.interceptors.request.use((config) => {
   
     return config;
 });
+wpApi.interceptors.request.use(guardRestRequest);
 
 // WordPress AJAX axios
 export const wpAjax = axios.create({
@@ -126,6 +131,7 @@ export const wpAjax = axios.create({
 if (tainacan_user.nonce) {
     wpAjax.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
+wpAjax.interceptors.request.use(guardRestRequest);
 wpAjax.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
@@ -139,6 +145,7 @@ export const wpAbilitiesApi = axios.create({
 if (tainacan_user.nonce) {
     wpAbilitiesApi.defaults.headers.common['X-WP-Nonce'] = tainacan_user.nonce;
 }
+wpAbilitiesApi.interceptors.request.use(guardRestRequest);
 wpAbilitiesApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
