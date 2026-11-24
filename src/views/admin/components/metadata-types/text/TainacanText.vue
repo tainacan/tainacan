@@ -36,7 +36,7 @@
                 :maxlength="getMaxlength"
                 @blur="onBlur"
                 @update:model-value="onAutocompleteValue"
-                @typing="search"
+                @typing="onTyping"
                 @select="onSelect"
                 @infinite-scroll="searchMore"
                 @focus="onSuggestionFocus">
@@ -73,6 +73,7 @@
             itemMetadatum: Object,
             value: [String, Number, Array],
             inputId: String,
+            useStoredSuggestion: Boolean,
             disabled: false
         },
         emits: [
@@ -83,9 +84,7 @@
         data() {
             return {
                 localValue: '',
-                selected:'',
                 options: [],
-                label: '',
                 searchQuery: '',
                 searchOffset: 0,
                 searchNumber: 12,
@@ -124,6 +123,8 @@
             this.currentCollectionId = this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.collection_id ? this.itemMetadatum.metadatum.collection_id : null;
             this.filter = { collection_id: this.currentCollectionId };
             this.localValue = this.value ? JSON.parse(JSON.stringify(this.value)) : '';
+            this.search = _.debounce(this.searchSuggestions, 500);
+            this.changeValue = _.debounce((value) => this.$emit('update:value', value), 750);
         },
         methods: {
             onInput(value) {
@@ -132,11 +133,11 @@
                     return;
 
                 this.localValue = value;
-                this.changeValue(value);
+                if (this.useStoredSuggestion)
+                    this.$emit('update:value', value, false);
+                else
+                    this.changeValue(value);
             },
-            changeValue: _.debounce(function(value) {
-                this.$emit('update:value', value);
-            }, 750),
             onBlur() {
                 this.isInputFocused = false;
                 this.$emit('blur');
@@ -147,15 +148,19 @@
 
                 this.onInput('');
             },
-            onSelect(option){
-                
+            onSelect(option) {
                 if (!option)
                     return;
 
-                this.selected = option.value;
-                this.label = option.label;
-
-                this.onInput(this.label);
+                this.search.cancel();
+                this.changeValue.cancel();
+                this.localValue = option.label;
+                this.$emit('update:value', option.value, true);
+            },
+            onTyping(query) {
+                if (this.useStoredSuggestion)
+                    this.onInput(query || '');
+                this.search(query);
             },
             onSuggestionFocus() {
                 this.onMobileSpecialFocus();
@@ -168,10 +173,10 @@
                 this.shouldAddOptions = false;
                 this.loadSuggestions('');
             },
-            search: _.debounce( function(query) {
+            searchSuggestions(query) {
                 const text = query || '';
 
-                if (text === this.localValue && this.searchQuery === '' && this.options.length)
+                if (!this.useStoredSuggestion && text === this.localValue && this.searchQuery === '' && this.options.length)
                     return;
 
                 if (text !== this.searchQuery) {
@@ -182,13 +187,14 @@
                     this.shouldAddOptions = false;
                 }
 
-                this.onInput(text);
+                if (!this.useStoredSuggestion)
+                    this.onInput(text);
 
                 if (this.searchOffset > 0 && this.options.length >= Number(this.totalFacets))
                     return;
 
                 this.loadSuggestions(text);
-            }, 500),
+            },
             loadSuggestions(query) {
                 if (this.getOptionsValuesCancel)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');

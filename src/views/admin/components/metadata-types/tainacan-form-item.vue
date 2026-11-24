@@ -74,7 +74,7 @@
                 </p>
                 <component 
                         :is="metadatumComponent"
-                        v-model:value="values[0]" 
+                        :value="values[0]"
                         :item-metadatum="itemMetadatum"
                         :input-id="metadatumInputId"
                         :disabled="invalidEmptyMultivalueIndex.length > 0"
@@ -86,7 +86,7 @@
                         :is-mobile-screen="isMobileScreen"
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
-                        @update:value="performValueChange"
+                        @update:value="(value, isStoredSuggestion) => updateValue(value, 0, isStoredSuggestion)"
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
                 <div
@@ -98,7 +98,7 @@
                         <div v-if="index > 0">
                             <component 
                                     :is="metadatumComponent"
-                                    v-model:value="values[index]" 
+                                    :value="values[index]"
                                     :item-metadatum="itemMetadatum"
                                     :input-id="getItemMetadataInputId(index)"
                                     :disabled="invalidEmptyMultivalueIndex.length > 0 && !invalidEmptyMultivalueIndex.includes(index)"
@@ -110,7 +110,7 @@
                                     :is-mobile-screen="isMobileScreen"
                                     :is-focused="isFocused"
                                     :is-metadata-navigation="isMetadataNavigation"
-                                    @update:value="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
+                                    @update:value="(value, isStoredSuggestion) => updateValue(value, index, isStoredSuggestion)"
                                     @blur="checkForEmptyIndexInMultivalueBeforeUpdate(values[index], index)"
                                     @mobile-special-focus="onMobileSpecialFocus" />
                             <p
@@ -201,6 +201,7 @@
 
 <script>
     import { nextTick, defineAsyncComponent } from 'vue';
+    import { decodePlainTextEntities } from '../../js/admin-utilities';
 
     export default {
         name: 'TainacanFormItem',
@@ -347,13 +348,23 @@
                         this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
                 }
             },
-            performValueChange() {
+            updateValue(value, index, isStoredSuggestion) {
+                this.values[index] = value;
+
+                if (index === 0)
+                    this.performValueChange(isStoredSuggestion);
+                else
+                    this.checkForEmptyIndexInMultivalueBeforeUpdate(value, index, isStoredSuggestion);
+            },
+            performValueChange(isStoredSuggestion) {
 
                 // Compound metadata do not emit values, only their children.
                 if ( this.metadatumComponent == 'tainacan-compound' )
                     return;
 
-                if ( this.itemMetadatum.value !== null && this.itemMetadatum.value !== false ) {
+                // The stored suggestion can match the decoded API value of a different string.
+                const isStoredTextSuggestion = this.metadatumComponent === 'tainacan-text' && isStoredSuggestion === true;
+                if ( !isStoredTextSuggestion && this.itemMetadatum.value !== null && this.itemMetadatum.value !== false ) {
                     
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
@@ -376,7 +387,9 @@
                                         if (typeof element == 'object')
                                             return value == element.id;
                                         else
-                                            return value == element;
+                                            return value == element ||
+                                                // A selected suggestion keeps its stored form, which the API returns decoded.
+                                                (this.metadatumComponent === 'tainacan-text' && decodePlainTextEntities(value) === element);
                                     });
                                     if (foundIndex >= 0)
                                         equal.push(this.itemMetadatum.value[foundIndex]);
@@ -407,8 +420,10 @@
                                 !this.errorMessage &&
                                 this.values.length &&
                                 (    // This is needed for allowing numeric 0 values to be compared against empty string values.
-                                    ( !isNaN(this.values[0]) && this.values[0] === this.itemMetadatum.value ) || 
-                                    ( isNaN(this.values[0]) && this.values[0] == this.itemMetadatum.value )
+                                    ( !isNaN(this.values[0]) && this.values[0] === this.itemMetadatum.value ) ||
+                                    ( isNaN(this.values[0]) && this.values[0] == this.itemMetadatum.value ) ||
+                                    // A selected suggestion keeps its stored form, which the API returns decoded.
+                                    ( this.metadatumComponent === 'tainacan-text' && decodePlainTextEntities(this.values[0]) === this.itemMetadatum.value )
                                 )
                             )
                                 return;
@@ -447,7 +462,7 @@
                 if (this.isMobileScreen)
                     this.$emit('mobile-special-focus');
             },
-            checkForEmptyIndexInMultivalueBeforeUpdate(value, index) {
+            checkForEmptyIndexInMultivalueBeforeUpdate(value, index, isStoredSuggestion) {
                 if ( value === '' ) {
                     if ( !this.invalidEmptyMultivalueIndex.includes(index) )
                         this.invalidEmptyMultivalueIndex.push(index);
@@ -455,7 +470,7 @@
                     const invalidEmptyValueIndex = this.invalidEmptyMultivalueIndex.indexOf(index);
                     if ( invalidEmptyValueIndex !== -1 )
                         this.invalidEmptyMultivalueIndex.splice(invalidEmptyValueIndex, 1);
-                    this.performValueChange();
+                    this.performValueChange(isStoredSuggestion);
                 }
             }
        

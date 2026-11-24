@@ -36,6 +36,18 @@ export const decodeHtmlEntities = function(text) {
     return textarea.value;
 }
 
+/**
+ * Decodes a stored value the way the API decodes plain-text values (Item_Metadata_Entity::decode_plain_text_entities()):
+ * "&amp;" and its numeric forms become "&", and "&gt;" becomes ">", in a single pass. Use it to compare values only.
+ * @param {*} text - Stored value; non-strings are returned unchanged.
+ * @returns {*} The value as the API returns it.
+ */
+export const decodePlainTextEntities = function(text) {
+    return typeof text === 'string'
+        ? text.replace(/&(?:amp|#0*38|#x0*26|gt);/gi, (entity) => entity.toLowerCase() === '&gt;' ? '>' : '&')
+        : text;
+}
+
 // HTML SANITIZE PLUGIN - Helps sanitizing html string from javascript.
 export const HtmlSanitizerPlugin = {};
 HtmlSanitizerPlugin.install = function (app) {

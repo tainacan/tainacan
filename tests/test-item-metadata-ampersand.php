@@ -100,6 +100,32 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		$this->assertSame( 'Smith &amp; Jones', $child_values[0]['value_as_html'] );
 	}
 
+	/**
+	 * Unformatted serialization needs only the compound child lookup used to order the values.
+	 */
+	public function test_serializing_compound_fetches_its_children_once() {
+		$compound = $this->create_metadatum( 'Compound' );
+		$child    = $this->create_metadatum( 'Text', array( 'parent' => $compound->get_id() ) );
+		$this->save_value( $child, 'Smith & Jones' );
+		$item_metadata = new Item_Metadata_Entity( $this->amp_item, $compound );
+		$fetches       = 0;
+		$count_fetch   = static function ( $args, $repository ) use ( &$fetches ) {
+			if ( 'metadata' === $repository ) {
+				++$fetches;
+			}
+			return $args;
+		};
+
+		add_filter( 'tainacan-fetch-args', $count_fetch, 10, 2 );
+		try {
+			$data = $item_metadata->_toArray( false );
+			$this->assertSame( 'Smith & Jones', $data['value'][0]['value'] );
+			$this->assertSame( 1, $fetches );
+		} finally {
+			remove_filter( 'tainacan-fetch-args', $count_fetch );
+		}
+	}
+
 	public function test_rich_text_value_stays_html() {
 		update_option( 'tainacan_option_allow_rich_text_editor', true );
 		$rich = $this->create_metadatum( 'Textarea', [ 'metadata_type_options' => [ 'use_rich_text_editor' => 'yes' ] ] );
@@ -108,6 +134,22 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		$data = $this->read_rest( $rich );
 		$this->assertSame( '<p>Smith &amp; Jones</p>', $data['value'] );
 		$this->assertSame( 'Smith & Jones', trim( $data['value_as_string'] ) );
+	}
+
+	/**
+	 * Compound strings must decode at the children, once per stored value.
+	 */
+	public function test_compound_strings_decode_entities_only_once() {
+		foreach ( array( 'no', 'yes' ) as $multiple ) {
+			$compound          = $this->create_metadatum( 'Compound', array( 'multiple' => $multiple ) );
+			$child             = $this->create_metadatum( 'Text', array( 'parent' => $compound->get_id() ) );
+			$child_metadata    = $this->save_value( $child, 'A &amp;amp; B &amp;gt; C' );
+			$compound_metadata = new Item_Metadata_Entity( $this->amp_item, $compound );
+
+			$this->assertSame( 'A &amp; B &gt; C', $child_metadata->get_value_as_string() );
+			$this->assertSame( 'A &amp; B &gt; C', trim( $compound_metadata->get_value_as_string() ) );
+			$this->assertSame( 'A &amp; B &gt; C', trim( $this->read_rest( $compound )['value_as_string'] ) );
+		}
 	}
 
 	public function test_rich_text_option_without_site_wide_setting_returns_plain_text() {
@@ -165,6 +207,52 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		$html = $item_metadata->get_value_as_html();
 		$this->assertStringContainsString( '>Smith&amp;notes</a>', $html );
 		$this->assertStringNotContainsString( '>Smith&notes</a>', $html );
+	}
+
+	/**
+	 * Keep the related label's literal entities in both display formats.
+	 */
+	public function test_relationship_keeps_literal_entities_in_html_and_rest_text() {
+		[ , $related_item, $relationship ] = $this->create_related_item( 'A &amp;amp; B &amp;gt; C' );
+
+		$item_metadata = $this->save_value( $relationship, $related_item->get_id() );
+
+		$this->assertStringContainsString( '>A &amp;amp; B &amp;gt; C</a>', $item_metadata->get_value_as_html() );
+		$this->assertSame( 'A &amp; B &gt; C', $item_metadata->get_value_as_string() );
+		$this->assertSame( 'A &amp; B &gt; C', $this->read_rest( $relationship )['value_as_string'] );
+	}
+
+	/**
+	 * The relationship HTML filter also affects plain text, with one entity decoding pass.
+	 */
+	public function test_relationship_plain_text_respects_the_html_filter() {
+		$label                             = 'D\'Ávila "Júnior" & Filhos &quot; &amp; &gt; &lt;';
+		[ , $related_item, $relationship ] = $this->create_related_item( 'D\'Ávila "Júnior" &amp; Filhos &amp;quot; &amp;amp; &amp;gt; &lt;' );
+
+		$item_metadata = $this->save_value( $relationship, $related_item->get_id() );
+		$hook          = 'tainacan-item-metadata-get-value-as-html--type-relationship';
+		$pass_through  = static function ( $html ) {
+			return $html;
+		};
+		$filter        = static function ( $html ) {
+			return '<strong>Rótulo institucional</strong> ' . $html;
+		};
+
+		add_filter( $hook, $pass_through );
+		try {
+			$this->assertSame( $label, $this->read_rest( $relationship )['value_as_string'] );
+		} finally {
+			remove_filter( $hook, $pass_through );
+		}
+
+		add_filter( $hook, $filter );
+		try {
+			$expected = 'Rótulo institucional ' . $label;
+			$this->assertSame( $expected, $item_metadata->get_value_as_string() );
+			$this->assertSame( $expected, $this->read_rest( $relationship )['value_as_string'] );
+		} finally {
+			remove_filter( $hook, $filter );
+		}
 	}
 
 	public function test_relationship_facet_label_is_decoded() {
@@ -343,4 +431,132 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 
 		$this->assertSame( [ 'C &amp; D' ], get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
 	}
+
+	/**
+	 * A decoded greater-than sign must still match the stored value.
+	 */
+	public function test_bulk_edit_replace_matches_decoded_greater_than() {
+		$metadatum = $this->create_metadatum( 'Text' );
+		$this->save_value( $metadatum, 'a > b' );
+
+		$this->run_bulk_edit(
+			array(
+				'method'             => 'replace_value',
+				'old_value'          => 'a > b',
+				'value'              => 'Updated',
+				'metadatum_id'       => $metadatum->get_id(),
+				'match_stored_value' => false,
+			)
+		);
+
+		$this->assertSame( 'Updated', get_post_meta( $this->amp_item->get_id(), $metadatum->get_id(), true ) );
+	}
+
+	/**
+	 * Removing one decoded value must preserve the other stored values.
+	 */
+	public function test_bulk_edit_remove_matches_decoded_greater_than() {
+		$metadatum = $this->create_metadatum( 'Text', array( 'multiple' => 'yes' ) );
+		$this->save_value( $metadatum, array( 'a > b', 'c > d' ) );
+
+		$this->run_bulk_edit(
+			array(
+				'method'             => 'remove_value',
+				'value'              => 'a > b',
+				'metadatum_id'       => $metadatum->get_id(),
+				'match_stored_value' => false,
+			)
+		);
+
+		$this->assertSame( array( 'c &gt; d' ), get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
+	}
+
+	/**
+	 * Historical numeric ampersand entities and encoded facet values still match.
+	 */
+	public function test_bulk_edit_replace_accepts_numeric_entities_and_stored_values() {
+		foreach ( array( 'A &#038; B', 'A &amp;amp; B', 'a &gt; b' ) as $stored ) {
+			$metadatum = $this->create_metadatum( 'Text' );
+			update_post_meta( $this->amp_item->get_id(), $metadatum->get_id(), $stored );
+			$old_value = 'A &#038; B' === $stored ? 'A & B' : $stored;
+
+			$this->run_bulk_edit(
+				array(
+					'method'             => 'replace_value',
+					'old_value'          => $old_value,
+					'value'              => 'Updated',
+					'metadatum_id'       => $metadatum->get_id(),
+					'match_stored_value' => false,
+				)
+			);
+
+			$this->assertSame( 'Updated', get_post_meta( $this->amp_item->get_id(), $metadatum->get_id(), true ) );
+		}
+	}
+
+	/**
+	 * Skip other entity encodings when the bulk request comes from a suggestion.
+	 */
+	public function test_bulk_edit_matches_only_the_stored_suggestion() {
+		$stored = 'A &amp;amp; B';
+		$label  = 'A &amp; B';
+
+		foreach ( array( 'remove_value', 'replace_value' ) as $method ) {
+			$metadatum = $this->create_metadatum( 'Text', array( 'multiple' => 'yes' ) );
+			$this->save_value( $metadatum, array( $label, $stored ) );
+
+			$this->run_bulk_edit(
+				array(
+					'method'             => $method,
+					'old_value'          => $stored,
+					'value'              => 'remove_value' === $method ? $stored : 'Updated',
+					'metadatum_id'       => $metadatum->get_id(),
+					'match_stored_value' => true,
+				)
+			);
+
+			$expected = 'remove_value' === $method ? array( $label ) : array( $label, 'Updated' );
+			$this->assertSame( $expected, get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
+
+			// A selected value cannot fall back to a different value on other items in the batch.
+			$metadatum = $this->create_metadatum( 'Text', array( 'multiple' => 'yes' ) );
+			$this->save_value( $metadatum, array( 'A &amp;amp;amp; B' ) );
+			$this->run_bulk_edit(
+				array(
+					'method'             => $method,
+					'old_value'          => $stored,
+					'value'              => 'remove_value' === $method ? $stored : 'Updated',
+					'metadatum_id'       => $metadatum->get_id(),
+					'match_stored_value' => true,
+				)
+			);
+			$this->assertSame( array( 'A &amp;amp;amp; B' ), get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
+		}
+	}
+
+	/**
+	 * Legacy clients match normalized entities without matching a different stored string.
+	 */
+	public function test_bulk_edit_without_matching_mode_preserves_legacy_comparison() {
+		foreach ( array( 'remove_value', 'replace_value' ) as $method ) {
+			$metadatum = $this->create_metadatum( 'Text', array( 'multiple' => 'yes' ) );
+			$literal   = 'A &amp;amp; B';
+			$this->save_value( $metadatum, array( $literal, 'A &#038; B' ) );
+
+			foreach ( array( 'A &amp; B', 'A &#38; B' ) as $needle ) {
+				$this->run_bulk_edit(
+					array(
+						'method'       => $method,
+						'old_value'    => $needle,
+						'value'        => 'remove_value' === $method ? $needle : 'Updated',
+						'metadatum_id' => $metadatum->get_id(),
+					)
+				);
+			}
+
+			$expected = 'remove_value' === $method ? array( $literal ) : array( $literal, 'Updated' );
+			$this->assertSame( $expected, get_post_meta( $this->amp_item->get_id(), $metadatum->get_id() ) );
+		}
+	}
+
 }

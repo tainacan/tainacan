@@ -212,12 +212,18 @@ class Item_Metadata_Entity extends Entity {
 	 * @return string
 	 */
 	public function get_value_as_string() {
-		$metadatum = $this->get_metadatum();
+		$metadatum          = $this->get_metadatum();
+		$relationship_value = null;
 		if (is_object($metadatum)) {
 			$fto = $metadatum->get_metadata_type_object();
 			if (is_object($fto)) {
-				if ( method_exists($fto, 'get_value_as_string') ) {
-					return self::decode_plain_text_entities( $fto->get_value_as_string($this) );
+				if ( $fto instanceof \Tainacan\Metadata_Types\Relationship ) {
+					// Relationship labels already come from the related metadata's plain-text output.
+					$relationship_value = $fto->get_value_as_string( $this );
+				} elseif ( method_exists( $fto, 'get_value_as_string' ) ) {
+					$value = $fto->get_value_as_string( $this );
+					// Compound values concatenate children that have already been decoded.
+					return 'compound' === $fto->get_primitive_type() ? $value : self::decode_plain_text_entities( $value );
 				}
 			}
 		}
@@ -231,7 +237,8 @@ class Item_Metadata_Entity extends Entity {
 			 * 
 			 * @return string the item metadatum value string 
 			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-string', self::decode_plain_text_entities( wp_strip_all_tags($this->get_value_as_html()) ), $this );
+			// phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores -- Preserve the existing public hook name.
+			apply_filters( 'tainacan-item-metadata-get-value-as-string', $relationship_value ?? self::decode_plain_text_entities( wp_strip_all_tags( $this->get_value_as_html() ) ), $this );
 	}
 
 	/**
@@ -273,7 +280,8 @@ class Item_Metadata_Entity extends Entity {
 	 * @return bool
 	 */
 	private function uses_rich_text_editor() {
-		if ( $this->get_metadatum()->get_metadata_type_object()->get_option( 'use_rich_text_editor' ) !== 'yes' ) {
+		$metadata_type = $this->get_metadatum()->get_metadata_type_object();
+		if ( 'tainacan-textarea' !== $metadata_type->get_component() || 'yes' !== $metadata_type->get_option( 'use_rich_text_editor' ) ) {
 			return false;
 		}
 		return defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' )

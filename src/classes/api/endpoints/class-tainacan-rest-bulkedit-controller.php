@@ -376,6 +376,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				"metadatum_id_to" 	=> isset($body['metadatum_id_to']) ? $body['metadatum_id_to'] : null,
 				"metadatum_id_from" 	=> isset($body['metadatum_id_from']) ? $body['metadatum_id_from'] : null,
 			];
+			if ( isset( $request['match_stored_value'] ) ) {
+				$bulk_edit_data['match_stored_value'] = rest_sanitize_boolean( $request['match_stored_value'] );
+			}
 			$process->set_bulk_edit_data($bulk_edit_data);
 			$bg_bulk = $Tainacan_Generic_Process_Handler->add_to_queue($process);
 			//$Tainacan_Generic_Process_Handler->delete_process_instance($process);
@@ -561,6 +564,13 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'description' => __( 'The new author id', 'tainacan' ),
 				];
 			break;
+		}
+
+		if ( in_array( $action, array( 'remove', 'replace' ), true ) ) {
+			$endpoint_args['match_stored_value'] = array(
+				'type'        => 'boolean',
+				'description' => __( 'Use true for an exact stored value or false for typed text with entity decoding. Omit to use legacy matching.', 'tainacan' ),
+			);
 		}
 
 		return $endpoint_args;

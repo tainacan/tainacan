@@ -109,12 +109,13 @@
                                             :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                             :input-id="getBulkEditionInputId(bulkEditionProcedures[criterion].metadatum, criterion, 'old')"
+                                            :use-stored-suggestion="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component === 'tainacan-text' ? true : undefined"
                                             :allow-new="false"
                                             :maxtags="1"
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field"
-                                            @update:value="($event) => addToBulkEditionProcedures($event, 'oldValue', criterion)"
+                                            @update:value="(value, isStored) => addToBulkEditionProcedures(value, 'oldValue', criterion, isStored)"
                                         />
 
                                     <div class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last tainacan-by-text">
@@ -261,12 +262,13 @@
                                             :forced-component-type="getForcedComponentType(bulkEditionProcedures[criterion].metadatum)"
                                             :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                             :input-id="getBulkEditionInputId(bulkEditionProcedures[criterion].metadatum, criterion)"
+                                            :use-stored-suggestion="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component === 'tainacan-text' && bulkEditionProcedures[criterion].action === editionActions.remove ? true : undefined"
                                             :allow-new="false"
                                             :maxtags="1"
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone }"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
-                                            @update:value="($event) => addToBulkEditionProcedures($event, 'newValue', criterion)"
+                                            @update:value="(value, isStored) => addToBulkEditionProcedures(value, 'newValue', criterion, isStored)"
                                         />
                                 </template>
                             </template>
@@ -650,6 +652,7 @@
                             metadatum_id: procedure.metadatum.id,
                             old_value: procedure.oldValue,
                             new_value: procedure.newValue,
+                            match_stored_value: procedure.matchStoredValue,
                         }
                     }).then(() => {
                         Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
@@ -663,6 +666,7 @@
                         bodyParams: {
                             metadatum_id: procedure.metadatum.id,
                             value: procedure.newValue,
+                            match_stored_value: procedure.matchStoredValue,
                         }
                     }).then(() => {
                         Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
@@ -788,11 +792,14 @@
 
                 return [];
             },
-            addToBulkEditionProcedures(value, key, criterion) {
+            addToBulkEditionProcedures(value, key, criterion, isStored) {
                 if (Array.isArray(value))
                     value = value[0];
 
                 Object.assign( this.bulkEditionProcedures[criterion], { [`${key}`]: value });
+
+                if (isStored !== undefined)
+                    this.bulkEditionProcedures[criterion].matchStoredValue = isStored;
 
                 if (key === 'metadatum') {
                     if (value && value.id === 'author_id')

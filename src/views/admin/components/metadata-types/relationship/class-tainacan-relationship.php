@@ -210,9 +210,52 @@ class Relationship extends Metadata_Type {
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
-		$value = $item_metadata->get_value();
-		$search_meta_id = $this->get_option('search');
-		$display_metas = $this->get_option('display_related_item_metadata');
+		$return = $this->render_value( $item_metadata, false );
+
+		/**
+		 * Filter the HTML representation of the value of a relationship metadatum.
+		 *
+		 * @param string $return The HTML representation of the item metadatum value.
+		 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object.
+		 */
+		return apply_filters( 'tainacan-item-metadata-get-value-as-html--type-relationship', $return, $item_metadata ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores -- Preserve the existing public hook name.
+	}
+
+	/**
+	 * Return the display labels as plain text.
+	 *
+	 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The relationship value.
+	 * @return string
+	 */
+	public function get_value_as_string( \Tainacan\Entities\Item_Metadata_Entity $item_metadata ) {
+		if ( has_filter( 'tainacan-item-metadata-get-value-as-html--type-relationship' ) ) {
+			$text = wp_strip_all_tags( $this->get_value_as_html( $item_metadata ) );
+			// Undo the link label's quote escaping before decoding ampersands so literal entities survive.
+			$text = strtr(
+				$text,
+				array(
+					'&quot;' => '"',
+					'&#039;' => "'",
+				)
+			);
+			return \Tainacan\Entities\Item_Metadata_Entity::decode_plain_text_entities( $text );
+		}
+
+		return $this->render_value( $item_metadata, true );
+	}
+
+	/**
+	 * Format the visible related items in the configured order and layout.
+	 *
+	 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The relationship value.
+	 * @param bool                                    $as_text Whether to render labels as plain text.
+	 * @return string
+	 */
+	private function render_value( \Tainacan\Entities\Item_Metadata_Entity $item_metadata, $as_text ) {
+		$value          = $item_metadata->get_value();
+		$search_meta_id = $this->get_option( 'search' );
+		$display_metas  = $this->get_option( 'display_related_item_metadata' );
+		$wrap_group     = ! $as_text && is_array( $display_metas ) && count( $display_metas ) > 1;
 		
 		$return = '';
 
@@ -237,16 +280,20 @@ class Relationship extends Metadata_Type {
 			if ( $html_formatting === 'list' ) {
 				$total = count( $items_to_display );
 				if ( $total === 1 ) {
-					$return = $this->get_item_html($items_to_display[0], $search_meta_id, $display_metas, $render_multiple_as_list);
-					if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+					$return = $this->get_item_value( $items_to_display[0], $search_meta_id, $display_metas, $as_text, $render_multiple_as_list );
+					if ( $wrap_group && '' !== $return ) {
 						$return = "<div class='tainacan-relationship-group'>{$return}</div>";
 					}
 				} elseif ( $total > 1 ) {
-					$return .= (!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 ) ? '<ul class="tainacan-relationship-group">' : '<ul>';
-					foreach ( $items_to_display as $item ) {
-						$return .= $this->get_item_html($item, $search_meta_id, $display_metas, $render_multiple_as_list);
+					if ( ! $as_text ) {
+						$return .= $wrap_group ? '<ul class="tainacan-relationship-group">' : '<ul>';
 					}
-					$return .= '</ul>';
+					foreach ( $items_to_display as $item ) {
+						$return .= $this->get_item_value( $item, $search_meta_id, $display_metas, $as_text, $render_multiple_as_list );
+					}
+					if ( ! $as_text ) {
+						$return .= '</ul>';
+					}
 				}
 
 			} else {
@@ -254,12 +301,19 @@ class Relationship extends Metadata_Type {
 				$suffix = $item_metadata->get_multivalue_suffix();
 				$separator = $item_metadata->get_multivalue_separator();
 
-				foreach ( $items_to_display as $item ) {
-					$return .= empty($return)
-						? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
-						: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
+				if ( $as_text ) {
+					$prefix    = $this->format_as_text( $prefix, true );
+					$suffix    = $this->format_as_text( $suffix, true );
+					$separator = $this->format_as_text( $separator, true );
 				}
-				if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+
+				foreach ( $items_to_display as $item ) {
+					$item_value = $this->get_item_value( $item, $search_meta_id, $display_metas, $as_text );
+					$return .= empty($return)
+						? ( $prefix . $item_value . $suffix )
+						: ( $separator . $prefix . $item_value . $suffix );
+				}
+				if ( $wrap_group && '' !== $return ) {
 					$return = "<div class='tainacan-relationship-group'>{$return}</div>";
 				}
 			}
@@ -267,27 +321,18 @@ class Relationship extends Metadata_Type {
 			try {
 				$item = new \Tainacan\Entities\Item($value);
 				if ( $this->can_display_item($item) ) {
-					$return .= $this->get_item_html($item, $search_meta_id, $display_metas);
+					$return .= $this->get_item_value( $item, $search_meta_id, $display_metas, $as_text );
 				}
 			} catch (\Exception $e) {
 				// item not found 
 			}
 
-			if ( !empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '' ) {
+			if ( $wrap_group && '' !== $return ) {
 				$return = "<div class='tainacan-relationship-group'>{$return}</div>";
 			}
 		}
 
-		return 
-			/**
-			 * Filter the HTML representation of the value of a relationship metadatum
-			 * 
-			 * @param string $return The HTML representation of the value
-			 * @param \Tainacan\Entities\Item_Metadata_Entity $item_metadata The Item_Metadata_Entity object
-			 * 
-			 * @return string The HTML representation of the item metadatum value
-			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-html--type-relationship', $return, $item_metadata );
+		return $as_text ? trim( $return ) : $return;
 	}
 
 	private function can_display_item($item) {
@@ -302,7 +347,17 @@ class Relationship extends Metadata_Type {
 		);
 	}
 
-	private function get_item_html($item, $search_meta_id, $display_metas, $render_as_list_item = false) {
+	/**
+	 * Format a related item's label and its configured display fields.
+	 *
+	 * @param \Tainacan\Entities\Item $item The related item.
+	 * @param int|string              $search_meta_id Metadatum used as the label.
+	 * @param mixed                   $display_metas Configured display fields, if any.
+	 * @param bool                    $as_text Whether to render plain text.
+	 * @param bool                    $render_as_list_item Whether to wrap the HTML in a list item.
+	 * @return string
+	 */
+	private function get_item_value( $item, $search_meta_id, $display_metas, $as_text, $render_as_list_item = false ) {
 		$return = '';
 		$id = $item->get_id();
 		
@@ -319,7 +374,17 @@ class Relationship extends Metadata_Type {
 			foreach ( $metadatum as $item_meta_id => $item_meta ) {
 				if ( $item_meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $item_meta->get_value_as_html() != '' ) {
 					$meta_id = $item_meta->get_metadatum()->get_id();
-					$as_header = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
+					$is_label = (int) $search_meta_id === (int) $meta_id;
+					if ( $as_text ) {
+						if ( $is_label ) {
+							array_unshift( $metadata_value, $this->get_item_label( $item, $search_meta_id ) );
+						} else {
+							$metadata_value[] = $this->format_as_text( $item_meta->get_metadatum()->get_name() ) . "\n" . $item_meta->get_value_as_string();
+						}
+						continue;
+					}
+
+					$as_header = $is_label ? $this->get_item_link( $item, $search_meta_id ) : false;
 					$html = $this->get_meta_html($item_meta, $item, $as_header, $thumbnail_id, $has_thumbnail);
 					if($as_header === false) {
 						$metadata_value[] = $html;
@@ -327,7 +392,10 @@ class Relationship extends Metadata_Type {
 						array_unshift($metadata_value, $html);
 					}
 				}
-				$return = implode("\n", $metadata_value);
+			}
+			$return = implode( "\n", $metadata_value );
+			if ( $as_text ) {
+				return $return;
 			}
 			if ( $render_as_list_item ) {
 				$return = "<li class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</li>";
@@ -335,6 +403,9 @@ class Relationship extends Metadata_Type {
 				$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
 			}
 		} else if ( $id && $search_meta_id ) {
+			if ( $as_text ) {
+				return $this->get_item_label( $item, $search_meta_id );
+			}
 			$as_link = $this->get_item_link($item, $search_meta_id);
 			$return = $render_as_list_item ? "<li>{$as_link}</li>" : "{$as_link}";
 		}
@@ -343,23 +414,45 @@ class Relationship extends Metadata_Type {
 	}
 
 	private function get_item_link($item, $search_meta_id) {
-		$return = '';
 		$id = $item->get_id();
 		$link = get_permalink( (int) $id );
+		if ( ! is_string( $link ) ) {
+			return '';
+		}
+
+		// Encode every ampersand so a literal entity in the label is rendered as text.
+		$label = htmlspecialchars( $this->get_item_label( $item, $search_meta_id ), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
+		return "<a data-linkto='item' data-id='$id' href='" . esc_url( $link ) . "'>" . $label . '</a>';
+	}
+
+	/**
+	 * Get the plain-text label, falling back to the item title.
+	 *
+	 * @param \Tainacan\Entities\Item $item The related item.
+	 * @param int|string              $search_meta_id Metadatum used as the label.
+	 * @return string
+	 */
+	private function get_item_label( $item, $search_meta_id ) {
 		$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
 		$value = '';
 		if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
 			$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
 			$value = $item_meta->get_value_as_string();
 		}
-		if ( empty($value) ) {
-			$value = $item->get_title();
-		}
-		if (is_string($link)) {
-			// get_value_as_string() returns plain text, with "&" decoded, so it is escaped here.
-			$return = "<a data-linkto='item' data-id='$id' href='$link'>" . esc_html( $value ) . '</a>';
-		}
-		return $return;
+		return empty( $value ) ? $this->format_as_text( $item->get_title() ) : $value;
+	}
+
+	/**
+	 * Convert HTML formatting or a stored title to plain text once.
+	 *
+	 * @param string $value               HTML formatting or stored text.
+	 * @param bool   $preserve_whitespace Whether this fragment sits between values.
+	 * @return string
+	 */
+	private function format_as_text( $value, $preserve_whitespace = false ) {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- WordPress also trims the spaces inside separators.
+		$text = $preserve_whitespace ? strip_tags( $value ) : wp_strip_all_tags( $value ); // tnc-check-ignore TNC-W13: wp_strip_all_tags() trims the spaces required around formatting fragments.
+		return \Tainacan\Entities\Item_Metadata_Entity::decode_plain_text_entities( $text );
 	}
 
 	private function get_item_thumbnail($thumbnail_id, $item) {

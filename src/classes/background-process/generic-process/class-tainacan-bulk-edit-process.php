@@ -469,7 +469,7 @@ class Bulk_Edit_Process extends Generic_Process {
 					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
 					return $this->save_item_metadata($item_metadata, $item);
 				} else {
-					$pos = array_search( is_string( $value ) ? wp_kses_normalize_entities( $value ) : $value, $values );
+					$pos = $this->find_value_position( $value, $values );
 					if ($pos !== false) {
 						unset($values[$pos]);
 						$item_metadata->set_value( $values );
@@ -515,7 +515,7 @@ class Bulk_Edit_Process extends Generic_Process {
 					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
 					return $this->save_item_metadata($item_metadata, $item);
 				} else {
-					$pos = array_search( is_string( $old_value ) ? wp_kses_normalize_entities( $old_value ) : $old_value, $values );
+					$pos = $this->find_value_position( $old_value, $values );
 					if ($pos !== false) {
 						$values[$pos] = $new_value;
 						$item_metadata->set_value( $metadatum->is_multiple() ? $values : $values[$pos] );
@@ -526,6 +526,32 @@ class Bulk_Edit_Process extends Generic_Process {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Find the stored position of a selected or typed bulk edit value.
+	 *
+	 * @param mixed $value Value to remove or replace.
+	 * @param array $values Stored values for the current item.
+	 * @return int|string|false
+	 */
+	private function find_value_position( $value, array $values ) {
+		$match_stored_value = $this->bulk_edit_data['match_stored_value'] ?? null;
+		if ( null === $match_stored_value ) {
+			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict -- Preserve normalization and numeric matching for existing clients and queued jobs.
+			return array_search( is_string( $value ) ? wp_kses_normalize_entities( $value ) : $value, $values );
+		}
+		if ( $match_stored_value ) {
+			return array_search( $value, $values, true );
+		}
+
+		// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict -- Postmeta numbers are strings, but bulk requests may contain numeric values.
+		$pos = array_search( $value, $values );
+		if ( false === $pos ) {
+			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict -- Preserve the numeric matching used for stored values above.
+			$pos = array_search( $value, Entities\Item_Metadata_Entity::decode_plain_text_entities( $values ) );
+		}
+		return $pos;
 	}
 
 	private function trash_items(\Tainacan\Entities\Item $item) {
