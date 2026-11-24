@@ -1,6 +1,28 @@
 import axios from '../../../axios';
 
 /**
+ * Builds a REST path from a template. Each inserted value must be hexadecimal.
+ * Collection ids and sequence indexes are decimal, which is a subset of that.
+ * Group and sequence ids are the hexadecimal ids those routes accept.
+ * The value is encoded before it is joined to the path. Returns null when one is not.
+ * @param {TemplateStringsArray} strings
+ * @param {...unknown} values
+ * @returns {string|null}
+ */
+function hexPath(strings, ...values) {
+    let path = strings[0];
+
+    for (let index = 0; index < values.length; index++) {
+        const id = String(values[index] == null ? '' : values[index]);
+        if (!/^[0-9a-f]+$/.test(id))
+            return null;
+        path += encodeURIComponent(id) + strings[index + 1];
+    }
+
+    return path;
+}
+
+/**
  * Dispatches `bulkedition/createEditGroup`.
  * @param {Object} parameters - Group creation parameters.
  * @param {*} parameters.object - Item id array or query object used to build the group.
@@ -54,7 +76,13 @@ export const createEditGroup = ({commit}, parameters) => {
 export const fetchGroup = ({commit}, { collectionId, groupId }) => {
 
     return new Promise ((resolve, reject) => {
-        axios.tainacanApi.get(`/collection/${collectionId}/bulk-edit/${groupId}`)
+        const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid group id.'));
+            return;
+        }
+
+        axios.tainacanApi.get(endpoint)
             .then(response => {
                 commit('setGroup', response.data);
                 resolve(response.data);
@@ -75,7 +103,13 @@ export const fetchGroup = ({commit}, { collectionId, groupId }) => {
 export const fetchSequenceGroup = ({commit}, { collectionId, groupId }) => {
 
     return new Promise ((resolve, reject) => {
-        axios.tainacanApi.get(`/collection/${collectionId}/sequence-edit/${groupId}`)
+        const endpoint = hexPath`/collection/${collectionId}/sequence-edit/${groupId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid sequence id.'));
+            return;
+        }
+
+        axios.tainacanApi.get(endpoint)
             .then(response => {
                 commit('setGroup', response.data);
                 resolve(response.data);
@@ -99,7 +133,11 @@ export const setValueInBulk = ({commit}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set`, bodyParams)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/set`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -119,7 +157,11 @@ export const addValueInBulk = ({}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/add`, bodyParams)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/add`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams)
         .then(response => {
             return response;
         });
@@ -138,7 +180,11 @@ export const removeValueInBulk = ({}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/remove`, bodyParams);
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/remove`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams);
 };
 
 /**
@@ -154,7 +200,11 @@ export const clearValuesInBulk = ({}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/clear`, bodyParams);
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/clear`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams);
 };
 
 /**
@@ -170,7 +220,11 @@ export const replaceValueInBulk = ({}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/replace`, bodyParams)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/replace`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams)
         .then(response => {
             return response;
         });
@@ -189,7 +243,11 @@ export const setStatusInBulk = ({commit}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_status`, bodyParams)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/set_status`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -209,7 +267,11 @@ export const setCommentStatusInBulk = ({commit}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_comment_status`, bodyParams)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/set_comment_status`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -229,7 +291,11 @@ export const setAuthorIdInBulk = ({commit}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_author_id`, bodyParams)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/set_author_id`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -247,7 +313,11 @@ export const trashItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/trash`)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/trash`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -265,7 +335,11 @@ export const untrashItemsInBulk = ({}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/untrash`)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/untrash`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint)
         .then(response => {
             return response;
         });
@@ -282,7 +356,11 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/delete_items`)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/delete_items`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -303,7 +381,11 @@ export const copyValuesInBulk = ({commit}, parameters) => {
     let collectionId = parameters.collectionId;
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/copy_value`, bodyParams)
+    const endpoint = hexPath`/collection/${collectionId}/bulk-edit/${groupId}/copy_value`;
+    if (endpoint == null)
+        return Promise.reject(new Error('Invalid group id.'));
+
+    return axios.tainacanApi.post(endpoint, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -322,7 +404,13 @@ export const copyValuesInBulk = ({commit}, parameters) => {
 export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, itemPosition }) => {
 
     return new Promise ((resolve, reject) => {
-        axios.tainacanApi.get(`/collection/${collectionId}/sequence-edit/${sequenceId}/${itemPosition}`)
+        const endpoint = hexPath`/collection/${collectionId}/sequence-edit/${sequenceId}/${itemPosition}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid sequence id.'));
+            return;
+        }
+
+        axios.tainacanApi.get(endpoint)
             .then(response => {
                 commit('setItemIdInSequence', response.data);
                 resolve(response.data);

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { guardRestRequest } from '../../admin/js/rest-request-guard';
 
 const tainacanApi = axios.create({
     baseURL: tainacan_blocks.root
@@ -15,6 +16,7 @@ tainacanApi.interceptors.request.use((config) => {
   
       // Force request to POST
       config.method = 'post';
+      config.tainacanTunneledMethod = originalMethod;
   
       // Add _method param to URL
       const url = new URL(config.url, window.location.origin);
@@ -24,5 +26,7 @@ tainacanApi.interceptors.request.use((config) => {
   
     return config;
 });
+// The guard accepts _method only when tainacanTunneledMethod was set above.
+tainacanApi.interceptors.request.use(guardRestRequest);
 
 export default tainacanApi;
