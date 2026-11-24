@@ -464,11 +464,12 @@ class Logs extends Repository {
 
 		add_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
 
+		// Keep the entity-encoded history format while preserving entities that are literal plain text.
 		if ( $old instanceof Entities\Item_Metadata_Entity ) {
-			$diff['old'] = \explode($this->__temporary_multivalue_separator(''), $old->get_value_as_string());
+			$diff['old'] = explode( $this->__temporary_multivalue_separator( '' ), htmlspecialchars( (string) $old->get_value_as_string(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' ) );
 		}
 
-		$diff['new'] = \explode($this->__temporary_multivalue_separator(''), $unsaved->get_value_as_string());
+		$diff['new'] = explode( $this->__temporary_multivalue_separator( '' ), htmlspecialchars( (string) $unsaved->get_value_as_string(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' ) );
 
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, '__temporary_multivalue_separator']);
 

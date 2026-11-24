@@ -613,4 +613,15 @@ class Item_Metadata_Ampersand extends TAINACAN_UnitApiTestCase {
 		}
 	}
 
+	/**
+	 * Keep the history compatible with encoded values from earlier releases.
+	 */
+	public function test_metadata_log_preserves_encoded_history_values() {
+		$metadatum = $this->create_metadatum( 'Text', array( 'multiple' => 'yes' ) );
+		$this->save_value( $metadatum, array( 'Smith & Jones', 'A &amp;amp; B &amp;gt; C' ) );
+
+		$log = Repositories\Logs::get_instance()->fetch_last();
+		$this->assertSame( 'update-metadata-value', $log->get_action() );
+		$this->assertSame( array( 'Smith &amp; Jones', 'A &amp;amp; B &amp;gt; C' ), $log->get_new_value() );
+	}
 }

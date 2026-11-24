@@ -605,11 +605,15 @@
                 this.$refs.activityDetailsModal.focus()
         },
         methods: {
-            // Metadata values are logged as plain text, so each lone "&" is encoded before the value is inserted as HTML.
             renderLoggedValue(value) {
-                return value instanceof Array
-                    ? value.map((singleValue) => normalizeHtmlEntities(singleValue)).join(`<span class='multivalue-separator'>|</span>`)
-                    : normalizeHtmlEntities(value);
+                // History values contain entities. Escape markup and lone ampersands, then let HTML read existing entities once.
+                const escapeValue = (singleValue) => typeof singleValue === 'string'
+                    ? normalizeHtmlEntities(singleValue).replace(/&amp;(?=[a-zA-Z][a-zA-Z0-9]*;|#[0-9]+;|#[xX][0-9a-fA-F]+;)/g, '&')
+                    : singleValue;
+
+                return Array.isArray(value)
+                    ? value.map(escapeValue).join(`<span class='multivalue-separator'>|</span>`)
+                    : escapeValue(value);
             },
             ...mapActions('activity', [
                 'fetchActivity'

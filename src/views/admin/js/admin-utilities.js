@@ -7,16 +7,15 @@ const tainacanSanitize = function(htmlString) {
 }
 
 /**
- * Encodes each "&" that does not start a character reference, like wp_kses_normalize_entities() in PHP.
- * Plain-text values from the API come with "&" decoded. Run them through this before inserting them as HTML
- * (v-html, or a tooltip with html enabled), so that "Smith&notes" is not read as the "&not" entity.
- * Entities such as "&lt;" are kept, so the value renders as it is stored.
+ * Escapes plain text before inserting it as HTML (v-html, or a tooltip with html enabled).
+ * The API has already decoded the stored value once. Remaining entities are literal text:
+ * "Smith &amp; Jones" must stay "Smith &amp; Jones" when rendered, without another decoding pass.
  * @param {*} text - Plain-text value; non-strings are returned unchanged.
- * @returns {*} The value with lone "&" encoded.
+ * @returns {*} The escaped text.
  */
 export const normalizeHtmlEntities = function(text) {
     return typeof text === 'string'
-        ? text.replace(/&(?![a-zA-Z][a-zA-Z0-9]*;|#[0-9]+;|#[xX][0-9a-fA-F]+;)/g, '&amp;')
+        ? tainacanSanitize(text)
         : text;
 }
 
