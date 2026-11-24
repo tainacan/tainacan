@@ -2189,8 +2189,8 @@ function tainacan_get_taxonomies_pagination($total_terms, $args = []) {
 		
 	$paginate_links_args = array_merge(array(
 		'format' => '?termspaged=%#%',
-		'total' => ceil( $total_terms / $current_args['perpage'] ),
-		'current' => max( 1, get_query_var('termspaged') ),
+		'total' => (int) ceil( $total_terms / $current_args['perpage'] ),
+		'current' => $current_args['termspaged'],
 		'add_args' => array(
 			'order' => $current_args['order'],
 			'orderby' => $current_args['orderby'],

@@ -3980,14 +3980,39 @@ class Theme_Helper {
 	}
 
 
+	/**
+	 * Query arguments for the taxonomy terms list.
+	 *
+	 * termspaged and termsparent are public query vars. A non-numeric
+	 * termspaged reaches subtraction in the terms template and throws a
+	 * TypeError on PHP 8. perpage is not a public query var; a value below 1
+	 * still reaches the pagination division, so it falls back to the default.
+	 *
+	 * @return array
+	 */
 	function get_taxonomies_query_args() {
+		$default_perpage = absint( apply_filters( 'tainacan-default-taxonomy-terms-perpage', 12 ) );
+		if ( $default_perpage < 1 ) {
+			$default_perpage = 12;
+		}
+
+		$termspaged = absint( get_query_var( 'termspaged', 1 ) );
+		if ( $termspaged < 1 ) {
+			$termspaged = 1;
+		}
+
+		$perpage = absint( get_query_var( 'perpage', $default_perpage ) );
+		if ( $perpage < 1 ) {
+			$perpage = $default_perpage;
+		}
+
 		return array(
-			'order' => get_query_var( 'order', apply_filters('tainacan-default-taxonomy-terms-order', 'ASC') ),
-			'orderby' => get_query_var( 'orderby', apply_filters('tainacan-default-taxonomy-terms-orderby', 'name') ),
-			'termspaged' => get_query_var( 'termspaged', 1 ),
-			'perpage' => get_query_var( 'perpage', apply_filters('tainacan-default-taxonomy-terms-perpage', 12) ),
-			'search' => get_query_var( 'search', '' ),
-			'termsparent' => get_query_var( 'termsparent', '0' )
+			'order'       => get_query_var( 'order', apply_filters( 'tainacan-default-taxonomy-terms-order', 'ASC' ) ),
+			'orderby'     => get_query_var( 'orderby', apply_filters( 'tainacan-default-taxonomy-terms-orderby', 'name' ) ),
+			'termspaged'  => $termspaged,
+			'perpage'     => $perpage,
+			'search'      => get_query_var( 'search', '' ),
+			'termsparent' => absint( get_query_var( 'termsparent', 0 ) ),
 		);
 	}
 
