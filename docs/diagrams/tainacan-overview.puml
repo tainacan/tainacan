@@ -2428,6 +2428,7 @@
       +visiting_term_cover : 
       -registered_view_modes : 
       #default_placeholder_template : 
+      -navigation_metadatum_memo : array<string, bool>
       -init()
       +is_post_type_a_collection(post_type)
       +is_post_an_item(post)
@@ -2474,7 +2475,17 @@
       +tainacan_get_item(post_id)
       +add_social_meta()
       +get_adjacent_items()
-      -get_adjacent_item_url(item, position)
+      -read_adjacent_item(args, entity, start, step, query)
+      -visitor_may_navigate_unfiltered(collection)
+      -visitor_may_edit_collection_items(collection)
+      -narrow_navigation_request(args, collection)
+      -drop_rejected_metadata_orderby(args, rejected_key)
+      -navigation_clauses_remain(clauses)
+      -narrow_navigation_clauses(query, kind, collection)
+      -navigation_metadatum_is_queryable(key, collection)
+      -navigation_core_key_is_queryable(key, collection)
+      -navigation_taxonomy_is_queryable(taxonomy)
+      -get_adjacent_item_url(item, position, query)
       +get_tainacan_items_carousel(args)
       +get_tainacan_dynamic_items_list(args)
       +get_tainacan_related_items_list(args)

@@ -19,6 +19,7 @@ classDiagram
         +visiting_term_cover : mixed
         -registered_view_modes : mixed
         #default_placeholder_template : mixed
+        -navigation_metadatum_memo : array
         -init()
         +is_post_type_a_collection(post_type)
         +is_post_an_item(post)
@@ -65,7 +66,17 @@ classDiagram
         +tainacan_get_item(post_id)
         +add_social_meta()
         +get_adjacent_items()
-        -get_adjacent_item_url(item, position)
+        -read_adjacent_item(args, entity, start, step, query)
+        -visitor_may_navigate_unfiltered(collection)
+        -visitor_may_edit_collection_items(collection)
+        -narrow_navigation_request(args, collection)
+        -drop_rejected_metadata_orderby(args, rejected_key)
+        -navigation_clauses_remain(clauses)
+        -narrow_navigation_clauses(query, kind, collection)
+        -navigation_metadatum_is_queryable(key, collection)
+        -navigation_core_key_is_queryable(key, collection)
+        -navigation_taxonomy_is_queryable(taxonomy)
+        -get_adjacent_item_url(item, position, query)
         +get_tainacan_items_carousel(args)
         +get_tainacan_dynamic_items_list(args)
         +get_tainacan_related_items_list(args)
@@ -117,6 +128,16 @@ private $registered_view_modes
 
 ```php
 protected $default_placeholder_template
+```
+
+***
+
+### navigation_metadatum_memo
+
+Per-request memo for navigation metadata checks, keyed by user and collection.
+
+```php
+private array<string,bool> $navigation_metadatum_memo
 ```
 
 ***
@@ -819,15 +840,230 @@ public add_social_meta(): mixed
 
 ### get_adjacent_items
 
-Get previous and next item according to current search query
+Get previous and next item according to current search query.
 
 ```php
-public get_adjacent_items(): array
+public get_adjacent_items(): array{next: array|null, previous: array|null}
 ```
 
-**Return Value:**
+The query string is the list the visitor came from. Unless they may edit
+other people's items in that collection (or manage Tainacan), filters on
+a status, an author, or a metadatum or taxonomy they cannot read are
+removed before the query runs. An unreadable row is skipped, and the
+neighbor is the next item they can read, at that item's own index. The
+neighbor URL is built from that same narrowed query, so a dropped status
+or metakey is not forwarded either.
 
-containing the next and previous item
+***
+
+### read_adjacent_item
+
+Nearest item in one direction that the visitor may read.
+
+```php
+private read_adjacent_item(array $args, \Tainacan\Entities\Collection|array $entity, int $start, int $step, array $query): array|null
+```
+
+One unreadable row must not end the walk. With status=draft kept for
+someone who can edit the collection, a single collection does not run
+Items::_filter_where(), so the page still contains every draft. The
+next row can be another author's draft, and the one after it this
+author's. can_read() hides the title, then the scan continues.
+
+A posts_where of public statuses OR post_author = current user would
+also skip that row. With status=any the author half includes that
+user's trash and auto-drafts. can_read() does not.
+
+The scan stops after one REST page of rows. pos is an index in this
+same list, including the rows that were skipped, so the next request
+starts from the item the link opened.
+
+**Parameters:**
+
+| Parameter | Type                                     | Description                                        |
+|-----------|------------------------------------------|----------------------------------------------------|
+| `$args`   | **array**                                | Mapped fetch arguments.                            |
+| `$entity` | **\Tainacan\Entities\Collection\|array** | Collection the list belongs to, or an empty array. |
+| `$start`  | **int**                                  | Zero-based index of the first candidate.           |
+| `$step`   | **int**                                  | 1 toward the next item, -1 toward the previous.    |
+| `$query`  | **array**                                | List query that may be forwarded to the URL.       |
+
+***
+
+### visitor_may_navigate_unfiltered
+
+Whether this visitor may navigate the list with every filter they sent.
+
+```php
+private visitor_may_navigate_unfiltered(\Tainacan\Entities\Collection|null $collection): bool
+```
+
+Managers may. So may someone who edits other people's items in the
+collection the list comes from. A term or repository list spans
+collections, so only a manager passes there. An anonymous visitor never does.
+
+**Parameters:**
+
+| Parameter     | Type                                    | Description                                       |
+|---------------|-----------------------------------------|---------------------------------------------------|
+| `$collection` | **\Tainacan\Entities\Collection\|null** | List collection, when the list is one collection. |
+
+***
+
+### visitor_may_edit_collection_items
+
+Whether this visitor may edit items of the list collection, including their own drafts.
+
+```php
+private visitor_may_edit_collection_items(\Tainacan\Entities\Collection|null $collection): bool
+```
+
+**Parameters:**
+
+| Parameter     | Type                                    | Description      |
+|---------------|-----------------------------------------|------------------|
+| `$collection` | **\Tainacan\Entities\Collection\|null** | List collection. |
+
+***
+
+### narrow_navigation_request
+
+List arguments a visitor who does not see the whole list may keep.
+
+```php
+private narrow_navigation_request(array $args, \Tainacan\Entities\Collection|null $collection): array
+```
+
+Status and author stay only for someone who edits this collection, so an
+author can keep walking their own drafts. can_read() still skips a draft
+they do not own. A metavalue left behind after its key is removed matches
+every meta field, so the value and the compare go with the key. A sort
+that names that key goes too, including orderby sent as an array.
+
+**Parameters:**
+
+| Parameter     | Type                                    | Description         |
+|---------------|-----------------------------------------|---------------------|
+| `$args`       | **array**                               | Raw list arguments. |
+| `$collection` | **\Tainacan\Entities\Collection\|null** | List collection.    |
+
+***
+
+### drop_rejected_metadata_orderby
+
+Remove a sort that still names metadata this visitor may not query.
+
+```php
+private drop_rejected_metadata_orderby(array $args, mixed $rejected_key): array
+```
+
+The faceted search sends orderby as the string meta_value or
+meta_value_num. orderby[meta_value_num]=ASC arrives as an array, and a
+string comparison leaves it in place. parse_fetch_args() passes that
+array to array_key_exists(), which throws on PHP 8, and the same array
+would be copied onto the next URL. The key is already gone, so this
+does not filter by the private field. It must not sort by it either.
+
+One column left over is written back as a string. Items::fetch() reads
+the direction from `order`, and parse_fetch_args() cannot map an array.
+Several columns are left untouched: that is the same array orderby this
+helper already forwarded for a key the visitor may read.
+
+**Parameters:**
+
+| Parameter       | Type      | Description                                         |
+|-----------------|-----------|-----------------------------------------------------|
+| `$args`         | **array** | List arguments, after the rejected key was removed. |
+| `$rejected_key` | **mixed** | Metakey that was removed, or an empty string.       |
+
+***
+
+### navigation_clauses_remain
+
+Whether a clause group still contains a clause.
+
+```php
+private navigation_clauses_remain(mixed $clauses): bool
+```
+
+**Parameters:**
+
+| Parameter  | Type      | Description |
+|------------|-----------|-------------|
+| `$clauses` | **mixed** | Clauses.    |
+
+***
+
+### narrow_navigation_clauses
+
+Meta or taxonomy clauses limited to fields the visitor may read.
+
+```php
+private narrow_navigation_clauses(mixed $query, string $kind, \Tainacan\Entities\Collection|null $collection): array
+```
+
+Rebuilt from the known fields, so compare_key never gets through, and a
+meta clause with no key is dropped.
+
+**Parameters:**
+
+| Parameter     | Type                                    | Description            |
+|---------------|-----------------------------------------|------------------------|
+| `$query`      | **mixed**                               | metaquery or taxquery. |
+| `$kind`       | **string**                              | 'meta' or 'tax'.       |
+| `$collection` | **\Tainacan\Entities\Collection\|null** | List collection.       |
+
+***
+
+### navigation_metadatum_is_queryable
+
+Whether the visitor may filter or sort by this metadata key.
+
+```php
+private navigation_metadatum_is_queryable(mixed $key, \Tainacan\Entities\Collection|null $collection): bool
+```
+
+**Parameters:**
+
+| Parameter     | Type                                    | Description      |
+|---------------|-----------------------------------------|------------------|
+| `$key`        | **mixed**                               | Meta key.        |
+| `$collection` | **\Tainacan\Entities\Collection\|null** | List collection. |
+
+***
+
+### navigation_core_key_is_queryable
+
+Whether tainacan_core_title or tainacan_core_description stands for metadata the visitor may read.
+
+```php
+private navigation_core_key_is_queryable(string $key, \Tainacan\Entities\Collection|null $collection): bool
+```
+
+Items::fetch() rewrites the alias afterwards, one collection at a time.
+
+**Parameters:**
+
+| Parameter     | Type                                    | Description                                                |
+|---------------|-----------------------------------------|------------------------------------------------------------|
+| `$key`        | **string**                              | Core alias.                                                |
+| `$collection` | **\Tainacan\Entities\Collection\|null** | List collection. Every collection, when the list has none. |
+
+***
+
+### navigation_taxonomy_is_queryable
+
+Whether the visitor may filter by this taxonomy.
+
+```php
+private navigation_taxonomy_is_queryable(mixed $taxonomy): bool
+```
+
+**Parameters:**
+
+| Parameter   | Type      | Description    |
+|-------------|-----------|----------------|
+| `$taxonomy` | **mixed** | Taxonomy slug. |
 
 ***
 
@@ -836,7 +1072,7 @@ containing the next and previous item
 URL of a neighboring item, with the list arguments added as their own parameters.
 
 ```php
-private get_adjacent_item_url(\Tainacan\Entities\Item $item, int $position): string
+private get_adjacent_item_url(\Tainacan\Entities\Item $item, int $position, array $query): string
 ```
 
 The neighbor permalink already names that item. Query vars that name the
@@ -848,7 +1084,7 @@ query var inside parse_request, never into $_GET. add_query_arg() then
 joins the list arguments with "?" or "&", so the URL keeps a single query
 string. Values are encoded up front because add_query_arg() does not
 encode the arguments it is given, including the nested metaquery arrays
-the lists send.
+the lists send. $query is the list query already narrowed for this visitor.
 
 **Parameters:**
 
@@ -856,6 +1092,7 @@ the lists send.
 |-------------|-----------------------------|-----------------------------------------------|
 | `$item`     | **\Tainacan\Entities\Item** | Neighbor item.                                |
 | `$position` | **int**                     | Zero-based position of that item in the list. |
+| `$query`    | **array**                   | List arguments to carry on the URL.           |
 
 ***
 
