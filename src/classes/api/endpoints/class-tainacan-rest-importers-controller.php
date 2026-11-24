@@ -285,6 +285,13 @@ class REST_Importers_Controller extends REST_Controller {
 			], 400);
 		}
 
+		if ( method_exists( $importer, 'validate_options' ) && true !== ( $validation = $importer->validate_options() ) ) {
+			return new \WP_REST_Response( [
+				'error_message' => $validation,
+				'session_id'    => $session_id,
+			], 400 );
+		}
+
 		$response = [
 			'source_metadata' => false,
 			'source_total_items' => false,

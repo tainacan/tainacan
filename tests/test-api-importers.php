@@ -147,4 +147,44 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 		}
 	}
 
+	public function test_source_info_rejects_csv_importer_with_invalid_delimiter() {
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$upload_dir = wp_upload_dir();
+		wp_mkdir_p( $upload_dir['basedir'] );
+		$csv_path   = trailingslashit( $upload_dir['basedir'] ) . wp_unique_filename( $upload_dir['basedir'], 'source-info-delimiter-test.csv' );
+		file_put_contents( $csv_path, "Title,Description\nItem 1,Desc 1\n" );
+
+		try {
+			foreach ( [ '', ';;' ] as $delimiter ) {
+				$importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+				$this->assertTrue( $importer->set_tmp_file( $csv_path ) );
+				$importer->set_options( [ 'delimiter' => $delimiter ] );
+				$Tainacan_Importer_Handler->save_importer_instance( $importer );
+
+				$request  = new \WP_REST_Request( 'GET', $this->namespace . '/importers/session/' . $importer->get_id() . '/source_info' );
+				$response = $this->server->dispatch( $request );
+
+				$this->assertEquals( 400, $response->get_status() );
+				$this->assertEquals( 'The CSV delimiter must be a single character.', $response->get_data()['error_message'] );
+				$this->assertEquals( $importer->get_id(), $response->get_data()['session_id'] );
+			}
+
+			$importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+			$this->assertTrue( $importer->set_tmp_file( $csv_path ) );
+			$importer->set_options( [ 'delimiter' => ',' ] );
+			$Tainacan_Importer_Handler->save_importer_instance( $importer );
+
+			$request  = new \WP_REST_Request( 'GET', $this->namespace . '/importers/session/' . $importer->get_id() . '/source_info' );
+			$response = $this->server->dispatch( $request );
+
+			$this->assertEquals( 200, $response->get_status() );
+			$this->assertEquals( [ 'Title', 'Description' ], $response->get_data()['source_metadata'] );
+			$this->assertEquals( 1, $response->get_data()['source_total_items'] );
+		} finally {
+			if ( file_exists( $csv_path ) ) {
+				unlink( $csv_path );
+			}
+		}
+	}
+
 }
