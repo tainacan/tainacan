@@ -244,9 +244,10 @@ remote tip. For a new ref, it uses the first available base among
 `upstream/develop`, `origin/develop`, and `develop`. Fetch `develop` if none of
 those refs is available locally. The hook skips ref deletions.
 
-The hook checks PHP syntax when PHP is available and runs ESLint for changed
-JavaScript and Vue files under `src/views/`. ESLint requires Node.js and the npm
-dependencies. It reports warnings and blocks the push on errors.
+The hook requires PHP CLI on your host when pushing PHP changes. For JavaScript
+and Vue changes under `src/views/`, it requires Node.js and the npm dependencies.
+ESLint reports errors and warnings in JSON. The hook blocks errors and allows
+changes with warnings only.
 
 To check committed changes manually, or include staged, unstaged and untracked
 files from your working tree:

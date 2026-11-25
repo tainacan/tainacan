@@ -62,7 +62,13 @@ output=$(git push -q origin hotfix/review 2>&1) || {
     exit 1
 }
 printf '%s\n' "$output"
-[[ "$output" == *'No syntax errors detected'* && "$output" == *'warning'*no-console* ]]
+[[ "$output" == *'No syntax errors detected'* && "$output" == *'"warningCount":1'* && "$output" == *no-console* ]]
+
+# Allow Git to run while keeping PHP off PATH for this invocation.
+mkdir "$tmp/no-php"
+printf '#!/bin/bash\nexec %q "$@"\n' "$(command -v git)" > "$tmp/no-php/git"
+chmod +x "$tmp/no-php/git"
+expect_failure 'PHP CLI not found' env PATH="$tmp/no-php" "$BASH" ./lint-changed.sh -- "$php_file"
 
 git add -- "$php_file" "$js_file" "$vue_file"
 git commit -qm "Commit invalid PHP, JavaScript and Vue"

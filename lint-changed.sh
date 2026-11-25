@@ -12,7 +12,7 @@
 # Exit codes:
 #   0 - checks passed
 #   1 - blocking lint errors
-#   2 - Git or argument error
+#   2 - Git, dependency, or argument error
 
 unset base_ref head_ref
 use_phpcs=false
@@ -135,6 +135,10 @@ if ((${#php_files[@]} == 0 && ${#frontend_files[@]} == 0)); then
     exit 0
 fi
 
+if ((${#php_files[@]})) && ! command -v php >/dev/null 2>&1; then
+    die "PHP CLI not found. Install PHP or add it to PATH to lint changed PHP files."
+fi
+
 eslint_bin="$root/node_modules/eslint/bin/eslint.js"
 eslint_options=()
 phpcs_bin="$root/src/vendor/bin/phpcs"
@@ -178,7 +182,7 @@ run_batch() {
 
     case "$mode" in
         eslint)
-            node "$eslint_bin" "${eslint_options[@]}" -- "$@"
+            node "$eslint_bin" "${eslint_options[@]}" --format=json -- "$@"
             ;;
         phpcs)
             php "$phpcs_bin" --standard=phpcs.xml.dist --warning-severity=0 -s "$@"
@@ -215,13 +219,9 @@ failed=false
 if ((${#php_files[@]})); then
     printf '\nPHP syntax: %s file(s)\n' "${#php_files[@]}"
 
-    if command -v php >/dev/null 2>&1; then
-        for file in "${php_files[@]}"; do
-            php -d display_errors=1 -d log_errors=0 -l "$file" || failed=true
-        done
-    else
-        echo "PHP not found; skipping PHP syntax check (CI still runs it)."
-    fi
+    for file in "${php_files[@]}"; do
+        php -d display_errors=1 -d log_errors=0 -l "$file" || failed=true
+    done
 fi
 
 if ((${#frontend_files[@]})); then
@@ -238,10 +238,10 @@ fi
 if [[ "$use_phpcs" == true ]] && ((${#php_files[@]})); then
     printf '\nPHPCS (informational): %s file(s)\n' "${#php_files[@]}"
 
-    if command -v php >/dev/null 2>&1 && [[ -f "$phpcs_bin" ]]; then
+    if [[ -f "$phpcs_bin" ]]; then
         run_batches phpcs "${php_files[@]}" || true
     else
-        echo "PHP or PHPCS unavailable; skipping PHPCS report."
+        echo "PHPCS unavailable; skipping PHPCS report."
     fi
 fi
 
