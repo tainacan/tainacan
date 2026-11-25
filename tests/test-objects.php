@@ -172,5 +172,66 @@ class Objects extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $one instanceof \Tainacan\Entities\Collection );
 		$this->assertEquals( 'teste2', $one->get_name() );
 
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'item_one',
+				'collection' => $collection,
+				'status'     => 'publish'
+			),
+			true
+		);
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'item_two',
+				'collection' => $collection2,
+				'status'     => 'publish'
+			),
+			true
+		);
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$fetched_item = $Tainacan_Items->fetch_one( [ 'title' => 'item_two' ] );
+		$this->assertTrue( $fetched_item instanceof \Tainacan\Entities\Item );
+		$this->assertEquals( $item2->get_id(), $fetched_item->get_id() );
+
+		$fetched_item_in_col = $Tainacan_Items->fetch_one( [ 'title' => 'item_one' ], $collection );
+		$this->assertTrue( $fetched_item_in_col instanceof \Tainacan\Entities\Item );
+		$this->assertEquals( $item1->get_id(), $fetched_item_in_col->get_id() );
+
+		$fetched_item_wrong_col = $Tainacan_Items->fetch_one( [ 'title' => 'item_one' ], $collection2 );
+		$this->assertFalse( $fetched_item_wrong_col );
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_fetch_one',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'term_fetch_one',
+			),
+			true
+		);
+
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+		$fetched_term = $Tainacan_Terms->fetch_one( [ 'name' => 'term_fetch_one', 'hide_empty' => false ], $taxonomy );
+		$this->assertTrue( $fetched_term instanceof \Tainacan\Entities\Term );
+		$this->assertEquals( $term->get_id(), $fetched_term->get_id() );
+
+		$fetched_term_without_tax = $Tainacan_Terms->fetch_one( [ 'name' => 'term_fetch_one', 'hide_empty' => false ] );
+		$this->assertTrue( $fetched_term_without_tax instanceof \Tainacan\Entities\Term );
+		$this->assertEquals( $term->get_id(), $fetched_term_without_tax->get_id() );
+
 	}
 }
