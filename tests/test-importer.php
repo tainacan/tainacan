@@ -1042,6 +1042,265 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * A matching compound column is expanded before the next mapped name is checked.
+	 * Two compound values used to leave the row index above 0, so a later missing
+	 * column was never reported.
+	 *
+	 * @group importer
+	 */
+	public function test_missing_column_after_compound_is_logged_once() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$file_name = 'demosaved_compound_then_missing.csv';
+		$file = fopen( $file_name, 'w' );
+		fwrite( $file, "\"Group|compound(Child1,Child2)\",\"Column 1\"\n" );
+		fwrite( $file, "\"Red,Blue||Green,Yellow\",\"First title\"\n" );
+		fwrite( $file, "\"One,Two||Three,Four\",\"Second title\"\n" );
+		fclose( $file );
+
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+		$importer_instance->set_option( 'enclosure', '"' );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Compound then missing',
+				'status' => 'publish',
+			),
+			true
+		);
+		$compound = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Group',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Compound',
+				'status'        => 'publish',
+				'multiple'      => 'yes',
+			),
+			true
+		);
+		$child1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Child1',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+				'parent'        => $compound->get_id(),
+			),
+			true
+		);
+		$child2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Child2',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+				'parent'        => $compound->get_id(),
+			),
+			true
+		);
+
+		$title_id = null;
+		$description_id = null;
+		foreach ( $Tainacan_Metadata->fetch_by_collection( $collection ) as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$title_id = $metadatum->get_id();
+			} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Description' ) {
+				$description_id = $metadatum->get_id();
+			}
+		}
+
+		// Compound is first, so its value list is walked before the missing name.
+		$map = array(
+			$compound->get_id() => array(
+				'Group|compound' => array(
+					$child1->get_id() => 'Child1',
+					$child2->get_id() => 'Child2',
+				),
+			),
+			$title_id       => 'Column 1',
+			$description_id => 'Missing column',
+		);
+
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => $map,
+				'total_items' => 2,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$titles = array();
+		foreach ( $Tainacan_Items->fetch( array(), $collection, 'OBJECT' ) as $item ) {
+			$titles[] = $item->get_title();
+		}
+		sort( $titles );
+		$this->assertEquals( array( 'First title', 'Second title' ), $titles );
+
+		$messages = $this->importer_error_messages( $importer_instance );
+		$expected = 'Mapped column "Missing column" was not found in the CSV header.';
+		$this->assertEquals( 1, count( array_keys( $messages, $expected, true ) ) );
+
+		unlink( $file_name );
+	}
+
+	/**
+	 * A short first data row returns before values are mapped. The missing column
+	 * must still be recorded, because later rows are not row 0.
+	 *
+	 * @group importer
+	 */
+	public function test_missing_column_is_logged_when_first_row_is_short() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$file_name = 'demosaved_short_first_row.csv';
+		$file = fopen( $file_name, 'w' );
+		fwrite( $file, "Column 1,Column 2\nOnly one\nSecond title,Second description\n" );
+		fclose( $file );
+
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Short first row',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$map = array();
+		foreach ( $Tainacan_Metadata->fetch_by_collection( $collection ) as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$map[ $metadatum->get_id() ] = 'Column 1';
+			} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Description' ) {
+				$map[ $metadatum->get_id() ] = 'Número da Norma';
+			}
+		}
+
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => $map,
+				'total_items' => 2,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$titles = array();
+		foreach ( $Tainacan_Items->fetch( array(), $collection, 'OBJECT' ) as $item ) {
+			$titles[] = $item->get_title();
+		}
+		$this->assertEquals( array( 'Second title' ), $titles );
+
+		$messages = $this->importer_error_messages( $importer_instance );
+		$expected = 'Mapped column "Número da Norma" was not found in the CSV header.';
+		$this->assertEquals( 1, count( array_keys( $messages, $expected, true ) ) );
+
+		unlink( $file_name );
+	}
+
+	/**
+	 * Bytes 0x80 and 0x93/0x94 are a euro sign and curly quotes in Windows-1252,
+	 * and C1 controls in ISO-8859-1. Automatic header decoding must keep the
+	 * Windows-1252 characters.
+	 *
+	 * @group importer
+	 */
+	public function test_automatic_encoding_reads_windows1252_only_header_bytes() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$title_header = "Preço: 10\u{20AC}";
+		$description_header = "\u{201C}Aspas curvas\u{201D}";
+
+		$file_name = $this->write_csv_fixture(
+			'demosaved_cp1252_header.csv',
+			array(
+				mb_convert_encoding( $title_header, 'Windows-1252', 'UTF-8' ),
+				mb_convert_encoding( $description_header, 'Windows-1252', 'UTF-8' ),
+			),
+			array(
+				array( 'Item', 'Note' ),
+			)
+		);
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+		$importer_instance->set_option( 'encode', 'automatic' );
+
+		$headers = $importer_instance->get_source_metadata();
+		$this->assertSame( array( $title_header, $description_header ), $headers );
+		$this->assertSame( $headers, $importer_instance->raw_source_metadata() );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Windows-1252 header bytes',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$map = array();
+		foreach ( $Tainacan_Metadata->fetch_by_collection( $collection ) as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$map[ $metadatum->get_id() ] = $headers[0];
+			} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Description' ) {
+				$map[ $metadatum->get_id() ] = $headers[1];
+			}
+		}
+
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => $map,
+				'total_items' => 1,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$items = $Tainacan_Items->fetch( array(), $collection, 'OBJECT' );
+		$this->assertEquals( 1, count( $items ) );
+		$item = array_shift( $items );
+		$this->assertSame( 'Item', $item->get_title() );
+		$this->assertSame( 'Note', $item->get_description() );
+
+		unlink( $file_name );
+	}
+
+	/**
 	 * UTF-8 BOM on the first column must not break special field detection.
 	 *
 	 * @group importer_csv_special_fields
@@ -1208,6 +1467,20 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		}
 
 		unlink( $file_name );
+	}
+
+	/**
+	 * @param \Tainacan\Importer\Importer $importer Importer instance.
+	 * @return string[]
+	 */
+	private function importer_error_messages( $importer ) {
+		$messages = array();
+		foreach ( $importer->get_error_log() as $entry ) {
+			if ( isset( $entry['message'] ) && is_string( $entry['message'] ) ) {
+				$messages[] = $entry['message'];
+			}
+		}
+		return $messages;
 	}
 
 	private function write_csv_fixture( $file_name, array $headers, array $rows ) {

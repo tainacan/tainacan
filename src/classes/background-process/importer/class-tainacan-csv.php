@@ -186,9 +186,57 @@ class CSV extends Importer {
 	}
 
 	/**
+	 * Index of the file column a mapped header names, or null when it is absent.
+	 *
+	 * @param array        $headers Header cells already converted to the file encoding.
+	 * @param string|array $header  Mapped column name, or a compound map whose key is that name.
+	 * @return int|null
+	 */
+	private function find_mapped_column( $headers, $header ) {
+		$column = null;
+		foreach ( $headers as $index_raw => $header_raw ) {
+			if ( ( is_array( $header ) && $header_raw === key( $header ) ) || ( $header_raw === $header ) ) {
+				$column = $index_raw;
+			}
+		}
+		return $column;
+	}
+
+	/**
+	 * Records each mapped column that is not in the file header.
+	 *
+	 * The header does not change between rows. Call this for the first row only,
+	 * and before a short row returns, so a bad match is not lost for the whole file.
+	 *
+	 * @param array $headers Header cells already converted to the file encoding.
+	 * @param array $mapping Metadatum id => source header.
+	 */
+	private function log_missing_mapped_columns( $headers, $mapping ) {
+		if ( ! is_array( $mapping ) ) {
+			return;
+		}
+		foreach ( $mapping as $header ) {
+			if ( null !== $this->find_mapped_column( $headers, $header ) ) {
+				continue;
+			}
+			$missing_header = is_array( $header ) ? key( $header ) : $header;
+			$this->add_error_log(
+				sprintf(
+					/* translators: %s: column name saved in the mapping. */
+					__( 'Mapped column "%s" was not found in the CSV header.', 'tainacan' ),
+					(string) $missing_header
+				)
+			);
+		}
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function process_item( $index, $collection_definition ) {
+		// The compound value loop below must not reuse this. A later mapped
+		// column is compared after that loop has walked the value list.
+		$row_index = (int) $index;
 		$processedItem = [];
 		$compoundHeaders = [];
 
@@ -252,6 +300,12 @@ class CSV extends Importer {
 
 		$this->add_transient('csv_pointer', ftell($file)); // add reference for insert
 
+		// Headers are independent of this row. A short first row returns below,
+		// and later rows are not row 0, so the miss has to be recorded here.
+		if ( 0 === $row_index && isset( $collection_definition['mapping'] ) ) {
+			$this->log_missing_mapped_columns( $headers, $collection_definition['mapping'] );
+		}
+
 		if ( count( $headers ) !== count( $values ) ) {
 			$string = (is_array($values)) ? implode('::', $values ) : $values;
 
@@ -267,25 +321,9 @@ class CSV extends Importer {
 			$this->handle_item_id( $values );
 		}
 		foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
-			$column = null;
-			foreach ( $headers as $indexRaw => $headerRaw ) {
-				if ( (is_array($header) && $headerRaw === key($header)) || ($headerRaw === $header) ) {
-					$column = $indexRaw;
-				}
-			}
+			$column = $this->find_mapped_column( $headers, $header );
 
 			if ( is_null( $column ) ) {
-				// The header does not change between rows, so record the miss once.
-				if ( 0 === (int) $index ) {
-					$missing_header = is_array( $header ) ? key( $header ) : $header;
-					$this->add_error_log(
-						sprintf(
-							/* translators: %s: column name saved in the mapping. */
-							__( 'Mapped column "%s" was not found in the CSV header.', 'tainacan' ),
-							(string) $missing_header
-						)
-					);
-				}
 				continue;
 			}
 
@@ -304,7 +342,7 @@ class CSV extends Importer {
 				$key = key($header);
 
 				$returnValue = [];
-				foreach($valueToInsert as $index => $metadatumValue) {
+				foreach ( $valueToInsert as $metadatumValue ) {
 					$childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
 					$childrenValue = $this->is_clear_value($metadatumValue) ?
 						array_fill(0, sizeof($childrenHeaders), $this->get_option('escape_empty_value') ) :
