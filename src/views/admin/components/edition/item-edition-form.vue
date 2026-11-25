@@ -1795,8 +1795,8 @@ export default {
                     this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
                     return true;
-                })
-                .catch((error) => {
+                }, (error) => {
+                    // Only a failed request lands here, not an error in the success handler above.
                     // The server kept the previous document, and the new file is only an attachment now
                     this.form.document = previousDocument;
                     this.form.document_type = previousDocumentType;
