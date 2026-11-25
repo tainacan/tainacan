@@ -38,6 +38,7 @@ export default class TermsModal extends React.Component {
         this.toggleSelectTemporaryTerm = this.toggleSelectTemporaryTerm.bind(this);
         this.selectTemporaryTerm = this.selectTemporaryTerm.bind(this);
         this.removeTemporaryTermOfId = this.removeTemporaryTermOfId.bind(this);
+        this.deselectAllTerms = this.deselectAllTerms.bind(this);
         this.applySelectedTerms = this.applySelectedTerms.bind(this);
         this.resetTaxonomies = this.resetTaxonomies.bind(this);
         this.selectTaxonomy = this.selectTaxonomy.bind(this);
@@ -118,6 +119,10 @@ export default class TermsModal extends React.Component {
         
         this.setState({ temporarySelectedTerms: this.state.temporarySelectedTerms });
         // setContent();
+    }
+
+    deselectAllTerms() {
+        this.setState({ temporarySelectedTerms: [] });
     }
 
     fetchTerms(name) {
@@ -424,6 +429,13 @@ export default class TermsModal extends React.Component {
                         isSecondary
                         onClick={ () => this.resetTaxonomies() }>
                         {__('Switch taxonomy', 'tainacan')}
+                    </Button>
+                    <Button
+                        style={{ marginInlineStart: 'auto', marginInlineEnd: '8px' }}
+                        isSecondary
+                        disabled={ !this.state.temporarySelectedTerms.length }
+                        onClick={ () => this.deselectAllTerms() }>
+                        {__('Deselect all', 'tainacan')}
                     </Button>
                     <Button 
                         isPrimary
