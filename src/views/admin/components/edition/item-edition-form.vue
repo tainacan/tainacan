@@ -920,6 +920,7 @@ export default {
             fileMediaFrame: undefined,
             documentUploadProgress: null,
             isConfirmingDocumentReplace: false,
+            isSavingDroppedDocument: false,
             urlLink: '',
             textContent: '',
             isUpdatingValues: false,
@@ -1045,7 +1046,7 @@ export default {
             );
         },
         isDocumentDropBusy() {
-            return this.documentUploadProgress !== null || this.isConfirmingDocumentReplace;
+            return this.documentUploadProgress !== null || this.isConfirmingDocumentReplace || this.isSavingDroppedDocument;
         },
         documentErrorMessage() {
             const existingError = this.errors.find(error => error.metadatum_id == 'document');
@@ -1072,6 +1073,9 @@ export default {
         },
     },
     watch: {
+        isDocumentDropBusy(isBusy) {
+            this.toggleFileDropNavigationGuard(isBusy);
+        },
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
             if (oldItemPosition == undefined || oldItemPosition == newItemPosition)
                 this.sequenceRightDirection = undefined;
@@ -1235,6 +1239,7 @@ export default {
         this.$emitter.off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
         window.removeEventListener('TainacanReloadItemMetadataForm', this.handleExternalMetadataReloadEvent);
+        this.toggleFileDropNavigationGuard(false);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
@@ -1637,6 +1642,14 @@ export default {
 
             this.isConfirmingDocumentReplace = true;
             const modalTrigger = this.$modalFocusA11y.captureTrigger();
+
+            // The dialog's own buttons emit beforeClose, while Escape and the backdrop go through
+            // the modal's onCancel instead, so both have to release the drop zone and the focus
+            const onReplaceDialogClosed = () => {
+                this.isConfirmingDocumentReplace = false;
+                this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+            };
+
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
@@ -1648,11 +1661,9 @@ export default {
                 trapFocus: true,
                 customClass: 'tainacan-modal',
                 canCancel: ['escape', 'outside'],
+                onCancel: onReplaceDialogClosed,
                 events: {
-                    beforeClose: () => {
-                        this.isConfirmingDocumentReplace = false;
-                        this.$modalFocusA11y.restoreFocus(modalTrigger, this);
-                    }
+                    beforeClose: onReplaceDialogClosed
                 }
             });
         },
@@ -1673,19 +1684,12 @@ export default {
             return '';
         },
         uploadFileAsDocument(file, hasMultipleFiles) {
+            // In sequence edition this component is reused for the next item, so the target item is kept
+            const targetItemId = this.itemId;
             this.documentUploadProgress = 0;
 
-            if ( hasMultipleFiles ) {
-                this.$buefy.toast.open({
-                    message: this.$i18n.get('info_warning_only_first_file_used_as_document'),
-                    type: 'is-warning',
-                    position: 'is-bottom',
-                    duration: 3500
-                });
-            }
-
             this.sendDocumentFile({
-                    item_id: this.itemId,
+                    item_id: targetItemId,
                     file: file,
                     onUploadProgress: (progressEvent) => {
                         if ( progressEvent.total )
@@ -1694,12 +1698,54 @@ export default {
                 })
                 .then((attachment) => {
                     this.documentUploadProgress = null;
-                    this.setAttachmentAsDocument(attachment.id);
-                })
-                .catch((error) => {
+
+                    // Keeps the drop zone busy until the document is saved, as the form is hidden meanwhile
+                    this.isSavingDroppedDocument = true;
+                    const documentSaving = targetItemId == this.itemId
+                        ? this.setAttachmentAsDocument(attachment.id)
+                        : this.setAttachmentAsDocumentOfAnotherItem(attachment.id, targetItemId);
+
+                    return documentSaving.then((isDocumentSet) => {
+                        this.isSavingDroppedDocument = false;
+
+                        if ( isDocumentSet && hasMultipleFiles && targetItemId == this.itemId ) {
+                            this.$buefy.toast.open({
+                                message: this.$i18n.get('info_warning_only_first_file_used_as_document'),
+                                type: 'is-warning',
+                                position: 'is-bottom',
+                                duration: 3500
+                            });
+                        }
+                    });
+                }, (error) => {
                     this.documentUploadProgress = null;
                     this.showDocumentUploadError(error, file);
                 });
+        },
+        // The user moved to another item of the sequence while the file was uploading. The file was
+        // uploaded to the original item, so it becomes that item's document without touching this form.
+        setAttachmentAsDocumentOfAnotherItem(attachmentId, itemId) {
+            return this.updateItemDocument({ item_id: itemId, document: attachmentId + '', document_type: 'attachment' })
+                .then(() => true)
+                .catch((error) => {
+                    this.$console.error(error);
+                    return false;
+                });
+        },
+        // While a dropped document is being handled, the box may be hidden or covered by the replace dialog.
+        // A file dropped anywhere else would make the browser leave the editor to open it.
+        preventFileDropNavigation(event) {
+            if ( !event.dataTransfer || !Array.from(event.dataTransfer.types || []).includes('Files') )
+                return;
+
+            event.preventDefault();
+            if ( event.type === 'dragover' )
+                event.dataTransfer.dropEffect = 'none';
+        },
+        toggleFileDropNavigationGuard(isEnabled) {
+            const method = isEnabled ? 'addEventListener' : 'removeEventListener';
+            window[method]('dragover', this.preventFileDropNavigation, true);
+            window[method]('drop', this.preventFileDropNavigation, true);
         },
         showDocumentUploadError(error, file) {
             // Outside of the admin error plugin the request error may still come wrapped by tainacanErrorHandler
@@ -1726,11 +1772,14 @@ export default {
             this.$console.error(error);
         },
         setAttachmentAsDocument(attachmentId) {
+            const previousDocument = this.form.document;
+            const previousDocumentType = this.form.document_type;
+
             this.isLoading = true;
             this.form.document_type = 'attachment';
             this.form.document = attachmentId + '';
 
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+            return this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                 .then((item) => {
                     this.clearDocumentError();
                     this.isLoading = false;
@@ -1745,10 +1794,18 @@ export default {
 
                     this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
+                    return true;
                 })
                 .catch((error) => {
+                    // The server kept the previous document, and the new file is only an attachment now
+                    this.form.document = previousDocument;
+                    this.form.document_type = previousDocumentType;
+                    this.shouldLoadAttachments = !this.shouldLoadAttachments;
+
                     this.applyDocumentApiError(error);
                     this.isLoading = false;
+
+                    return false;
                 });
         },
         onOpenThumbnailFrame(event) {
