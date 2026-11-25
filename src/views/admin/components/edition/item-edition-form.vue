@@ -574,10 +574,13 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
+                                            :upload-progress="documentUploadProgress"
+                                            :is-drop-busy="isDocumentDropBusy"
                                             :error-message="documentErrorMessage"
                                             @on-set-document="setDocument"
                                             @on-remove-document="removeDocument"
                                             @on-set-file-document="setFileDocument"
+                                            @on-drop-file-document="onDropFileDocument"
                                             @on-set-text-document="setTextDocument"
                                             @on-set-url-document="setURLDocument"
                                             @on-edit-document-content-index="editDocumentContentIndex" />
@@ -659,10 +662,13 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
+                                    :upload-progress="documentUploadProgress"
+                                    :is-drop-busy="isDocumentDropBusy"
                                     :error-message="documentErrorMessage"
                                     @on-set-document="setDocument"
                                     @on-remove-document="removeDocument"
                                     @on-set-file-document="setFileDocument"
+                                    @on-drop-file-document="onDropFileDocument"
                                     @on-set-text-document="setTextDocument"
                                     @on-set-url-document="setURLDocument"
                                     @on-edit-document-content-index="editDocumentContentIndex" />
@@ -912,6 +918,9 @@ export default {
             thumbnailMediaFrame: undefined,
             attachmentsMediaFrame: undefined,
             fileMediaFrame: undefined,
+            documentUploadProgress: null,
+            isConfirmingDocumentReplace: false,
+            isSavingDroppedDocument: false,
             urlLink: '',
             textContent: '',
             isUpdatingValues: false,
@@ -1036,6 +1045,9 @@ export default {
                 )
             );
         },
+        isDocumentDropBusy() {
+            return this.documentUploadProgress !== null || this.isConfirmingDocumentReplace || this.isSavingDroppedDocument;
+        },
         documentErrorMessage() {
             const existingError = this.errors.find(error => error.metadatum_id == 'document');
             return existingError ? existingError.errors : '';
@@ -1061,6 +1073,9 @@ export default {
         },
     },
     watch: {
+        isDocumentDropBusy(isBusy) {
+            this.toggleFileDropNavigationGuard(isBusy);
+        },
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
             if (oldItemPosition == undefined || oldItemPosition == newItemPosition)
                 this.sequenceRightDirection = undefined;
@@ -1224,6 +1239,7 @@ export default {
         this.$emitter.off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
         window.removeEventListener('TainacanReloadItemMetadataForm', this.handleExternalMetadataReloadEvent);
+        this.toggleFileDropNavigationGuard(false);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
@@ -1238,6 +1254,7 @@ export default {
             'fetchItem',
             'cleanItemMetadata',
             'sendAttachments',
+            'sendDocumentFile',
             'deletePermanentlyAttachment',
             'updateThumbnail',
             'cleanLastUpdated',
@@ -1602,6 +1619,195 @@ export default {
             this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
             this.fileMediaFrame.openFrame(event);
         },
+        onDropFileDocument(files) {
+            // A drop is ignored while an upload or the replace confirmation is in progress
+            if ( !files || !files.length || this.isDocumentDropBusy )
+                return;
+
+            const file = files[0];
+            const hasMultipleFiles = files.length > 1;
+
+            const validationError = this.validateDocumentFile(file);
+            if ( validationError ) {
+                this.$showApiError(null, validationError);
+                return;
+            }
+
+            const hasDocument = this.form.document && this.form.document_type && this.form.document_type !== 'empty';
+
+            if ( !hasDocument ) {
+                this.uploadFileAsDocument(file, hasMultipleFiles);
+                return;
+            }
+
+            this.isConfirmingDocumentReplace = true;
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
+
+            // The dialog's own buttons emit beforeClose, while Escape and the backdrop go through
+            // the modal's onCancel instead, so both have to release the drop zone and the focus
+            const onReplaceDialogClosed = () => {
+                this.isConfirmingDocumentReplace = false;
+                this.$modalFocusA11y.restoreFocus(modalTrigger, this);
+            };
+
+            this.$buefy.modal.open({
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_document_replace'),
+                    onConfirm: () => this.uploadFileAsDocument(file, hasMultipleFiles)
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                canCancel: ['escape', 'outside'],
+                onCancel: onReplaceDialogClosed,
+                events: {
+                    beforeClose: onReplaceDialogClosed
+                }
+            });
+        },
+        // Same checks the WordPress media modal (Plupload) runs before sending any bytes
+        validateDocumentFile(file) {
+            if ( !file.size )
+                return this.$i18n.getWithVariables('info_error_upload_empty_file_%s', [file.name]);
+
+            const maxUploadSize = Number(tainacan_plugin.wp_max_upload_size);
+            if ( maxUploadSize && file.size > maxUploadSize )
+                return this.$i18n.getWithVariables('info_error_upload_file_too_big_%s', [file.name]);
+
+            const allowedExtensions = tainacan_plugin.wp_allowed_file_extensions;
+            const extension = file.name.lastIndexOf('.') > 0 ? file.name.split('.').pop().toLowerCase() : '';
+            if ( Array.isArray(allowedExtensions) && allowedExtensions.length && !allowedExtensions.includes(extension) )
+                return this.$i18n.getWithVariables('info_error_upload_file_type_not_allowed_%s', [file.name]);
+
+            return '';
+        },
+        uploadFileAsDocument(file, hasMultipleFiles) {
+            // In sequence edition this component is reused for the next item, so the target item is kept
+            const targetItemId = this.itemId;
+            this.documentUploadProgress = 0;
+
+            this.sendDocumentFile({
+                    item_id: targetItemId,
+                    file: file,
+                    onUploadProgress: (progressEvent) => {
+                        if ( progressEvent.total )
+                            this.documentUploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    }
+                })
+                .then((attachment) => {
+                    this.documentUploadProgress = null;
+
+                    // Keeps the drop zone busy until the document is saved, as the form is hidden meanwhile
+                    this.isSavingDroppedDocument = true;
+                    const documentSaving = targetItemId == this.itemId
+                        ? this.setAttachmentAsDocument(attachment.id)
+                        : this.setAttachmentAsDocumentOfAnotherItem(attachment.id, targetItemId);
+
+                    return documentSaving.then((isDocumentSet) => {
+                        this.isSavingDroppedDocument = false;
+
+                        if ( isDocumentSet && hasMultipleFiles && targetItemId == this.itemId ) {
+                            this.$buefy.toast.open({
+                                message: this.$i18n.get('info_warning_only_first_file_used_as_document'),
+                                type: 'is-warning',
+                                position: 'is-bottom',
+                                duration: 3500
+                            });
+                        }
+                    });
+                }, (error) => {
+                    this.documentUploadProgress = null;
+                    this.showDocumentUploadError(error, file);
+                });
+        },
+        // The user moved to another item of the sequence while the file was uploading. The file was
+        // uploaded to the original item, so it becomes that item's document without touching this form.
+        setAttachmentAsDocumentOfAnotherItem(attachmentId, itemId) {
+            return this.updateItemDocument({ item_id: itemId, document: attachmentId + '', document_type: 'attachment' })
+                .then(() => true)
+                .catch((error) => {
+                    this.$console.error(error);
+                    return false;
+                });
+        },
+        // While a dropped document is being handled, the box may be hidden or covered by the replace dialog.
+        // A file dropped anywhere else would make the browser leave the editor to open it.
+        preventFileDropNavigation(event) {
+            if ( !event.dataTransfer || !Array.from(event.dataTransfer.types || []).includes('Files') )
+                return;
+
+            event.preventDefault();
+            if ( event.type === 'dragover' )
+                event.dataTransfer.dropEffect = 'none';
+        },
+        toggleFileDropNavigationGuard(isEnabled) {
+            const method = isEnabled ? 'addEventListener' : 'removeEventListener';
+            window[method]('dragover', this.preventFileDropNavigation, true);
+            window[method]('drop', this.preventFileDropNavigation, true);
+        },
+        showDocumentUploadError(error, file) {
+            // Outside of the admin error plugin the request error may still come wrapped by tainacanErrorHandler
+            const requestError = error && error.error ? error.error : error;
+            const data = requestError && requestError.response && requestError.response.data;
+
+            // The WordPress REST message (disallowed type, no data supplied...) explains the failure best
+            if ( data && typeof data.message === 'string' && data.message ) {
+                this.$showApiError(requestError, file.name + ': ' + data.message);
+                return;
+            }
+
+            // Then the message for the status (e.g. 413, request over the server limit)
+            if ( error && error.errorMessage ) {
+                this.$showApiError(requestError, error.errorMessage);
+                return;
+            }
+
+            // Status and connectivity failures without a REST message are shown by the admin error
+            // plugin's status snackbar, which has the details. Anything else gets the generic message.
+            if ( !(requestError && requestError.config && (requestError.response || requestError.request)) )
+                this.$showApiError(requestError, this.$i18n.get('info_error_upload') + ': ' + file.name);
+
+            this.$console.error(error);
+        },
+        setAttachmentAsDocument(attachmentId) {
+            const previousDocument = this.form.document;
+            const previousDocumentType = this.form.document_type;
+
+            this.isLoading = true;
+            this.form.document_type = 'attachment';
+            this.form.document = attachmentId + '';
+
+            return this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+                .then((item) => {
+                    this.clearDocumentError();
+                    this.isLoading = false;
+                    this.item.document_as_html = item.document_as_html;
+                    this.item.document_mimetype = item.document_mimetype;
+
+                    let oldThumbnail = this.item.thumbnail;
+                    if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
+                        this.item.thumbnail = item.thumbnail;
+                        this.item.thumbnail_id = item.thumbnail_id;
+                    }
+
+                    this.shouldLoadAttachments = !this.shouldLoadAttachments;
+
+                    return true;
+                }, (error) => {
+                    // Only a failed request lands here, not an error in the success handler above.
+                    // The server kept the previous document, and the new file is only an attachment now
+                    this.form.document = previousDocument;
+                    this.form.document_type = previousDocumentType;
+                    this.shouldLoadAttachments = !this.shouldLoadAttachments;
+
+                    this.applyDocumentApiError(error);
+                    this.isLoading = false;
+
+                    return false;
+                });
+        },
         onOpenThumbnailFrame(event) {
             this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
             this.thumbnailMediaFrame.openFrame(event);
@@ -1816,32 +2022,7 @@ export default {
                     },
                     relatedPostId: this.itemId,
                     onClose: () => this.$modalFocusA11y.restoreFocus(this._mediaTrigger, this),
-                    onSave: (file) => {
-                        this.isLoading = true;
-                        this.form.document_type = 'attachment';
-                        this.form.document = file.id + '';
-                        
-                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-                            .then((item) => {
-                                this.clearDocumentError();
-                                this.isLoading = false;
-                                this.item.document_as_html = item.document_as_html;
-                                this.item.document_mimetype = item.document_mimetype;
-
-                                let oldThumbnail = this.item.thumbnail;
-                                if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
-                                    this.item.thumbnail = item.thumbnail;
-                                    this.item.thumbnail_id = item.thumbnail_id;
-                                }
-
-                                this.shouldLoadAttachments = !this.shouldLoadAttachments;
-
-                            })
-                            .catch((error) => {
-                                this.applyDocumentApiError(error);
-                                this.isLoading = false;
-                            });
-                    }
+                    onSave: (file) => this.setAttachmentAsDocument(file.id)
                 }
             );
 
