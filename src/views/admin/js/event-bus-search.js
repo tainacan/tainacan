@@ -1,5 +1,5 @@
 import mitt from 'mitt';
-import { isIframeSelectionMode, broadcastSelectionState, toPlainItemIds } from './selection-bridge.js';
+import { isIframeSelectionMode, broadcastSelectionState, subscribeSelectionCommands, toPlainItemIds } from './selection-bridge.js';
 
 export default {
 
@@ -305,8 +305,8 @@ export default {
                 if (!isIframeSelectionMode(app))
                     return;
 
-                let items = toPlainItemIds(selectedItems);
-                if (!items.length) {
+                let items = selectedItems !== undefined ? toPlainItemIds(selectedItems) : [];
+                if (selectedItems === undefined) {
                     try {
                         items = toPlainItemIds(
                             app.config.globalProperties.$store.getters['search/getSelectedItems']
@@ -344,6 +344,7 @@ export default {
             },
             cleanSelectedItems() {
                 app.config.globalProperties.$store.dispatch('search/cleanSelectedItems');
+                this.publishSelectionState([]);
             },
             exitViewModeWithoutPagination() {
                 app.config.globalProperties.$eventBusSearchEmitter.emit( 'exitViewModeWithoutPagination', true);
@@ -414,8 +415,10 @@ export default {
         }
         app.config.globalProperties.$eventBusSearch = bus;
 
-        if (isIframeSelectionMode(app))
+        if (isIframeSelectionMode(app)) {
             bus.publishSelectionState();
+            subscribeSelectionCommands(() => bus.cleanSelectedItems());
+        }
 
         // Defines the global $eventBusSearchEmitter for handling events across different search components
         emitter.on('input', data => {

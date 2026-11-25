@@ -1,6 +1,6 @@
 import tainacanApi from '../axios.js';
 import axios from 'axios';
-import { subscribeSelectionState, appendInitiallySelectedItemsParam } from './tainacan-selection.js';
+import { subscribeSelectionState, appendInitiallySelectedItemsParam, requestClearSelection } from './tainacan-selection.js';
 
 const { __ } = wp.i18n;
 
@@ -43,7 +43,8 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
             collectionsRequestSource: undefined,
             searchURL: searchURL,
             itemsPerPage: 12,
-            loadStrategy: loadStrategy
+            loadStrategy: loadStrategy,
+            selectedItemsCount: existingSelectedItems && existingSelectedItems.length ? existingSelectedItems.length : 0
         };
         this.selectionState = existingSelectedItems && existingSelectedItems.length
             ? { selectedItems: existingSelectedItems.map(String), query: {}, href: '', collectionId: existingCollectionId ? String(existingCollectionId) : '' }
@@ -57,11 +58,15 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
         this.fetchCollection = this.fetchCollection.bind(this);
         this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
         this.applySelectedItems = this.applySelectedItems.bind(this);
+        this.deselectAllItems = this.deselectAllItems.bind(this);
         this.onSelectionState = this.onSelectionState.bind(this);
     }
 
     onSelectionState(state) {
         this.selectionState = state;
+        this.setState({
+            selectedItemsCount: state && Array.isArray(state.selectedItems) ? state.selectedItems.length : 0
+        });
     }
 
     componentDidMount() {
@@ -143,6 +148,7 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
         this.selectionState = null;
         this.setState({
             collectionId: selectedCollectionId,
+            selectedItemsCount: 0,
             searchURL: tainacan_blocks.admin_url + '?' + (this.props.loadStrategy == 'search' ? 'itemsSearchSelectionMode' : 'itemsMultipleSelectionMode') + '=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
         });
         this.props.onSelectCollection(selectedCollectionId);
@@ -196,8 +202,14 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     }
 
     applySelectedItems() {
-        if (this.selectionState && this.selectionState.selectedItems && this.selectionState.selectedItems.length)
+        if (this.selectionState && Array.isArray(this.selectionState.selectedItems))
             this.props.onApplySelectedItems(this.selectionState.selectedItems);
+    }
+
+    deselectAllItems() {
+        requestClearSelection();
+        this.selectionState = Object.assign({}, this.selectionState || {}, { selectedItems: [] });
+        this.setState({ selectedItemsCount: 0 });
     }
 
     resetCollections() {
@@ -206,7 +218,8 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
         this.setState({
             collectionId: null,
             collectionPage: 1,
-            modalCollections: []
+            modalCollections: [],
+            selectedItemsCount: 0
         });
         this.fetchModalCollections(); 
     }
@@ -239,12 +252,20 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
                     {__('Switch collection', 'tainacan')}
                 </Button>
                 { this.props.loadStrategy == 'selection' ? 
-                    <Button
-                        style={{ marginInlineStart: 'auto' }} 
-                        isPrimary
-                        onClick={ () => this.applySelectedItems() }>
-                        {__('Add the selected items', 'tainacan')}
-                    </Button>
+                    <>
+                        <Button
+                            style={{ marginInlineStart: 'auto', marginInlineEnd: '8px' }}
+                            isSecondary
+                            disabled={ !this.state.selectedItemsCount }
+                            onClick={ () => this.deselectAllItems() }>
+                            {__('Deselect all', 'tainacan')}
+                        </Button>
+                        <Button
+                            isPrimary
+                            onClick={ () => this.applySelectedItems() }>
+                            {__('Add the selected items', 'tainacan')}
+                        </Button>
+                    </>
                     : null
                 }
                 { this.props.loadStrategy == 'search' ? 

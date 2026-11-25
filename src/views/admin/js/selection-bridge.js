@@ -9,6 +9,7 @@
  */
 export const TAINACAN_SELECTION_SOURCE = 'tainacan-selection';
 export const TAINACAN_SELECTION_CHANNEL = 'tainacan-selection';
+export const TAINACAN_SELECTION_CLEAR_ACTION = 'clear';
 export const INITIALLY_SELECTED_ITEMS_PARAM = 'initiallySelectedItems';
 
 export function isIframeSelectionMode(app) {
@@ -105,4 +106,20 @@ export function broadcastSelectionState(state) {
     } catch {
         // Vue proxies should already have been cloned; ignore clone failures.
     }
+}
+
+export function subscribeSelectionCommands(onClear) {
+    const channel = openSelectionChannel();
+    if (!channel)
+        return () => {};
+
+    channel.onmessage = (event) => {
+        const data = event && event.data;
+        if (data && data.source === TAINACAN_SELECTION_SOURCE && data.action === TAINACAN_SELECTION_CLEAR_ACTION)
+            onClear();
+    };
+
+    return () => {
+        channel.close();
+    };
 }
