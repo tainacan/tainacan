@@ -1,9 +1,13 @@
 classDiagram
     direction TB
-    class Generic_Process { }
     class Background_Generic_Process { }
+    class Generic_Process { }
+    class Management_Tools_Process { }
     class Bulk_Edit_Process { }
     class Generic_Process_Handler { }
     Generic_Process <|-- Bulk_Edit_Process
+    Generic_Process <|-- Management_Tools_Process
     Generic_Process_Handler ..> Background_Generic_Process
     Generic_Process_Handler ..> Generic_Process
+    Management_Tools_Process ..> Background_Generic_Process
+    Management_Tools_Process ..> Generic_Process_Handler

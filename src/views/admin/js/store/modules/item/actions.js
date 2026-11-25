@@ -1,5 +1,25 @@
 import axios from '../../../axios';
 
+/**
+ * Builds a REST path from a template. Each inserted value must be a positive integer.
+ * The value is encoded before it is joined to the path. Returns null when one is not.
+ * @param {TemplateStringsArray} strings
+ * @param {...unknown} values
+ * @returns {string|null}
+ */
+function idPath(strings, ...values) {
+    let path = strings[0];
+
+    for (let index = 0; index < values.length; index++) {
+        const id = String(values[index] == null ? '' : values[index]);
+        if (!/^[1-9]\d*$/.test(id))
+            return null;
+        path += encodeURIComponent(id) + strings[index + 1];
+    }
+
+    return path;
+}
+
 // Actions related to Item's metadata
 /**
  * Updates one item metadatum value on the API and syncs local item metadata state.
@@ -13,7 +33,12 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
         body['parent_meta_id'] = parent_meta_id;
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, body)
+        const endpoint = idPath`/item/${item_id}/metadata/${metadatum_id}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.put(endpoint, body)
             .then( res => {
                 let itemMetadatum = res.data;
                 commit('setSingleMetadatum', itemMetadatum);
@@ -34,7 +59,12 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
 export const fetchItemMetadata = ({ commit }, item_id) => {
     commit('cleanItemMetadata');
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get('/item/' + item_id + '/metadata')
+        const endpoint = idPath`/item/${item_id}/metadata`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.get(endpoint)
         .then(res => {
             let itemMetadata = res.data;
             commit('setItemMetadata', itemMetadata);
@@ -53,7 +83,12 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
  */
 export const fetchItemMetadatum = ({ commit }, { item_id, metadatum_id }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get('/item/' + item_id + '/metadata/' + metadatum_id)
+        const endpoint = idPath`/item/${item_id}/metadata/${metadatum_id}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 const updatedItemMetadatum = res.data;
                 if (updatedItemMetadatum && updatedItemMetadatum.metadatum) {
@@ -77,7 +112,12 @@ export const fetchItemMetadatum = ({ commit }, { item_id, metadatum_id }) => {
 export const fetchCompoundFirstParentMetaId = ({}, { item_id, metadatum_id }) => {
    
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put(`/item/${item_id}/metadata/${metadatum_id}`, { values: [] })
+        const endpoint = idPath`/item/${item_id}/metadata/${metadatum_id}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.put(endpoint, { values: [] })
             .then( res => {
                 const parentMetaId = res.data.parent_meta_id;
                 resolve(parentMetaId);
@@ -100,8 +140,13 @@ export const fetchCompoundFirstParentMetaId = ({}, { item_id, metadatum_id }) =>
  */
 export const deleteItemMetadataGroup = ({ commit }, { item_id, metadatum_id, parent_meta_id }) => {
         
-    return new Promise((resolve) => {
-        axios.tainacanApi.delete(`/item/${item_id}/metadata/${metadatum_id}`, { data: { parent_meta_id: parent_meta_id } })
+    return new Promise((resolve, reject) => {
+        const endpoint = idPath`/item/${item_id}/metadata/${metadatum_id}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.delete(endpoint, { data: { parent_meta_id: parent_meta_id } })
             .then( (res) => {
                 commit('deleteChildItemMetadata', { parentMetadatumId: metadatum_id, parentMetaId: parent_meta_id });
                 commit('setLastUpdated');
@@ -146,19 +191,23 @@ export const setLastUpdated = ({ commit}, value) => {
 export const fetchItem = ({ commit }, { itemId, contextEdit, fetchOnly } ) => {
     commit('cleanItem');
 
-    let endpoint = '/items/'+ itemId + '?'; 
-
-    if (contextEdit)
-        endpoint += '&context=edit';
-
-    if (fetchOnly != undefined)
-        endpoint += '&fetch_only=' + fetchOnly;
-
     const source = axios.CancelToken.source();
         
     return Object({ 
         request: new Promise((resolve, reject) => {
-            axios.tainacanApi.get(endpoint,{
+            const endpoint = idPath`/items/${itemId}`;
+            if (endpoint == null) {
+                reject(new Error('Invalid item id.'));
+                return;
+            }
+            const params = {};
+            if (contextEdit)
+                params.context = 'edit';
+            if (fetchOnly != undefined)
+                params.fetch_only = fetchOnly;
+
+            axios.tainacanApi.get(endpoint, {
+                params: params,
                 cancelToken: source.token
             })
                 .then(res => {
@@ -191,8 +240,13 @@ export const replaceItem = ({ commit }, item) => {
  */
 export const fetchItemTitle = ({ commit }, id) => {
     commit('cleanItemTitle');
-    return new Promise((resolve, reject) =>{ 
-        axios.tainacanApi.get('/items/' + id + '?fetch_only=title')
+    return new Promise((resolve, reject) =>{
+        const endpoint = idPath`/items/${id}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.get(endpoint, { params: { fetch_only: 'title' } })
         .then(res => {
             let itemTitle = res.data;
             commit('setItemTitle', itemTitle.title);
@@ -211,7 +265,12 @@ export const fetchItemTitle = ({ commit }, id) => {
  */
 export const sendItem = ( { commit }, item) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacanApi.post('/collection/'+ item.collection_id + '/items/?context=edit', item)
+        const endpoint = idPath`/collection/${item.collection_id}/items/`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.post(endpoint, item, { params: { context: 'edit' } })
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
@@ -231,7 +290,12 @@ export const sendItem = ( { commit }, item) => {
 export const updateItem = ({ commit }, item) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item.id + '?context=edit', item)
+        const endpoint = idPath`/items/${item.id}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.put(endpoint, item, { params: { context: 'edit' } })
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
@@ -251,7 +315,12 @@ export const updateItem = ({ commit }, item) => {
 export const duplicateItem = ({}, { collectionId, itemId, copies }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.post('/collection/' + collectionId + '/items/' + itemId + '/duplicate', { copies: new Number(copies) })
+        const endpoint = idPath`/collection/${collectionId}/items/${itemId}/duplicate`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.post(endpoint, { copies: new Number(copies) })
             .then( res => {
                 resolve( res.data.items );
             }).catch( error => { 
@@ -275,7 +344,12 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
         params['document_options'] = document_options;
         
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + item_id, params).then( res => {
+        const endpoint = idPath`/items/${item_id}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.put(endpoint, params).then( res => {
             let item = res.data;
 
             commit('setItem', item);
@@ -294,16 +368,17 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
  * @returns {Promise<Array>} Resolves with related items list; rejects on request error.
  */
 export const fetchOnlyRelatedItems = ({ commit }, { itemId, contextEdit } ) => {
-
-    let endpoint = '/items/'+ itemId + '?'; 
-
-    if (contextEdit)
-        endpoint += '&context=edit';
-
-    endpoint += '&fetch_only=related_items'
-
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get(endpoint)
+        const endpoint = idPath`/items/${itemId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        const params = { fetch_only: 'related_items' };
+        if (contextEdit)
+            params.context = 'edit';
+
+        axios.tainacanApi.get(endpoint, { params: params })
             .then(res => {
                 let relatedItems = res.data && res.data.related_items ? res.data.related_items : [];
                 commit('setOnlyRelatedItemsToItem', {itemId: itemId, relatedItems: relatedItems });
@@ -319,16 +394,17 @@ export const fetchOnlyRelatedItems = ({ commit }, { itemId, contextEdit } ) => {
  * @returns {Promise<string>} Resolves with document content index text; rejects on request error.
  */
 export const fetchItemDocumentContentIndex = ({}, { itemId, contextEdit } ) => {
-
-    let endpoint = '/items/'+ itemId + '?'; 
-
-    if (contextEdit)
-        endpoint += '&context=edit';
-
-    endpoint += '&fetch_only=document_content_index';
-
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get(endpoint)
+        const endpoint = idPath`/items/${itemId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        const params = { fetch_only: 'document_content_index' };
+        if (contextEdit)
+            params.context = 'edit';
+
+        axios.tainacanApi.get(endpoint, { params: params })
             .then(res => {
                 const documentContentIndex = res.data && res.data.document_content_index ? res.data.document_content_index : '';
                 resolve(documentContentIndex);
@@ -344,7 +420,12 @@ export const fetchItemDocumentContentIndex = ({}, { itemId, contextEdit } ) => {
  */
 export const extractItemDocumentContentIndex = ({}, { itemId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get('/items/' + itemId + '/document-content-index/extract')
+        const endpoint = idPath`/items/${itemId}/document-content-index/extract`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 resolve({
                     documentContentIndex: res.data && res.data.document_content_index !== undefined
@@ -369,9 +450,14 @@ export const extractItemDocumentContentIndex = ({}, { itemId }) => {
  */
 export const updateItemDocumentContentIndex = ({}, { itemId, documentContentIndex }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + itemId + '?context=edit', {
+        const endpoint = idPath`/items/${itemId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.put(endpoint, {
             document_content_index: documentContentIndex
-        })
+        }, { params: { context: 'edit' } })
             .then(res => {
                 resolve({
                     documentContentIndex: res.data && res.data.document_content_index !== undefined
@@ -473,17 +559,28 @@ export const deletePermanentlyAttachment = ( {}, attachmentId) => {
  * @returns {Promise<Object>} Resolves with `{ attachments, total }`; rejects on request error.
  */
 export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId, excludeDocumentId, excludeThumbnailId }) => {
-    let endpoint = '/items/' + itemId + '/attachments?order=ASC&orderby=menu_order&perpage=' + attachmentsPerPage + '&paged=' + page;
-
-    if (excludeDocumentId && !isNaN(excludeDocumentId) && excludeThumbnailId && !isNaN(excludeThumbnailId))
-        endpoint += '&exclude=' + excludeDocumentId + ',' + excludeThumbnailId;
-    else if (excludeDocumentId && !isNaN(excludeDocumentId))
-        endpoint += '&exclude=' + excludeDocumentId;
-    else if (excludeThumbnailId && !isNaN(excludeThumbnailId))
-        endpoint += '&exclude=' + excludeThumbnailId;
-
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.get(endpoint)
+        const endpoint = idPath`/items/${itemId}/attachments`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+
+        const params = {
+            order: 'ASC',
+            orderby: 'menu_order',
+            perpage: attachmentsPerPage,
+            paged: page
+        };
+
+        if (excludeDocumentId && !isNaN(excludeDocumentId) && excludeThumbnailId && !isNaN(excludeThumbnailId))
+            params.exclude = excludeDocumentId + ',' + excludeThumbnailId;
+        else if (excludeDocumentId && !isNaN(excludeDocumentId))
+            params.exclude = excludeDocumentId;
+        else if (excludeThumbnailId && !isNaN(excludeThumbnailId))
+            params.exclude = excludeThumbnailId;
+
+        axios.tainacanApi.get(endpoint, { params: params })
         .then(res => {
             let attachments = res.data;
             let total =  res.headers['x-wp-total'];
@@ -509,7 +606,12 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
  */
 export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacanApi.put('/items/' + itemId, {
+        const endpoint = idPath`/items/${itemId}`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.put(endpoint, {
             _thumbnail_id: thumbnailId
         }).then( res => {
             let item = res.data
@@ -651,7 +753,12 @@ export const submitItemSubmission = ({}, { itemSubmission, itemSubmissionMetadat
         if (captchaResponse)
             item['g-recaptcha-response'] = captchaResponse;
 
-        axios.tainacanApi.post('/collection/' + itemSubmission.collection_id + '/items/submission', {...item, metadata: itemSubmissionMetadata } )
+        const endpoint = idPath`/collection/${itemSubmission.collection_id}/items/submission`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.post(endpoint, {...item, metadata: itemSubmissionMetadata } )
             .then( res => {
                 resolve( res.data.id );
             }).catch( error => { 
@@ -683,7 +790,12 @@ export const finishItemSubmission = ({}, { itemSubmission, fakeItemId }) => {
                     formData.append(key + '[' + i + ']', itemSubmission[key][i]);
             }
         }
-        axios.tainacanApi.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
+        const endpoint = idPath`/collection/${itemSubmission.collection_id}/items/submission/${fakeItemId}/finish`;
+        if (endpoint == null) {
+            reject(new Error('Invalid item id.'));
+            return;
+        }
+        axios.tainacanApi.post(endpoint, formData, config )
             .then( res => {
                 resolve( res.data );
             }).catch( error => {

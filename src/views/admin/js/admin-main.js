@@ -196,6 +196,9 @@ export default (element) => {
             ];
             const availableLocales = ['en', 'es', 'fr', 'pt-br', 'de'];
             const browserLanguage = navigator.language.toLocaleLowerCase();
+            const chartDefaults = {
+                fontFamily: 'Roboto, "Source Sans", Helvetica, sans-serif'
+            };
 
             if (availableLocales.indexOf(browserLanguage) >= 0) {
                 let localeConfig;
@@ -207,11 +210,16 @@ export default (element) => {
                     case 'de': localeConfig = deLocaleConfig; break;
                     case 'en': default: localeConfig = enLocaleConfig; break;
                 }
-                window.Apex.chart = {
-                    defaultLocale: browserLanguage,
-                    locales: [ localeConfig ]
-                }
+                chartDefaults.defaultLocale = browserLanguage;
+                chartDefaults.locales = [ localeConfig ];
             }
+
+            window.Apex.chart = chartDefaults;
+            // ApexCharts titles default to weight 900. The admin loads Roboto
+            // only through 700 and uses 500 for headings.
+            window.Apex.title = { style: { fontWeight: 500 } };
+            window.Apex.xaxis = { title: { style: { fontWeight: 500 } } };
+            window.Apex.yaxis = { title: { style: { fontWeight: 500 } } };
 
             app.use(VueApexCharts);
 

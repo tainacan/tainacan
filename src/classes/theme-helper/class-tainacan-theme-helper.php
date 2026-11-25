@@ -26,6 +26,13 @@ class Theme_Helper {
 	private $registered_view_modes = [];
 	protected $default_placeholder_template = '';
 
+	/**
+	 * Per-request memo for navigation metadata checks, keyed by user and collection.
+	 *
+	 * @var array<string, bool>
+	 */
+	private $navigation_metadatum_memo = array();
+
 	private function init() {
 
 		// Add support for Tainacan templates, in case a theme does not support it
@@ -1453,103 +1460,548 @@ class Theme_Helper {
 
 
 	/**
-	 * Get previous and next item according to current search query
-	 * 
-	 * @param integer $index the position of the item in the current list. This should be added to pagination.
-	 * 
-	 * @return array containing the next and previous item
+	 * Get previous and next item according to current search query.
+	 *
+	 * The query string is the list the visitor came from. Unless they may edit
+	 * other people's items in that collection (or manage Tainacan), filters on
+	 * a status, an author, or a metadatum or taxonomy they cannot read are
+	 * removed before the query runs. An unreadable row is skipped, and the
+	 * neighbor is the next item they can read, at that item's own index. The
+	 * neighbor URL is built from that same narrowed query, so a dropped status
+	 * or metakey is not forwarded either.
+	 *
+	 * @return array{next: array|null, previous: array|null}
 	 */
 	public function get_adjacent_items() {
 
-		// Array with the link results. If nothing goes well here we just don't have any link :(
-		$adjacent_items = [
-			'next' => null,
-			'previous' => null
-		];
+		$adjacent_items = array(
+			'next'     => null,
+			'previous' => null,
+		);
 
-		// Adjusts the args to obtain only on one item per request with the correct offset
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This function reads URL query parameters for navigation (read-only operation), similar to WordPress's get_adjacent_post(). Nonce verification is not needed for reading navigation parameters.
-		$args = $_GET;
-		
-		// Defines where are we getting items from
-		$entity = [];
-		if ( isset($args['source_list'] ) ) {
-
-			if ( $args['source_list'] == 'collection' ) { 
-				$collection_id = isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? absint( $args['source_entity_id'] ) : tainacan_get_collection_id();
-				
-				if ( $collection_id )
-					$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
-
-			} else if ( $args['source_list'] == 'term' ) {
-				$term_id = isset($args['source_entity_id']) && is_numeric($args['source_entity_id']) ? absint( $args['source_entity_id'] ) : false;
-				$term = $term_id ? tainacan_get_term(['term_id' => $term_id]) : tainacan_get_term();
-				
-				if ( $term ) {
-					$args['taxquery'] = [
-						[
-							'taxonomy' => $term->taxonomy,
-							'terms' => $term->term_id
-						]
-					];
-				}
-			}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only list query. Values that select items are narrowed below; the rest only rebuild a URL.
+		$request = wp_unslash( $_GET );
+		if ( ! is_array( $request ) || ! isset( $request['pos'] ) || ! is_scalar( $request['pos'] ) ) {
+			return $adjacent_items;
 		}
-		
-		unset($args['source_list']);
-		unset($args['source_entity_id']);
 
-		if (isset($args['pos'])) {
-
-			// Sets Page based on position
-			$args['perpage'] = '1';
-			$current_position = absint( $args['pos'] ) + 1;
-			unset($args['pos']);
-			global $tainacan_rest_items_controller;
-			$args = $tainacan_rest_items_controller->process_request_filters($args);
-
-			// Fetch Previous Item
-			if($current_position > 1) {
-				$args['paged'] = $current_position - 1;
-				$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
-				
-				if ($items->have_posts()) {
-					$items->the_post();
-					$item = new Entities\Item($items->post);
-
-					if (!empty($item)  && $item instanceof \Tainacan\Entities\Item) {
-						$adjacent_items['previous'] = [
-							// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Building navigation URL from original query parameters (read-only operation)
-							'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position-2])),
-							'title' => $item->get_title(),
-							'thumbnail' => $item->get_thumbnail()
-						];
+		$entity     = array();
+		$collection = null;
+		$term_query = null;
+		if ( isset( $request['source_list'] ) ) {
+			if ( 'collection' === $request['source_list'] ) {
+				$collection_id = isset( $request['source_entity_id'] ) && is_numeric( $request['source_entity_id'] ) ? absint( $request['source_entity_id'] ) : tainacan_get_collection_id();
+				if ( $collection_id ) {
+					$fetched = \Tainacan\Repositories\Collections::get_instance()->fetch( $collection_id );
+					if ( $fetched instanceof Entities\Collection ) {
+						$entity     = $fetched;
+						$collection = $fetched;
 					}
-					\wp_reset_postdata();
 				}
-			}
-
-			// Fetch Next Item
-			$args['paged'] = $current_position + 1;
-			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
-
-			if ($items->have_posts()) {
-				$items->the_post();
-				$item = new Entities\Item($items->post);
-
-				if (!empty($item) && $item instanceof \Tainacan\Entities\Item) {
-					$adjacent_items['next'] = [
-						// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Building navigation URL from original query parameters (read-only operation)
-						'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position])),
-						'title' => $item->get_title(),
-						'thumbnail' => $item->get_thumbnail()
-					];
+			} elseif ( 'term' === $request['source_list'] ) {
+				$term_id = isset( $request['source_entity_id'] ) && is_numeric( $request['source_entity_id'] ) ? absint( $request['source_entity_id'] ) : false;
+				$term    = $term_id ? tainacan_get_term( array( 'term_id' => $term_id ) ) : tainacan_get_term();
+				if ( $term ) {
+					$term_query = array(
+						array(
+							'taxonomy' => $term->taxonomy,
+							'terms'    => $term->term_id,
+						),
+					);
 				}
-				\wp_reset_postdata();
 			}
 		}
+
+		$current_position = absint( $request['pos'] ) + 1;
+		$fetch_args       = $request;
+		unset( $fetch_args['source_list'], $fetch_args['source_entity_id'], $fetch_args['pos'] );
+
+		if ( ! $this->visitor_may_navigate_unfiltered( $collection ) ) {
+			$request    = $this->narrow_navigation_request( $request, $collection );
+			$fetch_args = $this->narrow_navigation_request( $fetch_args, $collection );
+		}
+		// The term list's own constraint is not a visitor filter. It stays even when that taxonomy would be dropped.
+		if ( null !== $term_query ) {
+			$fetch_args['taxquery'] = $term_query;
+		}
+
+		// The neighbor scan chooses its own page. perpage here would only shrink that page.
+		unset( $fetch_args['perpage'] );
+		global $tainacan_rest_items_controller;
+		$fetch_args = $tainacan_rest_items_controller->process_request_filters( $fetch_args );
+
+		if ( $current_position > 1 ) {
+			$adjacent_items['previous'] = $this->read_adjacent_item( $fetch_args, $entity, $current_position - 2, -1, $request );
+		}
+
+		$adjacent_items['next'] = $this->read_adjacent_item( $fetch_args, $entity, $current_position, 1, $request );
 
 		return $adjacent_items;
+	}
+
+	/**
+	 * Nearest item in one direction that the visitor may read.
+	 *
+	 * One unreadable row must not end the walk. With status=draft kept for
+	 * someone who can edit the collection, a single collection does not run
+	 * Items::_filter_where(), so the page still contains every draft. The
+	 * next row can be another author's draft, and the one after it this
+	 * author's. can_read() hides the title, then the scan continues.
+	 *
+	 * A posts_where of public statuses OR post_author = current user would
+	 * also skip that row. With status=any the author half includes that
+	 * user's trash and auto-drafts. can_read() does not.
+	 *
+	 * The scan stops after one REST page of rows. pos is an index in this
+	 * same list, including the rows that were skipped, so the next request
+	 * starts from the item the link opened.
+	 *
+	 * @param array                     $args   Mapped fetch arguments.
+	 * @param Entities\Collection|array $entity Collection the list belongs to, or an empty array.
+	 * @param int                       $start  Zero-based index of the first candidate.
+	 * @param int                       $step   1 toward the next item, -1 toward the previous.
+	 * @param array                     $query  List query that may be forwarded to the URL.
+	 * @return array|null
+	 */
+	private function read_adjacent_item( $args, $entity, $start, $step, array $query ) {
+		$start = (int) $start;
+		$step  = (int) $step;
+		if ( $start < 0 || ( 1 !== $step && -1 !== $step ) ) {
+			return null;
+		}
+
+		global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
+		$limit = isset( $TAINACAN_API_MAX_ITEMS_PER_PAGE ) ? (int) $TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
+		if ( $limit < 1 ) {
+			$limit = 96;
+		}
+
+		if ( $step < 0 ) {
+			$from = max( 0, $start - $limit + 1 );
+			$take = $start - $from + 1;
+		} else {
+			$from = $start;
+			$take = $limit;
+		}
+
+		$page_args = $args;
+		// pos already addresses the row. A visitor offset or paged would shift it,
+		// and WP_Query gives offset precedence over paged, including offset 0.
+		unset( $page_args['paged'], $page_args['offset'] );
+		$page_args['offset']         = $from;
+		$page_args['posts_per_page'] = $take;
+
+		$items = \Tainacan\Repositories\Items::get_instance()->fetch( $page_args, $entity, 'WP_Query' );
+		if ( ! $items instanceof \WP_Query || empty( $items->posts ) ) {
+			return null;
+		}
+
+		$posts = $items->posts;
+		if ( $step < 0 ) {
+			$posts = array_reverse( $posts );
+		}
+
+		foreach ( $posts as $offset_in_page => $post ) {
+			if ( ! $post instanceof \WP_Post ) {
+				continue;
+			}
+			$index = $step > 0
+				? $from + $offset_in_page
+				: $from + count( $items->posts ) - 1 - $offset_in_page;
+
+			$item = new Entities\Item( $post );
+			if ( ! $item->can_read() ) {
+				continue;
+			}
+
+			return array(
+				'url'       => $this->get_adjacent_item_url( $item, $index, $query ),
+				'title'     => $item->get_title(),
+				'thumbnail' => $item->get_thumbnail(),
+			);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Whether this visitor may navigate the list with every filter they sent.
+	 *
+	 * Managers may. So may someone who edits other people's items in the
+	 * collection the list comes from. A term or repository list spans
+	 * collections, so only a manager passes there. An anonymous visitor never does.
+	 *
+	 * @param Entities\Collection|null $collection List collection, when the list is one collection.
+	 * @return bool
+	 */
+	private function visitor_may_navigate_unfiltered( $collection ) {
+		if ( ! is_user_logged_in() ) {
+			return false;
+		}
+		if ( current_user_can( 'manage_tainacan' ) ) {
+			return true;
+		}
+		if ( ! $collection instanceof Entities\Collection ) {
+			return false;
+		}
+		$caps = $collection->get_items_capabilities();
+		return ! empty( $caps->edit_others_posts ) && current_user_can( $caps->edit_others_posts );
+	}
+
+	/**
+	 * Whether this visitor may edit items of the list collection, including their own drafts.
+	 *
+	 * @param Entities\Collection|null $collection List collection.
+	 * @return bool
+	 */
+	private function visitor_may_edit_collection_items( $collection ) {
+		if ( $this->visitor_may_navigate_unfiltered( $collection ) ) {
+			return true;
+		}
+		if ( ! is_user_logged_in() || ! $collection instanceof Entities\Collection ) {
+			return false;
+		}
+		$caps = $collection->get_items_capabilities();
+		return ! empty( $caps->edit_posts ) && current_user_can( $caps->edit_posts );
+	}
+
+	/**
+	 * List arguments a visitor who does not see the whole list may keep.
+	 *
+	 * Status and author stay only for someone who edits this collection, so an
+	 * author can keep walking their own drafts. can_read() still skips a draft
+	 * they do not own. A metavalue left behind after its key is removed matches
+	 * every meta field, so the value and the compare go with the key. A sort
+	 * that names that key goes too, including orderby sent as an array.
+	 *
+	 * @param array                    $args       Raw list arguments.
+	 * @param Entities\Collection|null $collection List collection.
+	 * @return array
+	 */
+	private function narrow_navigation_request( array $args, $collection ) {
+		if ( ! $this->visitor_may_edit_collection_items( $collection ) ) {
+			unset( $args['status'], $args['post_status'], $args['author'], $args['author_name'], $args['authorid'], $args['authorname'] );
+		}
+
+		foreach ( array(
+			'metaquery' => 'meta',
+			'taxquery'  => 'tax',
+		) as $name => $kind ) {
+			if ( ! isset( $args[ $name ] ) ) {
+				continue;
+			}
+			$args[ $name ] = $this->narrow_navigation_clauses( $args[ $name ], $kind, $collection );
+			if ( ! $this->navigation_clauses_remain( $args[ $name ] ) ) {
+				unset( $args[ $name ] );
+			}
+		}
+
+		if ( ! isset( $args['metakey'] ) || ! $this->navigation_metadatum_is_queryable( $args['metakey'], $collection ) ) {
+			$rejected_key = isset( $args['metakey'] ) ? $args['metakey'] : '';
+			unset( $args['metakey'], $args['metavalue'], $args['metavaluenum'], $args['metacompare'] );
+			$args = $this->drop_rejected_metadata_orderby( $args, $rejected_key );
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Remove a sort that still names metadata this visitor may not query.
+	 *
+	 * The faceted search sends orderby as the string meta_value or
+	 * meta_value_num. orderby[meta_value_num]=ASC arrives as an array, and a
+	 * string comparison leaves it in place. parse_fetch_args() passes that
+	 * array to array_key_exists(), which throws on PHP 8, and the same array
+	 * would be copied onto the next URL. The key is already gone, so this
+	 * does not filter by the private field. It must not sort by it either.
+	 *
+	 * One column left over is written back as a string. Items::fetch() reads
+	 * the direction from `order`, and parse_fetch_args() cannot map an array.
+	 * Several columns are left untouched: that is the same array orderby this
+	 * helper already forwarded for a key the visitor may read.
+	 *
+	 * @param array $args         List arguments, after the rejected key was removed.
+	 * @param mixed $rejected_key Metakey that was removed, or an empty string.
+	 * @return array
+	 */
+	private function drop_rejected_metadata_orderby( array $args, $rejected_key ) {
+		if ( ! isset( $args['orderby'] ) ) {
+			return $args;
+		}
+
+		$blocked = array( 'meta_value', 'meta_value_num' );
+		if ( is_scalar( $rejected_key ) && '' !== (string) $rejected_key ) {
+			$blocked[] = (string) $rejected_key;
+		}
+
+		if ( is_string( $args['orderby'] ) ) {
+			if ( in_array( $args['orderby'], $blocked, true ) ) {
+				unset( $args['orderby'] );
+			}
+			return $args;
+		}
+
+		if ( ! is_array( $args['orderby'] ) ) {
+			unset( $args['orderby'] );
+			return $args;
+		}
+
+		foreach ( array_keys( $args['orderby'] ) as $column ) {
+			if ( in_array( (string) $column, $blocked, true ) ) {
+				unset( $args['orderby'][ $column ] );
+			}
+		}
+
+		if ( array() === $args['orderby'] ) {
+			unset( $args['orderby'] );
+			return $args;
+		}
+
+		if ( 1 === count( $args['orderby'] ) ) {
+			foreach ( $args['orderby'] as $column => $direction ) {
+				$args['orderby'] = (string) $column;
+				if ( is_string( $direction ) && in_array( strtoupper( $direction ), array( 'ASC', 'DESC' ), true ) ) {
+					$args['order'] = strtoupper( $direction );
+				}
+				break;
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Whether a clause group still contains a clause.
+	 *
+	 * @param mixed $clauses Clauses.
+	 * @return bool
+	 */
+	private function navigation_clauses_remain( $clauses ) {
+		return is_array( $clauses ) && (bool) array_diff_key( $clauses, array( 'relation' => true ) );
+	}
+
+	/**
+	 * Meta or taxonomy clauses limited to fields the visitor may read.
+	 * Rebuilt from the known fields, so compare_key never gets through, and a
+	 * meta clause with no key is dropped.
+	 *
+	 * @param mixed                    $query      metaquery or taxquery.
+	 * @param string                   $kind       'meta' or 'tax'.
+	 * @param Entities\Collection|null $collection List collection.
+	 * @return array
+	 */
+	private function narrow_navigation_clauses( $query, $kind, $collection ) {
+		$fields = 'meta' === $kind
+			? array( 'key', 'value', 'compare', 'type', 'metadatumtype' )
+			: array( 'taxonomy', 'terms', 'field', 'metadatum', 'operator', 'include_children' );
+		$out = array();
+
+		foreach ( is_array( $query ) ? $query : array() as $index => $clause ) {
+			if ( 'relation' === $index ) {
+				$out[ $index ] = $clause;
+				continue;
+			}
+			if ( ! is_array( $clause ) ) {
+				continue;
+			}
+			$is_clause = 'meta' === $kind
+				? isset( $clause['key'] ) || isset( $clause['value'] ) || isset( $clause['compare'] ) || isset( $clause['type'] ) || isset( $clause['metadatumtype'] ) || isset( $clause['compare_key'] ) || isset( $clause['type_key'] )
+				: isset( $clause['taxonomy'] ) || isset( $clause['terms'] ) || isset( $clause['metadatum'] );
+			if ( $is_clause ) {
+				$allowed = 'meta' === $kind
+					? isset( $clause['key'] ) && $this->navigation_metadatum_is_queryable( $clause['key'], $collection )
+					: isset( $clause['taxonomy'] ) && $this->navigation_taxonomy_is_queryable( $clause['taxonomy'] );
+				if ( $allowed ) {
+					$out[ $index ] = array_intersect_key( $clause, array_flip( $fields ) );
+				}
+				continue;
+			}
+			$group = $this->narrow_navigation_clauses( $clause, $kind, $collection );
+			if ( $this->navigation_clauses_remain( $group ) ) {
+				$out[ $index ] = $group;
+			}
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Whether the visitor may filter or sort by this metadata key.
+	 *
+	 * @param mixed                    $key        Meta key.
+	 * @param Entities\Collection|null $collection List collection.
+	 * @return bool
+	 */
+	private function navigation_metadatum_is_queryable( $key, $collection ) {
+		if ( ! is_scalar( $key ) ) {
+			return false;
+		}
+		$key = (string) $key;
+		if ( 'tainacan_core_title' === $key || 'tainacan_core_description' === $key ) {
+			return $this->navigation_core_key_is_queryable( $key, $collection );
+		}
+		if ( ! ctype_digit( $key ) ) {
+			return false;
+		}
+
+		$collection_key = $collection instanceof Entities\Collection ? (string) $collection->get_id() : '*';
+		$memo_key       = get_current_user_id() . '|' . $collection_key . '|' . $key;
+		if ( array_key_exists( $memo_key, $this->navigation_metadatum_memo ) ) {
+			return $this->navigation_metadatum_memo[ $memo_key ];
+		}
+		$this->navigation_metadatum_memo[ $memo_key ] = false;
+
+		$metadatum = Entities\Metadatum::get_post_type() === get_post_type( (int) $key )
+			? \Tainacan\Repositories\Metadata::get_instance()->fetch( (int) $key )
+			: null;
+		$ok = $metadatum instanceof Entities\Metadatum && $metadatum->can_read();
+
+		if ( $ok ) {
+			$section_ids = array_map( 'intval', array_filter( (array) $metadatum->get_metadata_section_id(), 'is_numeric' ) );
+			_prime_post_caches( $section_ids, false, false );
+			foreach ( $section_ids as $section_id ) {
+				$section = \Tainacan\Repositories\Metadata_Sections::get_instance()->fetch( $section_id );
+				if ( ! $section instanceof Entities\Metadata_Section ) {
+					continue;
+				}
+				if ( $collection instanceof Entities\Collection && (int) $section->get_collection_id() !== (int) $collection->get_id() ) {
+					continue;
+				}
+				if ( ! $section->can_read() ) {
+					$ok = false;
+					break;
+				}
+			}
+		}
+		if ( $ok && (int) $metadatum->get_parent() > 0 ) {
+			$ok = $this->navigation_metadatum_is_queryable( (int) $metadatum->get_parent(), $collection );
+		}
+
+		$this->navigation_metadatum_memo[ $memo_key ] = $ok;
+		return $ok;
+	}
+
+	/**
+	 * Whether tainacan_core_title or tainacan_core_description stands for metadata the visitor may read.
+	 * Items::fetch() rewrites the alias afterwards, one collection at a time.
+	 *
+	 * @param string                   $key        Core alias.
+	 * @param Entities\Collection|null $collection List collection. Every collection, when the list has none.
+	 * @return bool
+	 */
+	private function navigation_core_key_is_queryable( $key, $collection ) {
+		$collection_key = $collection instanceof Entities\Collection ? (string) $collection->get_id() : '*';
+		$memo_key       = 'core|' . get_current_user_id() . '|' . $collection_key . '|' . $key;
+		if ( isset( $this->navigation_metadatum_memo[ $memo_key ] ) ) {
+			return $this->navigation_metadatum_memo[ $memo_key ];
+		}
+
+		$collections = $collection instanceof Entities\Collection ? array( $collection ) : array();
+		if ( ! $collections ) {
+			$repository = \Tainacan\Repositories\Collections::get_instance();
+			$ids        = array();
+			foreach ( get_post_types() as $post_type ) {
+				if ( 0 === strpos( $post_type, Entities\Collection::$db_identifier_prefix ) ) {
+					$ids[] = (int) $repository->get_id_by_db_identifier( $post_type );
+				}
+			}
+			$ids = array_filter( $ids );
+			_prime_post_caches( $ids, false, false );
+			foreach ( $ids as $id ) {
+				$collections[] = $repository->fetch( $id );
+			}
+		}
+
+		$ok = true;
+		foreach ( $collections as $entity ) {
+			if ( ! $entity instanceof Entities\Collection ) {
+				continue;
+			}
+			$metadatum = 'tainacan_core_title' === $key ? $entity->get_core_title_metadatum() : $entity->get_core_description_metadatum();
+			if ( $metadatum instanceof Entities\Metadatum && ! $this->navigation_metadatum_is_queryable( $metadatum->get_id(), $collection ) ) {
+				$ok = false;
+				break;
+			}
+		}
+
+		$this->navigation_metadatum_memo[ $memo_key ] = $ok;
+		return $ok;
+	}
+
+	/**
+	 * Whether the visitor may filter by this taxonomy.
+	 *
+	 * @param mixed $taxonomy Taxonomy slug.
+	 * @return bool
+	 */
+	private function navigation_taxonomy_is_queryable( $taxonomy ) {
+		if ( ! is_string( $taxonomy ) || 1 !== preg_match( '/^tnc_tax_(\d+)$/', $taxonomy, $match ) ) {
+			return false;
+		}
+		if ( Entities\Taxonomy::get_post_type() !== get_post_type( (int) $match[1] ) ) {
+			return false;
+		}
+		$entity = \Tainacan\Repositories\Taxonomies::get_instance()->fetch( (int) $match[1] );
+		return $entity instanceof Entities\Taxonomy && $entity->can_read();
+	}
+
+	/**
+	 * URL of a neighboring item, with the list arguments added as their own parameters.
+	 *
+	 * The neighbor permalink already names that item. Query vars that name the
+	 * current item (plain permalinks) or a draft (`p`, `post_type`) are removed
+	 * first, along with vars that name the page hosting the list (`page_id`,
+	 * `tainacan_repository_archive`). `name` is kept: it is the public title
+	 * filter, and WordPress only copies a permalink into the internal `name`
+	 * query var inside parse_request, never into $_GET. add_query_arg() then
+	 * joins the list arguments with "?" or "&", so the URL keeps a single query
+	 * string. Values are encoded up front because add_query_arg() does not
+	 * encode the arguments it is given, including the nested metaquery arrays
+	 * the lists send. $query is the list query already narrowed for this visitor.
+	 *
+	 * @param Entities\Item $item     Neighbor item.
+	 * @param int           $position Zero-based position of that item in the list.
+	 * @param array         $query    List arguments to carry on the URL.
+	 * @return string
+	 */
+	private function get_adjacent_item_url( Entities\Item $item, $position, array $query ) {
+
+		unset(
+			$query['p'],
+			$query['page_id'],
+			$query['pagename'],
+			$query['post_type'],
+			$query['preview'],
+			$query['preview_id'],
+			$query['preview_nonce'],
+			$query['tainacan_repository_archive']
+		);
+
+		$post_ids = array( (int) $item->get_id(), (int) get_queried_object_id() );
+		foreach ( $post_ids as $post_id ) {
+			if ( $post_id <= 0 ) {
+				continue;
+			}
+			$type = get_post_type_object( (string) get_post_type( $post_id ) );
+			if ( $type && is_string( $type->query_var ) && '' !== $type->query_var ) {
+				unset( $query[ $type->query_var ] );
+			}
+		}
+
+		foreach ( array_keys( $query ) as $key ) {
+			if ( is_string( $key ) && $this->is_post_type_a_collection( $key ) ) {
+				unset( $query[ $key ] );
+			}
+		}
+
+		$query['pos'] = $position;
+
+		$permalink = get_permalink( $item->get_id() );
+		if ( ! is_string( $permalink ) || '' === $permalink ) {
+			return '';
+		}
+
+		return add_query_arg( urlencode_deep( $query ), $permalink );
 	}
 	
 	/**

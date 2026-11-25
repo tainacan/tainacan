@@ -36,14 +36,14 @@ const routes = [
     { path: '/collections/new', name: 'CollectionCreationForm', component: CollectionEditionForm, meta: { title: i18nGet('title_create_collection') } },
     { path: '/collections/new/:mapper', name: 'MappedCollectionCreationForm', component: CollectionEditionForm, meta: { title: i18nGet('title_create_collection') } },
 
-    { path: '/collections/:collectionId', component: CollectionPage, meta: { title: i18nGet('title_collection_page') },
+    { path: '/collections/:collectionId(\\d+)', component: CollectionPage, meta: { title: i18nGet('title_collection_page') },
       children: [
             /**
              * Previously, the first child route had a path: ''. Due to the following Vue3 update, we're doing it like that
              * https://router.vuejs.org/guide/migration/#Named-children-routes-with-an-empty-path-no-longer-appends-a-slash
              */
             {
-                path: '/collections/:collectionId',
+                path: '/collections/:collectionId(\\d+)',
                 redirect: {
                     name: 'CollectionItemsPage'
                 }
@@ -69,7 +69,7 @@ const routes = [
                 props: { isOnTheme: false }
             },
             {
-                path: 'items/:itemId/edit',
+                path: 'items/:itemId(\\d+)/edit',
                 name: 'ItemEditionForm',
                 component: ItemEditionForm,
                 meta: {
@@ -87,7 +87,7 @@ const routes = [
                 }
             },
             {
-                path: 'items/:itemId',
+                path: 'items/:itemId(\\d+)',
                 name: 'ItemPage',
                 component: ItemPage,
                 meta: {
@@ -158,7 +158,7 @@ const routes = [
                 }
             },
             {
-                path: 'sequence/:sequenceId',
+                path: 'sequence/:sequenceId([0-9a-f]+)',
                 name: 'SavedSequenceEditionForm',
                 component: ItemEditionForm,
                 meta: {
@@ -167,7 +167,7 @@ const routes = [
                 }
             },
             {
-                path: 'sequence/:sequenceId/:itemPosition',
+                path: 'sequence/:sequenceId([0-9a-f]+)/:itemPosition(\\d+)',
                 name: 'SequenceEditionForm',
                 component: ItemEditionForm,
                 meta: {
@@ -188,8 +188,8 @@ const routes = [
 
     { path: '/taxonomies', name: 'TaxonomyPage', component: TaxonomyPage, meta: { title: i18nGet('title_taxonomies_page') } },
     { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: { title: i18nGet('title_create_taxonomy_page') } },
-    { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: { title: i18nGet('title_taxonomy_edit_page') } },
-    { path: '/taxonomies/:taxonomyId', redirect: { name: 'TaxonomyEditionForm' } },
+    { path: '/taxonomies/:taxonomyId(\\d+)/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: { title: i18nGet('title_taxonomy_edit_page') } },
+    { path: '/taxonomies/:taxonomyId(\\d+)', redirect: { name: 'TaxonomyEditionForm' } },
 
     { path: '/activities',  name: 'ActivitiesPage', component: ActivitiesPage, meta: { title: i18nGet('title_repository_activities_page') } },
 
@@ -201,8 +201,8 @@ const routes = [
 
     { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: { title: i18nGet('title_importers_page') } },
     { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },
-    { path: '/importers/:importerSlug/:sessionId', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },
-    { path: '/importers/:importerSlug/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: { title: i18nGet('title_importer_mapping_page') } },
+    { path: '/importers/:importerSlug/:sessionId([0-9a-f]+)', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },
+    { path: '/importers/:importerSlug/:sessionId([0-9a-f]+)/mapping/:collectionId(\\d+)', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: { title: i18nGet('title_importer_mapping_page') } },
 
     { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: { title: i18nGet('title_exporters_page') } },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: { title: i18nGet('title_exporter_page') }},

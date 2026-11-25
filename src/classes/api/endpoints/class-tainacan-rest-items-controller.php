@@ -922,7 +922,7 @@ class REST_Items_Controller extends REST_Controller {
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 
-		if($this->item->validate()) {
+		if($item_obj->validate()) {
 			$item = $this->items_repository->insert( $item_obj );
 
 			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
@@ -931,8 +931,8 @@ class REST_Items_Controller extends REST_Controller {
 
 		return new \WP_REST_Response([
 			'error_message' => __('One or more values are invalid.', 'tainacan'),
-			'errors'        => $this->item->get_errors(),
-			'item'          => $this->prepare_item_for_response($this->item, $request)
+			'errors'        => $item_obj->get_errors(),
+			'item'          => $this->prepare_item_for_response($item_obj, $request)
 		], 400);
 	}
 
@@ -1460,7 +1460,7 @@ class REST_Items_Controller extends REST_Controller {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),
 						'errors'        => $item->get_errors(),
-						'item'          => $this->prepare_item_for_response($this->item, $request)
+						'item'          => $this->prepare_item_for_response($item, $request)
 					], 400);
 				}
 			} else {
@@ -1468,7 +1468,7 @@ class REST_Items_Controller extends REST_Controller {
 				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $item->get_errors(),
-					'item'          => $this->prepare_item_for_response($this->item, $request)
+					'item'          => $this->prepare_item_for_response($item, $request)
 				], 400);
 			}
 		} catch (\Exception $exception){
@@ -1568,7 +1568,7 @@ class REST_Items_Controller extends REST_Controller {
 			return new \WP_REST_Response([
 				'error_message' => __('One or more values are invalid.', 'tainacan'),
 				'errors'        => array_merge($item->get_errors(), $entities_erros),
-				'item'          => $this->prepare_item_for_response($this->item, $request)
+				'item'          => $this->prepare_item_for_response($item, $request)
 			], 400);
 		}
 	}

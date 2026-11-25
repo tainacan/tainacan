@@ -126,40 +126,39 @@ lightbox |
 ```mermaid
 classDiagram
     direction TB
-    class Search_Engine { }
-    class Cli_Control_Metadata { }
-    class Roles_Editor { }
-    class Background_Process_Base { }
-    class Pages { }
+    class Media { }
+    class Background_Process { }
+    class Settings { }
+    class Cli_Garbage_Collector { }
+    class Management_Tools { }
     class Admin_Bar_Items { }
-    class Cli_Collection { }
-    class Logs_Wp_Posts_Migration { }
-    class Cli_Logs { }
-    class Private_Files { }
+    class Dashboard { }
     class Gutenberg_Blocks { }
-    class Theme_Helper { }
+    class Background_Process_Heartbeat { }
+    class Async_Request { }
+    class Cli_Logs { }
+    class Cli_Control_Metadata { }
+    class Admin_Commands { }
+    class Pdf_Extracted_Text_Quality { }
+    class Cli_Move_Attachments { }
+    class Pages { }
+    class Roles_Editor { }
     class System_Check { }
+    class Mobile_App { }
+    class Private_Files { }
+    class Mappers_Handler { }
+    class Admin { }
+    class Cli_Document { }
+    class Theme_Helper { }
+    class Embed { }
+    class Cli_Collection { }
+    class Search_Engine { }
     class __Bulk_Edit { }
     class Exposers_Handler { }
     class Cli { }
-    class Dashboard { }
-    class Mappers_Handler { }
-    class Cli_Document { }
-    class Cli_Garbage_Collector { }
-    class Pdf_Extracted_Text_Quality { }
-    class Admin { }
-    class Embed { }
-    class Background_Process_Heartbeat { }
-    class Admin_Commands { }
-    class Cli_Move_Attachments { }
-    class Mobile_App { }
-    class Settings { }
-    class Background_Process { }
-    class Async_Request { }
-    class Media { }
+    class Background_Process_Base { }
     Async_Request <|-- Background_Process_Base
     Background_Process_Base <|-- Background_Process
-    Cli_Logs ..> Logs_Wp_Posts_Migration
     Cli_Move_Attachments ..> Private_Files
     Cli_Move_Attachments ..> Theme_Helper
     Exposers_Handler ..> Mappers_Handler
@@ -174,6 +173,7 @@ classDiagram
     Pages ..> Theme_Helper
     Pages <|-- Admin
     Pages <|-- Dashboard
+    Pages <|-- Management_Tools
     Pages <|-- Mobile_App
     Pages <|-- Roles_Editor
     Pages <|-- Settings
@@ -189,51 +189,50 @@ classDiagram
 ```
 #### Classes
 
-| Class                                                                             | Description                                                                                               |
-|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| [`Async_Request`](./classes/Tainacan/Async_Request.md)                               | Abstract base class for asynchronous requests.                                                            |
-| [`Background_Process_Base`](./classes/Tainacan/Background_Process_Base.md)           | Abstract base class for background processes in Tainacan.                                                 |
-| [`Background_Process_Heartbeat`](./classes/Tainacan/Background_Process_Heartbeat.md) |                                                                                                           |
-| [`Background_Process`](./classes/Tainacan/Background_Process.md)                     | Abstract Tainacan\Background_Process class.                                                               |
-| [`Background_Exporter`](./classes/Tainacan/Background_Exporter.md)                   | Abstract Tainacan\Background_Process class.                                                               |
-| [`Exporter_Handler`](./classes/Tainacan/Exporter_Handler.md)                         |                                                                                                           |
-| [`Background_Generic_Process`](./classes/Tainacan/Background_Generic_Process.md)     | Abstract Tainacan\Background_Process class.                                                               |
-| [`Generic_Process_Handler`](./classes/Tainacan/Generic_Process_Handler.md)           |                                                                                                           |
-| [`Background_Importer`](./classes/Tainacan/Background_Importer.md)                   | Abstract Tainacan\Background_Process class.                                                               |
-| [`Importer_Handler`](./classes/Tainacan/Importer_Handler.md)                         |                                                                                                           |
-| [`__Bulk_Edit`](./classes/Tainacan/__Bulk_Edit.md)                                   | Bulk_Edit class handles bulk item edition                                                                 |
-| [`Private_Files`](./classes/Tainacan/Private_Files.md)                               | Handles private file management for Tainacan.                                                             |
-| [`Roles`](./classes/Tainacan/Roles.md)                                               | Manages roles and capabilities for the Tainacan plugin.                                                   |
-| [`Search_Engine`](./classes/Tainacan/Search_Engine.md)                               | Implements the default Tainacan search engine.                                                            |
-| [`Cli_Collection`](./classes/Tainacan/Cli_Collection.md)                             | Handles WP-CLI commands for Tainacan collections.                                                         |
-| [`Cli_Control_Metadata`](./classes/Tainacan/Cli_Control_Metadata.md)                 | Handles WP-CLI commands for Tainacan control metadata operations.                                         |
-| [`Cli_Document`](./classes/Tainacan/Cli_Document.md)                                 | Handles WP-CLI commands for Tainacan document indexing operations.                                        |
-| [`Cli_Garbage_Collector`](./classes/Tainacan/Cli_Garbage_Collector.md)               | Handles WP-CLI commands for Tainacan garbage collection operations.                                       |
-| [`Logs_Wp_Posts_Migration`](./classes/Tainacan/Logs_Wp_Posts_Migration.md)           | Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta
-to the dedicated tainacan_logs table. |
-| [`Cli_Logs`](./classes/Tainacan/Cli_Logs.md)                                         | Manages Tainacan activity log data migration from the legacy wp_posts structure.                          |
-| [`Cli_Move_Attachments`](./classes/Tainacan/Cli_Move_Attachments.md)                 | Handles WP-CLI commands for Tainacan attachment migration operations.                                     |
-| [`Cli`](./classes/Tainacan/Cli.md)                                                   | Handles WP-CLI command registration for Tainacan.                                                         |
-| [`Exposers_Handler`](./classes/Tainacan/Exposers_Handler.md)                         | Load exposers classes                                                                                     |
-| [`Mappers_Handler`](./classes/Tainacan/Mappers_Handler.md)                           |                                                                                                           |
-| [`Embed`](./classes/Tainacan/Embed.md)                                               | Handles media embedding functionality for Tainacan.                                                       |
-| [`Media`](./classes/Tainacan/Media.md)                                               | Handles media functionality for Tainacan.                                                                 |
-| [`Pdf_Extracted_Text_Quality`](./classes/Tainacan/Pdf_Extracted_Text_Quality.md)     | Basic quality gate for PDF text extracted via Smalot PdfParser.                                           |
-| [`Theme_Helper`](./classes/Tainacan/Theme_Helper.md)                                 | Theme helper class for Tainacan.                                                                          |
-| [`Migrations`](./classes/Tainacan/Migrations.md)                                     |                                                                                                           |
-| [`Admin`](./classes/Tainacan/Admin.md)                                               | Pages is an abstract base class for all Tainacan admin pages.                                             |
-| [`Admin_Hooks`](./classes/Tainacan/Admin_Hooks.md)                                   |                                                                                                           |
-| [`Component_Hooks`](./classes/Tainacan/Component_Hooks.md)                           | Class Components_Hooks                                                                                    |
-| [`Plugin_Hooks`](./classes/Tainacan/Plugin_Hooks.md)                                 | Class Plugins_Hooks                                                                                       |
-| [`Admin_Bar_Items`](./classes/Tainacan/Admin_Bar_Items.md)                           | Handles WordPress admin bar items for Tainacan.                                                           |
-| [`Admin_Commands`](./classes/Tainacan/Admin_Commands.md)                             | Handles WordPress Command Palette integration for Tainacan.                                               |
-| [`Pages`](./classes/Tainacan/Pages.md)                                               | Pages is an abstract base class for all Tainacan admin pages.                                             |
-| [`Dashboard`](./classes/Tainacan/Dashboard.md)                                       | Pages is an abstract base class for all Tainacan admin pages.                                             |
-| [`Gutenberg_Blocks`](./classes/Tainacan/Gutenberg_Blocks.md)                         | Handles registration of Tainacan Gutenberg blocks and Query loop variations.                              |
-| [`Mobile_App`](./classes/Tainacan/Mobile_App.md)                                     | Pages is an abstract base class for all Tainacan admin pages.                                             |
-| [`Roles_Editor`](./classes/Tainacan/Roles_Editor.md)                                 | Pages is an abstract base class for all Tainacan admin pages.                                             |
-| [`Settings`](./classes/Tainacan/Settings.md)                                         | Pages is an abstract base class for all Tainacan admin pages.                                             |
-| [`System_Check`](./classes/Tainacan/System_Check.md)                                 | Pages is an abstract base class for all Tainacan admin pages.                                             |
+| Class                                                                             | Description                                                                      |
+|-----------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| [`Async_Request`](./classes/Tainacan/Async_Request.md)                               | Abstract base class for asynchronous requests.                                   |
+| [`Background_Process_Base`](./classes/Tainacan/Background_Process_Base.md)           | Abstract base class for background processes in Tainacan.                        |
+| [`Background_Process_Heartbeat`](./classes/Tainacan/Background_Process_Heartbeat.md) |                                                                                  |
+| [`Background_Process`](./classes/Tainacan/Background_Process.md)                     | Abstract Tainacan\Background_Process class.                                      |
+| [`Background_Exporter`](./classes/Tainacan/Background_Exporter.md)                   | Abstract Tainacan\Background_Process class.                                      |
+| [`Exporter_Handler`](./classes/Tainacan/Exporter_Handler.md)                         |                                                                                  |
+| [`Background_Generic_Process`](./classes/Tainacan/Background_Generic_Process.md)     | Abstract Tainacan\Background_Process class.                                      |
+| [`Generic_Process_Handler`](./classes/Tainacan/Generic_Process_Handler.md)           |                                                                                  |
+| [`Background_Importer`](./classes/Tainacan/Background_Importer.md)                   | Abstract Tainacan\Background_Process class.                                      |
+| [`Importer_Handler`](./classes/Tainacan/Importer_Handler.md)                         |                                                                                  |
+| [`__Bulk_Edit`](./classes/Tainacan/__Bulk_Edit.md)                                   | Bulk_Edit class handles bulk item edition                                        |
+| [`Private_Files`](./classes/Tainacan/Private_Files.md)                               | Handles private file management for Tainacan.                                    |
+| [`Roles`](./classes/Tainacan/Roles.md)                                               | Manages roles and capabilities for the Tainacan plugin.                          |
+| [`Search_Engine`](./classes/Tainacan/Search_Engine.md)                               | Implements the default Tainacan search engine.                                   |
+| [`Cli_Collection`](./classes/Tainacan/Cli_Collection.md)                             | Handles WP-CLI commands for Tainacan collections.                                |
+| [`Cli_Control_Metadata`](./classes/Tainacan/Cli_Control_Metadata.md)                 | Handles WP-CLI commands for Tainacan control metadata operations.                |
+| [`Cli_Document`](./classes/Tainacan/Cli_Document.md)                                 | Handles WP-CLI commands for Tainacan document indexing operations.               |
+| [`Cli_Garbage_Collector`](./classes/Tainacan/Cli_Garbage_Collector.md)               | Handles WP-CLI commands for Tainacan garbage collection operations.              |
+| [`Cli_Logs`](./classes/Tainacan/Cli_Logs.md)                                         | Manages Tainacan activity log data migration from the legacy wp_posts structure. |
+| [`Cli_Move_Attachments`](./classes/Tainacan/Cli_Move_Attachments.md)                 | Handles WP-CLI commands for Tainacan attachment migration operations.            |
+| [`Cli`](./classes/Tainacan/Cli.md)                                                   | Handles WP-CLI command registration for Tainacan.                                |
+| [`Exposers_Handler`](./classes/Tainacan/Exposers_Handler.md)                         | Load exposers classes                                                            |
+| [`Mappers_Handler`](./classes/Tainacan/Mappers_Handler.md)                           |                                                                                  |
+| [`Embed`](./classes/Tainacan/Embed.md)                                               | Handles media embedding functionality for Tainacan.                              |
+| [`Media`](./classes/Tainacan/Media.md)                                               | Handles media functionality for Tainacan.                                        |
+| [`Pdf_Extracted_Text_Quality`](./classes/Tainacan/Pdf_Extracted_Text_Quality.md)     | Basic quality gate for PDF text extracted via Smalot PdfParser.                  |
+| [`Theme_Helper`](./classes/Tainacan/Theme_Helper.md)                                 | Theme helper class for Tainacan.                                                 |
+| [`Migrations`](./classes/Tainacan/Migrations.md)                                     |                                                                                  |
+| [`Admin`](./classes/Tainacan/Admin.md)                                               | Pages is an abstract base class for all Tainacan admin pages.                    |
+| [`Admin_Hooks`](./classes/Tainacan/Admin_Hooks.md)                                   |                                                                                  |
+| [`Component_Hooks`](./classes/Tainacan/Component_Hooks.md)                           | Class Components_Hooks                                                           |
+| [`Plugin_Hooks`](./classes/Tainacan/Plugin_Hooks.md)                                 | Class Plugins_Hooks                                                              |
+| [`Admin_Bar_Items`](./classes/Tainacan/Admin_Bar_Items.md)                           | Handles WordPress admin bar items for Tainacan.                                  |
+| [`Admin_Commands`](./classes/Tainacan/Admin_Commands.md)                             | Handles WordPress Command Palette integration for Tainacan.                      |
+| [`Pages`](./classes/Tainacan/Pages.md)                                               | Pages is an abstract base class for all Tainacan admin pages.                    |
+| [`Dashboard`](./classes/Tainacan/Dashboard.md)                                       | Pages is an abstract base class for all Tainacan admin pages.                    |
+| [`Gutenberg_Blocks`](./classes/Tainacan/Gutenberg_Blocks.md)                         | Handles registration of Tainacan Gutenberg blocks and Query loop variations.     |
+| [`Management_Tools`](./classes/Tainacan/Management_Tools.md)                         | Management Tools admin page.                                                     |
+| [`Mobile_App`](./classes/Tainacan/Mobile_App.md)                                     | Pages is an abstract base class for all Tainacan admin pages.                    |
+| [`Roles_Editor`](./classes/Tainacan/Roles_Editor.md)                                 | Pages is an abstract base class for all Tainacan admin pages.                    |
+| [`Settings`](./classes/Tainacan/Settings.md)                                         | Pages is an abstract base class for all Tainacan admin pages.                    |
+| [`System_Check`](./classes/Tainacan/System_Check.md)                                 | Pages is an abstract base class for all Tainacan admin pages.                    |
 
 ### \Tainacan\API
 
@@ -245,28 +244,29 @@ to the dedicated tainacan_logs table. |
 classDiagram
     direction TB
     class REST_Controller { }
-    class endpoints_REST_Sequence_Edit_Controller { }
-    class endpoints_REST_Taxonomies_Controller { }
-    class endpoints_REST_Filter_Types_Controller { }
-    class endpoints_REST_Metadata_Sections_Controller { }
-    class endpoints_REST_Metadatum_Mappers_Controller { }
-    class endpoints_REST_Items_Controller { }
-    class endpoints_REST_Filters_Controller { }
-    class endpoints_REST_Roles_Controller { }
-    class endpoints_REST_Exporters_Controller { }
-    class endpoints_REST_Bulkedit_Controller { }
-    class endpoints_REST_Facets_Controller { }
+    class endpoints_REST_Metadata_Types_Controller { }
+    class endpoints_REST_Background_Processes_Controller { }
     class endpoints_REST_Oaipmh_Controller { }
-    class endpoints_REST_Terms_Controller { }
-    class endpoints_REST_Importers_Controller { }
-    class endpoints_REST_Exposers_Controller { }
-    class endpoints_REST_Metadata_Controller { }
-    class endpoints_REST_Logs_Controller { }
+    class endpoints_REST_Filters_Controller { }
+    class endpoints_REST_Management_Tools_Controller { }
     class endpoints_REST_Item_Metadata_Controller { }
     class endpoints_REST_Collections_Controller { }
+    class endpoints_REST_Logs_Controller { }
+    class endpoints_REST_Metadata_Controller { }
+    class endpoints_REST_Items_Controller { }
+    class endpoints_REST_Importers_Controller { }
+    class endpoints_REST_Bulkedit_Controller { }
+    class endpoints_REST_Terms_Controller { }
+    class endpoints_REST_Filter_Types_Controller { }
+    class endpoints_REST_Roles_Controller { }
+    class endpoints_REST_Sequence_Edit_Controller { }
     class endpoints_REST_Reports_Controller { }
-    class endpoints_REST_Background_Processes_Controller { }
-    class endpoints_REST_Metadata_Types_Controller { }
+    class endpoints_REST_Metadatum_Mappers_Controller { }
+    class endpoints_REST_Taxonomies_Controller { }
+    class endpoints_REST_Facets_Controller { }
+    class endpoints_REST_Exposers_Controller { }
+    class endpoints_REST_Exporters_Controller { }
+    class endpoints_REST_Metadata_Sections_Controller { }
     REST_Controller <|-- endpoints_REST_Background_Processes_Controller
     REST_Controller <|-- endpoints_REST_Bulkedit_Controller
     REST_Controller <|-- endpoints_REST_Collections_Controller
@@ -279,6 +279,7 @@ classDiagram
     REST_Controller <|-- endpoints_REST_Item_Metadata_Controller
     REST_Controller <|-- endpoints_REST_Items_Controller
     REST_Controller <|-- endpoints_REST_Logs_Controller
+    REST_Controller <|-- endpoints_REST_Management_Tools_Controller
     REST_Controller <|-- endpoints_REST_Metadata_Controller
     REST_Controller <|-- endpoints_REST_Metadata_Sections_Controller
     REST_Controller <|-- endpoints_REST_Metadata_Types_Controller
@@ -305,28 +306,29 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class REST_Sequence_Edit_Controller { }
-    class REST_Taxonomies_Controller { }
-    class REST_Filter_Types_Controller { }
-    class REST_Metadata_Sections_Controller { }
-    class REST_Metadatum_Mappers_Controller { }
-    class REST_Items_Controller { }
-    class REST_Filters_Controller { }
-    class REST_Roles_Controller { }
-    class REST_Exporters_Controller { }
-    class REST_Bulkedit_Controller { }
-    class REST_Facets_Controller { }
+    class REST_Metadata_Types_Controller { }
+    class REST_Background_Processes_Controller { }
     class REST_Oaipmh_Controller { }
-    class REST_Terms_Controller { }
-    class REST_Importers_Controller { }
-    class REST_Exposers_Controller { }
-    class REST_Metadata_Controller { }
-    class REST_Logs_Controller { }
+    class REST_Filters_Controller { }
+    class REST_Management_Tools_Controller { }
     class REST_Item_Metadata_Controller { }
     class REST_Collections_Controller { }
+    class REST_Logs_Controller { }
+    class REST_Metadata_Controller { }
+    class REST_Items_Controller { }
+    class REST_Importers_Controller { }
+    class REST_Bulkedit_Controller { }
+    class REST_Terms_Controller { }
+    class REST_Filter_Types_Controller { }
+    class REST_Roles_Controller { }
+    class REST_Sequence_Edit_Controller { }
     class REST_Reports_Controller { }
-    class REST_Background_Processes_Controller { }
-    class REST_Metadata_Types_Controller { }
+    class REST_Metadatum_Mappers_Controller { }
+    class REST_Taxonomies_Controller { }
+    class REST_Facets_Controller { }
+    class REST_Exposers_Controller { }
+    class REST_Exporters_Controller { }
+    class REST_Metadata_Sections_Controller { }
 ```
 #### Classes
 
@@ -344,6 +346,7 @@ classDiagram
 | [`REST_Item_Metadata_Controller`](./classes/Tainacan/API/EndPoints/REST_Item_Metadata_Controller.md)               | REST API controller for managing Tainacan item metadata.                 |
 | [`REST_Items_Controller`](./classes/Tainacan/API/EndPoints/REST_Items_Controller.md)                               | REST API controller for managing Tainacan items.                         |
 | [`REST_Logs_Controller`](./classes/Tainacan/API/EndPoints/REST_Logs_Controller.md)                                 | REST API controller for managing Tainacan logs.                          |
+| [`REST_Management_Tools_Controller`](./classes/Tainacan/API/EndPoints/REST_Management_Tools_Controller.md)         | REST API controller for the Management Tools.                            |
 | [`REST_Metadata_Controller`](./classes/Tainacan/API/EndPoints/REST_Metadata_Controller.md)                         | REST API controller for managing Tainacan metadata.                      |
 | [`REST_Metadata_Sections_Controller`](./classes/Tainacan/API/EndPoints/REST_Metadata_Sections_Controller.md)       | REST API controller for managing Tainacan metadata sections.             |
 | [`REST_Metadata_Types_Controller`](./classes/Tainacan/API/EndPoints/REST_Metadata_Types_Controller.md)             | REST API controller for managing Tainacan metadata types.                |
@@ -364,16 +367,16 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Item { }
     class Collection { }
+    class Term { }
+    class Item { }
+    class Item_Metadata_Entity { }
+    class Entity { }
     class Metadata_Section { }
     class Log { }
-    class Term { }
-    class Taxonomy { }
-    class Entity { }
-    class Filter { }
     class Metadatum { }
-    class Item_Metadata_Entity { }
+    class Taxonomy { }
+    class Filter { }
     Collection ..> Collection
     Collection ..> Metadatum
     Entity ..> Collection
@@ -392,6 +395,7 @@ classDiagram
     Item ..> Item_Metadata_Entity
     Item ..> Metadata_Section
     Item ..> Metadatum
+    Item_Metadata_Entity ..> Entity
     Item_Metadata_Entity ..> Item
     Item_Metadata_Entity ..> Item_Metadata_Entity
     Item_Metadata_Entity ..> Metadatum
@@ -424,11 +428,11 @@ classDiagram
 classDiagram
     direction TB
     class Background_Exporter { }
-    class CSV { }
-    class XLSX_Exporter { }
-    class Term_Exporter { }
-    class Exporter_Handler { }
     class Exporter { }
+    class Term_Exporter { }
+    class CSV { }
+    class Exporter_Handler { }
+    class XLSX_Exporter { }
     class traits_Exporter_Handler_Cell { }
     Exporter ..> Exporter_Handler
     Exporter <|-- CSV
@@ -455,15 +459,15 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Txt { }
-    class Exposers_Handler { }
-    class Csv { }
-    class OAI_PMH { }
     class Html { }
-    class JSON_flat { }
+    class Txt { }
+    class OAI_PMH { }
     class Xml { }
-    class JSON_LD { }
     class Exposer { }
+    class Csv { }
+    class JSON_flat { }
+    class JSON_LD { }
+    class Exposers_Handler { }
     Exposer <|-- Csv
     Exposer <|-- Html
     Exposer <|-- JSON_LD
@@ -527,20 +531,43 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Generic_Process { }
     class Background_Generic_Process { }
+    class Generic_Process { }
+    class Management_Tools_Process { }
     class Bulk_Edit_Process { }
     class Generic_Process_Handler { }
     Generic_Process <|-- Bulk_Edit_Process
+    Generic_Process <|-- Management_Tools_Process
     Generic_Process_Handler ..> Background_Generic_Process
     Generic_Process_Handler ..> Generic_Process
+    Management_Tools_Process ..> Background_Generic_Process
+    Management_Tools_Process ..> Generic_Process_Handler
 ```
 #### Classes
 
-| Class                                                                      | Description |
-|----------------------------------------------------------------------------|-------------|
-| [`Bulk_Edit_Process`](./classes/Tainacan/GenericProcess/Bulk_Edit_Process.md) |             |
-| [`Generic_Process`](./classes/Tainacan/GenericProcess/Generic_Process.md)     |             |
+| Class                                                                                    | Description                                                                        |
+|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [`Bulk_Edit_Process`](./classes/Tainacan/GenericProcess/Bulk_Edit_Process.md)               |                                                                                    |
+| [`Generic_Process`](./classes/Tainacan/GenericProcess/Generic_Process.md)                   |                                                                                    |
+| [`Management_Tools_Process`](./classes/Tainacan/GenericProcess/Management_Tools_Process.md) | Background process that runs management commands (e.g. the legacy logs migration). |
+
+### \Tainacan\Helpers
+
+
+
+#### Namespace Diagram
+
+```mermaid
+classDiagram
+    direction TB
+    class Logs_Wp_Posts_Migration { }
+```
+#### Classes
+
+| Class                                                                           | Description                                                                                               |
+|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| [`Logs_Wp_Posts_Migration`](./classes/Tainacan/Helpers/Logs_Wp_Posts_Migration.md) | Handles migration of legacy Tainacan logs from wp_posts/wp_postmeta
+to the dedicated tainacan_logs table. |
 
 ### \Tainacan\Importer
 
@@ -551,14 +578,14 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Oaipmh_Importer { }
-    class Background_Importer { }
-    class Importer_Handler { }
-    class CSV { }
-    class Flickr_Importer { }
-    class Term_Importer { }
     class Test_Importer { }
+    class Term_Importer { }
+    class Importer_Handler { }
+    class Background_Importer { }
     class Youtube_Importer { }
+    class Flickr_Importer { }
+    class Oaipmh_Importer { }
+    class CSV { }
     class Importer { }
     Importer ..> Importer_Handler
     Importer <|-- CSV
@@ -591,9 +618,9 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Elastic_Press_lte4 { }
     class WordPress_AI { }
     class Elastic_Press { }
+    class Elastic_Press_lte4 { }
     Elastic_Press ..> Elastic_Press
     Elastic_Press ..> Elastic_Press_lte4
 ```
@@ -614,12 +641,12 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Mapper { }
     class Inbcm_Archive { }
     class Dublin_Core { }
     class Mappers_Handler { }
-    class Mapper { }
-    class Inbcm_Museological { }
     class Inbcm_Bibliographic { }
+    class Inbcm_Museological { }
     Mapper <|-- Dublin_Core
     Mapper <|-- Inbcm_Archive
     Mapper <|-- Inbcm_Bibliographic
@@ -671,9 +698,9 @@ http://purl.org/dc/elements/1.1/ |
 ```mermaid
 classDiagram
     direction TB
-    class OAIPMH_Xml_Generator { }
     class OAIPMH_Data_Provider { }
     class OAIPMH_Token_Manager { }
+    class OAIPMH_Xml_Generator { }
     OAIPMH_Xml_Generator ..> OAIPMH_Xml_Generator
 ```
 #### Classes
@@ -693,17 +720,17 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
+    class Collections { }
+    class Item_Metadata { }
     class Logs { }
-    class Filters { }
-    class Taxonomies { }
-    class Terms { }
-    class Metadata { }
     class Repository { }
+    class Terms { }
+    class Metadata_Sections { }
+    class Taxonomies { }
     class Items { }
     class Logs { }
-    class Item_Metadata { }
-    class Collections { }
-    class Metadata_Sections { }
+    class Metadata { }
+    class Filters { }
     Collections ..> Metadata
     Filters ..> Collections
     Item_Metadata ..> Items
@@ -768,11 +795,11 @@ classDiagram
 ```mermaid
 classDiagram
     direction TB
-    class Entity_Collections_Relation { }
-    class Entity_Collection_Relation { }
-    class Admin_UI_Options { }
     class Formatter_Text { }
+    class Entity_Collection_Relation { }
     class SVG_Icon { }
+    class Entity_Collections_Relation { }
+    class Admin_UI_Options { }
     class Singleton_Instance { }
 ```
 #### Traits

@@ -122,7 +122,6 @@
                                                     </span>
                                                     <button 
                                                             v-if="!$adminOptions.hideItemSingleActivities &&
-                                                                !isUsingDeprecatedLogs &&
                                                                 $userCaps.hasCapability('tnc_rep_read_logs') &&
                                                                 itemMetadatum.metadatum.metadata_type_object.component != 'tainacan-compound'"
                                                             v-tooltip="{
@@ -553,8 +552,7 @@
                 open: true,
                 urls_open: false,
                 entityName: 'item',
-                activeTab: 'metadata',
-                isUsingDeprecatedLogs: tainacan_plugin.tainacan_use_deprecated_logs
+                activeTab: 'metadata'
             }
         },
         computed: {

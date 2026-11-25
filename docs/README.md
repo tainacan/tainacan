@@ -6,7 +6,7 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > 
 > <div class="two-columns-list">
 > 
-> - [Setting up a local environment](setup-local.md) - If you want to contribute to Tainacan core, you need a local environment. You can also use our [Docker repository](https://github.com/tainacan/tainacan-docker ":ignore"). **Not needed if you want to develop themes or plugins**.
+> - [Setting up a local environment](setup-local.md) - Start here to contribute to Tainacan core. The guide uses the [Docker repository](https://github.com/tainacan/tainacan-docker ":ignore"). **Not needed if you want to develop themes or plugins**.
 > - [Key Concepts](key-concepts.md) - How each Tainacan concept is stored, and which repository owns it.
 > - [Tainacan Internals](internal-api.md) - Reference on Tainacan main classes and how to use them. If you need more details, check our [Code Reference](phpdoc/Home.md) extracted from source code.
 > - [Tainacan Hooks](hooks.md) - Expand or modify different sections of code without modifying the plugin, using Actions and Filters, both in backend and frontend.
@@ -67,7 +67,7 @@ As you know, **Tainacan is a [WordPress](https://wordpress.org) plugin** and is 
 > 
 > <div class="three-columns-list">
 > 
-> - [Rich text editor](rich-text-editor.md)
+> - [Formatted text](rich-text-editor.md)
 > - [Faceted Search](faceted-search.md)
 > - [Search Engine](search-engine.md)
 > - [Search relevance](search-relevance.md)

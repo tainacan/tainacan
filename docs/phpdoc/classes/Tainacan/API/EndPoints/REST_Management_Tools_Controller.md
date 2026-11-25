@@ -1,0 +1,453 @@
+# REST_Management_Tools_Controller
+
+REST API controller for the Management Tools.
+
+Lists the commands available in the Management_Tools_Process and starts them
+as background processes. The progress of a started command is followed through
+the bg-processes endpoint, using the returned bg_process_id.
+
+GET  tainacan/v2/management-tools            Lists the commands and their params.
+POST tainacan/v2/management-tools/{command}  Starts a command. Body: the command params.
+
+***
+
+* Full name: `\Tainacan\API\EndPoints\REST_Management_Tools_Controller`
+* Parent class: [`\Tainacan\API\REST_Controller`](../REST_Controller)
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    direction TB
+    class REST_Management_Tools_Controller {
+        +__construct()
+        #get_schema()
+        +register_routes()
+        +management_tools_permissions_check(request)
+        +get_items(request)
+        +run_command(request)
+    }
+```
+
+## Methods
+
+### __construct
+
+Constructor for the REST_Controller class.
+
+```php
+public __construct(): mixed
+```
+
+Sets up the namespace and registers routes and filters.
+
+***
+
+### get_schema
+
+```php
+protected get_schema(): mixed
+```
+
+***
+
+### register_routes
+
+```php
+public register_routes(): mixed
+```
+
+***
+
+### management_tools_permissions_check
+
+Management tools run heavy operations on the whole repository, so they are
+restricted to site administrators.
+
+```php
+public management_tools_permissions_check(\WP_REST_Request $request): bool
+```
+
+**Parameters:**
+
+| Parameter  | Type                 | Description |
+|------------|----------------------|-------------|
+| `$request` | **\WP_REST_Request** |             |
+
+***
+
+### get_items
+
+```php
+public get_items(\WP_REST_Request $request): \WP_REST_Response
+```
+
+**Parameters:**
+
+| Parameter  | Type                 | Description |
+|------------|----------------------|-------------|
+| `$request` | **\WP_REST_Request** |             |
+
+***
+
+### run_command
+
+```php
+public run_command(\WP_REST_Request $request): \WP_REST_Response|\WP_Error
+```
+
+**Parameters:**
+
+| Parameter  | Type                 | Description |
+|------------|----------------------|-------------|
+| `$request` | **\WP_REST_Request** |             |
+
+***
+
+## Inherited methods
+
+### __construct
+
+Constructor for the REST_Controller class.
+
+```php
+public __construct(): mixed
+```
+
+Sets up the namespace and registers routes and filters.
+
+***
+
+### filter_object_by_attributes
+
+Filters an object by specified attributes.
+
+```php
+protected filter_object_by_attributes(mixed $object, string|array $attributes): array
+```
+
+**Parameters:**
+
+| Parameter     | Type              | Description                                       |
+|---------------|-------------------|---------------------------------------------------|
+| `$object`     | **mixed**         | The object to filter.                             |
+| `$attributes` | **string\|array** | The attributes to include in the filtered result. |
+
+**Return Value:**
+
+Filtered object data.
+
+***
+
+### prepare_item_for_updating
+
+Prepares an item for updating with new values.
+
+```php
+protected prepare_item_for_updating(mixed $object, array $new_values): \Tainacan\Entities\Entity
+```
+
+**Parameters:**
+
+| Parameter     | Type      | Description                      |
+|---------------|-----------|----------------------------------|
+| `$object`     | **mixed** | The object to update.            |
+| `$new_values` | **array** | New values to set on the object. |
+
+**Return Value:**
+
+The updated entity.
+
+***
+
+### get_readonly_fields
+
+```php
+protected get_readonly_fields(): mixed
+```
+
+***
+
+### prepare_filters
+
+```php
+protected prepare_filters(mixed $request): array
+```
+
+**Parameters:**
+
+| Parameter  | Type      | Description |
+|------------|-----------|-------------|
+| `$request` | **mixed** |             |
+
+**Throws:**
+
+- [`Exception`](../../../Exception)
+
+***
+
+### get_minimum_safe_perpage
+
+Positive page size used when a request asks for a non-positive perpage.
+
+```php
+protected get_minimum_safe_perpage(): int
+```
+
+perpage=-1 would otherwise become posts_per_page=-1 and skip the LIMIT.
+
+***
+
+### add_support_to_tax_query_like
+
+```php
+public add_support_to_tax_query_like(mixed $args): mixed
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$args`   | **mixed** |             |
+
+***
+
+### sanitize_value
+
+Sanitize query values as post HTML. Anchor tags are removed unless the field stores rich text.
+
+```php
+protected sanitize_value(mixed $value, bool $remove_links = true): mixed
+```
+
+**Parameters:**
+
+| Parameter       | Type      | Description                          |
+|-----------------|-----------|--------------------------------------|
+| `$value`        | **mixed** | Value to sanitize.                   |
+| `$remove_links` | **bool**  | Whether anchor tags must be removed. |
+
+***
+
+### contains_array
+
+```php
+protected contains_array(mixed $array, mixed $query): bool
+```
+
+**Parameters:**
+
+| Parameter | Type      | Description |
+|-----------|-----------|-------------|
+| `$array`  | **mixed** |             |
+| `$query`  | **mixed** |             |
+
+***
+
+### get_fetch_only_param
+
+Return the fetch_only param
+
+```php
+public get_fetch_only_param(): array|void
+```
+
+***
+
+### get_wp_query_params
+
+Return the common params
+
+```php
+public get_wp_query_params(): array|void
+```
+
+***
+
+### get_meta_queries_params
+
+Return the common meta, date and tax queries params
+
+```php
+protected get_meta_queries_params(): array
+```
+
+***
+
+### get_repository_schema
+
+```php
+public get_repository_schema(\Tainacan\Repositories\Repository $repository): mixed
+```
+
+**Parameters:**
+
+| Parameter     | Type                                  | Description |
+|---------------|---------------------------------------|-------------|
+| `$repository` | **\Tainacan\Repositories\Repository** |             |
+
+***
+
+### get_permissions_schema
+
+Returns a schema definition for permission-related object properties.
+
+```php
+protected get_permissions_schema(): array
+```
+
+This helper builds a schema object describing whether the current user
+can edit or delete the object, including the context in which the
+permissions apply. It is used for documenting API endpoints and for
+client-side validation.
+
+**Return Value:**
+
+The schema definition.
+
+***
+
+### get_base_properties_schema
+
+```php
+public get_base_properties_schema(): mixed
+```
+
+***
+
+### get_schema
+
+```php
+protected get_schema(): mixed
+```
+
+* This method is **abstract**.
+***
+
+### get_list_schema
+
+```php
+public get_list_schema(): mixed
+```
+
+***
+
+### tainacan_sanitize_post_statuses
+
+Sanitizes and validates a list of post statuses for use in REST requests.
+
+```php
+public tainacan_sanitize_post_statuses(string|array $statuses, \WP_REST_Request $request, string $parameter): array|\WP_Error
+```
+
+Accepts a list of status slugs (string or array). If it contains 'any',
+returns all non-internal post statuses. Otherwise, validates each
+status against those allowed by get_post_stati(); returns WP_Error if any
+status is invalid.
+
+**Parameters:**
+
+| Parameter    | Type                 | Description                                                    |
+|--------------|----------------------|----------------------------------------------------------------|
+| `$statuses`  | **string\|array**    | List of statuses (comma-separated string or array of slugs).   |
+| `$request`   | **\WP_REST_Request** | REST request object (not used in the current logic).           |
+| `$parameter` | **string**           | Parameter name in the request (not used in the current logic). |
+
+**Return Value:**
+
+Array of valid status slugs or WP_Error if any status is not allowed.
+
+***
+
+### validate_array_fields
+
+Reject named fields that are present in a decoded JSON body but are not arrays.
+
+```php
+protected validate_array_fields(mixed $body, array $fields): true|\WP_REST_Response
+```
+
+JSON bodies read via get_body() bypass REST schema type checks when
+Content-Type is not application/json (for example text/plain).
+
+**Parameters:**
+
+| Parameter | Type      | Description                                   |
+|-----------|-----------|-----------------------------------------------|
+| `$body`   | **mixed** | Decoded request body or nested object.        |
+| `$fields` | **array** | Field names that must be arrays when present. |
+
+***
+
+### get_param_schema
+
+Returns a single schema property definition for a field.
+
+```php
+protected get_param_schema(string $param_name, array $properties): array
+```
+
+The return value is keyed by the field name so it can be safely merged
+into an object schema's `properties` map via `array_merge()`. Each call
+therefore contributes one distinct property instead of overwriting the
+shared `title`/`description`/`type` keys (which previously caused every
+merged property except the last one to be lost).
+
+**Parameters:**
+
+| Parameter     | Type       | Description                      |
+|---------------|------------|----------------------------------|
+| `$param_name` | **string** | The name of the parameter.       |
+| `$properties` | **array**  | The properties of the parameter. |
+
+**Return Value:**
+
+A single-entry map of field name => property schema.
+
+***
+
+### get_paginated_list_schema
+
+Returns a schema definition for paginated list responses.
+
+```php
+protected get_paginated_list_schema(): array
+```
+
+This helper builds a schema object describing the structure of paginated
+list responses returned by the API. It includes fields for the total
+number of items, total number of pages, the current page number, the
+number of items per page, and the array of items.
+
+**Return Value:**
+
+The schema definition.
+
+***
+
+### prepare_paginated_response
+
+Prepares a paginated response with the standard total headers.
+
+```php
+protected prepare_paginated_response(array $data, int $total, int $total_pages, int $per_page, \WP_REST_Response|null $response = null): \WP_REST_Response
+```
+
+Sets X-WP-Total, X-WP-TotalPages, and X-WP-ItemsPerPage. It is designed
+to work with the get_paginated_list_schema() method.
+
+**Parameters:**
+
+| Parameter      | Type                        | Description                              |
+|----------------|-----------------------------|------------------------------------------|
+| `$data`        | **array**                   | The data to include in the response.     |
+| `$total`       | **int**                     | Total number of items.                   |
+| `$total_pages` | **int**                     | Total number of pages.                   |
+| `$per_page`    | **int**                     | Number of items per page.                |
+| `$response`    | **\WP_REST_Response\|null** | Optional. The response object to modify. |
+
+**Return Value:**
+
+The paginated response.
+
+***

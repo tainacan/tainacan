@@ -15,6 +15,36 @@ storing the actual data content for specific metadata fields.
 ```mermaid
 classDiagram
     direction TB
+    class Item_Metadata_Entity {
+        #post_type : mixed
+        #repository : string
+        #item : mixed
+        +__construct(item, metadatum, meta_id, parent_meta_id)
+        +get_multivalue_prefix()
+        +get_multivalue_suffix()
+        +get_multivalue_separator()
+        +get_value_as_html()
+        +get_value_as_string()
+        +get_value_as_array()
+        +_toArray(formatted_values, cascade)
+        +set_item(item)
+        +set_value(value)
+        +set_metadatum(metadatum)
+        +set_meta_id(meta_id)
+        +set_parent_meta_id(parent_meta_id)
+        +get_item()
+        +get_metadatum()
+        +get_meta_id()
+        +get_parent_meta_id()
+        +get_value()
+        +has_value()
+        +matches_conditional_values(rule_values)
+        +is_multiple()
+        +is_collection_key()
+        +is_required()
+        +validate()
+        -resolve_term_id(term_value, taxonomy_slug)
+    }
     class Entity {
         #repository : Repository
         -errors : array
@@ -53,37 +83,9 @@ classDiagram
         +get_capabilities()
         +diff(which)
     }
-    class Item_Metadata_Entity {
-        #post_type : mixed
-        #repository : string
-        #item : mixed
-        +__construct(item, metadatum, meta_id, parent_meta_id)
-        +get_multivalue_prefix()
-        +get_multivalue_suffix()
-        +get_multivalue_separator()
-        +get_value_as_html()
-        +get_value_as_string()
-        +get_value_as_array()
-        +_toArray(formatted_values, cascade)
-        +set_item(item)
-        +set_value(value)
-        +set_metadatum(metadatum)
-        +set_meta_id(meta_id)
-        +set_parent_meta_id(parent_meta_id)
-        +get_item()
-        +get_metadatum()
-        +get_meta_id()
-        +get_parent_meta_id()
-        +get_value()
-        +has_value()
-        +matches_conditional_values(rule_values)
-        +is_multiple()
-        +is_collection_key()
-        +is_required()
-        +validate()
-    }
     Entity ..> Entity
     Entity <|-- Item_Metadata_Entity
+    Item_Metadata_Entity ..> Entity
     Item_Metadata_Entity ..> Item_Metadata_Entity
 ```
 
@@ -471,6 +473,27 @@ Returns whether metadata value is valid
 ```php
 public validate(): bool
 ```
+
+***
+
+### resolve_term_id
+
+Resolves a term value to its term ID the same way save_terms_metadatum_value() does.
+
+```php
+private resolve_term_id(mixed $term_value, string $taxonomy_slug): int|null
+```
+
+**Parameters:**
+
+| Parameter        | Type       | Description                           |
+|------------------|------------|---------------------------------------|
+| `$term_value`    | **mixed**  | A Term entity, term ID, or term name. |
+| `$taxonomy_slug` | **string** | The taxonomy database identifier.     |
+
+**Return Value:**
+
+The term ID if the term exists, or null otherwise.
 
 ***
 

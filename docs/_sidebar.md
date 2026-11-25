@@ -43,7 +43,7 @@
   - [Customizing the Items List](/dev/customizing-the-items-list.md 'How to better customize Tainacan items list on a theme - Tainacan Wiki')
   - [Extra View Modes](/dev/extra-view-modes.md 'How to create extra custom view modes for Tainacan items list - Tainacan Wiki')
 - Configuration and performance
-  - [Rich text editor](/dev/rich-text-editor.md 'Configure the Tainacan rich text editor - Tainacan Wiki')
+  - [Formatted text](/dev/rich-text-editor.md 'Configure formatted text in Tainacan - Tainacan Wiki')
   - [Faceted Search](/dev/faceted-search.md 'Tweaks for better Faceted Search performance - Tainacan Wiki')
   - [Search Engine](/dev/search-engine.md 'Configuration for better Search Engine performance - Tainacan Wiki')
   - [Search relevance](/dev/search-relevance.md 'How textual search results are ordered by relevance - Tainacan Wiki')

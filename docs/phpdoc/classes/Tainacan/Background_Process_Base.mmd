@@ -1,5 +1,18 @@
 classDiagram
     direction TB
+    class Async_Request {
+        #prefix : string
+        #action : string
+        #identifier : mixed
+        #data : array
+        +__construct()
+        +data(data)
+        +dispatch()
+        #get_query_args()
+        #get_query_url()
+        #get_post_args()
+        +maybe_handle()
+    }
     class Background_Process_Base {
         #action : string
         #start_time : int
@@ -32,24 +45,12 @@ classDiagram
         +schedule_cron_healthcheck(schedules)
         +handle_cron_healthcheck()
         +handle_cron_healthcheck_check()
+        #utc_now()
         #detect_and_cleanup_stale_processes()
         +record_heartbeat()
         #schedule_event()
         #clear_scheduled_event()
         +cancel_process()
         +debug(message)
-    }
-    class Async_Request {
-        #prefix : string
-        #action : string
-        #identifier : mixed
-        #data : array
-        +__construct()
-        +data(data)
-        +dispatch()
-        #get_query_args()
-        #get_query_url()
-        #get_post_args()
-        +maybe_handle()
     }
     Async_Request <|-- Background_Process_Base

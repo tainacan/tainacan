@@ -133,7 +133,7 @@ class Settings extends Pages {
 			// translators: %s: The default number of items to show in search results.
 			'description' => sprintf( __( 'Number of items to show in search results. The default is %s and larger numbers should be avoided as it impacts in your server load time.', 'tainacan' ), ( defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 96 ) ),
 			'sanitize_callback' => 'absint',
-			'default' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 12,
+			'default' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : 96,
 			'forced_value' => defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? max(TAINACAN_API_MAX_ITEMS_PER_PAGE, 12) : null
 		) );
 
@@ -270,9 +270,9 @@ class Settings extends Pages {
 		$this->create_tainacan_setting( array(
 			'id' => 'allow_rich_text_editor',
 			'section' => 'tainacan_settings_input_fields',
-			'title' => __( 'Rich text editor', 'tainacan' ),
-			'label' => __( 'Allow the rich text editor in text inputs', 'tainacan' ),
-			'description' => __( 'Allows the rich text editor in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
+			'title' => __( 'Formatted text', 'tainacan' ),
+			'label' => __( 'Allow formatted text in text inputs', 'tainacan' ),
+			'description' => __( 'Allows formatted text in supported Tainacan text inputs. You can then enable it individually for Textarea and Core Description metadata. HTML saved in these fields is included in textual search, so markup can split phrases and change which results match.', 'tainacan' ),
 			'type' => 'boolean',
 			'input_type' => 'checkbox',
 			'input_disabled' => defined( 'TAINACAN_ALLOW_RICH_TEXT_EDITOR' ),
@@ -908,7 +908,7 @@ class Settings extends Pages {
 	public function input_fields_section_description() {
 	?>
 		<p class="settings-section-description">
-			<?php esc_html_e( 'Options for input fields in Tainacan, including the rich text editor and the year range offered by datepickers in date metadata and filters.', 'tainacan' ); ?>
+			<?php esc_html_e( 'Options for input fields in Tainacan, including formatted text and the year range offered by datepickers in date metadata and filters.', 'tainacan' ); ?>
 		</p>
 	<?php
 	}

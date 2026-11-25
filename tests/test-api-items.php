@@ -35,6 +35,44 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('Vue JS 2', $data['title']);
 	}
 
+	public function test_create_invalid_item_returns_400_instead_of_500() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Collection with required metadata',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'required_meta',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'required'      => 'yes',
+				'status'        => 'publish'
+			),
+			true
+		);
+
+		// Publishing without filling the required metadatum must fail validation,
+		// not reach Repository::insert() and throw "Entities must be validated".
+		$request = new \WP_REST_Request( 'POST', $this->namespace . '/collection/' . $collection->get_id() . '/items' );
+		$request->set_body( wp_json_encode( array(
+			'title'  => 'Invalid item',
+			'status' => 'publish'
+		) ) );
+
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 400, $response->get_status() );
+		$this->assertArrayHasKey( 'errors', $data );
+		$this->assertNotEmpty( $data['errors'] );
+	}
+
 	public function test_fetch_items_from_a_collection(){
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

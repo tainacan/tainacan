@@ -58,15 +58,18 @@ public register_generic_process(array $process): mixed
 
 ### add_to_queue
 
+Adds a process to the background queue.
+
 ```php
-public add_to_queue(\Tainacan\GenericProcess\Generic_Process $process_object): mixed
+public add_to_queue(\Tainacan\GenericProcess\Generic_Process $process_object, string|null $name = null): \Tainacan\Background_Generic_Process|false
 ```
 
 **Parameters:**
 
-| Parameter         | Type                                         | Description |
-|-------------------|----------------------------------------------|-------------|
-| `$process_object` | **\Tainacan\GenericProcess\Generic_Process** |             |
+| Parameter         | Type                                         | Description                                                                    |
+|-------------------|----------------------------------------------|--------------------------------------------------------------------------------|
+| `$process_object` | **\Tainacan\GenericProcess\Generic_Process** |                                                                                |
+| `$name`           | **string\|null**                             | Name displayed in the processes list. Defaults to the registered process name. |
 
 ***
 
