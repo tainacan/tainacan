@@ -1,3 +1,4 @@
-# Git hooks are executed by sh, so they must keep LF line endings on every OS.
+# Keep LF line endings for the hook and lint scripts on every OS.
 .githooks/* text eol=lf
 lint-changed.sh text eol=lf
+tests/test-lint-changed.sh text eol=lf

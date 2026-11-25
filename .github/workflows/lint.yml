@@ -10,6 +10,8 @@ on:
       - '**.vue'
       - 'eslint.config.js'
       - 'lint-changed.sh'
+      - '.githooks/pre-push'
+      - 'tests/test-lint-changed.sh'
       - '.github/workflows/lint.yml'
   pull_request:
     paths:
@@ -17,7 +19,9 @@ on:
       - 'src/views/**/*.js'
       - '**.vue'
       - 'eslint.config.js'
-      - 'scripts/lint-changed.js'
+      - 'lint-changed.sh'
+      - '.githooks/pre-push'
+      - 'tests/test-lint-changed.sh'
       - '.github/workflows/lint.yml'
   # Allow manually triggering the workflow.
   workflow_dispatch:
@@ -55,6 +59,9 @@ jobs:
 
       - name: Install npm dependencies
         run: npm ci --no-audit --no-fund
+
+      - name: Test the pre-push hook
+        run: bash tests/test-lint-changed.sh
 
       - name: Lint changed files
         env:

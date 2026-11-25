@@ -4,7 +4,7 @@
 #
 # Usage:
 #   ./lint-changed.sh
-#   ./lint-changed.sh --base=origin/develop
+#   ./lint-changed.sh --base=<ref> --head=<ref>
 #   ./lint-changed.sh --working-tree
 #   ./lint-changed.sh --phpcs
 #   ./lint-changed.sh -- path/to/file.php
@@ -14,288 +14,235 @@
 #   1 - blocking lint errors
 #   2 - Git or argument error
 
-base=""
+unset base_ref head_ref
 use_phpcs=false
 working_tree=false
-
 files=()
 php_files=()
 frontend_files=()
 
-failed=false
+die() {
+    printf '%s\n' "$1" >&2
+    exit 2
+}
 
-# Read command-line arguments.
 while (($#)); do
     case "$1" in
-        --base=*)
-            base=${1#--base=}
-            ;;
-
-        --working-tree)
-            working_tree=true
-            ;;
-
-        --phpcs)
-            use_phpcs=true
-            ;;
-
+        --base=*) base_ref=${1#--base=} ;;
+        --head=*) head_ref=${1#--head=} ;;
+        --working-tree) working_tree=true ;;
+        --phpcs) use_phpcs=true ;;
         --)
             shift
             files+=("$@")
             break
             ;;
-
-        -*)
-            printf 'Unknown option: %s\n' "$1" >&2
-            exit 2
-            ;;
-
-        *)
-            files+=("$1")
-            ;;
+        -*) die "Unknown option: $1" ;;
+        *) files+=("$1") ;;
     esac
-
     shift
 done
 
-# Run from the repository root.
-root=$(git rev-parse --show-toplevel 2>/dev/null) || {
-    echo "Not inside a Git repository." >&2
-    exit 2
-}
-
+root=$(git rev-parse --show-toplevel 2>/dev/null) || die "Not inside a Git repository."
 cd "$root" || exit 2
 
-# If files were not explicitly provided, obtain them from Git.
+resolve_commit() {
+    git rev-parse --verify --quiet --end-of-options "$1^{commit}"
+}
+
+from_commit=false
+temp_dirs=()
+cleanup() {
+    if ((${#temp_dirs[@]})); then
+        cd "$root" || return
+        rm -rf -- "${temp_dirs[@]}"
+    fi
+}
+trap cleanup EXIT
+
+if [[ ${head_ref+x} ]] && { [[ "$working_tree" == true ]] || ((${#files[@]})); }; then
+    die "--head cannot be combined with --working-tree or explicit file paths."
+fi
+
 if ((${#files[@]} == 0)); then
-
-    # Validate an explicitly supplied base.
-    if [[ -n "$base" ]]; then
-        if ! git rev-parse \
-            --verify \
-            --quiet \
-            --end-of-options \
-            "$base^{commit}" >/dev/null; then
-
-            printf 'Invalid base ref: %s\n' "$base" >&2
-            exit 2
-        fi
-
-    # Otherwise, use the same default candidates as the original script.
+    if [[ ${base_ref+x} ]]; then
+        base=$(resolve_commit "$base_ref") || die "Invalid base ref: $base_ref"
     else
-        for ref in upstream/develop origin/develop develop; do
-            if git rev-parse --verify --quiet "$ref^{commit}" >/dev/null; then
-                base=$ref
+        for base_ref in upstream/develop origin/develop develop; do
+            if base=$(resolve_commit "$base_ref"); then
                 break
             fi
         done
+        [[ -n "$base" ]] || die "No default base ref found. Fetch develop or specify --base=<ref>."
     fi
 
-    tmp=$(mktemp) || {
-        echo "Could not create temporary file." >&2
-        exit 2
-    }
+    head_ref=${head_ref-HEAD}
+    head=$(resolve_commit "$head_ref") || die "Invalid head ref: $head_ref"
+    temp_root=$(mktemp -d) || die "Could not create temporary directory."
+    temp_dirs+=("$temp_root")
+    diff_file="$temp_root/paths"
 
-    trap 'rm -f -- "$tmp"' EXIT
+    git diff --raw --no-renames -z --diff-filter=d "$base...$head" -- > "$diff_file" ||
+        die "Could not diff $head_ref against $base_ref."
 
-    if [[ -n "$base" ]]; then
-        # Three dots compare HEAD with the merge base.
-        if ! git diff \
-            --name-only \
-            -z \
-            --diff-filter=d \
-            "$base...HEAD" \
-            -- > "$tmp"; then
+    while IFS= read -r -d '' change && IFS= read -r -d '' file; do
+        # The destination mode distinguishes regular files from symlinks and submodules.
+        read -r _ mode _ <<< "$change"
+        [[ "$mode" == 100644 || "$mode" == 100755 ]] && files+=("$file")
+    done < "$diff_file"
 
-            printf 'Could not diff against %s\n' "$base" >&2
-            exit 2
-        fi
-
-        while IFS= read -r -d '' file; do
-            files+=("$file")
-        done < "$tmp"
+    if [[ "$working_tree" == false ]]; then
+        from_commit=true
     else
-        echo "No default base ref found; committed changes will not be checked." >&2
-    fi
-
-    if [[ "$working_tree" == true ]]; then
-
-        # Staged and unstaged changes relative to HEAD.
-        if ! git diff \
-            --name-only \
-            -z \
-            --diff-filter=d \
-            HEAD \
-            -- > "$tmp"; then
-
-            echo "Could not read working-tree changes." >&2
-            exit 2
-        fi
+        # Add staged, unstaged and untracked files to the committed diff.
+        git diff --name-only -z --diff-filter=d "$head" -- > "$diff_file" ||
+            die "Could not read working-tree changes."
+        git ls-files --others --exclude-standard -z >> "$diff_file" ||
+            die "Could not read untracked files."
 
         while IFS= read -r -d '' file; do
             files+=("$file")
-        done < "$tmp"
-
-        # Untracked files, excluding ignored files.
-        if ! git ls-files \
-            --others \
-            --exclude-standard \
-            -z > "$tmp"; then
-
-            echo "Could not read untracked files." >&2
-            exit 2
-        fi
-
-        while IFS= read -r -d '' file; do
-            files+=("$file")
-        done < "$tmp"
+        done < "$diff_file"
     fi
 fi
 
-# Keep each path as a separate argument and avoid duplicate checks.
 unique_files=()
-
 for file in "${files[@]}"; do
-    # A deleted file must not be sent to a linter.
-    [[ -f "$file" ]] || continue
+    if [[ "$from_commit" == false && ! -f "$file" ]]; then
+        continue
+    fi
 
-    duplicate=false
+    file=${file#./}
+    case "$file" in
+        *.php|src/views/*.js|src/views/*.vue) ;;
+        *) continue ;;
+    esac
 
     for existing in "${unique_files[@]}"; do
-        if [[ "$file" == "$existing" ]]; then
-            duplicate=true
-            break
-        fi
+        [[ "$file" == "$existing" ]] && continue 2
     done
-
-    [[ "$duplicate" == true ]] && continue
-
     unique_files+=("$file")
 
     # Prefix paths with ./ so names starting with "-" are not options.
     case "$file" in
-        *.php)
-            php_files+=("./${file#./}")
-            ;;
-
-        src/views/*.js|src/views/*.vue|./src/views/*.js|./src/views/*.vue)
-            frontend_files+=("./${file#./}")
-            ;;
+        *.php) php_files+=("./$file") ;;
+        *) frontend_files+=("./$file") ;;
     esac
 done
 
-# Run a linter for one batch.
+if ((${#php_files[@]} == 0 && ${#frontend_files[@]} == 0)); then
+    echo "No changed PHP, JS or Vue files to lint."
+    exit 0
+fi
+
+eslint_bin="$root/node_modules/eslint/bin/eslint.js"
+eslint_options=()
+phpcs_bin="$root/src/vendor/bin/phpcs"
+
+copy_committed_file() {
+    local file="./${1#./}" destination=$2
+    mkdir -p -- "$destination/${file%/*}" &&
+        git cat-file blob "$head:${file#./}" > "$destination/$file" ||
+        die "Could not read $file from $head_ref."
+}
+
+if [[ "$from_commit" == true ]]; then
+    snapshot="$temp_root/tree"
+    if ((${#frontend_files[@]})) && [[ -f "$eslint_bin" ]]; then
+        # Put the committed ESLint config near the installed npm modules
+        # so its imports resolve on both Unix and Windows.
+        config_dir=$(mktemp -d "$root/node_modules/.tainacan-lint.XXXXXXXX") ||
+            die "Could not create temporary ESLint directory."
+        temp_dirs+=("$config_dir")
+        copy_committed_file eslint.config.js "$config_dir"
+        if git cat-file -e "$head:package.json" 2>/dev/null; then
+            copy_committed_file package.json "$config_dir"
+        fi
+        eslint_options=(--config "$config_dir/eslint.config.js")
+    fi
+
+    if [[ "$use_phpcs" == true && -f "$phpcs_bin" ]] && ((${#php_files[@]})) &&
+        git cat-file -e "$head:phpcs.xml.dist" 2>/dev/null; then
+        copy_committed_file phpcs.xml.dist "$snapshot"
+    fi
+
+    for file in "${php_files[@]}" "${frontend_files[@]}"; do
+        copy_committed_file "$file" "$snapshot"
+    done
+    cd "$snapshot" || exit 2
+fi
+
 run_batch() {
     local mode=$1
     shift
 
     case "$mode" in
         eslint)
-            node "$eslint_bin" --quiet -- "$@"
+            node "$eslint_bin" "${eslint_options[@]}" -- "$@"
             ;;
-
         phpcs)
-            # Paths have a ./ prefix, so they cannot be parsed as options.
-            php "$phpcs_bin" \
-                --standard=phpcs.xml.dist \
-                --warning-severity=0 \
-                -s \
-                "$@"
+            php "$phpcs_bin" --standard=phpcs.xml.dist --warning-severity=0 -s "$@"
             ;;
     esac
 }
 
-# Divide files into batches to avoid excessively long command lines.
+# Limit both the number of arguments and the estimated command-line size.
 run_batches() {
     local mode=$1
-    local file
-    local count=0
-    local size=0
-    local estimate
-
     shift
-
     local -a batch=()
+    local file estimate size=0 status=0
 
     for file in "$@"; do
-        # Leave extra room for quoting and command options.
-        estimate=$(( ${#file} * 2 + 4 ))
-
-        if ((count > 0 && (count >= 20 || size + estimate > 6000))); then
-            run_batch "$mode" "${batch[@]}" || batch_failed=true
-
+        estimate=$((${#file} * 2 + 4))
+        if ((${#batch[@]} > 0 && (${#batch[@]} >= 20 || size + estimate > 6000))); then
+            run_batch "$mode" "${batch[@]}" || status=1
             batch=()
-            count=0
             size=0
         fi
 
         batch+=("$file")
-        count=$((count + 1))
         size=$((size + estimate))
     done
 
-    if ((count > 0)); then
-        run_batch "$mode" "${batch[@]}" || batch_failed=true
+    if ((${#batch[@]})); then
+        run_batch "$mode" "${batch[@]}" || status=1
     fi
+    return "$status"
 }
 
-# PHP syntax check.
+failed=false
 if ((${#php_files[@]})); then
     printf '\nPHP syntax: %s file(s)\n' "${#php_files[@]}"
 
     if command -v php >/dev/null 2>&1; then
         for file in "${php_files[@]}"; do
-            if ! php \
-                -d display_errors=1 \
-                -d log_errors=0 \
-                -l \
-                "$file"; then
-
-                failed=true
-            fi
+            php -d display_errors=1 -d log_errors=0 -l "$file" || failed=true
         done
     else
         echo "PHP not found; skipping PHP syntax check (CI still runs it)."
     fi
 fi
 
-# ESLint checks changed JavaScript and Vue files under src/views/.
 if ((${#frontend_files[@]})); then
     printf '\nESLint: %s file(s)\n' "${#frontend_files[@]}"
-
-    eslint_bin="node_modules/eslint/bin/eslint.js"
 
     if ! command -v node >/dev/null 2>&1 || [[ ! -f "$eslint_bin" ]]; then
         echo "Node.js or ESLint unavailable; install npm dependencies." >&2
         failed=true
     else
-        batch_failed=false
-
-        run_batches eslint "${frontend_files[@]}"
-
-        if [[ "$batch_failed" == true ]]; then
-            failed=true
-        fi
+        run_batches eslint "${frontend_files[@]}" || failed=true
     fi
 fi
 
-# PHPCS is optional and informational.
 if [[ "$use_phpcs" == true ]] && ((${#php_files[@]})); then
     printf '\nPHPCS (informational): %s file(s)\n' "${#php_files[@]}"
 
-    phpcs_bin="src/vendor/bin/phpcs"
-
     if command -v php >/dev/null 2>&1 && [[ -f "$phpcs_bin" ]]; then
-        batch_failed=false
-        run_batches phpcs "${php_files[@]}"
+        run_batches phpcs "${php_files[@]}" || true
     else
         echo "PHP or PHPCS unavailable; skipping PHPCS report."
     fi
-fi
-
-if ((${#php_files[@]} == 0 && ${#frontend_files[@]} == 0)); then
-    echo "No changed PHP, JS or Vue files to lint."
-    exit 0
 fi
 
 if [[ "$failed" == true ]]; then
@@ -304,4 +251,3 @@ if [[ "$failed" == true ]]; then
 fi
 
 echo "Lint passed."
-exit 0

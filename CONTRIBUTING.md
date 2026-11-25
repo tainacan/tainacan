@@ -225,8 +225,8 @@ We're still working on adopting more strong rulesets for our coding guidelines.
 The adoption of automation tools is under implementation as of
 https://github.com/tainacan/tainacan/issues/1052.
 
-- **PHP:** Follow the WordPress Coding Standards.
-- **JavaScript / Vue:** Follow the project's ESLint configuration.
+- **PHP:** Follow the [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/). Lint with PHPCS using the ruleset in `phpcs.xml.dist` (`WordPress-Core` and `WordPress-Docs`).
+- **JavaScript / Vue:** Follow the project's ESLint configuration in `eslint.config.js`. ESLint also runs during the webpack build.
 - Prefer matching the style of the surrounding code when editing an existing file.
 
 ### Git pre-push hook
@@ -238,14 +238,22 @@ on your host machine:
 git config core.hooksPath .githooks
 ```
 
-The hook runs incremental lint checks before pushing. It checks PHP syntax
-when PHP is available and runs ESLint for changed JavaScript and Vue files
-under `src/views/`. Node.js and the npm dependencies are required for ESLint.
+The hook checks the committed files for each ref being pushed. For an existing
+remote ref, it compares the commit being pushed with its merge base with the
+remote tip. For a new ref, it uses the first available base among
+`upstream/develop`, `origin/develop`, and `develop`. Fetch `develop` if none of
+those refs is available locally. The hook skips ref deletions.
 
-To run the check manually:
+The hook checks PHP syntax when PHP is available and runs ESLint for changed
+JavaScript and Vue files under `src/views/`. ESLint requires Node.js and the npm
+dependencies. It reports warnings and blocks the push on errors.
+
+To check committed changes manually, or include staged, unstaged and untracked
+files from your working tree:
 
 ```bash
 ./lint-changed.sh
+./lint-changed.sh --working-tree
 ```
 
 To bypass the hook for a push:
@@ -256,8 +264,6 @@ git push --no-verify
 
 Setting `core.hooksPath` replaces any previously configured hooks path for
 this repository.
-
-For local setup details, see the Developers Wiki.
 
 For local setup details, see the [Developers Wiki](https://tainacan.github.io/tainacan-wiki/#/dev/setup-local).
 
