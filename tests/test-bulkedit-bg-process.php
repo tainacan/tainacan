@@ -687,6 +687,36 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	}
 
 	/**
+	 * @group clear
+	 */
+	function test_clear_taxonomy_values() {
+		$taxonomy = $this->taxonomy->get_db_identifier();
+		$selected_items = array_slice( $this->items_ids, 0, 2 );
+		$unselected_item = $this->items_ids[2];
+
+		foreach ( $selected_items as $item_id ) {
+			$this->assertCount( 2, wp_get_object_terms( $item_id, $taxonomy ) );
+		}
+
+		$process = $this->new_process(
+			[
+				'items_ids' => $selected_items,
+				'collection_id' => $this->collection->get_id(),
+			],
+			[
+				'method' => 'clear_value',
+				'metadatum_id' => $this->category->get_id(),
+			]
+		);
+		$this->assertIsInt( $this->run_process( $process ) );
+
+		foreach ( $selected_items as $item_id ) {
+			$this->assertSame( [], wp_get_object_terms( $item_id, $taxonomy ) );
+		}
+		$this->assertCount( 2, wp_get_object_terms( $unselected_item, $taxonomy ) );
+	}
+
+	/**
 	 * @group replace
 	 */
 	function test_replace_only_when_search_is_present_tax() {
