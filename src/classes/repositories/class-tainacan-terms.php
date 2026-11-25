@@ -252,6 +252,34 @@ class Terms extends Repository {
 		}
 	}
 
+	/**
+	 * Fetch one Term entity based on query args.
+	 *
+	 * @param array $args Query args as expected by get_terms()
+	 * @param array $taxonomies Array Entities\Taxonomy || Array int taxonomies IDs || int taxonomy id || Entities\Taxonomy taxonomy object
+	 *
+	 * @return false|Entities\Term The Term entity or false if none was found
+	 */
+	public function fetch_one( $args = [], $taxonomies = [] ) {
+		if ( ! is_array( $args ) ) {
+			return false;
+		}
+
+		$args['number'] = 1;
+
+		if ( empty( $taxonomies ) ) {
+			$taxonomies = \Tainacan\Repositories\Taxonomies::get_instance()->fetch( [ 'nopaging' => true ], 'OBJECT' );
+		}
+
+		$results = $this->fetch( $args, $taxonomies );
+
+		if ( is_array( $results ) && sizeof( $results ) > 0 && $results[0] instanceof Entities\Term ) {
+			return $results[0];
+		}
+
+		return false;
+	}
+
 	public function update( $object, $args = null ) {
 		return $this->insert( $object );
 	}
