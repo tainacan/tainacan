@@ -587,8 +587,10 @@
                         this.collectionSearch = res.data.name;
                         this.collectionId = Number(res.data.id);
                     })
-                    .catch(() => {
-                        // A collection that does not exist, or that the user cannot read, does not filter the list
+                    .catch((error) => {
+                        // A collection that does not exist, or that the user cannot read, does not filter the list.
+                        // The URL is fixed silently, so the error is claimed before the status snackbar opens.
+                        this.$claimApiError(error);
                         this.collectionId = null;
                         this.updateCollectionFilterInRoute();
                     });
