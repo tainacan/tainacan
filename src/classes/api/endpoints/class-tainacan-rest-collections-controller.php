@@ -202,6 +202,14 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 		}
 
+		$this->add_pagination_links(
+			$rest_response,
+			$request,
+			max( 1, (int) ( $collections->query_vars['paged'] ?? 1 ) ),
+			(int) $max_pages,
+			(int) $collections->query_vars['posts_per_page']
+		);
+
 		return $this->prepare_paginated_response(
 			$response,
 			$total_collections,
