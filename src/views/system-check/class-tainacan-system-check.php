@@ -542,6 +542,95 @@ class System_Check extends Pages {
 		}
 	}
 
+	/**
+	 * Tries to create the cover of a tiny PDF, in the PHP process serving this page.
+	 *
+	 * A Ghostscript or ImageMagick update may only take effect after PHP is fully stopped and
+	 * started again, and until then covers fail with nothing on the screen. Rendering a real PDF
+	 * here shows whether covers work right now, and why not. See https://github.com/tainacan/tainacan/issues/1113.
+	 *
+	 * @return array{status: string, message: string} 'good', 'warning' or 'error', and the text to show.
+	 */
+	public function get_pdf_cover_status() {
+		if ( ! class_exists( '\Imagick' ) ) {
+			return array(
+				'status'  => 'warning',
+				'message' => __( 'The Imagick PHP extension is not available, so Tainacan cannot create covers for PDF documents. Items with a PDF document will have no thumbnail unless one is set by hand.', 'tainacan' ),
+			);
+		}
+
+		$temp_dir = get_temp_dir();
+		$pdf_file = $temp_dir . wp_unique_filename( $temp_dir, 'tainacan-pdf-cover-check.pdf' );
+		if ( ! wp_is_writable( $temp_dir ) ) {
+			return array(
+				'status'  => 'warning',
+				'message' => __( 'Could not create a temporary file to test the PDF covers.', 'tainacan' ),
+			);
+		}
+
+		file_put_contents( $pdf_file, self::get_minimal_pdf() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- A temporary file in the local temp folder.
+
+		$media = \Tainacan\Media::get_instance();
+		$cover = $media->get_pdf_cover( $pdf_file );
+		$error = $media->get_last_pdf_cover_error();
+		wp_delete_file( $pdf_file );
+
+		if ( $cover ) {
+			return array(
+				'status'  => 'good',
+				'message' => __( 'Covers for PDF documents are being created.', 'tainacan' ),
+			);
+		}
+
+		return array(
+			'status'  => 'error',
+			'message' => sprintf(
+				/* translators: %s: why the PDF cover could not be created */
+				__( 'Covers for PDF documents are not being created: %s If Ghostscript or ImageMagick were updated recently, fully stop and start PHP (for example PHP-FPM), as a reload may keep the old library in memory.', 'tainacan' ),
+				$error ? $error : __( 'no reason was given.', 'tainacan' )
+			),
+		);
+	}
+
+	/**
+	 * A valid one page PDF, with an empty 72 x 72 point page and a correct cross-reference table.
+	 *
+	 * @return string The PDF contents.
+	 */
+	public static function get_minimal_pdf() {
+		$objects = array(
+			'<</Type/Catalog/Pages 2 0 R>>',
+			'<</Type/Pages/Kids[3 0 R]/Count 1>>',
+			'<</Type/Page/Parent 2 0 R/MediaBox[0 0 72 72]>>',
+		);
+
+		$pdf     = "%PDF-1.4\n";
+		$offsets = array();
+		foreach ( $objects as $index => $object ) {
+			$offsets[] = strlen( $pdf );
+			$pdf      .= ( $index + 1 ) . " 0 obj\n" . $object . "\nendobj\n";
+		}
+
+		$xref = strlen( $pdf );
+		$pdf .= 'xref' . "\n" . '0 ' . ( count( $objects ) + 1 ) . "\n" . "0000000000 65535 f \n";
+		foreach ( $offsets as $offset ) {
+			$pdf .= sprintf( "%010d 00000 n \n", $offset );
+		}
+		$pdf .= 'trailer' . "\n" . '<</Size ' . ( count( $objects ) + 1 ) . '/Root 1 0 R>>' . "\n" . 'startxref' . "\n" . $xref . "\n" . '%%EOF' . "\n";
+
+		return $pdf;
+	}
+
+	/**
+	 * Prints the result of the PDF cover test on the System Check page.
+	 *
+	 * @return void
+	 */
+	public function check_pdf_cover() {
+		$result = $this->get_pdf_cover_status();
+		printf( '<span class="%1$s"></span> %2$s', esc_attr( $result['status'] ), esc_html( $result['message'] ) );
+	}
+
 	public function check_protected_upload_folders() {
 
 		$privateFiles = \Tainacan\Private_Files::get_instance();
