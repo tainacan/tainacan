@@ -89,6 +89,7 @@ classDiagram
         +get_metadata_section_template(metadata_section, args, section_index, collection_id)
         +get_tainacan_item_gallery_template(args)
         +get_taxonomies_query_args()
+        -taxonomy_terms_int(value, fallback, minimum)
         +register_tainacan_oficial_view_modes()
         -parse_id_list(ids)
         -convert_params_to_camel_case(params)
@@ -1507,9 +1508,36 @@ The HTML div to be used for rendering the item galery component
 
 ### get_taxonomies_query_args
 
+Query arguments for the taxonomy terms list.
+
 ```php
-public get_taxonomies_query_args(): mixed
+public get_taxonomies_query_args(): array
 ```
+
+termspaged and termsparent are public query vars. A non-numeric
+termspaged reaches subtraction in the terms template and throws a
+TypeError on PHP 8. perpage is not a public query var; a value below 1
+still reaches the pagination division, so it falls back to the default.
+An array, as in ?termspaged[]=2, is the same fallback: absint() would
+warn on PHP 8 because intval() casts that array to a string.
+
+***
+
+### taxonomy_terms_int
+
+An integer query value, or the fallback when it cannot be used.
+
+```php
+private taxonomy_terms_int(mixed $value, int $fallback, int $minimum): int
+```
+
+**Parameters:**
+
+| Parameter   | Type      | Description                                             |
+|-------------|-----------|---------------------------------------------------------|
+| `$value`    | **mixed** | Raw query var or filter value.                          |
+| `$fallback` | **int**   | Value used for a non-scalar or a number below $minimum. |
+| `$minimum`  | **int**   | Smallest accepted integer. The parent allows 0.         |
 
 ***
 
