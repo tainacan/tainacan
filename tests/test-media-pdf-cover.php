@@ -80,8 +80,24 @@ class Media_PDF_Cover extends TAINACAN_UnitTestCase {
 		}
 	}
 
-	public function test_cover_of_a_valid_pdf_is_created_without_errors() {
+	/**
+	 * Skips the test when Imagick can not render a PDF here, for example
+	 * when Ghostscript is not installed, as in the GitHub runners.
+	 */
+	private function require_pdf_rendering() {
 		$this->require_imagick_with_pdf();
+		$path = $this->temp_file( 'probe.pdf', $this->valid_pdf() );
+		try {
+			$probe = new \Imagick();
+			$probe->readImage( $path . '[0]' );
+			$probe->clear();
+		} catch ( \Throwable $e ) {
+			$this->markTestSkipped( 'Imagick can not render PDF files here (is Ghostscript installed?): ' . $e->getMessage() );
+		}
+	}
+
+	public function test_cover_of_a_valid_pdf_is_created_without_errors() {
+		$this->require_pdf_rendering();
 		$media = \Tainacan\Media::get_instance();
 
 		$cover = $media->get_pdf_cover( $this->temp_file( 'valid.pdf', $this->valid_pdf() ) );
@@ -145,7 +161,7 @@ class Media_PDF_Cover extends TAINACAN_UnitTestCase {
 	}
 
 	public function test_system_check_renders_a_pdf_cover_now() {
-		$this->require_imagick_with_pdf();
+		$this->require_pdf_rendering();
 
 		$status = \Tainacan\System_Check::get_instance()->get_pdf_cover_status();
 
