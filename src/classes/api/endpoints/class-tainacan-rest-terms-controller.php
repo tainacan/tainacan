@@ -685,7 +685,8 @@ class REST_Terms_Controller extends REST_Controller {
 				$request,
 				(int) $page,
 				(int) $max_pages,
-				$per_page
+				$per_page,
+				(int) $prepared_args['offset']
 			);
 		}
 
