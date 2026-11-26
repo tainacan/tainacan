@@ -808,6 +808,7 @@
                     :current-user-can-delete="item && item.current_user_can_delete"
                     :current-user-can-publish="collection && collection.current_user_can_publish_items"
                     :is-editing-item-metadata-inside-iframe="isEditingItemMetadataInsideIframe"
+                    :is-document-drop-busy="isDocumentDropBusy"
                     @on-submit="onSubmit"
                     @on-discard="onDiscard"
                     @on-prev-in-sequence="onPrevInSequence"
@@ -858,8 +859,20 @@ export default {
         TainacanFormItem: defineAsyncComponent(() => import('../metadata-types/tainacan-form-item.vue')),
     },
     mixins: [ formHooks, permalinkGetter, itemMetadataMixin ],
+    beforeRouteUpdate ( to, from, next ) {
+        // Sequence previous and next reuse this component, so they arrive here instead of beforeRouteLeave
+        if (this.isDocumentDropBusy && to.path !== from.path) {
+            this.showDocumentDropInProgressDialog();
+            next(false);
+        } else {
+            next();
+        }
+    },
     beforeRouteLeave ( to, from, next ) {
-        if (this.item.status == 'auto-draft') {
+        if (this.isDocumentDropBusy) {
+            this.showDocumentDropInProgressDialog();
+            next(false);
+        } else if (this.item.status == 'auto-draft') {
             const modalTrigger = this.$modalFocusA11y.captureTrigger();
             this.$buefy.modal.open({
                 component: CustomDialog,
@@ -1075,6 +1088,7 @@ export default {
     watch: {
         isDocumentDropBusy(isBusy) {
             this.toggleFileDropNavigationGuard(isBusy);
+            this.toggleDocumentUploadUnloadGuard(isBusy);
         },
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
             if (oldItemPosition == undefined || oldItemPosition == newItemPosition)
@@ -1240,6 +1254,7 @@ export default {
         window.removeEventListener('resize', this.handleWindowResize);
         window.removeEventListener('TainacanReloadItemMetadataForm', this.handleExternalMetadataReloadEvent);
         this.toggleFileDropNavigationGuard(false);
+        this.toggleDocumentUploadUnloadGuard(false);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
@@ -1309,6 +1324,12 @@ export default {
                 });
         },
         onSubmit(status, alternativeDestination) {
+
+            // The submit response would overwrite the document fields while the dropped file is still being set
+            if (this.isDocumentDropBusy) {
+                this.showDocumentDropInProgressDialog();
+                return;
+            }
 
             // Puts loading on Item edition
             this.isLoading = true;
@@ -1608,6 +1629,11 @@ export default {
                 })
         },
         setDocument(event, documentType) {
+            if ( this.isDocumentDropBusy ) {
+                this.showDocumentDropInProgressDialog();
+                return;
+            }
+
             if (documentType === 'attachment')
                 this.setFileDocument(event);
             else if (documentType === 'text')
@@ -1616,6 +1642,11 @@ export default {
                 this.setURLDocument();
         },
         setFileDocument(event) {
+            if ( this.isDocumentDropBusy ) {
+                this.showDocumentDropInProgressDialog();
+                return;
+            }
+
             this._mediaTrigger = this.$modalFocusA11y.captureTrigger();
             this.fileMediaFrame.openFrame(event);
         },
@@ -1684,12 +1715,10 @@ export default {
             return '';
         },
         uploadFileAsDocument(file, hasMultipleFiles) {
-            // In sequence edition this component is reused for the next item, so the target item is kept
-            const targetItemId = this.itemId;
             this.documentUploadProgress = 0;
 
             this.sendDocumentFile({
-                    item_id: targetItemId,
+                    item_id: this.itemId,
                     file: file,
                     onUploadProgress: (progressEvent) => {
                         if ( progressEvent.total )
@@ -1699,14 +1728,11 @@ export default {
                 .then((attachment) => {
                     this.documentUploadProgress = null;
 
-                    // Keeps the drop zone busy until the document is saved, as the form is hidden meanwhile
+                    // Keeps the drop zone busy, and the user on this item, until the document is saved
                     this.isSavingDroppedDocument = true;
-                    const documentSaving = targetItemId == this.itemId
-                        ? this.setAttachmentAsDocument(attachment.id)
-                        : this.setAttachmentAsDocumentOfAnotherItem(attachment.id, targetItemId);
 
-                    return documentSaving.then((isDocumentSet) => {
-                        if ( isDocumentSet && hasMultipleFiles && targetItemId == this.itemId ) {
+                    return this.setAttachmentAsDocument(attachment.id).then((isDocumentSet) => {
+                        if ( isDocumentSet && hasMultipleFiles ) {
                             this.$buefy.toast.open({
                                 message: this.$i18n.get('info_warning_only_first_file_used_as_document'),
                                 type: 'is-warning',
@@ -1722,42 +1748,35 @@ export default {
                     this.showDocumentUploadError(error, file);
                 });
         },
-        // The user moved to another item of the sequence while the file was uploading. The file was
-        // uploaded to the original item, so it becomes that item's document without touching this form.
-        setAttachmentAsDocumentOfAnotherItem(attachmentId, itemId) {
-            return this.updateItemDocument({ item_id: itemId, document: attachmentId + '', document_type: 'attachment' })
-                .then(() => true)
-                .catch((error) => {
-                    // The form on screen belongs to another item, so the message goes to a snackbar
-                    // instead of the document field.
-                    this.showDocumentSaveError(error);
-                    return false;
-                });
+        // The upload and the document save target the item on screen, so leaving it or saving it
+        // has to wait. There is no "leave anyway": the response would land on whatever item is loaded next.
+        showDocumentDropInProgressDialog() {
+            const modalTrigger = this.$modalFocusA11y.captureTrigger();
+            this.$buefy.modal.open({
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_document_upload_in_progress'),
+                    hideCancel: true
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                canCancel: ['escape', 'outside'],
+                onCancel: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this),
+                events: {
+                    beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
+                }
+            });
         },
-        showDocumentSaveError(error) {
-            const data = error && error.response && error.response.data;
-            const fieldMessages = [];
-
-            if ( data && Array.isArray(data.errors) ) {
-                data.errors.forEach((fieldError) => {
-                    Object.values(fieldError).forEach((value) => {
-                        [].concat(value).forEach((singleError) => {
-                            const text = typeof singleError == 'string' ? singleError : Object.values(singleError || {}).join(' ');
-                            if ( text )
-                                fieldMessages.push(text);
-                        });
-                    });
-                });
-            }
-
-            const message = fieldMessages.length
-                ? fieldMessages.join(' ')
-                : (data && typeof data.error_message === 'string' ? data.error_message : '');
-
-            if ( message )
-                this.$showApiError(error, message);
-
-            this.$console.error(error);
+        // Links outside the Vue router, such as the WordPress admin menu, only get the browser's own prompt
+        preventUnloadDuringDocumentUpload(event) {
+            event.preventDefault();
+            event.returnValue = '';
+        },
+        toggleDocumentUploadUnloadGuard(isEnabled) {
+            const method = isEnabled ? 'addEventListener' : 'removeEventListener';
+            window[method]('beforeunload', this.preventUnloadDuringDocumentUpload);
         },
         // While a dropped document is being handled, the box may be hidden or covered by the replace dialog.
         // A file dropped anywhere else would make the browser leave the editor to open it.
@@ -1962,6 +1981,11 @@ export default {
                 });
         },
         removeDocument() {
+            if ( this.isDocumentDropBusy ) {
+                this.showDocumentDropInProgressDialog();
+                return;
+            }
+
             this.textContent = '';
             this.urlLink = '';
             this.form.document_type = 'empty';
@@ -2809,7 +2833,10 @@ export default {
 
         .section-box {
             position: relative;
-            padding: 0 0.75em 0 1.75em;
+            // Logical paddings so the document buttons stay inside the box in RTL and in both layouts
+            padding-block: 0;
+            padding-inline-start: 1.75em;
+            padding-inline-end: 0.75em;
             margin-bottom: 16px;
         }
 

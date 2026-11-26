@@ -52,85 +52,16 @@
                     </div>
                 </div>
                 <div
-                        v-if="form.document != undefined && form.document != null &&
-                            form.document_type != undefined && form.document_type != null &&
-                            form.document != '' && form.document_type != 'empty'"
+                        v-if="hasDocument"
                         class="document-field-content"
-                        :class="'document-field-content--' + form.document_type">
+                        :class="'document-field-content--' + form.document_type"
+                        :inert="isDropBusy">
                     <div v-html="item.document_as_html" />
-                    <div class="document-buttons-row">
-                        <a
-                                id="button-edit-document"
-                                class="button is-rounded is-secondary"
-                                size="is-small"
-                                role="button"
-                                tabindex="0"
-                                :aria-label="$i18n.get('label_button_edit_document')"
-                                @click.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
-                                @keydown.enter.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
-                                @keydown.space.prevent="($event) => $emit('on-set-document', $event, form.document_type)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('edit'),
-                                        autoHide: true,
-                                        placement: 'bottom',
-                                        popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }"
-                                    class="icon"
-                                    aria-hidden="true">
-                                <i class="tainacan-icon tainacan-icon-edit" />
-                            </span>
-                        </a>
-                        <a
-                                v-if="collection && collection.item_enable_document_content_editing === 'yes' && form.document_type !== 'text'"
-                                id="button-edit-document-content-index"
-                                class="button is-rounded is-secondary"
-                                size="is-small"
-                                role="button"
-                                tabindex="0"
-                                :aria-label="$i18n.get('label_button_index_document')"
-                                @click.prevent="($event) => $emit('on-edit-document-content-index', $event)"
-                                @keydown.enter.prevent="($event) => $emit('on-edit-document-content-index', $event)"
-                                @keydown.space.prevent="($event) => $emit('on-edit-document-content-index', $event)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('label_document_content'),
-                                        autoHide: true,
-                                        placement: 'bottom',
-                                        popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }"
-                                    class="icon"
-                                    aria-hidden="true">
-                                <i class="tainacan-icon tainacan-icon-text" />
-                            </span>
-                        </a>
-                        <a
-                                id="button-delete-document"
-                                class="button is-rounded is-secondary"
-                                size="is-small"
-                                :aria-label="$i18n.get('label_button_delete_document')"
-                                role="button"
-                                tabindex="0"
-                                @click.prevent="$emit('on-remove-document')"
-                                @keydown.enter.prevent="$emit('on-remove-document')"
-                                @keydown.space.prevent="$emit('on-remove-document')">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('delete'),
-                                        autoHide: true,
-                                        placement: 'bottom',
-                                        popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }"
-                                    class="icon"
-                                    aria-hidden="true">
-                                <i class="tainacan-icon tainacan-icon-delete" />
-                            </span>
-                        </a>
-                    </div>
                 </div>
                 <ul 
                         v-else
-                        class="document-field-placeholder">
+                        class="document-field-placeholder"
+                        :inert="isDropBusy">
                     <li v-if="!$adminOptions.hideItemEditionDocumentFileInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['attachment'] && collection.item_enabled_document_types['attachment']['enabled'] === 'yes')">
                         <button
                                 type="button"
@@ -178,6 +109,78 @@
                     </li>
                 </ul>
             </div>
+            <!-- Outside the drop area so it is positioned from the .section-box, whatever its padding is -->
+            <div
+                    v-if="hasDocument && !isDropBusy"
+                    class="document-buttons-row">
+                <a
+                        id="button-edit-document"
+                        class="button is-rounded is-secondary"
+                        size="is-small"
+                        role="button"
+                        tabindex="0"
+                        :aria-label="$i18n.get('label_button_edit_document')"
+                        @click.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
+                        @keydown.enter.prevent="($event) => $emit('on-set-document', $event, form.document_type)"
+                        @keydown.space.prevent="($event) => $emit('on-set-document', $event, form.document_type)">
+                    <span
+                            v-tooltip="{
+                                content: $i18n.get('edit'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            class="icon"
+                            aria-hidden="true">
+                        <i class="tainacan-icon tainacan-icon-edit" />
+                    </span>
+                </a>
+                <a
+                        v-if="collection && collection.item_enable_document_content_editing === 'yes' && form.document_type !== 'text'"
+                        id="button-edit-document-content-index"
+                        class="button is-rounded is-secondary"
+                        size="is-small"
+                        role="button"
+                        tabindex="0"
+                        :aria-label="$i18n.get('label_button_index_document')"
+                        @click.prevent="($event) => $emit('on-edit-document-content-index', $event)"
+                        @keydown.enter.prevent="($event) => $emit('on-edit-document-content-index', $event)"
+                        @keydown.space.prevent="($event) => $emit('on-edit-document-content-index', $event)">
+                    <span
+                            v-tooltip="{
+                                content: $i18n.get('label_document_content'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            class="icon"
+                            aria-hidden="true">
+                        <i class="tainacan-icon tainacan-icon-text" />
+                    </span>
+                </a>
+                <a
+                        id="button-delete-document"
+                        class="button is-rounded is-secondary"
+                        size="is-small"
+                        :aria-label="$i18n.get('label_button_delete_document')"
+                        role="button"
+                        tabindex="0"
+                        @click.prevent="$emit('on-remove-document')"
+                        @keydown.enter.prevent="$emit('on-remove-document')"
+                        @keydown.space.prevent="$emit('on-remove-document')">
+                    <span
+                            v-tooltip="{
+                                content: $i18n.get('delete'),
+                                autoHide: true,
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }"
+                            class="icon"
+                            aria-hidden="true">
+                        <i class="tainacan-icon tainacan-icon-delete" />
+                    </span>
+                </a>
+            </div>
             <p
                     v-if="errorMessage"
                     class="help is-danger">
@@ -219,6 +222,11 @@ export default {
         }
     },
     computed: {
+        hasDocument() {
+            return this.form.document != undefined && this.form.document != null &&
+                this.form.document_type != undefined && this.form.document_type != null &&
+                this.form.document != '' && this.form.document_type != 'empty';
+        },
         acceptsFileDrop() {
             return !this.$adminOptions.hideItemEditionDocumentFileInput &&
                 this.collection &&
@@ -299,7 +307,8 @@ export default {
         .document-upload-progress {
             position: absolute;
             inset: 0;
-            z-index: 2;
+            // Above the document edit/delete buttons (z-index 99 in the edition form stylesheet)
+            z-index: 100;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -323,6 +332,8 @@ export default {
             background-color: var(--tainacan-primary);
         }
         .document-upload-progress {
+            // Blocks clicks on the document until the upload and the document PUT settle
+            pointer-events: auto;
             background-color: var(--tainacan-background-color);
 
             .document-upload-progress-track {
@@ -483,8 +494,7 @@ export default {
     }
     .document-buttons-row {
         bottom: -12px;
-        // Relative to .document-field-drop-area, half way into the .section-box start padding
-        inset-inline-start: -0.875em;
+        inset-inline-start: 0.875em;
         position: absolute;
     }
 

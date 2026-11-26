@@ -19,6 +19,7 @@
                     v-if="isOnSequenceEdit && hasPreviousItemOnSequenceEdit"
                     type="button"
                     class="button sequence-button"
+                    :disabled="isDocumentDropBusy"
                     @click="$emit('on-prev-in-sequence')">
                 <span 
                         aria-hidden="true"
@@ -34,11 +35,13 @@
                         v-if="!$adminOptions.mobileAppMode"
                         type="button"
                         class="button is-outlined is-danger"
+                        :disabled="isDocumentDropBusy"
                         @click="$emit('on-discard')">{{ $i18n.get('label_discard') }}</button>
                 <button
                         type="button"
                         class="button is-secondary"
                         :style="{ marginInlineStart: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }"
+                        :disabled="isDocumentDropBusy"
                         @click="openItemCreationStatusDialog">{{ $i18n.get('label_create_item') }}</button>
             </template>
 
@@ -69,7 +72,7 @@
                         :style="{ marginInlineStart: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }">
                     <template #trigger>
                         <button 
-                                :disabled="hasSomeError && (status == 'publish' || status == 'private' || status == 'pending')"
+                                :disabled="isDocumentDropBusy || (hasSomeError && (status == 'publish' || status == 'private' || status == 'pending'))"
                                 type="button"
                                 class="button"
                                 :class="{ 
@@ -190,7 +193,7 @@
                 <!-- In case we do not want to show status, just an update button -->
                 <button 
                         v-else-if="!isOnSequenceEdit"
-                        :disabled="hasSomeError && (status == 'publish' || status == 'private' || status == 'pending')"
+                        :disabled="isDocumentDropBusy || (hasSomeError && (status == 'publish' || status == 'private' || status == 'pending'))"
                         type="button"
                         class="button"
                         :class="{ 
@@ -206,7 +209,7 @@
             <!-- Sequence edition Next button if user cannot publish (only goes to next, without changing status) -->
             <button 
                     v-if="(!currentUserCanPublish || !$adminOptions.itemEditionStatusOptionOnFooterDropdown) && isOnSequenceEdit && hasNextItemOnSequenceEdit"
-                    :disabled="(status == 'publish' || status == 'private' || status == 'pending') && hasSomeError"
+                    :disabled="isDocumentDropBusy || ((status == 'publish' || status == 'private' || status == 'pending') && hasSomeError)"
                     type="button"
                     class="button is-success"
                     @click="$emit('on-next-in-sequence')">
@@ -223,6 +226,7 @@
                     v-if="isOnSequenceEdit && isLastItemOnSequenceEdit"
                     type="button"
                     class="button sequence-button is-success"
+                    :disabled="isDocumentDropBusy"
                     @click="$router.push($routerHelper.getCollectionPath(collectionId))">
                 <span 
                         aria-hidden="true"
@@ -252,7 +256,11 @@ export default {
         hasSomeError: Boolean,
         currentUserCanDelete: Boolean,
         currentUserCanPublish: Boolean,
-        isEditingItemMetadataInsideIframe: Boolean
+        isEditingItemMetadataInsideIframe: Boolean,
+        isDocumentDropBusy: {
+            type: Boolean,
+            default: false
+        }
     },
     emits: [
         'on-submit',

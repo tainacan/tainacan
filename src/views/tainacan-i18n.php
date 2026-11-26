@@ -976,6 +976,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_document_replace'                  => __( 'This item already has a document. Do you really want to replace it with the dropped file?', 'tainacan' ),
 	'info_warning_only_first_file_used_as_document'  => __( 'Only one file can be the item document. The first dropped file was used.', 'tainacan' ),
 	'info_uploading_document'                        => __( 'Uploading document', 'tainacan' ),
+	'info_warning_document_upload_in_progress'       => __( 'The item document is still being uploaded. Please wait until it finishes before leaving or saving this item.', 'tainacan' ),
 	/* translators: %s is the file name */
 	'info_error_upload_empty_file_%s'                => __( '"%s" is empty. Please try another file.', 'tainacan' ),
 	/* translators: %s is the file name */
