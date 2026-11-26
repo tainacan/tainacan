@@ -235,6 +235,11 @@ class Terms extends Repository {
 			$args['taxonomy'] = $cpt;
 			if( isset( $args['post__not_in'] ) ) $args['exclude'] = $args['post__not_in'];
 			$terms  = get_terms( $args );
+
+			if ( empty( $terms ) || $terms instanceof \WP_Error ) {
+				return [];
+			}
+
 			$return = [];
 
 			foreach ( $terms as $term ) {
@@ -266,6 +271,10 @@ class Terms extends Repository {
 		}
 
 		$args['number'] = 1;
+
+		if ( ! isset( $args['hide_empty'] ) ) {
+			$args['hide_empty'] = false;
+		}
 
 		if ( empty( $taxonomies ) ) {
 			$taxonomies = \Tainacan\Repositories\Taxonomies::get_instance()->fetch( [ 'nopaging' => true ], 'OBJECT' );
