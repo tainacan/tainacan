@@ -59,61 +59,88 @@ class CSV extends Importer {
 	}
 
 	/**
+	 * Reads the header row and converts each name with the file encoding option.
+	 *
+	 * Column names must go through the same conversion as cell values. A
+	 * Windows-1252 header such as "Título" is not valid UTF-8, so the mapping
+	 * response would otherwise store the sanitized "T?tulo" and the import
+	 * would never match that column.
+	 *
+	 * @return array|false Header cells, or false when the file cannot be read.
+	 */
+	private function read_header_row() {
+		$handle = $this->open_tmp_file();
+		if ( false === $handle ) {
+			return false;
+		}
+
+		if ( $this->get_option( 'enclosure' ) && strlen( $this->get_option( 'enclosure' ) ) > 0 ) {
+			$columns = $this->handle_enclosure( $handle );
+		} else {
+			$columns = fgetcsv( $handle, 0, $this->get_option( 'delimiter' ) );
+		}
+
+		if ( ! is_array( $columns ) ) {
+			return false;
+		}
+
+		$decoded = array();
+		foreach ( $columns as $column ) {
+			$decoded[] = $this->handle_encoding( $column );
+		}
+		return $decoded;
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function get_source_metadata() {
-		if (($handle = $this->open_tmp_file()) !== false) {
-			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
-				$rawColumns = $this->handle_enclosure( $handle );
-			} else {
-				$rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
-			}
+		$rawColumns = $this->read_header_row();
 
-			$columns = [];
-			if ($rawColumns) {
-				foreach( $rawColumns as $index => $rawColumn ) {
-					if ( strpos($rawColumn,'special_') === 0 ) {
-						if ( $rawColumn === 'special_document' ) {
-							$this->set_option('document_index', $index);
-						} else if ($rawColumn === 'special_document|REPLACE') {
-							$this->set_option('document_import_mode', 'replace');
-							$this->set_option('document_index', $index);
-						} else if ( $rawColumn === 'special_thumbnail' ) {
-							$this->set_option('thumbnail_index', $index);
-						} else if ($rawColumn === 'special_thumbnail|REPLACE') {
-							$this->set_option('thumbnail_import_mode', 'replace');
-							$this->set_option('thumbnail_index', $index);
-						} else if (
-							$rawColumn === 'special_attachments' ||
-							$rawColumn === 'special_attachments|APPEND' ||
-							$rawColumn === 'special_attachments|REPLACE'
-						) {
-							$this->set_option('attachment_index', $index);
-							$attachment_type = explode('|', $rawColumn);
-							$this->set_option('attachment_operation_type', sizeof($attachment_type)==2?$attachment_type[1]:'APPEND');
-						} else if ( $rawColumn === 'special_item_status' ) {
-							$this->set_option('item_status_index', $index);
-						} else if ( $rawColumn === 'special_item_id' ) {
-							$this->set_option('item_id_index', $index);
-						} else if ( $rawColumn === 'special_comment_status' ) {
-							$this->set_option('item_comment_status_index', $index);
-						} else if ( $rawColumn === 'special_item_author' ) {
-							$this->set_option('item_author_id_index', $index);
-						} else if ( $rawColumn === 'special_item_slug' ) {
-							$this->set_option('special_item_slug_index', $index);
-						}
+		$columns = [];
+		if ($rawColumns) {
+			foreach( $rawColumns as $index => $rawColumn ) {
+				if ( strpos($rawColumn,'special_') === 0 ) {
+					if ( $rawColumn === 'special_document' ) {
+						$this->set_option('document_index', $index);
+					} else if ($rawColumn === 'special_document|REPLACE') {
+						$this->set_option('document_import_mode', 'replace');
+						$this->set_option('document_index', $index);
+					} else if ( $rawColumn === 'special_thumbnail' ) {
+						$this->set_option('thumbnail_index', $index);
+					} else if ($rawColumn === 'special_thumbnail|REPLACE') {
+						$this->set_option('thumbnail_import_mode', 'replace');
+						$this->set_option('thumbnail_index', $index);
+					} else if (
+						$rawColumn === 'special_attachments' ||
+						$rawColumn === 'special_attachments|APPEND' ||
+						$rawColumn === 'special_attachments|REPLACE'
+					) {
+						$this->set_option('attachment_index', $index);
+						$attachment_type = explode('|', $rawColumn);
+						$this->set_option('attachment_operation_type', sizeof($attachment_type)==2?$attachment_type[1]:'APPEND');
+					} else if ( $rawColumn === 'special_item_status' ) {
+						$this->set_option('item_status_index', $index);
+					} else if ( $rawColumn === 'special_item_id' ) {
+						$this->set_option('item_id_index', $index);
+					} else if ( $rawColumn === 'special_comment_status' ) {
+						$this->set_option('item_comment_status_index', $index);
+					} else if ( $rawColumn === 'special_item_author' ) {
+						$this->set_option('item_author_id_index', $index);
+					} else if ( $rawColumn === 'special_item_slug' ) {
+						$this->set_option('special_item_slug_index', $index);
+					}
+				} else {
+					if ( preg_match ('/.*\|compound\(.*\)/', $rawColumn ) ) {
+						$data = preg_split("/[()]+/", $rawColumn, -1, PREG_SPLIT_NO_EMPTY);
+						$parent = $data[0] . ( isset($data[2]) ? $data[2] : '' );
+						$columns[] = [$parent => explode($this->get_option('delimiter'), $data[1])];
 					} else {
-						if ( preg_match ('/.*\|compound\(.*\)/', $rawColumn ) ) {
-							$data = preg_split("/[()]+/", $rawColumn, -1, PREG_SPLIT_NO_EMPTY);
-							$parent = $data[0] . ( isset($data[2]) ? $data[2] : '' );
-							$columns[] = [$parent => explode($this->get_option('delimiter'), $data[1])];
-						} else {
-							$columns[] = $rawColumn;
-						}
+						$columns[] = $rawColumn;
 					}
 				}
-				return $columns;
 			}
+			return $columns;
 		}
 		return [];
 	}
@@ -127,31 +154,25 @@ class CSV extends Importer {
 	}
 
 	public function get_source_special_fields() {
-		if (($handle = $this->open_tmp_file()) !== false) {
-			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
-				$rawColumns = $this->handle_enclosure( $handle );
-			} else {
-				$rawColumns = fgetcsv($handle, 0, $this->get_option('delimiter'));
-			}
+		$rawColumns = $this->read_header_row();
 
-			$columns = [];
+		$columns = [];
 
-			if ( $rawColumns ) {
-				foreach( $rawColumns as $index => $rawColumn ) {
-					if ( strpos($rawColumn,'special_') === 0 ) {
-						if ( in_array( $rawColumn, [
-							'special_document', 'special_thumbnail', 'special_attachments', 'special_item_status',
-							'special_item_id', 'special_comment_status', 'special_attachments|APPEND',
-							'special_attachments|REPLACE', 'special_document|REPLACE', 'special_thumbnail|REPLACE',
-							'special_item_author', 'special_item_slug'
-						] ) ) {
-							$columns[] = $rawColumn;
-						}
+		if ( $rawColumns ) {
+			foreach( $rawColumns as $index => $rawColumn ) {
+				if ( strpos($rawColumn,'special_') === 0 ) {
+					if ( in_array( $rawColumn, [
+						'special_document', 'special_thumbnail', 'special_attachments', 'special_item_status',
+						'special_item_id', 'special_comment_status', 'special_attachments|APPEND',
+						'special_attachments|REPLACE', 'special_document|REPLACE', 'special_thumbnail|REPLACE',
+						'special_item_author', 'special_item_slug'
+					] ) ) {
+						$columns[] = $rawColumn;
 					}
 				}
-				if ( !empty($columns) )
-					return $columns;
 			}
+			if ( !empty($columns) )
+				return $columns;
 		}
 		return false;
 	}
@@ -161,20 +182,61 @@ class CSV extends Importer {
 	 * returns all header including special
 	 */
 	public function raw_source_metadata() {
-		if (($handle = $this->open_tmp_file()) !== false) {
-			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
-				return $this->handle_enclosure( $handle );
-			} else {
-				return fgetcsv($handle, 0, $this->get_option('delimiter'));
+		return $this->read_header_row();
+	}
+
+	/**
+	 * Index of the file column a mapped header names, or null when it is absent.
+	 *
+	 * @param array        $headers Header cells already converted to the file encoding.
+	 * @param string|array $header  Mapped column name, or a compound map whose key is that name.
+	 * @return int|null
+	 */
+	private function find_mapped_column( $headers, $header ) {
+		$column = null;
+		foreach ( $headers as $index_raw => $header_raw ) {
+			if ( ( is_array( $header ) && $header_raw === key( $header ) ) || ( $header_raw === $header ) ) {
+				$column = $index_raw;
 			}
 		}
-		return false;
+		return $column;
+	}
+
+	/**
+	 * Records each mapped column that is not in the file header.
+	 *
+	 * The header does not change between rows. Call this for the first row only,
+	 * and before a short row returns, so a bad match is not lost for the whole file.
+	 *
+	 * @param array $headers Header cells already converted to the file encoding.
+	 * @param array $mapping Metadatum id => source header.
+	 */
+	private function log_missing_mapped_columns( $headers, $mapping ) {
+		if ( ! is_array( $mapping ) ) {
+			return;
+		}
+		foreach ( $mapping as $header ) {
+			if ( null !== $this->find_mapped_column( $headers, $header ) ) {
+				continue;
+			}
+			$missing_header = is_array( $header ) ? key( $header ) : $header;
+			$this->add_error_log(
+				sprintf(
+					/* translators: %s: column name saved in the mapping. */
+					__( 'Mapped column "%s" was not found in the CSV header.', 'tainacan' ),
+					(string) $missing_header
+				)
+			);
+		}
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public function process_item( $index, $collection_definition ) {
+		// The compound value loop below must not reuse this. A later mapped
+		// column is compared after that loop has walked the value list.
+		$row_index = (int) $index;
 		$processedItem = [];
 		$compoundHeaders = [];
 
@@ -238,6 +300,12 @@ class CSV extends Importer {
 
 		$this->add_transient('csv_pointer', ftell($file)); // add reference for insert
 
+		// Headers are independent of this row. A short first row returns below,
+		// and later rows are not row 0, so the miss has to be recorded here.
+		if ( 0 === $row_index && isset( $collection_definition['mapping'] ) ) {
+			$this->log_missing_mapped_columns( $headers, $collection_definition['mapping'] );
+		}
+
 		if ( count( $headers ) !== count( $values ) ) {
 			$string = (is_array($values)) ? implode('::', $values ) : $values;
 
@@ -253,15 +321,11 @@ class CSV extends Importer {
 			$this->handle_item_id( $values );
 		}
 		foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
-			$column = null;
-			foreach ( $headers as $indexRaw => $headerRaw ) {
-				if ( (is_array($header) && $headerRaw === key($header)) || ($headerRaw === $header) ) {
-					$column = $indexRaw;
-				}
-			}
+			$column = $this->find_mapped_column( $headers, $header );
 
-			if (is_null($column))
+			if ( is_null( $column ) ) {
 				continue;
+			}
 
 			$valueToInsert = $this->handle_encoding( $values[ $column ] );
 
@@ -278,7 +342,7 @@ class CSV extends Importer {
 				$key = key($header);
 
 				$returnValue = [];
-				foreach($valueToInsert as $index => $metadatumValue) {
+				foreach ( $valueToInsert as $metadatumValue ) {
 					$childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
 					$childrenValue = $this->is_clear_value($metadatumValue) ?
 						array_fill(0, sizeof($childrenHeaders), $this->get_option('escape_empty_value') ) :
