@@ -361,5 +361,4 @@ class TAINACAN_REST_Taxonomies_Controller extends TAINACAN_UnitApiTestCase {
 	}
 }
 
-
 ?>

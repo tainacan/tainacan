@@ -460,8 +460,10 @@
                 this.orderBy = 'title';
                 this.$userPrefs.set('taxonomies_order_by', 'title');
             }
-            
-            this.load();
+
+            // A collection in the URL is checked first, so the list is not requested with an unreadable one
+            this.restoreCollectionFilterFromRoute()
+                .then(() => this.load());
         },
         beforeUnmount() {
             this.cancelCollectionSearch();
@@ -551,7 +553,45 @@
 
                 this.collectionId = collectionId;
                 this.page = 1;
+                this.updateCollectionFilterInRoute();
                 this.load();
+            },
+            updateCollectionFilterInRoute() {
+                // Keeps the filter in the URL, so it survives going back from a taxonomy and can be shared
+                const query = { ...this.$route.query };
+
+                if (this.collectionId)
+                    query.collection_id = String(this.collectionId);
+                else
+                    delete query.collection_id;
+
+                if (query.collection_id !== this.$route.query.collection_id)
+                    this.$router.replace({ query }).catch(() => undefined);
+            },
+            restoreCollectionFilterFromRoute() {
+                const routeCollectionId = parseInt(this.$route.query.collection_id, 10);
+
+                if (isNaN(routeCollectionId) || routeCollectionId <= 0) {
+                    if (this.$route.query.collection_id !== undefined)
+                        this.updateCollectionFilterInRoute();
+                    return Promise.resolve();
+                }
+
+                return tainacanApi.get('/collections/' + routeCollectionId + '?context=edit&fetch_only=name,id')
+                    .then(res => {
+                        if (!res.data || !res.data.id)
+                            throw new Error('Collection not found.');
+
+                        // Sets the name first, so the empty search watcher does not clear the filter
+                        this.committedCollectionName = res.data.name;
+                        this.collectionSearch = res.data.name;
+                        this.collectionId = Number(res.data.id);
+                    })
+                    .catch(() => {
+                        // A collection that does not exist, or that the user cannot read, does not filter the list
+                        this.collectionId = null;
+                        this.updateCollectionFilterInRoute();
+                    });
             },
             onCollectionSuggestionsActive(isOpen) {
                 if (isOpen)
