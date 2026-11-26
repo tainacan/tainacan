@@ -370,6 +370,14 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$rest_response->header('X-WP-Total', $total_taxonomies);
 		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
+		$this->add_pagination_links(
+			$rest_response,
+			$request,
+			max( 1, (int) ( $taxonomies->query_vars['paged'] ?? 1 ) ),
+			(int) $max_pages,
+			(int) $taxonomies->query_vars['posts_per_page']
+		);
+
 		$taxonomy_status_counts = wp_count_posts( 'tainacan-taxonomy', 'readable' );
 
 		if ( is_object( $taxonomy_status_counts ) ) {

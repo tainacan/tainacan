@@ -367,16 +367,24 @@ class REST_Logs_Controller extends REST_Controller {
 			}
 		}
 
-		$max_pages = ceil($total_logs / ((int) ($args['posts_per_page'] ?? 12)));
+		$per_page = (int) ( $args['posts_per_page'] ?? 12 );
+		$max_pages = (int) ceil( $total_logs / $per_page );
 
 		$rest_response = new \WP_REST_Response($response, 200);
 
 		$rest_response->header('X-WP-Total', (int) $total_logs);
-		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
+		$rest_response->header('X-WP-TotalPages', $max_pages);
+
+		$this->add_pagination_links(
+			$rest_response,
+			$request,
+			max( 1, (int) ( $args['paged'] ?? 1 ) ),
+			$max_pages,
+			$per_page
+		);
 
 		return $rest_response;
 	}
-
 	/**
 	 * @param \WP_REST_Request $request
 	 *
