@@ -96,7 +96,7 @@
 <script>
     import TainacanTaxonomyTagInput from './TainacanTaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
-    import { tainacanApi } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios/axios';
     import { rememberTermAncestors, rememberTerms } from '../../../js/conditional-sections';
     import { mapActions } from 'vuex';
     import { defineAsyncComponent } from 'vue';

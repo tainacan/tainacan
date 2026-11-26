@@ -137,7 +137,7 @@
 <script>
 
     import { mapActions } from 'vuex';
-    import { tainacanApi, CancelToken, isCancel } from '../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../js/axios/axios';
     export default {
         name: "ExporterEditionForm",
         data() {

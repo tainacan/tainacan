@@ -1,4 +1,4 @@
-import axios from '../../../axios';
+import axios from '../../../axios/axios';
 
 /**
  * Builds a REST path from a template. Each inserted value must be a positive integer.

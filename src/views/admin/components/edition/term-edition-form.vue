@@ -347,7 +347,7 @@
     import { formHooks } from "../../js/mixins";
     import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
-    import { CancelToken, isCancel } from '../../js/axios';
+    import { CancelToken, isCancel } from '../../js/axios/axios';
 
     export default {
         name: 'TermEditionForm',

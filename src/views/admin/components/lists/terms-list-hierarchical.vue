@@ -343,7 +343,7 @@ import TermDeletionDialog from '../other/term-deletion-dialog.vue';
 import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
 import TermMultipleInsertionDialog from '../other/term-multiple-insertion-dialog.vue';
 
-import { tainacanApi } from '../../js/axios';
+import { tainacanApi } from '../../js/axios/axios';
 export default {
     name: 'TermsListHierarchical',
     components: {

@@ -209,7 +209,7 @@
 </template>
 
 <script>
-    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios/axios';
     import qs from 'qs';
 
     export default {

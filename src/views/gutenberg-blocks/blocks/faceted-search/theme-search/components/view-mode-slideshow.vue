@@ -428,7 +428,7 @@
 <script>
 import { nextTick } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import axios from '../../../../../admin/js/axios';
+import axios from '../../../../../admin/js/axios/axios';
 import 'swiper/css';
 import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';

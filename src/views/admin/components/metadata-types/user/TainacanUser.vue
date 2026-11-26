@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { wpApi } from '../../../js/axios';
+import { wpApi } from '../../../js/axios/axios';
 import { mapActions } from 'vuex';
 import qs from 'qs';
     

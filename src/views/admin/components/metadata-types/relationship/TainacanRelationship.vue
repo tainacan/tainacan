@@ -181,7 +181,7 @@
 </template>
 
 <script>
-    import { tainacanApi } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios/axios';
     import { mapGetters } from 'vuex';
     import qs from 'qs';
 

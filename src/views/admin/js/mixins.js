@@ -1,4 +1,4 @@
-import { wpAjax } from './axios';
+import { wpAjax } from './axios/axios';
 import qs from 'qs';
 import moment from 'moment';
 

@@ -388,7 +388,7 @@
     import { nextTick } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from '../../admin/js/mixins';
-    import { tainacanApi, CancelToken, isCancel } from '../../admin/js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../admin/js/axios/axios';
 
     export default {
         mixins: [ formHooks ],
