@@ -15,10 +15,13 @@ classDiagram
         +__construct(attributes)
         #open_tmp_file()
         +set_option(key, value)
+        -read_header_row()
         +get_source_metadata()
         +get_source_file_name()
         +get_source_special_fields()
         +raw_source_metadata()
+        -find_mapped_column(headers, header)
+        -log_missing_mapped_columns(headers, mapping)
         +process_item(index, collection_definition)
         +after_inserted_item(inserted_item, collection_index)
         +get_source_number_of_items()
@@ -193,6 +196,25 @@ public set_option(mixed $key, mixed $value): mixed
 
 ***
 
+### read_header_row
+
+Reads the header row and converts each name with the file encoding option.
+
+```php
+private read_header_row(): array|false
+```
+
+Column names must go through the same conversion as cell values. A
+Windows-1252 header such as "Título" is not valid UTF-8, so the mapping
+response would otherwise store the sanitized "T?tulo" and the import
+would never match that column.
+
+**Return Value:**
+
+Header cells, or false when the file cannot be read.
+
+***
+
 ### get_source_metadata
 
 get the metadata of file/url to allow mapping
@@ -231,6 +253,43 @@ returns all header including special
 ```php
 public raw_source_metadata(): mixed
 ```
+
+***
+
+### find_mapped_column
+
+Index of the file column a mapped header names, or null when it is absent.
+
+```php
+private find_mapped_column(array $headers, string|array $header): int|null
+```
+
+**Parameters:**
+
+| Parameter  | Type              | Description                                                   |
+|------------|-------------------|---------------------------------------------------------------|
+| `$headers` | **array**         | Header cells already converted to the file encoding.          |
+| `$header`  | **string\|array** | Mapped column name, or a compound map whose key is that name. |
+
+***
+
+### log_missing_mapped_columns
+
+Records each mapped column that is not in the file header.
+
+```php
+private log_missing_mapped_columns(array $headers, array $mapping): mixed
+```
+
+The header does not change between rows. Call this for the first row only,
+and before a short row returns, so a bad match is not lost for the whole file.
+
+**Parameters:**
+
+| Parameter  | Type      | Description                                          |
+|------------|-----------|------------------------------------------------------|
+| `$headers` | **array** | Header cells already converted to the file encoding. |
+| `$mapping` | **array** | Metadatum id => source header.                       |
 
 ***
 
