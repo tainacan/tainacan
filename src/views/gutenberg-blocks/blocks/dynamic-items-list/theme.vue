@@ -574,9 +574,9 @@ export default {
             let metadataEndpoint = '/collection/' + this.collectionId + '/metadata/';
 
             if ( this.displayedMetadata != undefined && this.displayedMetadata.length > 0 )
-                metadataEndpoint += '&' + qs.stringify({ postin: this.displayedMetadata });
+                metadataEndpoint += '?' + qs.stringify({ postin: this.displayedMetadata });
             else
-                metadataEndpoint += '&metakey=display&metavalue=yes';
+                metadataEndpoint += '?metakey=display&metavalue=yes';
             
             this.isLoadingMetadata = true;
             this.tainacanAxios.get(metadataEndpoint)
