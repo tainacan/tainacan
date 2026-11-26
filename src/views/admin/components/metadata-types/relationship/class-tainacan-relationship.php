@@ -231,7 +231,7 @@ class Relationship extends Metadata_Type {
 				}
 			}
 
-			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			$html_formatting = $item_metadata->get_html_formatting();
 			$render_multiple_as_list = $html_formatting === 'list' && count( $items_to_display ) > 1;
 			
 			if ( $html_formatting === 'list' ) {

@@ -74,7 +74,7 @@ class URL extends Metadata_Type {
 		$return .= $link_as_button ? '<div class="wp-block-buttons">' : '';
 		
 		if ( is_array($value) && $item_metadata->is_multiple() ) {
-			$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+			$html_formatting = $item_metadata->get_html_formatting();
 			if ( $html_formatting === 'list' ) {
 				$list_items = [];
 				foreach ( $value as $el ) {

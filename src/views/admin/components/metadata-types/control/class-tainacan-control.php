@@ -269,7 +269,7 @@ class Control extends Metadata_Type {
 		} else {
 
 			if ( $item_metadata->is_multiple() ) {
-				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				$html_formatting = $item_metadata->get_html_formatting();
 				if ( $html_formatting === 'list' ) {
 					$total = count( $value );
 					if ( $total === 1 ) {

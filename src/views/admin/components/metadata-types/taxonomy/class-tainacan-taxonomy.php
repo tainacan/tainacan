@@ -367,7 +367,7 @@ class Taxonomy extends Metadata_Type {
 		if ( isset($value) ) {
 
 			if ( $item_metadata->is_multiple() ) {
-				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				$html_formatting = $item_metadata->get_html_formatting();
 				if ( $html_formatting === 'list' ) {
 					$terms_repo = \Tainacan\Repositories\Terms::get_instance();
 					$taxonomy_id = $this->get_option('taxonomy_id');
