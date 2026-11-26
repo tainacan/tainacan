@@ -568,6 +568,58 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		);
 	}
 
+	function test_value_as_string_keeps_separator_with_list_formatting() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste'
+			),
+			true
+		);
+
+		$i = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'description',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'              => 'metadadoText',
+				'description'       => 'descricao',
+				'collection_id'     => $collection->get_id(),
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple'          => 'yes',
+				'html_formatting'   => 'list',
+			),
+			true
+		);
+
+		$item_metadata = new Item_Metadata_Entity($i, $metadatum);
+		$item_metadata->set_value(['First', 'Second']);
+
+		$this->assertSame('<ul><li>First</li><li>Second</li></ul>', $item_metadata->get_value_as_html());
+		$this->assertSame('First | Second', $item_metadata->get_value_as_string(), 'list formatting should not remove the separator from the plain text value');
+
+		// The list formatting is kept for the HTML value
+		$this->assertSame('list', $metadatum->get_html_formatting());
+		$this->assertSame('<ul><li>First</li><li>Second</li></ul>', $item_metadata->get_value_as_html());
+
+		// Exporters replace the separator with their multivalued delimiter
+		$replace_separator = function() {
+			return '||';
+		};
+		add_filter('tainacan-item-metadata-get-multivalue-separator', $replace_separator);
+		$this->assertSame('First||Second', $item_metadata->get_value_as_string());
+		remove_filter('tainacan-item-metadata-get-multivalue-separator', $replace_separator);
+	}
+
 	/**
 	 * @group test_item_metadata_has_value
 	 */
