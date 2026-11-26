@@ -338,7 +338,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		$metadatum = $this->metadatum_repository->fetch($this->bulk_edit_data['metadatum_id']);
 		$parent_meta_id = $this->get_parent_meta_id($item, $metadatum);
 		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id );
-		$item_metadata->set_value("");
+		$item_metadata->set_value( $item_metadata->is_multiple() ? array() : '' );
 		return $this->save_item_metadata($item_metadata, $item);
 	}
 
