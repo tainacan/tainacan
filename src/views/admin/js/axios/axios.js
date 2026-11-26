@@ -68,11 +68,12 @@ tainacanApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
-// PUT, PATCH and DELETE are sent as POST with X-HTTP-Method-Override.
-// WordPress prefers a _method query parameter over that header, so the tunnel removes it.
+// Axios runs request interceptors in reverse registration order.
+// The tunnel is registered last so it strips _method and rewrites the verb
+// before the guard inspects the URL. GET and POST still carry _method into the guard.
 // https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
-tainacanApi.interceptors.request.use(tunnelInterceptor);
 tainacanApi.interceptors.request.use(guardInterceptor);
+tainacanApi.interceptors.request.use(tunnelInterceptor);
 
 // WordPress JSON API axios
 export const wpApi= axios.create({
@@ -85,9 +86,9 @@ wpApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
-// Same tunneling as tainacanApi.
-wpApi.interceptors.request.use(tunnelInterceptor);
+// Same order as tainacanApi: guard first, tunnel last, so the tunnel runs first.
 wpApi.interceptors.request.use(guardInterceptor);
+wpApi.interceptors.request.use(tunnelInterceptor);
 
 // WordPress AJAX axios
 export const wpAjax = axios.create({

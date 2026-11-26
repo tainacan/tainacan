@@ -9,8 +9,9 @@ const tainacanApi = axios.create({
 if (tainacan_blocks.nonce) {
     tainacanApi.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
 }
-// PUT, PATCH and DELETE are sent as POST with X-HTTP-Method-Override.
-tainacanApi.interceptors.request.use(tunnelInterceptor);
+// Axios runs request interceptors in reverse registration order.
+// The tunnel is registered last so it strips _method before the guard runs.
 tainacanApi.interceptors.request.use(guardInterceptor);
+tainacanApi.interceptors.request.use(tunnelInterceptor);
 
 export default tainacanApi;
