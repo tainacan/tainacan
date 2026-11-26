@@ -15,6 +15,8 @@ classDiagram
         +__construct(attributes)
         #open_tmp_file()
         +set_option(key, value)
+        -get_csv_enclosure()
+        -read_csv_row(handle)
         -read_header_row()
         +get_source_metadata()
         +get_source_file_name()
@@ -30,7 +32,6 @@ classDiagram
         -handle_document(column_value, item_inserted)
         -handle_thumbnail(column_value, item_inserted)
         -handle_attachment(column_value, item_inserted)
-        -handle_enclosure(file)
         -handle_item_status(status, item_inserted)
         -handle_item_comment_status(comment_status, item_inserted)
         -handle_item_author_id(author, item_inserted)
@@ -193,6 +194,42 @@ public set_option(mixed $key, mixed $value): mixed
 |-----------|-----------|-------------|
 | `$key`    | **mixed** |             |
 | `$value`  | **mixed** |             |
+
+***
+
+### get_csv_enclosure
+
+Quote character passed to fgetcsv() and str_getcsv().
+
+```php
+private get_csv_enclosure(): string
+```
+
+An empty option keeps the usual double quote. fgetcsv() accepts only one
+byte, so any other length uses that double quote as well.
+
+***
+
+### read_csv_row
+
+Reads one CSV record. A quoted field may span more than one line.
+
+```php
+private read_csv_row(resource $handle): array|false
+```
+
+The escape argument is the historical backslash. Omitting it warns on
+PHP 8.4 and newer. An empty escape would stop treating "\" as an escape,
+which changes values such as a Windows path.
+
+fgetcsv() throws on PHP 8 when the delimiter is not one byte. Return
+false instead, so the caller logs an unreadable row and the import stops.
+
+**Parameters:**
+
+| Parameter | Type         | Description                                      |
+|-----------|--------------|--------------------------------------------------|
+| `$handle` | **resource** | File handle positioned at the start of a record. |
 
 ***
 
@@ -418,20 +455,6 @@ private handle_attachment(mixed $column_value, mixed $item_inserted): mixed
 |------------------|-----------|-------------|
 | `$column_value`  | **mixed** |             |
 | `$item_inserted` | **mixed** |             |
-
-***
-
-### handle_enclosure
-
-```php
-private handle_enclosure(mixed& $file): mixed
-```
-
-**Parameters:**
-
-| Parameter | Type      | Description                    |
-|-----------|-----------|--------------------------------|
-| `$file`   | **mixed** | resource the csv file uploaded |
 
 ***
 
