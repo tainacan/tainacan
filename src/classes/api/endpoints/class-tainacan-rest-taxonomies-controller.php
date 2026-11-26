@@ -347,6 +347,23 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		$args = $this->prepare_filters($request);
 
+		if ( isset( $request['collection_id'] ) ) {
+			// fetch() returns nothing for a collection the user cannot read, so it is answered as not found.
+			$collection = Repositories\Collections::get_instance()->fetch( (int) $request['collection_id'] );
+
+			if ( ! $collection instanceof Entities\Collection ) {
+				return new \WP_REST_Response(
+					array(
+						'error_message' => __( 'A collection with this ID was not found', 'tainacan' ),
+						'collection_id' => $request['collection_id'],
+					),
+					400
+				);
+			}
+
+			$args = $this->limit_args_to_collection( $args, $collection );
+		}
+
 		$taxonomies = $this->taxonomy_repository->fetch($args);
 
 		$response = [];
@@ -400,6 +417,42 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		// }
 
 		return true;
+	}
+
+	/**
+	 * Limits the query to the taxonomies used by a collection.
+	 *
+	 * Uses the same source as the "collections" of each taxonomy in the response:
+	 * the taxonomies registered for the collection's post type, which include the ones
+	 * from repository level metadata and from metadata inside compound metadata.
+	 *
+	 * @param array               $args       WP_Query args.
+	 * @param Entities\Collection $collection The collection that uses the taxonomies.
+	 *
+	 * @return array
+	 */
+	private function limit_args_to_collection( $args, Entities\Collection $collection ) {
+		$taxonomy_ids = array();
+
+		foreach ( get_object_taxonomies( $collection->get_db_identifier() ) as $taxonomy_slug ) {
+			if ( strpos( $taxonomy_slug, Entities\Taxonomy::$db_identifier_prefix ) !== 0 ) {
+				continue;
+			}
+
+			$taxonomy_id = $this->taxonomy_repository->get_id_by_db_identifier( $taxonomy_slug );
+			if ( $taxonomy_id ) {
+				$taxonomy_ids[] = $taxonomy_id;
+			}
+		}
+
+		if ( ! empty( $args['post__in'] ) ) {
+			$taxonomy_ids = array_intersect( $taxonomy_ids, array_map( 'intval', (array) $args['post__in'] ) );
+		}
+
+		// WP_Query ignores an empty post__in, so 0 keeps the result empty.
+		$args['post__in'] = empty( $taxonomy_ids ) ? array( 0 ) : array_values( $taxonomy_ids );
+
+		return $args;
 	}
 
 	/**
@@ -592,6 +645,11 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$query_params['name'] = array(
 			'description' => __('Limits the result set to a taxonomy with a specific name.', 'tainacan'),
 			'type'        => 'string',
+		);
+
+		$query_params['collection_id'] = array(
+			'description' => __( 'Limits the result set to the taxonomies used by the metadata of a collection.', 'tainacan' ),
+			'type'        => 'integer',
 		);
 
 		$query_params = array_merge($query_params, parent::get_meta_queries_params());
