@@ -604,11 +604,17 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata = new Item_Metadata_Entity($i, $metadatum);
 		$item_metadata->set_value(['First', 'Second']);
 
+		$this->assertTrue($metadatum->validate());
+
 		$this->assertSame('<ul><li>First</li><li>Second</li></ul>', $item_metadata->get_value_as_html());
 		$this->assertSame('First | Second', $item_metadata->get_value_as_string(), 'list formatting should not remove the separator from the plain text value');
 
+		// The metadatum is not changed while the value is read
+		$this->assertTrue($metadatum->get_validated(), 'reading the plain text value should not invalidate the metadatum');
+
 		// The list formatting is kept for the HTML value
 		$this->assertSame('list', $metadatum->get_html_formatting());
+		$this->assertSame('list', $item_metadata->get_html_formatting());
 		$this->assertSame('<ul><li>First</li><li>Second</li></ul>', $item_metadata->get_value_as_html());
 
 		// Exporters replace the separator with their multivalued delimiter
@@ -618,6 +624,60 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		add_filter('tainacan-item-metadata-get-multivalue-separator', $replace_separator);
 		$this->assertSame('First||Second', $item_metadata->get_value_as_string());
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', $replace_separator);
+	}
+
+	function test_value_as_string_keeps_list_formatting_when_rendering_fails() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste'
+			),
+			true
+		);
+
+		$i = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'description',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'              => 'metadadoText',
+				'description'       => 'descricao',
+				'collection_id'     => $collection->get_id(),
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple'          => 'yes',
+				'html_formatting'   => 'list',
+			),
+			true
+		);
+
+		$item_metadata = new Item_Metadata_Entity($i, $metadatum);
+		$item_metadata->set_value(['First', 'Second']);
+
+		$throw_exception = function() {
+			throw new \Exception('Rendering failed');
+		};
+		add_filter('tainacan-item-metadata-get-value-as-html--type-text', $throw_exception);
+		try {
+			$item_metadata->get_value_as_string();
+			$this->fail('The exception thrown while rendering the value should not be caught');
+		} catch ( \Exception $e ) {
+			$this->assertSame('Rendering failed', $e->getMessage());
+		} finally {
+			remove_filter('tainacan-item-metadata-get-value-as-html--type-text', $throw_exception);
+		}
+
+		$this->assertSame('list', $metadatum->get_html_formatting());
+		$this->assertSame('list', $item_metadata->get_html_formatting());
+		$this->assertSame('<ul><li>First</li><li>Second</li></ul>', $item_metadata->get_value_as_html());
 	}
 
 	/**
