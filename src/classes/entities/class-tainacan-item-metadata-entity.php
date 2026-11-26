@@ -222,6 +222,18 @@ class Item_Metadata_Entity extends Entity {
 			}
 		}
 		
+		// The list formatting only makes sense in HTML. Without its tags, multiple values would lose their separator.
+		$html_formatting = is_object($metadatum) ? $metadatum->get_html_formatting() : null;
+		if ( $html_formatting === 'list' ) {
+			$metadatum->set_html_formatting('inline');
+		}
+
+		$return = wp_strip_all_tags($this->get_value_as_html());
+
+		if ( $html_formatting === 'list' ) {
+			$metadatum->set_html_formatting($html_formatting);
+		}
+
 		return 
 			/**
 			 * Filter the item metadatum value as string
@@ -231,7 +243,7 @@ class Item_Metadata_Entity extends Entity {
 			 * 
 			 * @return string the item metadatum value string 
 			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-string', wp_strip_all_tags($this->get_value_as_html()), $this );
+			apply_filters( 'tainacan-item-metadata-get-value-as-string', $return, $this );
 	}
 	
 	/**
