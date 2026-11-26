@@ -59,6 +59,37 @@ class CSV extends Importer {
 	}
 
 	/**
+	 * Quote character passed to fgetcsv() and str_getcsv().
+	 *
+	 * An empty option keeps the usual double quote. fgetcsv() accepts only one
+	 * byte, so any other length uses that double quote as well.
+	 *
+	 * @return string
+	 */
+	private function get_csv_enclosure() {
+		$enclosure = $this->get_option( 'enclosure' );
+		if ( is_string( $enclosure ) && 1 === strlen( $enclosure ) ) {
+			return $enclosure;
+		}
+		return '"';
+	}
+
+	/**
+	 * Reads one CSV record. A quoted field may span more than one line.
+	 *
+	 * @param resource $handle File handle positioned at the start of a record.
+	 * @return array|false
+	 */
+	private function read_csv_row( $handle ) {
+		return fgetcsv(
+			$handle,
+			0,
+			$this->get_option( 'delimiter' ),
+			$this->get_csv_enclosure()
+		);
+	}
+
+	/**
 	 * Reads the header row and converts each name with the file encoding option.
 	 *
 	 * Column names must go through the same conversion as cell values. A
@@ -74,11 +105,7 @@ class CSV extends Importer {
 			return false;
 		}
 
-		if ( $this->get_option( 'enclosure' ) && strlen( $this->get_option( 'enclosure' ) ) > 0 ) {
-			$columns = $this->handle_enclosure( $handle );
-		} else {
-			$columns = fgetcsv( $handle, 0, $this->get_option( 'delimiter' ) );
-		}
+		$columns = $this->read_csv_row( $handle );
 
 		if ( ! is_array( $columns ) ) {
 			return false;
@@ -274,7 +301,7 @@ class CSV extends Importer {
 
 		if ( $index === 0 ) {
 			// moves the pointer forward
-			fgetcsv($file, 0, $this->get_option('delimiter'));
+			$this->read_csv_row( $file );
 		} else {
 			//get the pointer
 			$csv_pointer= $this->get_transient('csv_pointer');
@@ -285,11 +312,7 @@ class CSV extends Importer {
 
 		$this->add_transient('csv_last_pointer', ftell($file)); // add reference to post_process item in after_inserted_item()
 
-		if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ) {
-			$values = $this->handle_enclosure( $file );
-		} else {
-			$values = fgetcsv($file, 0, $this->get_option('delimiter'));
-		}
+		$values = $this->read_csv_row( $file );
 
 		// fgetcsv() returns false at end of file / on read failure. Bail out with a
 		// readable log entry rather than letting the count() below fail on a non-array.
@@ -343,10 +366,10 @@ class CSV extends Importer {
 
 				$returnValue = [];
 				foreach ( $valueToInsert as $metadatumValue ) {
-					$childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
+					$childrenHeaders = str_getcsv( $compoundHeaders[ $key ], $this->get_option( 'delimiter' ), $this->get_csv_enclosure() );
 					$childrenValue = $this->is_clear_value($metadatumValue) ?
 						array_fill(0, sizeof($childrenHeaders), $this->get_option('escape_empty_value') ) :
-						str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
+						str_getcsv( $metadatumValue, $this->get_option( 'delimiter' ), $this->get_csv_enclosure() );
 
 					if ( sizeof($childrenHeaders) != sizeof($childrenValue) ) {
 						$this->add_error_log('Mismatch count headers childrens and row columns in compound metadata. file value:' . $metadatumValue);
@@ -403,11 +426,7 @@ class CSV extends Importer {
 			$csv_pointer= $this->get_transient('csv_last_pointer');
 			fseek($file, $csv_pointer);
 
-			if ( $this->get_option('enclosure') && strlen($this->get_option('enclosure')) > 0 ){
-				$values = $this->handle_enclosure( $file );
-			} else {
-				$values = fgetcsv($file, 0, $this->get_option('delimiter'));
-			}
+			$values = $this->read_csv_row( $file );
 
 			if ( is_array($values) && !empty($column_thumbnail) ) {
 				$this->handle_thumbnail( $values[$column_thumbnail], $inserted_item);
@@ -445,7 +464,7 @@ class CSV extends Importer {
 	public function get_source_number_of_items() {
 		if ( ($handle = $this->open_tmp_file()) !== false ) {
 			$cont = 0;
-			while ( ($data = fgetcsv($handle, 0, $this->get_option('delimiter')) ) !== false ) {
+			while ( $this->read_csv_row( $handle ) !== false ) {
 				$cont++;
 			}
 			// does not count the header
@@ -861,30 +880,6 @@ class CSV extends Importer {
 			}
 		}
 		$this->items_repo->enable_logs();
-	}
-
-	/**
-	 * @param $file resource the csv file uploaded
-	 */
-	private function handle_enclosure( &$file ) {
-
-		$line = trim(fgets($file));
-		$start = substr($line, 0, strlen($this->get_option('enclosure')));
-
-		if ( $this->get_option('enclosure') === $start ) {
-			$cut_start = strlen($this->get_option('enclosure'));
-			$line = substr($line, $cut_start);
-		}
-
-		$end = substr($line, ( strlen($line) - strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
-
-		if ( $this->get_option('enclosure') === $end ) {
-			$line = substr($line, 0, ( strlen($line) - strlen($this->get_option('enclosure')) ) );
-		}
-
-		$delimiter = $this->get_option('enclosure').$this->get_option('delimiter').$this->get_option('enclosure');
-		$values = explode($delimiter, $line);
-		return $values;
 	}
 
 	/**

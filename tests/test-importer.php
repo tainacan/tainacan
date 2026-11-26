@@ -1301,6 +1301,87 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * Enclosure set to a double quote still allows quotes only on cells that need them.
+	 *
+	 * @group importer
+	 */
+	public function test_set_enclosure_quotes_only_cells_that_need_them() {
+		$this->assert_optional_quotes_are_imported( '"' );
+	}
+
+	/**
+	 * A blank Enclosure option uses the same double quote, so a partially quoted file splits.
+	 *
+	 * @group importer
+	 */
+	public function test_blank_enclosure_quotes_only_cells_that_need_them() {
+		$this->assert_optional_quotes_are_imported( '' );
+	}
+
+	/**
+	 * A quoted field that contains a line break stays one record when Enclosure is set.
+	 *
+	 * @group importer
+	 */
+	public function test_quoted_newline_stays_one_record_when_enclosure_is_set() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$file_name = 'demosaved_quoted_newline.csv';
+		$file = fopen( $file_name, 'w' );
+		fwrite( $file, "Column 1,Column 2\n\"line one\nline two\",other\n" );
+		fclose( $file );
+
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+		$importer_instance->set_option( 'enclosure', '"' );
+
+		$this->assertSame( array( 'Column 1', 'Column 2' ), $importer_instance->get_source_metadata() );
+		$this->assertEquals( 1, $importer_instance->get_source_number_of_items() );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Quoted newline',
+				'status' => 'publish',
+			),
+			true
+		);
+		$map = array();
+		foreach ( $Tainacan_Metadata->fetch_by_collection( $collection ) as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$map[ $metadatum->get_id() ] = 'Column 1';
+			} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Description' ) {
+				$map[ $metadatum->get_id() ] = 'Column 2';
+			}
+		}
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => $map,
+				'total_items' => 1,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$items = $Tainacan_Items->fetch( array(), $collection, 'OBJECT' );
+		$this->assertEquals( 1, count( $items ) );
+		$item = array_shift( $items );
+		$this->assertSame( "line one\nline two", $item->get_title() );
+		$this->assertSame( 'other', $item->get_description() );
+
+		unlink( $file_name );
+	}
+
+	/**
 	 * UTF-8 BOM on the first column must not break special field detection.
 	 *
 	 * @group importer_csv_special_fields
@@ -1465,6 +1546,82 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 				$this->assertSame( false, strpos( $entry['message'], 'was not found in the CSV header' ) );
 			}
 		}
+
+		unlink( $file_name );
+	}
+
+	/**
+	 * Imports a semicolon file that quotes a cell only when the cell contains the delimiter.
+	 *
+	 * @param string $enclosure Enclosure option. Empty string and `"` must parse the same way.
+	 */
+	private function assert_optional_quotes_are_imported( $enclosure ) {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$suffix = ( '' === $enclosure ) ? 'blank' : 'set';
+		$file_name = 'demosaved_optional_quotes_' . $suffix . '.csv';
+		$file = fopen( $file_name, 'w' );
+		fwrite( $file, "Título;Número;Codigo\n\"Norma; única\";123;abc\nplain;456;def\n" );
+		fclose( $file );
+
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+		$importer_instance->set_option( 'delimiter', ';' );
+		$importer_instance->set_option( 'enclosure', $enclosure );
+
+		$this->assertSame(
+			array( 'Título', 'Número', 'Codigo' ),
+			$importer_instance->get_source_metadata()
+		);
+		$this->assertEquals( 2, $importer_instance->get_source_number_of_items() );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Optional quotes ' . $suffix,
+				'status' => 'publish',
+			),
+			true
+		);
+		$map = array();
+		foreach ( $Tainacan_Metadata->fetch_by_collection( $collection ) as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$map[ $metadatum->get_id() ] = 'Título';
+			} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Description' ) {
+				$map[ $metadatum->get_id() ] = 'Número';
+			}
+		}
+		$this->assertEquals( 2, count( $map ) );
+
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => $map,
+				'total_items' => 2,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$imported = array();
+		foreach ( $Tainacan_Items->fetch( array(), $collection, 'OBJECT' ) as $item ) {
+			$imported[ $item->get_title() ] = $item->get_description();
+		}
+		$this->assertEquals(
+			array(
+				'Norma; única' => '123',
+				'plain'        => '456',
+			),
+			$imported
+		);
 
 		unlink( $file_name );
 	}
