@@ -51,9 +51,7 @@ class Test_Taxonomy_Terms_Query extends TAINACAN_UnitTestCase {
 		$this->assertSame( 0, $args['termsparent'] );
 		$this->assertSame( 0, $offset );
 
-		$html = tainacan_get_taxonomies_pagination( 30 );
-		$this->assertIsString( $html );
-		$this->assertNotSame( '', $html );
+		$this->assert_terms_page_is( tainacan_get_taxonomies_pagination( 30 ), 1 );
 	}
 
 	/**
@@ -72,6 +70,7 @@ class Test_Taxonomy_Terms_Query extends TAINACAN_UnitTestCase {
 		$this->assertSame( 5, $args['perpage'] );
 		$this->assertSame( 4, $args['termsparent'] );
 		$this->assertSame( 5, ( $args['termspaged'] - 1 ) * $args['perpage'] );
+		$this->assert_terms_page_is( tainacan_get_taxonomies_pagination( 30 ), 2 );
 	}
 
 	/**
@@ -84,7 +83,25 @@ class Test_Taxonomy_Terms_Query extends TAINACAN_UnitTestCase {
 		$args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
 
 		$this->assertSame( 12, $args['perpage'] );
-		$this->assertSame( 3, (int) ceil( 30 / $args['perpage'] ) );
+		$this->assert_terms_page_is( tainacan_get_taxonomies_pagination( 30 ), 1 );
+	}
+
+	/**
+	 * ?termspaged[]=2 is an array. absint() would warn on PHP 8.
+	 */
+	public function test_array_query_vars_use_the_non_numeric_fallback() {
+		$this->set_terms_query_vars( array(
+			'termspaged'  => array( '2' ),
+			'perpage'     => array( '5' ),
+			'termsparent' => array( '4' ),
+		) );
+
+		$args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
+
+		$this->assertSame( 1, $args['termspaged'] );
+		$this->assertSame( 12, $args['perpage'] );
+		$this->assertSame( 0, $args['termsparent'] );
+		$this->assert_terms_page_is( tainacan_get_taxonomies_pagination( 30 ), 1 );
 	}
 
 	/**
@@ -92,6 +109,20 @@ class Test_Taxonomy_Terms_Query extends TAINACAN_UnitTestCase {
 	 */
 	public function return_zero() {
 		return 0;
+	}
+
+	/**
+	 * The current page marker paginate_links() prints for this list.
+	 *
+	 * assertIsString() is missing from PHPUnit 6.5.7, which runs the PHP 7.4
+	 * job. assertInternalType() is missing from PHPUnit 9, which runs the rest.
+	 *
+	 * @param string $html Pagination markup.
+	 * @param int    $page Expected current page.
+	 */
+	private function assert_terms_page_is( $html, $page ) {
+		$this->assertTrue( is_string( $html ) );
+		$this->assertNotFalse( strpos( $html, 'class="page-numbers current">' . $page . '<' ) );
 	}
 
 	/**

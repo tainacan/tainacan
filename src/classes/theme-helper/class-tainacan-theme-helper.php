@@ -3987,33 +3987,44 @@ class Theme_Helper {
 	 * termspaged reaches subtraction in the terms template and throws a
 	 * TypeError on PHP 8. perpage is not a public query var; a value below 1
 	 * still reaches the pagination division, so it falls back to the default.
+	 * An array, as in ?termspaged[]=2, is the same fallback: absint() would
+	 * warn on PHP 8 because intval() casts that array to a string.
 	 *
 	 * @return array
 	 */
 	function get_taxonomies_query_args() {
-		$default_perpage = absint( apply_filters( 'tainacan-default-taxonomy-terms-perpage', 12 ) );
-		if ( $default_perpage < 1 ) {
-			$default_perpage = 12;
-		}
-
-		$termspaged = absint( get_query_var( 'termspaged', 1 ) );
-		if ( $termspaged < 1 ) {
-			$termspaged = 1;
-		}
-
-		$perpage = absint( get_query_var( 'perpage', $default_perpage ) );
-		if ( $perpage < 1 ) {
-			$perpage = $default_perpage;
-		}
+		$filtered_perpage = apply_filters( 'tainacan-default-taxonomy-terms-perpage', 12 );
+		$default_perpage  = $this->taxonomy_terms_int( $filtered_perpage, 12, 1 );
 
 		return array(
 			'order'       => get_query_var( 'order', apply_filters( 'tainacan-default-taxonomy-terms-order', 'ASC' ) ),
 			'orderby'     => get_query_var( 'orderby', apply_filters( 'tainacan-default-taxonomy-terms-orderby', 'name' ) ),
-			'termspaged'  => $termspaged,
-			'perpage'     => $perpage,
+			'termspaged'  => $this->taxonomy_terms_int( get_query_var( 'termspaged', 1 ), 1, 1 ),
+			'perpage'     => $this->taxonomy_terms_int( get_query_var( 'perpage', $default_perpage ), $default_perpage, 1 ),
 			'search'      => get_query_var( 'search', '' ),
-			'termsparent' => absint( get_query_var( 'termsparent', 0 ) ),
+			'termsparent' => $this->taxonomy_terms_int( get_query_var( 'termsparent', 0 ), 0, 0 ),
 		);
+	}
+
+	/**
+	 * An integer query value, or the fallback when it cannot be used.
+	 *
+	 * @param mixed $value    Raw query var or filter value.
+	 * @param int   $fallback Value used for a non-scalar or a number below $minimum.
+	 * @param int   $minimum  Smallest accepted integer. The parent allows 0.
+	 * @return int
+	 */
+	private function taxonomy_terms_int( $value, $fallback, $minimum ) {
+		if ( ! is_scalar( $value ) ) {
+			return (int) $fallback;
+		}
+
+		$number = absint( $value );
+		if ( $number < $minimum ) {
+			return (int) $fallback;
+		}
+
+		return $number;
 	}
 
 	/**
