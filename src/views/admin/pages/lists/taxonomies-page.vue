@@ -50,6 +50,35 @@
                         @icon-right-click="searchTaxonomies()" />
             </b-field>
 
+            <!-- Collection filter ----  -->
+            <b-field 
+                    id="taxonomies-page-collection-filter"
+                    class="header-item">
+                <b-autocomplete
+                        v-model="collectionSearch"
+                        v-a11y-autocomplete="{ appendToBody: true }"
+                        :placeholder="$i18n.get('label_filter_by_collection')"
+                        :aria-label="$i18n.get('label_filter_by_collection')"
+                        :data="collections"
+                        field="name"
+                        size="is-small"
+                        clearable
+                        icon-right="menu-down"
+                        :loading="isFetchingCollections"
+                        :append-to-body="true"
+                        open-on-focus
+                        check-infinite-scroll
+                        @select="onSelectCollection"
+                        @focus="browseCollections"
+                        @active="onCollectionSuggestionsActive"
+                        @typing="fetchCollections"
+                        @infinite-scroll="fetchMoreCollections">
+                    <template #empty>
+                        {{ $i18n.get('info_no_options_found') }}
+                    </template>
+                </b-autocomplete>
+            </b-field>
+
             <!-- Sorting options ----  -->
             <b-field 
                     id="taxonomies-page-sorting-options"
@@ -242,14 +271,17 @@
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                                 </span>
                             </p>
-                            <p v-if="status == undefined || status == ''">
+                            <p v-if="collectionId">
+                                {{ $i18n.get('info_no_taxonomy_used_by_collection') }}
+                            </p>
+                            <p v-else-if="status == undefined || status == ''">
                                 {{ $i18n.get('info_no_taxonomy_created') }}
                             </p>
                             <p v-else>
                                 {{ $i18n.getNoEntitiesMessageForStatus('taxonomies', status) }}
                             </p>
                             <router-link
-                                    v-if="status == undefined || status == ''"
+                                    v-if="(status == undefined || status == '') && !collectionId"
                                     v-slot="{ navigate }"
                                     :to="{ path: $routerHelper.getNewTaxonomyPath() }"
                                     custom>
@@ -315,6 +347,7 @@
 <script>
     import TaxonomiesList from "../../components/lists/taxonomies-list.vue";
     import { mapActions, mapGetters } from 'vuex';
+    import { tainacanApi, CancelToken, isCancel } from '../../js/axios';
 
     export default {
         name: 'TaxonomyPage',
@@ -333,6 +366,15 @@
                 newOrder: 'asc',
                 newOrderBy: 'date',
                 searchQuery: '',
+                collectionId: null,
+                collections: [],
+                collectionSearch: '',
+                committedCollectionName: '',
+                collectionSearchQuery: '',
+                collectionsPage: 1,
+                totalCollectionPages: 0,
+                isFetchingCollections: false,
+                collectionSearchCancel: null,
                 sortingOptions: [
                     { label: this.$i18n.get('label_title'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
@@ -384,6 +426,15 @@
                 return defaultTaxonomiesPerPageOptions.sort((a,b) => a - b);
             }
         },
+        watch: {
+            // An empty field, from the clear button or from erasing the text, removes the filter
+            collectionSearch(newSearch) {
+                if (newSearch === '' && this.collectionId) {
+                    this.committedCollectionName = '';
+                    this.setCollectionFilter(null);
+                }
+            }
+        },
         created() {
             this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
         },
@@ -411,6 +462,9 @@
             }
             
             this.load();
+        },
+        beforeUnmount() {
+            this.cancelCollectionSearch();
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -464,7 +518,8 @@
                     status: this.status ? this.status : 'publish,private,pending',
                     order: this.order,
                     orderby: this.orderBy,
-                    search: this.searchQuery
+                    search: this.searchQuery,
+                    collectionId: this.collectionId
                 })
                     .then((res) => {
                         this.isLoading = false;
@@ -481,6 +536,101 @@
             searchTaxonomies() {
                 this.page = 1;
                 this.load();
+            },
+            onSelectCollection(collection) {
+                // Typing a new search unselects the option, so only a selection changes the filter here
+                if (!collection || !collection.id)
+                    return;
+
+                this.committedCollectionName = collection.name;
+                this.setCollectionFilter(collection.id);
+            },
+            setCollectionFilter(collectionId) {
+                if (collectionId == this.collectionId)
+                    return;
+
+                this.collectionId = collectionId;
+                this.page = 1;
+                this.load();
+            },
+            onCollectionSuggestionsActive(isOpen) {
+                if (isOpen)
+                    return;
+
+                // Closing the suggestions without a selection keeps showing the filtered collection
+                if (this.collectionSearch !== this.committedCollectionName)
+                    this.collectionSearch = this.committedCollectionName;
+            },
+            cancelCollectionSearch() {
+                if (this.collectionSearchCancel) {
+                    this.collectionSearchCancel.cancel('Collection search canceled.');
+                    this.collectionSearchCancel = null;
+                }
+            },
+            beginCollectionSearch() {
+                this.cancelCollectionSearch();
+                this.collectionSearchCancel = CancelToken.source();
+            },
+            browseCollections() {
+                this.collectionSearchQuery = '';
+                this.collectionsPage = 1;
+                this.totalCollectionPages = 0;
+                this.beginCollectionSearch();
+                this.isFetchingCollections = true;
+                this.loadCollectionPage('');
+            },
+            fetchCollections: _.debounce(function(search) {
+                const query = search || '';
+
+                if (this.committedCollectionName && query === this.committedCollectionName)
+                    return;
+
+                if (query !== this.collectionSearchQuery) {
+                    this.collectionSearchQuery = query;
+                    this.collectionsPage = 1;
+                    this.totalCollectionPages = 0;
+                }
+
+                if (this.totalCollectionPages > 0 && this.collectionsPage > this.totalCollectionPages)
+                    return;
+
+                this.beginCollectionSearch();
+                this.isFetchingCollections = true;
+                this.loadCollectionPage(query);
+            }, 500),
+            fetchMoreCollections: _.debounce(function() {
+                this.fetchCollections(this.collectionSearchQuery);
+            }, 250),
+            loadCollectionPage(query) {
+                const source = this.collectionSearchCancel;
+                let endpoint = '/collections?paged=' + this.collectionsPage + '&perpage=12&context=edit&fetch_only=name,id&order=asc&orderby=title';
+                if (query)
+                    endpoint += '&search=' + encodeURIComponent(query);
+
+                return tainacanApi.get(endpoint, { cancelToken: source.token })
+                    .then(res => {
+                        if (this.collectionSearchCancel !== source)
+                            return;
+
+                        const pageCollections = Array.isArray(res.data) ? res.data : [];
+
+                        if (this.collectionsPage === 1)
+                            this.collections = pageCollections;
+                        else
+                            this.collections.push(...pageCollections);
+
+                        this.totalCollectionPages = res.headers['x-wp-totalpages'] ? Number(res.headers['x-wp-totalpages']) : 0;
+                        this.collectionsPage++;
+
+                        this.isFetchingCollections = false;
+                    })
+                    .catch(error => {
+                        if (isCancel(error) || this.collectionSearchCancel !== source)
+                            return;
+
+                        this.$console.error(error);
+                        this.isFetchingCollections = false;
+                    });
             }
         }
     }
