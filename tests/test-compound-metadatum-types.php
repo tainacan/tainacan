@@ -450,4 +450,187 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		// $collection->set_metadata_order($order);
 		// $this->assertFalse($collection->validate());
 	}
+
+	/**
+	 * Creates a collection with a unique compound metadatum and two text children.
+	 *
+	 * @return array The item, the compound metadatum and its two children.
+	 */
+	private function create_unique_compound_scenario() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'unique compound',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$compound = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Address',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Compound',
+				'status'        => 'publish',
+				'multiple'      => 'no',
+			),
+			true
+		);
+
+		$street = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Street',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+				'parent'        => $compound->get_id(),
+			),
+			true
+		);
+
+		$city = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'City',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+				'parent'        => $compound->get_id(),
+			),
+			true
+		);
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'item with address',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+
+		return array( $item, $compound, $street, $city );
+	}
+
+	/**
+	 * Saves a child of a compound metadatum.
+	 *
+	 * @param \Tainacan\Entities\Item      $item           The item.
+	 * @param \Tainacan\Entities\Metadatum $metadatum      The child metadatum.
+	 * @param string                       $value          The value.
+	 * @param int|null                     $parent_meta_id The compound meta id, when the client knows it.
+	 *
+	 * @return Item_Metadata_Entity
+	 */
+	private function save_compound_child( $item, $metadatum, $value, $parent_meta_id = null ) {
+		$item_metadata = new Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id );
+		$item_metadata->set_value( $value );
+		$this->assertTrue( $item_metadata->validate() );
+
+		return \Tainacan\Repositories\Item_Metadata::get_instance()->insert( $item_metadata );
+	}
+
+	/**
+	 * Counts the rows that store the value of a compound metadatum for an item.
+	 */
+	private function count_compound_rows( $item, $compound ) {
+		global $wpdb;
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item->get_id(), $compound->get_id() ) );
+	}
+
+	/**
+	 * Children of a unique compound saved without the compound meta id, such as two fields
+	 * saved by the item form before the first answer arrives, stay in a single compound value.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/711
+	 */
+	function test_unique_compound_children_saved_without_parent_meta_id_share_one_value() {
+		list( $item, $compound, $street, $city ) = $this->create_unique_compound_scenario();
+
+		$saved_street = $this->save_compound_child( $item, $street, 'Rua A' );
+		$saved_city   = $this->save_compound_child( $item, $city, 'Brasília' );
+
+		$this->assertEquals( 1, $this->count_compound_rows( $item, $compound ), 'A unique compound must keep a single value' );
+		$this->assertEquals( $saved_street->get_parent_meta_id(), $saved_city->get_parent_meta_id() );
+
+		$value = ( new Item_Metadata_Entity( $item, $compound ) )->get_value();
+
+		$this->assertEquals( 'Rua A', $value[ $street->get_id() ]->get_value() );
+		$this->assertEquals( 'Brasília', $value[ $city->get_id() ]->get_value() );
+	}
+
+	/**
+	 * Saving the same child of a unique compound again without the compound meta id
+	 * updates its value instead of keeping the first one.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/711
+	 */
+	function test_unique_compound_child_saved_again_without_parent_meta_id_is_updated() {
+		list( $item, $compound, $street ) = $this->create_unique_compound_scenario();
+
+		$this->save_compound_child( $item, $street, 'Rua A' );
+		$this->save_compound_child( $item, $street, 'Rua B' );
+
+		$value = ( new Item_Metadata_Entity( $item, $compound ) )->get_value();
+
+		$this->assertEquals( 1, $this->count_compound_rows( $item, $compound ) );
+		$this->assertEquals( 'Rua B', $value[ $street->get_id() ]->get_value() );
+
+		global $wpdb;
+		$street_rows = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item->get_id(), $street->get_id() ) );
+		$this->assertEquals( 1, $street_rows, 'The old child value must not be left behind' );
+	}
+
+	/**
+	 * Items saved before this fix may already have a unique compound split in several rows.
+	 * Its value joins them, the most recent child value winning, and an edit to any child shows up.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/711
+	 */
+	function test_unique_compound_split_in_several_rows_shows_every_child_and_the_latest_edit() {
+		list( $item, $compound, $street, $city ) = $this->create_unique_compound_scenario();
+
+		// Rows as they were left by older versions: one compound value per saved child.
+		$old_street_id = add_post_meta( $item->get_id(), $street->get_id(), 'Rua antiga' );
+		add_post_meta( $item->get_id(), $compound->get_id(), array( $old_street_id ) );
+		$city_id = add_post_meta( $item->get_id(), $city->get_id(), 'Brasília' );
+		$second_compound_id = add_post_meta( $item->get_id(), $compound->get_id(), array( $city_id ) );
+		$new_street_id = add_post_meta( $item->get_id(), $street->get_id(), 'Rua nova' );
+		add_post_meta( $item->get_id(), $compound->get_id(), array( $new_street_id ) );
+
+		$value = ( new Item_Metadata_Entity( $item, $compound ) )->get_value();
+
+		$this->assertEquals( 'Rua nova', $value[ $street->get_id() ]->get_value(), 'The most recent value of a child must be shown' );
+		$this->assertEquals( 'Brasília', $value[ $city->get_id() ]->get_value(), 'Children saved in other rows must not be hidden' );
+
+		// Editing the city through its own compound row is reflected when the item is read again.
+		$this->save_compound_child( $item, $city, 'Goiânia', (int) $second_compound_id );
+
+		$value = ( new Item_Metadata_Entity( $item, $compound ) )->get_value();
+		$this->assertEquals( 'Goiânia', $value[ $city->get_id() ]->get_value() );
+	}
+
+	/**
+	 * Multiple compounds still create one value per new group and keep their order.
+	 */
+	function test_multiple_compound_children_saved_without_parent_meta_id_create_new_values() {
+		list( $item, $compound, $street ) = $this->create_unique_compound_scenario();
+		$compound->set_multiple( 'yes' );
+		$compound->validate();
+		$compound = \Tainacan\Repositories\Metadata::get_instance()->insert( $compound );
+
+		$this->save_compound_child( $item, $street, 'Rua A' );
+		$this->save_compound_child( $item, $street, 'Rua B' );
+
+		$this->assertEquals( 2, $this->count_compound_rows( $item, $compound ) );
+
+		$values = ( new Item_Metadata_Entity( $item, $compound ) )->get_value();
+
+		$this->assertCount( 2, $values );
+		$this->assertEquals( 'Rua A', $values[0][ $street->get_id() ]->get_value() );
+		$this->assertEquals( 'Rua B', $values[1][ $street->get_id() ]->get_value() );
+	}
 }
