@@ -15,7 +15,8 @@ class TaxonomyCheckbox extends Filter_Type {
         $this->set_form_component('tainacan-filter-form-taxonomy-checkbox');
         $this->set_use_input_placeholder(false);
         $this->set_default_options([
-            'max_view_more_pages' => 0
+            'max_view_more_pages' => 0,
+            'show_hierarchy_path' => 'no'
         ]);
         $this->set_preview_template('
             <div>
@@ -71,6 +72,10 @@ class TaxonomyCheckbox extends Filter_Type {
             'max_view_more_pages' => [
                 'title' => __( 'Max "View more" attempts', 'tainacan' ),
                 'description' => __( 'How many times "View more" may load another set of filter values inline before switching to "View all". Use 0 for "View all" only (default).', 'tainacan' ) . ' ' . __( 'Not used for hierarchical taxonomies.', 'tainacan' ),
+            ],
+            'show_hierarchy_path' => [
+                'title' => __( 'Show hierarchy path', 'tainacan' ),
+                'description' => __( 'Displays the parent terms before a child term in the list of options, as in "Parent > Child > Term". Child terms are listed here once they are selected, for example through "View all".', 'tainacan' ),
             ]
         ];
     }
@@ -86,6 +91,10 @@ class TaxonomyCheckbox extends Filter_Type {
 
         if ( !in_array($filter->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
+
+        $show_hierarchy_path = $this->get_option('show_hierarchy_path');
+        if ( !empty($show_hierarchy_path) && !in_array($show_hierarchy_path, ['yes', 'no'], true) )
+            return ['show_hierarchy_path' => __('"Show hierarchy path" must be "yes" or "no"', 'tainacan')];
 
         $max_view_more_pages = $this->get_option('max_view_more_pages');
         if ( $max_view_more_pages === '' || $max_view_more_pages === null )
