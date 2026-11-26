@@ -68,8 +68,8 @@ tainacanApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
-// PUT, PATCH and DELETE are sent as POST. WordPress reads X-HTTP-Method-Override
-// when the URL has no _method parameter.
+// PUT, PATCH and DELETE are sent as POST with X-HTTP-Method-Override.
+// WordPress prefers a _method query parameter over that header, so the tunnel removes it.
 // https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters/#method
 tainacanApi.interceptors.request.use(tunnelInterceptor);
 tainacanApi.interceptors.request.use(guardInterceptor);
