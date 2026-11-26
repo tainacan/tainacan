@@ -1,5 +1,5 @@
 import mitt from 'mitt';
-import { isIframeSelectionMode, broadcastSelectionState, subscribeSelectionCommands, toPlainItemIds } from './selection-bridge.js';
+import { isIframeSelectionMode, isMultipleItemSelectionMode, broadcastSelectionState, subscribeSelectionCommands, toPlainItemIds } from './selection-bridge.js';
 
 export default {
 
@@ -415,10 +415,11 @@ export default {
         }
         app.config.globalProperties.$eventBusSearch = bus;
 
-        if (isIframeSelectionMode(app)) {
+        if (isIframeSelectionMode(app))
             bus.publishSelectionState();
+
+        if (isMultipleItemSelectionMode(app))
             subscribeSelectionCommands(() => bus.cleanSelectedItems());
-        }
 
         // Defines the global $eventBusSearchEmitter for handling events across different search components
         emitter.on('input', data => {

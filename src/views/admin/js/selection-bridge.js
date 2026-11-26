@@ -23,6 +23,17 @@ export function isIframeSelectionMode(app) {
     return !!(options && (options.itemsSingleSelectionMode || options.itemsMultipleSelectionMode || options.itemsSearchSelectionMode));
 }
 
+export function isMultipleItemSelectionMode(app) {
+    if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('itemsMultipleSelectionMode'))
+            return true;
+    }
+
+    const options = app && app.config.globalProperties.$adminOptions;
+    return !!(options && options.itemsMultipleSelectionMode);
+}
+
 export function toPlainItemIds(items) {
     if (items == null || items === false)
         return [];

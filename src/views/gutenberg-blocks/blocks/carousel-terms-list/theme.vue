@@ -203,15 +203,23 @@ export default {
             return wp && wp.i18n ? wp.i18n.__(string, context) : string;
         },
         fetchTerms() {
-            this.isLoading = true;
+            if (this.termsRequestSource != undefined && typeof this.termsRequestSource == 'function')
+                this.termsRequestSource.cancel('Previous terms search canceled.');
+
+            this.terms = [];
             this.errorMessage = 'No terms found.';
+
+            if (!this.taxonomyId || !Array.isArray(this.selectedTerms) || !this.selectedTerms.length) {
+                this.isLoading = false;
+                this.totalTerms = 0;
+                return;
+            }
+
+            this.isLoading = true;
 
             nextTick(() => {
                 this.mountCarousel();
             });
-            
-            if (this.termsRequestSource != undefined && typeof this.termsRequestSource == 'function')
-                this.termsRequestSource.cancel('Previous terms search canceled.');
 
             this.termsRequestSource = axios.CancelToken.source();
 

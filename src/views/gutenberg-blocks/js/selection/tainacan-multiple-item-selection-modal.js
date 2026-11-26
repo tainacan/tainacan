@@ -202,7 +202,7 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
     }
 
     applySelectedItems() {
-        if (this.selectionState && Array.isArray(this.selectionState.selectedItems))
+        if (this.selectionState && this.selectionState.selectedItems && this.selectionState.selectedItems.length)
             this.props.onApplySelectedItems(this.selectionState.selectedItems);
     }
 
@@ -262,6 +262,7 @@ export default class TainacanMultipleItemSelectionModal extends React.Component 
                         </Button>
                         <Button
                             isPrimary
+                            disabled={ !this.state.selectedItemsCount }
                             onClick={ () => this.applySelectedItems() }>
                             {__('Add the selected items', 'tainacan')}
                         </Button>
