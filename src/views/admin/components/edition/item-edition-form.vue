@@ -1706,8 +1706,6 @@ export default {
                         : this.setAttachmentAsDocumentOfAnotherItem(attachment.id, targetItemId);
 
                     return documentSaving.then((isDocumentSet) => {
-                        this.isSavingDroppedDocument = false;
-
                         if ( isDocumentSet && hasMultipleFiles && targetItemId == this.itemId ) {
                             this.$buefy.toast.open({
                                 message: this.$i18n.get('info_warning_only_first_file_used_as_document'),
@@ -1716,6 +1714,8 @@ export default {
                                 duration: 3500
                             });
                         }
+                    }).finally(() => {
+                        this.isSavingDroppedDocument = false;
                     });
                 }, (error) => {
                     this.documentUploadProgress = null;
@@ -1728,9 +1728,36 @@ export default {
             return this.updateItemDocument({ item_id: itemId, document: attachmentId + '', document_type: 'attachment' })
                 .then(() => true)
                 .catch((error) => {
-                    this.$console.error(error);
+                    // The form on screen belongs to another item, so the message goes to a snackbar
+                    // instead of the document field.
+                    this.showDocumentSaveError(error);
                     return false;
                 });
+        },
+        showDocumentSaveError(error) {
+            const data = error && error.response && error.response.data;
+            const fieldMessages = [];
+
+            if ( data && Array.isArray(data.errors) ) {
+                data.errors.forEach((fieldError) => {
+                    Object.values(fieldError).forEach((value) => {
+                        [].concat(value).forEach((singleError) => {
+                            const text = typeof singleError == 'string' ? singleError : Object.values(singleError || {}).join(' ');
+                            if ( text )
+                                fieldMessages.push(text);
+                        });
+                    });
+                });
+            }
+
+            const message = fieldMessages.length
+                ? fieldMessages.join(' ')
+                : (data && typeof data.error_message === 'string' ? data.error_message : '');
+
+            if ( message )
+                this.$showApiError(error, message);
+
+            this.$console.error(error);
         },
         // While a dropped document is being handled, the box may be hidden or covered by the replace dialog.
         // A file dropped anywhere else would make the browser leave the editor to open it.
