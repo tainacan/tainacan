@@ -64,8 +64,12 @@ class Item_Metadata extends Repository {
 			}
 			return $item_metadata;
 		} else {
-			if ( $unique && $item_metadata->get_metadatum()->get_parent() > 0 && is_null( $item_metadata->get_meta_id() ) ) {
-				$this->join_unique_compound_value( $item_metadata );
+			if ( $unique && $item_metadata->get_metadatum()->get_parent() > 0 ) {
+				if ( is_null( $item_metadata->get_meta_id() ) ) {
+					$this->join_unique_compound_value( $item_metadata );
+				}
+
+				$this->remove_child_from_other_compound_values( $item_metadata );
 			}
 
 			if ( $unique ) {
@@ -265,6 +269,77 @@ class Item_Metadata extends Repository {
 			if ( is_object( $child_meta ) && (int) $child_meta->post_id === (int) $item_id && (string) $child_meta->meta_key === (string) $item_metadata->get_metadatum()->get_id() ) {
 				$item_metadata->set_meta_id( (int) $child_meta_id );
 				return;
+			}
+		}
+	}
+
+	/**
+	 * Removes the copies of a child of a unique compound metadatum kept in the other compound values of the item.
+	 *
+	 * Older versions could split a unique compound in several values, and reading it joins them, the most
+	 * recently saved value of each child winning. Without this, clearing a child would show an older copy
+	 * of it again, and a child kept only in an older value could not be cleared. Each save also leaves
+	 * the item with fewer split values. See https://github.com/tainacan/tainacan/issues/711.
+	 *
+	 * @param Entities\Item_Metadata_Entity $item_metadata The child item metadata, already joined to the compound value it is saved in.
+	 *
+	 * @return void
+	 */
+	private function remove_child_from_other_compound_values( Entities\Item_Metadata_Entity $item_metadata ) {
+		$parent_meta_id = (int) $item_metadata->get_parent_meta_id();
+
+		// Without a compound value yet, there is no other one to clean.
+		if ( ! ( $parent_meta_id > 0 ) ) {
+			return;
+		}
+
+		$compound = Metadata::get_instance()->fetch( $item_metadata->get_metadatum()->get_parent() );
+
+		if ( ! $compound instanceof Entities\Metadatum || $compound->is_multiple() ) {
+			return;
+		}
+
+		global $wpdb;
+		$item_id   = (int) $item_metadata->get_item()->get_id();
+		$child_key = (string) $item_metadata->get_metadatum()->get_id();
+
+		$other_compound_meta_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s AND meta_id <> %d",
+				$item_id,
+				$compound->get_id(),
+				$parent_meta_id
+			)
+		);
+
+		foreach ( $other_compound_meta_ids as $compound_meta_id ) {
+			$compound_value = get_metadata_by_mid( 'post', $compound_meta_id );
+
+			if ( ! is_object( $compound_value ) || ! is_array( $compound_value->meta_value ) ) {
+				continue;
+			}
+
+			$children      = wp_parse_id_list( $compound_value->meta_value );
+			$kept_children = array();
+
+			foreach ( $children as $child_meta_id ) {
+				$child_meta = get_metadata_by_mid( 'post', $child_meta_id );
+
+				if ( is_object( $child_meta ) && (int) $child_meta->post_id === $item_id && (string) $child_meta->meta_key === $child_key ) {
+					delete_metadata_by_mid( 'post', $child_meta_id );
+				} else {
+					$kept_children[] = $child_meta_id;
+				}
+			}
+
+			if ( count( $kept_children ) === count( $children ) ) {
+				continue;
+			}
+
+			if ( empty( $kept_children ) ) {
+				delete_metadata_by_mid( 'post', $compound_meta_id );
+			} else {
+				update_metadata_by_mid( 'post', $compound_meta_id, $kept_children );
 			}
 		}
 	}
