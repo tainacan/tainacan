@@ -77,15 +77,28 @@ class CSV extends Importer {
 	/**
 	 * Reads one CSV record. A quoted field may span more than one line.
 	 *
+	 * The escape argument is the historical backslash. Omitting it warns on
+	 * PHP 8.4 and newer. An empty escape would stop treating "\" as an escape,
+	 * which changes values such as a Windows path.
+	 *
+	 * fgetcsv() throws on PHP 8 when the delimiter is not one byte. Return
+	 * false instead, so the caller logs an unreadable row and the import stops.
+	 *
 	 * @param resource $handle File handle positioned at the start of a record.
 	 * @return array|false
 	 */
 	private function read_csv_row( $handle ) {
+		$delimiter = $this->get_option( 'delimiter' );
+		if ( ! is_string( $delimiter ) || 1 !== strlen( $delimiter ) ) {
+			return false;
+		}
+
 		return fgetcsv(
 			$handle,
 			0,
-			$this->get_option( 'delimiter' ),
-			$this->get_csv_enclosure()
+			$delimiter,
+			$this->get_csv_enclosure(),
+			'\\'
 		);
 	}
 
@@ -366,10 +379,10 @@ class CSV extends Importer {
 
 				$returnValue = [];
 				foreach ( $valueToInsert as $metadatumValue ) {
-					$childrenHeaders = str_getcsv( $compoundHeaders[ $key ], $this->get_option( 'delimiter' ), $this->get_csv_enclosure() );
+					$childrenHeaders = str_getcsv( $compoundHeaders[ $key ], $this->get_option( 'delimiter' ), $this->get_csv_enclosure(), '\\' );
 					$childrenValue = $this->is_clear_value($metadatumValue) ?
 						array_fill(0, sizeof($childrenHeaders), $this->get_option('escape_empty_value') ) :
-						str_getcsv( $metadatumValue, $this->get_option( 'delimiter' ), $this->get_csv_enclosure() );
+						str_getcsv( $metadatumValue, $this->get_option( 'delimiter' ), $this->get_csv_enclosure(), '\\' );
 
 					if ( sizeof($childrenHeaders) != sizeof($childrenValue) ) {
 						$this->add_error_log('Mismatch count headers childrens and row columns in compound metadata. file value:' . $metadatumValue);

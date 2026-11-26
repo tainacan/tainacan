@@ -1382,6 +1382,218 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * A one-byte enclosure other than " must be the character fgetcsv() uses.
+	 *
+	 * @group importer
+	 */
+	public function test_single_quote_enclosure_is_honored() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$file_name = 'demosaved_single_quote_enclosure.csv';
+		$file = fopen( $file_name, 'w' );
+		fwrite( $file, "Title,Number\n'Norma, única',123\n" );
+		fclose( $file );
+
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+		$importer_instance->set_option( 'enclosure', "'" );
+
+		$this->assertSame( array( 'Title', 'Number' ), $importer_instance->get_source_metadata() );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Single quote enclosure',
+				'status' => 'publish',
+			),
+			true
+		);
+		$map = array();
+		foreach ( $Tainacan_Metadata->fetch_by_collection( $collection ) as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$map[ $metadatum->get_id() ] = 'Title';
+			} elseif ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Description' ) {
+				$map[ $metadatum->get_id() ] = 'Number';
+			}
+		}
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => $map,
+				'total_items' => 1,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$items = $Tainacan_Items->fetch( array(), $collection, 'OBJECT' );
+		$this->assertEquals( 1, count( $items ) );
+		$item = array_shift( $items );
+		$this->assertSame( 'Norma, única', $item->get_title() );
+		$this->assertSame( '123', $item->get_description() );
+
+		unlink( $file_name );
+	}
+
+	/**
+	 * A blank Enclosure still passes a double quote into str_getcsv() for a compound cell.
+	 * An empty string throws on PHP 8.
+	 *
+	 * @group importer
+	 */
+	public function test_blank_enclosure_parses_a_compound_cell() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$file_name = 'demosaved_compound_blank_enclosure.csv';
+		$file = fopen( $file_name, 'w' );
+		fwrite( $file, "\"Group|compound(Child1,Child2)\",Column 1\n\"Red,Blue\",First title\n" );
+		fclose( $file );
+
+		$file_name = $this->move_source_into_uploads( $file_name );
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+		$this->assertSame( '', $importer_instance->get_option( 'enclosure' ) );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Compound blank enclosure',
+				'status' => 'publish',
+			),
+			true
+		);
+		$compound = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Group',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Compound',
+				'status'        => 'publish',
+			),
+			true
+		);
+		$child1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Child1',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+				'parent'        => $compound->get_id(),
+			),
+			true
+		);
+		$child2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Child2',
+				'collection'    => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'        => 'publish',
+				'parent'        => $compound->get_id(),
+			),
+			true
+		);
+
+		$title_id = null;
+		foreach ( $Tainacan_Metadata->fetch_by_collection( $collection ) as $metadatum ) {
+			if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Title' ) {
+				$title_id = $metadatum->get_id();
+			}
+		}
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => array(
+					$compound->get_id() => array(
+						'Group|compound' => array(
+							$child1->get_id() => 'Child1',
+							$child2->get_id() => 'Child2',
+						),
+					),
+					$title_id => 'Column 1',
+				),
+				'total_items' => 1,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$items = $Tainacan_Items->fetch( array(), $collection, 'OBJECT' );
+		$this->assertEquals( 1, count( $items ) );
+		$item = array_shift( $items );
+		$this->assertSame( 'First title', $item->get_title() );
+
+		unlink( $file_name );
+	}
+
+	/**
+	 * A delimiter longer than one byte must be reported, not thrown as a ValueError.
+	 *
+	 * @group importer
+	 */
+	public function test_delimiter_longer_than_one_byte_is_logged() {
+		$Tainacan_Importer_Handler = \Tainacan\Importer_Handler::get_instance();
+		$csv_importer = $Tainacan_Importer_Handler->initialize_importer( 'csv' );
+		$Tainacan_Importer_Handler->save_importer_instance( $csv_importer );
+		$importer_instance = $Tainacan_Importer_Handler->get_importer_instance_by_session_id( $csv_importer->get_id() );
+
+		$file_name = $this->move_source_into_uploads(
+			$this->write_csv_fixture( 'demosaved_long_delimiter.csv', array( 'Column 1' ), array( array( 'Value' ) ) )
+		);
+		$this->assertNotFalse( $file_name );
+		$importer_instance->set_tmp_file( $file_name );
+		$importer_instance->set_option( 'delimiter', '||' );
+
+		$this->assertSame( array(), $importer_instance->get_source_metadata() );
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Long delimiter',
+				'status' => 'publish',
+			),
+			true
+		);
+		$importer_instance->add_collection(
+			array(
+				'id'          => $collection->get_id(),
+				'mapping'     => array(),
+				'total_items' => 1,
+			)
+		);
+
+		while ( $importer_instance->run() ) {
+			continue;
+		}
+
+		$found = false;
+		foreach ( $this->importer_error_messages( $importer_instance ) as $message ) {
+			if ( false !== strpos( $message, 'Unable to read the source file' ) ) {
+				$found = true;
+			}
+		}
+		$this->assertTrue( $found );
+
+		unlink( $file_name );
+	}
+
+	/**
 	 * UTF-8 BOM on the first column must not break special field detection.
 	 *
 	 * @group importer_csv_special_fields
