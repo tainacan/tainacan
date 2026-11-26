@@ -6667,6 +6667,27 @@ Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/b
 ---------------------------------
 <br>
 
+## `tainacan-default-taxonomy-terms-perpage` <!-- {docsify-ignore} -->
+
+*Query arguments for the taxonomy terms list.*
+
+termspaged and termsparent are public query vars. A non-numeric
+termspaged reaches subtraction in the terms template and throws a
+TypeError on PHP 8. perpage is not a public query var; a value below 1
+still reaches the pagination division, so it falls back to the default.
+An array, as in ?termspaged[]=2, is the same fallback: absint() would
+warn on PHP 8 because intval() casts that array to a string.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`12` |  | 
+
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3983](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3983-L3996)
+
+---------------------------------
+<br>
+
 ## `tainacan-default-taxonomy-terms-order` <!-- {docsify-ignore} -->
 
 
@@ -6674,7 +6695,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'ASC'` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3985](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3985-L3985)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 4000](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L4000-L4000)
 
 ---------------------------------
 <br>
@@ -6686,19 +6707,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `'name'` |  | 
 
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3986](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3986-L3986)
-
----------------------------------
-<br>
-
-## `tainacan-default-taxonomy-terms-perpage` <!-- {docsify-ignore} -->
-
-
-Argument | Type | Description
--------- | ---- | -----------
-`12` |  | 
-
-Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 3988](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L3988-L3988)
+Source: [class-tainacan-theme-helper.php](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php), [line 4001](https://github.com/tainacan/tainacan/blob/master/src/classes/theme-helper/class-tainacan-theme-helper.php#L4001-L4001)
 
 ---------------------------------
 <br>
