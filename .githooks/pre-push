@@ -1,0 +1,22 @@
+#!/bin/bash
+
+root=$(git rev-parse --show-toplevel) || exit 2
+cd "$root" || exit 2
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    # A zero local object ID is a deletion. Git may use SHA-1 or SHA-256.
+    [[ "$local_sha" =~ ^0+$ ]] && continue
+
+    args=("--head=$local_sha")
+    if [[ ! "$remote_sha" =~ ^0+$ ]]; then
+        args+=("--base=$remote_sha")
+    fi
+
+    printf 'Tainacan pre-push: linting %s -> %s\n' "$local_ref" "$remote_ref"
+    ./lint-changed.sh "${args[@]}" </dev/null
+    status=$?
+    if ((status != 0)); then
+        echo "Push aborted. Fix the errors above, or bypass with: git push --no-verify" >&2
+        exit "$status"
+    fi
+done
