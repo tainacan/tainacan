@@ -255,11 +255,10 @@
                                         :is="selectedConditionalMetadatum.metadata_type_object.component"
                                         v-if="shouldUpdateConditionalValue"
                                         :forced-component-type="getForcedConditionalComponentType(selectedConditionalMetadatum)"
-                                        :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
+                                        :item-metadatum="conditionalItemMetadatum"
                                         :input-id="'tainacan-item-metadatum_id-' + selectedConditionalMetadatum.id"
-                                        :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
+                                        :value="selectedConditionalValue"
                                         :allow-new="false"
-                                        :maxtags="1"
                                         @update:value="($event) => selectConditionalValue($event)"
                                     />
                             </b-field>
@@ -357,6 +356,18 @@
             selectedConditionalMetadatum() {
                 return this.availableConditionalMetadata.find(aMetadatum => aMetadatum.id == this.selectedConditionalMetadatumId)
             },
+            conditionalItemMetadatum() {
+                if ( !this.selectedConditionalMetadatum )
+                    return null;
+
+                return {
+                    metadatum: {
+                        ...this.selectedConditionalMetadatum,
+                        multiple: 'yes',
+                        cardinality: ''
+                    }
+                };
+            },
         },
         created() {
             this.form = JSON.parse(JSON.stringify(this.originalMetadataSection));
@@ -364,10 +375,10 @@
             if (this.form.status == 'auto-draft')
                 this.form.status = 'publish';
 
-            if ( this.form.is_conditional_section == 'yes' && Object.keys(this.form.conditional_section_rules).length ) {
+            if ( this.form.is_conditional_section == 'yes' && this.form.conditional_section_rules && Object.keys(this.form.conditional_section_rules).length ) {
                 const conditionalMetadatum = Object.keys(this.form.conditional_section_rules)[0];
                 this.selectedConditionalMetadatumId = conditionalMetadatum;
-                this.selectedConditionalValue = this.form.conditional_section_rules[conditionalMetadatum];
+                this.selectedConditionalValue = this.normalizeConditionalValues(this.form.conditional_section_rules[conditionalMetadatum]);
             }
 
             this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
@@ -385,9 +396,10 @@
                 'updateMetadataSection'
             ]),
             saveEdition(metadataSection) {
-                if ( this.form.is_conditional_section == 'yes' && this.selectedConditionalMetadatumId && this.selectedConditionalValue ) {
-                    this.form.conditional_section_rules = {}
-                    this.form.conditional_section_rules[this.selectedConditionalMetadatumId] = this.selectedConditionalValue;
+                const normalizedConditionalValues = this.normalizeConditionalValues(this.selectedConditionalValue);
+                if ( this.form.is_conditional_section == 'yes' && this.selectedConditionalMetadatumId && normalizedConditionalValues.length ) {
+                    this.form.conditional_section_rules = {};
+                    this.form.conditional_section_rules[this.selectedConditionalMetadatumId] = normalizedConditionalValues;
                 } else
                     this.form.conditional_section_rules = null;
 
@@ -431,9 +443,26 @@
                 this.closedByForm = true;
                 this.$emit('on-edition-canceled');
             },
+            normalizeConditionalValues(selected) {
+                const selectedValues = Array.isArray(selected) ? selected : [ selected ];
+                const normalized = [];
+
+                for (const item of selectedValues) {
+                    const rawValue = (item && typeof item === 'object' && item.value !== undefined)
+                        ? item.value
+                        : item;
+
+                    if ( rawValue === undefined || rawValue === null || rawValue === '' )
+                        continue;
+
+                    if ( !normalized.some(existing => String(existing) === String(rawValue)) )
+                        normalized.push(rawValue);
+                }
+
+                return normalized;
+            },
             selectConditionalValue(selected) {
-                const selectedValues = Array.isArray(selected) ? selected : [ selected ]; 
-                this.selectedConditionalValue = selectedValues.map( aSelected => aSelected.value ? aSelected.value : aSelected );
+                this.selectedConditionalValue = this.normalizeConditionalValues(selected);
             },
             reloadConditionalValueComponent() {
                 this.shouldUpdateConditionalValue = false;
@@ -453,12 +482,10 @@
                         ? metadatum.metadata_type_options.input_type
                         : 'tainacan-selectbox';
 
-                    if ( inputType === 'tainacan-selectbox-checkbox' )
-                        return 'tainacan-selectbox-radio';
-                    if ( inputType === 'tainacan-selectbox-checkbox-button' )
-                        return 'tainacan-selectbox-radio-button';
+                    if ( inputType === 'tainacan-selectbox-radio-button' || inputType === 'tainacan-selectbox-checkbox-button' )
+                        return 'tainacan-selectbox-checkbox-button';
 
-                    return inputType;
+                    return 'tainacan-selectbox-checkbox';
                 }
 
                 return '';
