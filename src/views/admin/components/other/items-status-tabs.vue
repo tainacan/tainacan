@@ -38,7 +38,8 @@
                     <a
                             :id="'items-status-tab-' + statusOption.slug"
                             v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
+                                content: $i18n.getEntityStatusTabTooltip('items', statusOption.slug),
+                                disabled: $i18n.getEntityStatusTabTooltip('items', statusOption.slug) === '',
                                 autoHide: true,
                                 placement: 'auto',
                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']

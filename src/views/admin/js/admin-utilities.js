@@ -137,6 +137,14 @@ I18NPlugin.install = function (app) {
             }
             return i18nGet(`info_no_${entity}_found_with_status`);
         },
+        /**
+         * Tooltip for a status tab. entity: "items" | "collections" | "taxonomies".
+         * Unknown statuses have no sentence, so the tooltip stays empty instead of reporting a missing key.
+         */
+        getEntityStatusTabTooltip(entity, status) {
+            const string = tainacan_plugin.i18n[`info_${entity}_tab_${status}`];
+            return (string != undefined && string != null && string != '') ? string : '';
+        },
     }
 
 };

@@ -199,7 +199,8 @@
                         <a
                                 :id="'taxonomies-status-tab-' + statusOption.slug"
                                 v-tooltip="{
-                                    content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
+                                    content: $i18n.getEntityStatusTabTooltip('taxonomies', statusOption.slug),
+                                    disabled: $i18n.getEntityStatusTabTooltip('taxonomies', statusOption.slug) === '',
                                     autoHide: true,
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
