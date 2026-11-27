@@ -896,17 +896,26 @@ class CSV extends Importer {
 	}
 
 	/**
+	 * Sets the item status. Accepts any non-internal registered post status
+	 * (so `trash`, `auto-draft`, `inherit`, etc. are rejected); anything else falls back to `draft`.
+	 *
 	 * @param $status string the item status
 	 */
 	private function handle_item_status( $status, $item_inserted ) {
-		//if ( in_array( $status, array( 'auto-draft', 'draft', 'pending', 'future', 'publish', 'trash', 'inherit' ) ) ) {
+		$status = strtolower( trim( (string) $status ) );
+		$status = ( $status == 'public' ) ? 'publish' : $status;
 
-			$status = ( $status == 'public' ) ? 'publish' : $status;
-			$item_inserted->set_status($status);
-			if ( $item_inserted->validate() ) {
-				$item_inserted = $this->items_repo->update($item_inserted);
+		if ( ! in_array( $status, get_post_stati( array( 'internal' => false ) ), true ) ) {
+			if ( $status !== '' ) {
+				$this->add_log( sprintf( "Item %d: invalid status '%s'. Item saved as draft.", $item_inserted->get_id(), $status ) );
 			}
-		//}
+			$status = 'draft';
+		}
+
+		$item_inserted->set_status($status);
+		if ( $item_inserted->validate() ) {
+			$item_inserted = $this->items_repo->update($item_inserted);
+		}
 	}
 
 	/**
