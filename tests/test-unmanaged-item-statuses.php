@@ -91,6 +91,50 @@ class Test_Unmanaged_Item_Statuses extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 2, $listed );
 	}
 
+	public function test_managed_unregistered_status_is_not_recovered() {
+		$items = \Tainacan\Repositories\Items::get_instance();
+		$filter = function () {
+			return array( 'publish', 'private', 'pending', 'draft', 'kept' );
+		};
+		add_filter( 'tainacan-managed-item-statuses', $filter );
+
+		try {
+			$kept_id = $this->create_item( $this->collection, 'Kept', 'kept' );
+			$ids = $items->fetch_unmanaged_status_item_ids( $this->collection );
+
+			$this->assertNotContains( $kept_id, $ids );
+			$this->assertContains( $this->empty_ids[0], $ids );
+
+			$request = new \WP_REST_Request(
+				'POST',
+				$this->namespace . '/collection/' . $this->collection->get_id() . '/bulk-edit/recover-unmanaged-status'
+			);
+			$response = $this->server->dispatch( $request );
+			$data = $response->get_data();
+
+			$this->assertEquals( 200, $response->get_status(), wp_json_encode( $data ) );
+			$this->assertEquals( 2, $data['items'] );
+			$this->assertNotEmpty( $data['id'] );
+
+			$handler = \Tainacan\Generic_Process_Handler::get_instance();
+			$process = $handler->get_process_instance_by_session_id( $data['id'] );
+			$this->assertInstanceOf( \Tainacan\GenericProcess\Bulk_Edit_Process::class, $process );
+			$process->init_objects();
+			$steps = 0;
+			while ( false !== $process->run() ) {
+				$steps++;
+				if ( $steps > 30 ) {
+					$this->fail( 'Bulk edit did not finish.' );
+				}
+			}
+
+			$this->assertSame( 'kept', get_post_status( $kept_id ) );
+			$this->assertSame( 'draft', get_post_status( $this->empty_ids[0] ) );
+		} finally {
+			remove_filter( 'tainacan-managed-item-statuses', $filter );
+		}
+	}
+
 	public function test_recover_moves_unrecognized_items_to_draft() {
 		$request = new \WP_REST_Request(
 			'POST',
