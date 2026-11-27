@@ -24,6 +24,7 @@ classDiagram
         +bulk_edit_permissions_check(request)
         +create_item(request)
         +set_status(request)
+        +recover_unmanaged_status(request)
         +trash_items(request)
         +untrash_items(request)
         +delete_items(request)
@@ -140,6 +141,22 @@ public set_status(mixed $request): mixed
 | Parameter  | Type      | Description |
 |------------|-----------|-------------|
 | `$request` | **mixed** |             |
+
+***
+
+### recover_unmanaged_status
+
+Queue a bulk edit that moves items in statuses Tainacan does not list to draft.
+
+```php
+public recover_unmanaged_status(\WP_REST_Request $request): \WP_REST_Response
+```
+
+**Parameters:**
+
+| Parameter  | Type                 | Description |
+|------------|----------------------|-------------|
+| `$request` | **\WP_REST_Request** |             |
 
 ***
 

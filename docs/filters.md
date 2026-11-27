@@ -1090,6 +1090,12 @@ Argument | Type | Description
     'info_editing_items_in_bulk' => __('Bulk edit items', 'tainacan'),
     'info_by_inner' => __('by', 'tainacan'),
     'info_bulk_edit_process_added' => __('Bulk edit added to process queue.', 'tainacan'),
+    /* translators: %s is the unrecognized status, for example `empty` */
+    'info_unmanaged_item_status_one_%s' => __('1 item in this collection is in a status Tainacan does not recognize (%s).', 'tainacan'),
+    /* translators: 1: number of items, 2: unrecognized statuses, for example `empty` */
+    'info_unmanaged_item_status_%1$s_%2$s' => __('%1$s items in this collection are in a status Tainacan does not recognize (%2$s).', 'tainacan'),
+    'label_move_unmanaged_items_to_draft' => __('Move to draft', 'tainacan'),
+    'info_confirm_move_unmanaged_items_to_draft' => __('These items will be moved to draft so you can review them.', 'tainacan'),
     'info_no_parent_term_found' => __('No valid parent term was found with this name.', 'tainacan'),
     'info_warning_changing_parent_term' => __('Warning! Changing parent term will reload the terms list, thus unchecking any selection.', 'tainacan'),
     'info_warning_selected_items_remove_from_trash' => __('Do you really want to remove from trash the selected items?', 'tainacan'),
@@ -1330,7 +1336,7 @@ Argument | Type | Description
     'help_tabs' => ['default' => ['title' => __('Tainacan Help', 'tainacan'), 'content' => '<p>' . __('This screen has no specific guidance yet. The documentation link lists the available guides.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/'], 'collections' => ['title' => __('Collections', 'tainacan'), 'content' => '<p>' . __('A collection is a group of items that share one set of metadata. Each item belongs to a single collection. From this list you create a collection and open it to configure its items, metadata and filters.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/collections'], 'collection-settings' => ['title' => __('Collection settings', 'tainacan'), 'content' => '<p>' . __('Here you set this collection\'s name, description, slug and status, its thumbnail and header image, and an optional cover page. The same screen sets how the item list is shown, how the item form behaves, and whether visitors can submit items. A published collection is visible to everyone; a private one is visible only to you and to people with permission.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/collections'], 'taxonomies' => ['title' => __('Taxonomies', 'tainacan'), 'content' => '<p>' . __('A taxonomy is a vocabulary shared by several collections, such as countries or genres. It is made of terms, which can be nested. A collection uses it through a taxonomy metadata field, so the same term can describe items in different collections.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/taxonomies'], 'metadata' => ['title' => __('Metadata', 'tainacan'), 'content' => '<p>' . __('Metadata are the fields used to describe items, like the fields of a catalog card. Fields created for the whole repository are inherited by every collection; the others belong only to this collection. The type of a field, such as text, date or taxonomy, cannot be changed after you create it.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/metadata'], 'filters' => ['title' => __('Filters', 'tainacan'), 'content' => '<p>' . __('A filter lets people narrow the item list by the values of one metadata field. Any metadata field can become a filter, and the filter control depends on that field\'s type. Removing a filter removes the browsing option only; the field and its values remain.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/filters'], 'items' => ['title' => __('Items', 'tainacan'), 'content' => '<p>' . __('An item is one record: a document (file, URL or text), the metadata that describes it, and any attachments. Here you browse, create and edit items. An item cannot be moved to another collection.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/items'], 'my-items' => ['title' => __('My items', 'tainacan'), 'content' => '<p>' . __('These are the items you created, in this collection or across the repository.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/items'], 'activities' => ['title' => __('Activities', 'tainacan'), 'content' => '<p>' . __('Activities are the log of creations, edits and deletions, for the repository, for one collection, or for one item. Open an entry to compare the values before and after the change.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/activities'], 'capabilities' => ['title' => __('Capabilities', 'tainacan'), 'content' => '<p>' . __('Capabilities decide what each WordPress role can do in the whole repository, or in this collection only. A change made for one collection does not apply to the others. Editing which capabilities a role has, for every collection, is done on the User roles page.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/capabilities'], 'reports' => ['title' => __('Reports', 'tainacan'), 'content' => '<p>' . __('Reports chart how the repository or one collection is filled in: totals by status, how complete the metadata is, how terms are used, and who has been editing. The figures are kept for about a week; reload a chart to recalculate it. Each chart can be exported as an image or a CSV file.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/reports'], 'importers' => ['title' => __('Importers', 'tainacan'), 'content' => '<p>' . __('Importers bring items or taxonomy terms in from an external file, such as a CSV. You map the file columns to metadata, then run the import as a background process and follow it under Processes. The mapping step can also create metadata that does not exist yet.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/importers'], 'exporters' => ['title' => __('Exporters', 'tainacan'), 'content' => '<p>' . __('Exporters build a file from a collection or from the whole repository. Choose an exporter, set its options, and follow the file creation under Processes.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/exporters'], 'processes' => ['title' => __('Processes', 'tainacan'), 'content' => '<p>' . __('Imports, exports and bulk edits run here in the background. Each process stays in the list so you can follow its progress and open its log when it finishes.', 'tainacan') . '</p>', 'link' => 'https://tainacan.github.io/tainacan-wiki/#/activities']],
 ]` |  | 
 
-Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1410)
+Source: [tainacan-i18n.php](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php), [line 5](https://github.com/tainacan/tainacan/blob/master/src/views/tainacan-i18n.php#L5-L1416)
 
 ---------------------------------
 <br>
@@ -1423,7 +1429,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$admin_request_options` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 282](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L282-L427)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 282](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L282-L430)
 
 ---------------------------------
 <br>
@@ -1437,7 +1443,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `false` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 584](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L584-L591)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 587](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L587-L594)
 
 ---------------------------------
 <br>
@@ -1451,7 +1457,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_header_white.svg' : 'tainacan_logo_header.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 593](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L593-L603)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 596](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L596-L606)
 
 ---------------------------------
 <br>
@@ -1465,7 +1471,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `plugin_dir_url(__DIR__) . '/assets/images/' . ($navigation_logo_use_white ? 'tainacan_logo_symbol.svg' : 'tainacan_logo_icon.svg')` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 605](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L605-L615)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 608](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L608-L618)
 
 ---------------------------------
 <br>
@@ -1479,7 +1485,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$breadcrumbs` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 734](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L734-L737)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 737](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L737-L740)
 
 ---------------------------------
 <br>
@@ -1494,7 +1500,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `array_merge(self::$admin_ui_options, $sanitized_get)` |  | 
 
-Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 816](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L816-L867)
+Source: [class-tainacan-pages.php](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php), [line 819](https://github.com/tainacan/tainacan/blob/master/src/views/class-tainacan-pages.php#L819-L870)
 
 ---------------------------------
 <br>
@@ -2492,6 +2498,27 @@ Source: [class-tainacan-taxonomies.php](https://github.com/tainacan/tainacan/blo
 ---------------------------------
 <br>
 
+## `tainacan-managed-item-statuses` <!-- {docsify-ignore} -->
+
+*Post statuses Tainacan lists and counts as items.*
+
+Trash has its own tab. `future` stays a valid WordPress status: it is
+hidden from these totals and from the items query unless a site adds it
+through the `tainacan-managed-item-statuses` filter. A status added there
+is listed even when WordPress has not registered it, and recovery leaves
+it alone. Other unknown statuses stay out of the total and can be moved
+to draft.
+
+
+Argument | Type | Description
+-------- | ---- | -----------
+`array('publish', 'private', 'pending', 'draft')` |  | 
+
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 47](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L47-L60)
+
+---------------------------------
+<br>
+
 ## `tainacan-get-map-{$entity}` <!-- {docsify-ignore} -->
 
 *Repository for managing Tainacan items.*
@@ -2510,7 +2537,7 @@ Version | Description
 ------- | -----------
 `1.0.0` | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L191)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 11](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L11-L261)
 
 ---------------------------------
 <br>
@@ -2536,7 +2563,7 @@ Argument | Type | Description
 `$args` | `array` | WP_Query args \|\| int $args the item id
 `'items'` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 265](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L265-L404)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 335](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L335-L474)
 
 ---------------------------------
 <br>
@@ -2559,7 +2586,7 @@ Argument | Type | Description
 `$item` | `\Tainacan\Entities\Item` | The item.
 `$context` | `mixed` | Optional context (e.g. \WP_REST_Request).
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 681](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L681-L695)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 751](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L751-L765)
 
 ---------------------------------
 <br>
@@ -2577,7 +2604,7 @@ Argument | Type | Description
 `$supports` | `bool` | Whether Tainacan's default extraction is supported.
 `$item` | `\Tainacan\Entities\Item` | The item.
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 718](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L718-L727)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 788](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L788-L797)
 
 ---------------------------------
 <br>
@@ -2592,7 +2619,7 @@ Argument | Type | Description
 `null` |  | 
 `$item` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 816](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L816-L819)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 886](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L886-L889)
 
 ---------------------------------
 <br>
@@ -2604,7 +2631,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$item_arr` |  | 
 
-Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 968](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L968-L968)
+Source: [class-tainacan-items.php](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php), [line 1038](https://github.com/tainacan/tainacan/blob/master/src/classes/repositories/class-tainacan-items.php#L1038-L1038)
 
 ---------------------------------
 <br>

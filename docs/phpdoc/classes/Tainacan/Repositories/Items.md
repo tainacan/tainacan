@@ -58,6 +58,9 @@ classDiagram
         -relationsip_metaquery : array
         -search_relevance_tail : string
         #init()
+        +get_managed_item_statuses()
+        +get_item_statuses_not_warned()
+        +fetch_unmanaged_status_item_ids(collection)
         #_get_map()
         +get_cpt_labels()
         +register_post_type()
@@ -137,6 +140,58 @@ private string|null $search_relevance_tail
 ```php
 protected init(): mixed
 ```
+
+***
+
+### get_managed_item_statuses
+
+Post statuses Tainacan lists and counts as items.
+
+```php
+public get_managed_item_statuses(): string[]
+```
+
+Trash has its own tab. `future` stays a valid WordPress status: it is
+hidden from these totals and from the items query unless a site adds it
+through the `tainacan-managed-item-statuses` filter. A status added there
+is listed even when WordPress has not registered it, and recovery leaves
+it alone. Other unknown statuses stay out of the total and can be moved
+to draft.
+
+***
+
+### get_item_statuses_not_warned
+
+Statuses that must not be reported as unrecognized.
+
+```php
+public get_item_statuses_not_warned(): string[]
+```
+
+Trash is a Tainacan tab. `inherit` and `auto-draft` are WordPress internals.
+
+***
+
+### fetch_unmanaged_status_item_ids
+
+Item IDs in this collection whose post_status WordPress does not know
+and that Tainacan does not list.
+
+```php
+public fetch_unmanaged_status_item_ids(\Tainacan\Entities\Collection $collection): int[]
+```
+
+Registered statuses are left alone, including `future` and any status
+the admin already lists as a tab. A slug added through
+`tainacan-managed-item-statuses` is left alone too, even when WordPress
+has not registered it. WordPress queries only registered statuses, so
+this lookup is SQL.
+
+**Parameters:**
+
+| Parameter     | Type                              | Description |
+|---------------|-----------------------------------|-------------|
+| `$collection` | **\Tainacan\Entities\Collection** |             |
 
 ***
 
