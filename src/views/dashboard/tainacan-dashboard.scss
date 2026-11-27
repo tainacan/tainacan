@@ -23,15 +23,75 @@
         margin: 0px;
     }
 
-    #dashboard-widgets-wrap {
+    #dashboard-widgets-wrap,
+    .tainacan-theme-support-notice {
         max-width: 1620px;
         width: 100%;
+    }
+    #dashboard-widgets-wrap {
         margin: 0 auto;
         padding-top: 1.5rem;
     }
     @media only screen and (max-width: 1920px) {
-        #dashboard-widgets-wrap {
+        #dashboard-widgets-wrap,
+        .tainacan-theme-support-notice {
             max-width: 1060px;
+        }
+    }
+
+    .tainacan-theme-support-notice {
+        box-sizing: border-box;
+        margin: 1.5rem auto 0;
+        padding: 1rem 1.5rem 1.25rem;
+        border-radius: var(--tainacan-dashboard-card-border-radius, 16px);
+        font-size: 0.875em;
+
+        &__title {
+            margin: 0 0 0.5rem;
+            font-size: 1.125em;
+            color: var(--tainacan-gray5);
+        }
+
+        p {
+            margin: 0 0 0.75rem;
+        }
+
+        &__actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        &__dismiss {
+            margin-inline-start: auto;
+        }
+
+        // Explicit colors: link rules of the admin color scheme can paint the label
+        // of a primary button with the color of its own background.
+        a.button-primary {
+            border-color: var(--tainacan-turquoise5, #1d6e73);
+            background-color: var(--tainacan-turquoise5, #1d6e73);
+            color: var(--tainacan-white, #fff);
+
+            &:link,
+            &:visited,
+            &:hover,
+            &:focus,
+            &:active {
+                color: var(--tainacan-white, #fff);
+            }
+
+            &:hover,
+            &:focus {
+                filter: brightness(0.9);
+            }
+        }
+
+        a.button:not(.button-primary) {
+            color: var(--tainacan-turquoise5, #1d6e73);
+            border-color: var(--tainacan-turquoise5, #1d6e73);
         }
     }
 
