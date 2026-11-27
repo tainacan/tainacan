@@ -199,7 +199,7 @@ class XLSX_Exporter extends Exporter {
 					if (is_object($fto)) {
 						if ( method_exists($fto, 'get_value_as_html') ) {
 							$fto->output_date_format = 'Y-m-d';
-							$date_value = $fto->get_value_as_html($meta);
+							$date_value = $meta->get_value_as_plain_text($fto);
 						}
 					}
 				} 

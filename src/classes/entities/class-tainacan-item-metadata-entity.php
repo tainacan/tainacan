@@ -27,7 +27,8 @@ class Item_Metadata_Entity extends Entity {
 		$parent_meta_id,
 		$meta_id,
 		$has_value,
-		$value;
+		$value,
+		$force_inline_formatting = false;
 	
 	/**
 	 * 
@@ -140,6 +141,41 @@ class Item_Metadata_Entity extends Entity {
 	}
 	
 	/**
+	 * Get the HTML formatting used to render this value.
+	 * It is always inline while the value is rendered as plain text.
+	 * @return string|null
+	 */
+	public function get_html_formatting() {
+		if ( $this->force_inline_formatting ) {
+			return 'inline';
+		}
+		$metadatum = $this->get_metadatum();
+		return is_object($metadatum) ? $metadatum->get_html_formatting() : null;
+	}
+
+	/**
+	 * Get the value as HTML without its tags.
+	 * The list formatting only makes sense in HTML, so the value is rendered with the inline formatting,
+	 * otherwise multiple values would lose their separator.
+	 * @param \Tainacan\Metadata_Types\Metadata_Type|null $metadata_type_object Type object used to render the value. Defaults to the metadatum one.
+	 * @return string
+	 */
+	public function get_value_as_plain_text( $metadata_type_object = null ) {
+		$previous_force_inline_formatting = $this->force_inline_formatting;
+		$this->force_inline_formatting = true;
+		try {
+			if ( is_object($metadata_type_object) && method_exists($metadata_type_object, 'get_value_as_html') ) {
+				$html = $metadata_type_object->get_value_as_html($this);
+			} else {
+				$html = $this->get_value_as_html();
+			}
+		} finally {
+			$this->force_inline_formatting = $previous_force_inline_formatting;
+		}
+		return wp_strip_all_tags($html);
+	}
+
+	/**
 	 * Get the value as a HTML string, with markup and links
 	 * @return string
 	 */
@@ -163,7 +199,7 @@ class Item_Metadata_Entity extends Entity {
 		$return = '';
 		
 		if ( $this->is_multiple() ) {
-			$html_formatting = $metadatum->get_html_formatting();
+			$html_formatting = $this->get_html_formatting();
 			if ( $html_formatting === 'list' ) {
 				$total = count( $value );
 				if ( $total === 1 ) {
@@ -222,6 +258,8 @@ class Item_Metadata_Entity extends Entity {
 			}
 		}
 		
+		$return = $this->get_value_as_plain_text();
+
 		return 
 			/**
 			 * Filter the item metadatum value as string
@@ -231,7 +269,7 @@ class Item_Metadata_Entity extends Entity {
 			 * 
 			 * @return string the item metadatum value string 
 			 */
-			apply_filters( 'tainacan-item-metadata-get-value-as-string', wp_strip_all_tags($this->get_value_as_html()), $this );
+			apply_filters( 'tainacan-item-metadata-get-value-as-string', $return, $this );
 	}
 	
 	/**

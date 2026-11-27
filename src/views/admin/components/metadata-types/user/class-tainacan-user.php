@@ -166,7 +166,7 @@ class User extends Metadata_Type {
 				$response[] = apply_filters("tainacan-item-get-author-name", $name, $this);
 			}
 			if ( count($response) > 1 ) {
-				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				$html_formatting = $item_metadata->get_html_formatting();
 				if ( $html_formatting === 'list' ) {
 					$return .= '<ul>';
 					foreach ( $response as $name ) {

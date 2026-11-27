@@ -213,7 +213,7 @@ class Compound extends Metadata_Type {
 					}
 				}
 
-				$html_formatting = $item_metadata->get_metadatum()->get_html_formatting();
+				$html_formatting = $item_metadata->get_html_formatting();
 				$render_multiple_as_list = $html_formatting === 'list' && count( $elements ) > 1;					
 				if ( $render_multiple_as_list ) {
 					$return = '<ul class="tainacan-compound-group">';
