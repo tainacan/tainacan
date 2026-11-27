@@ -1168,6 +1168,75 @@ class Metadata extends Repository {
 	}
 
 	/**
+	 * Removes from a meta_query/tax_query (one level, as sent by the REST API) the clauses that
+	 * refer to the current metadatum, keeping the root 'relation' key.
+	 *
+	 * In an OR group every clause only widens the result, so the current metadatum clauses are
+	 * kept as long as at least one clause on something else survives: removing a disjunct would
+	 * narrow the set. When the group has no other clause, OR, AND and no relation match the same
+	 * items, so the current clauses are removed exactly as in an AND group.
+	 *
+	 * Only the root level is handled. Nested groups (for example the ones built by
+	 * parse_core_metadata_for_advanced_search() for core title and description) are kept as they
+	 * are and count as "another clause"; a current metadatum clause inside them is not removed.
+	 *
+	 * @param array  $query   The meta_query or tax_query array
+	 * @param string $field   'key' for meta_query, 'taxonomy' for tax_query
+	 * @param mixed  $current The metadatum id or taxonomy slug of the current facet
+	 *
+	 * @return array
+	 */
+	private function remove_current_clause_from_query( array $query, $field, $current ) {
+		$relation = isset( $query['relation'] ) && is_string( $query['relation'] ) ? strtoupper( $query['relation'] ) : 'AND';
+
+		$is_current = function( $clause ) use ( $field, $current ) {
+			return is_array( $clause ) && isset( $clause[ $field ] ) && $clause[ $field ] == $current;
+		};
+
+		$keep_current = false;
+		if ( 'OR' === $relation ) {
+			foreach ( $query as $index => $clause ) {
+				if ( $index !== 'relation' && is_array( $clause ) && ! $is_current( $clause ) ) {
+					$keep_current = true;
+					break;
+				}
+			}
+		}
+
+		return array_filter( $query, function( $clause, $index ) use ( $is_current, $keep_current ) {
+			if ( $index === 'relation' ) {
+				return is_string( $clause );
+			}
+			if ( ! is_array( $clause ) ) {
+				return false;
+			}
+			return $keep_current || ! $is_current( $clause );
+		}, ARRAY_FILTER_USE_BOTH );
+	}
+
+	/**
+	 * Adds a clause that must always match (AND) to a meta_query/tax_query. When the
+	 * group's root relation is OR, the group is nested under a new AND group so the new
+	 * clause does not become one more disjunct.
+	 *
+	 * @param array $query  The meta_query or tax_query array
+	 * @param array $clause The clause to add
+	 *
+	 * @return array
+	 */
+	private function add_clause_to_query( array $query, array $clause ) {
+		if ( isset( $query['relation'] ) && is_string( $query['relation'] ) && 'OR' === strtoupper( $query['relation'] ) ) {
+			return [
+				'relation' => 'AND',
+				$query,
+				$clause,
+			];
+		}
+		$query[] = $clause;
+		return $query;
+	}
+
+	/**
 	  * Return all possible values for a metadatum
 	  *
 	  * Each metadata is a label with the metadatum name and the value.
@@ -1246,14 +1315,16 @@ class Metadata extends Repository {
 			// This is because the relation between values from the same metadatum when filtering item is OR,
 			// so when you filter items by one value of a metadatum you dont want to exclude all the other possibilities for that meta.
 			// Only values of all other filters (facets) are reduced.
+			// When the root relation of the group is OR and another clause survives, the current metadatum clause is kept:
+			// in an OR group each clause only widens the result, so removing it would narrow the set and give wrong values/counts.
+			// The root 'relation' key is kept so WP_Query preserves the AND/OR semantics. Nested groups are left as they are
+			// (see remove_current_clause_from_query()).
 			if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy' && isset($args['items_filter']['tax_query']) && is_array($args['items_filter']['tax_query']) ) {
 				// remove current taxonomy from tax_query
-				$args['items_filter']['tax_query'] = array_filter($args['items_filter']['tax_query'], function($t) use ($taxonomy_slug) { return $t['taxonomy'] != $taxonomy_slug; });
+				$args['items_filter']['tax_query'] = $this->remove_current_clause_from_query( $args['items_filter']['tax_query'], 'taxonomy', $taxonomy_slug );
 			} elseif ( $metadatum_type != 'Tainacan\Metadata_Types\Taxonomy' && isset($args['items_filter']['meta_query']) && is_array($args['items_filter']['meta_query']) ) {
 				// remove current metadata from meta_query
-				//var_dump($args['items_filter']['meta_query']);
-				$args['items_filter']['meta_query'] = array_filter($args['items_filter']['meta_query'], function($t) use ($metadatum_id) { return $t['key'] != $metadatum_id; });
-				//var_dump($args['items_filter']['meta_query']);
+				$args['items_filter']['meta_query'] = $this->remove_current_clause_from_query( $args['items_filter']['meta_query'], 'key', $metadatum_id );
 			}
 
 		}
@@ -1452,13 +1523,13 @@ class Metadata extends Repository {
 						'posts_per_page' => 1
 					);
 					$count_items_query = array_merge($args['items_filter'] != false ? $args['items_filter'] : [], $count_items_query);
-					if ( !isset($count_items_query['tax_query']) ) {
-						$count_items_query['tax_query'] = [];
-					}
-					$count_items_query['tax_query'][] = [
-						'taxonomy' => $taxonomy_slug,
-						'terms' => $r->term_id
-					];
+					$count_items_query['tax_query'] = $this->add_clause_to_query(
+						isset($count_items_query['tax_query']) && is_array($count_items_query['tax_query']) ? $count_items_query['tax_query'] : [],
+						[
+							'taxonomy' => $taxonomy_slug,
+							'terms' => $r->term_id
+						]
+					);
 					$count_items_results = $itemsRepo->fetch($count_items_query, $args['collection_id']);
 					$total_items = $count_items_results->found_posts;
 
@@ -1552,13 +1623,13 @@ class Metadata extends Repository {
 				if ( $args['count_items'] ) {
 					$count_items_query = $args['items_filter'];
 					$count_items_query['posts_per_page'] = (int)1;
-					if ( !isset($count_items_query['meta_query']) ) {
-						$count_items_query['meta_query'] = [];
-					}
-					$count_items_query['meta_query'][] = [
-						'key' => $metadatum_id,
-						'value' => $r
-					];
+					$count_items_query['meta_query'] = $this->add_clause_to_query(
+						isset($count_items_query['meta_query']) && is_array($count_items_query['meta_query']) ? $count_items_query['meta_query'] : [],
+						[
+							'key' => $metadatum_id,
+							'value' => $r
+						]
+					);
 					$count_items_results = $itemsRepo->fetch($count_items_query, $args['collection_id']);
 					$total_items = $count_items_results->found_posts;
 
