@@ -195,15 +195,23 @@ export default {
             return wp && wp.i18n ? wp.i18n.__(string, context) : string;
         },
         fetchCollections() {
-            this.isLoading = true;
+            if (this.collectionsRequestSource != undefined && typeof this.collectionsRequestSource == 'function')
+                this.collectionsRequestSource.cancel('Previous collections search canceled.');
+
+            this.collections = [];
             this.errorMessage = 'No collections found.';
+
+            if (!Array.isArray(this.selectedCollections) || !this.selectedCollections.length) {
+                this.isLoading = false;
+                this.totalCollections = 0;
+                return;
+            }
+
+            this.isLoading = true;
 
             nextTick(() => {
                 this.mountCarousel();
             });
-            
-            if (this.collectionsRequestSource != undefined && typeof this.collectionsRequestSource == 'function')
-                this.collectionsRequestSource.cancel('Previous collections search canceled.');
 
             this.collectionsRequestSource = axios.CancelToken.source();
             

@@ -7,10 +7,11 @@
  */
 export const TAINACAN_SELECTION_SOURCE = 'tainacan-selection';
 export const TAINACAN_SELECTION_CHANNEL = 'tainacan-selection';
+export const TAINACAN_SELECTION_CLEAR_ACTION = 'clear';
 export const INITIALLY_SELECTED_ITEMS_PARAM = 'initiallySelectedItems';
 
 function normalizeSelectionState(data) {
-    if (!data || data.source !== TAINACAN_SELECTION_SOURCE)
+    if (!data || data.source !== TAINACAN_SELECTION_SOURCE || data.action)
         return null;
 
     return {
@@ -40,6 +41,24 @@ export function subscribeSelectionState(onState) {
         if (channel)
             channel.close();
     };
+}
+
+export function requestClearSelection() {
+    let channel = null;
+    try {
+        if (typeof BroadcastChannel !== 'undefined') {
+            channel = new BroadcastChannel(TAINACAN_SELECTION_CHANNEL);
+            channel.postMessage({
+                source: TAINACAN_SELECTION_SOURCE,
+                action: TAINACAN_SELECTION_CLEAR_ACTION
+            });
+        }
+    } catch {
+        // Ignore environments without BroadcastChannel.
+    } finally {
+        if (channel)
+            channel.close();
+    }
 }
 
 function toInitiallySelectedIds(itemIds) {

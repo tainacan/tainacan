@@ -144,9 +144,19 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
             itemsRequestSource.cancel('Previous terms search canceled.');
 
-        itemsRequestSource = axios.CancelToken.source();
-
         terms = [];
+
+        if (!selectedTerms.length) {
+            isLoading = false;
+            setAttributes({
+                content: <div></div>,
+                terms: terms,
+                isLoading: isLoading
+            });
+            return;
+        }
+
+        itemsRequestSource = axios.CancelToken.source();
 
         let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms.map((term) => { return term.id; }), fetch_preview_image_items: showTermThumbnail ? 0 : 3 }) + '&order=asc';
         tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
@@ -431,7 +441,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
                 ) : null
             }
 
-            { !taxonomyId && !terms.length && !isLoading ? (
+            { !terms.length && !isLoading ? (
                 <Placeholder
                     icon={ tainacanLogoIcon() }
                     label={ __( 'Tainacan Terms Carousel', 'tainacan' ) }

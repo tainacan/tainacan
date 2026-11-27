@@ -134,9 +134,19 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
             itemsRequestSource.cancel('Previous collections search canceled.');
 
-        itemsRequestSource = axios.CancelToken.source();
-
         collections = [];
+
+        if (!selectedCollections.length) {
+            isLoading = false;
+            setAttributes({
+                content: <div></div>,
+                collections: collections,
+                isLoading: isLoading
+            });
+            return;
+        }
+
+        itemsRequestSource = axios.CancelToken.source();
 
         let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections.map((collection) => { return collection.id }), perpage: selectedCollections.length, fetch_preview_image_items: showCollectionThumbnail ? 0 : 3 }) + '&order=ASC&orderby=post__in&fetch_only=name,url,thumbnail';
         tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })

@@ -38,6 +38,7 @@ export default class CollectionsSelectionModal extends React.Component {
         this.applySelectedCollections = this.applySelectedCollections.bind(this);
         this.isTemporaryCollectionSelected = this.isTemporaryCollectionSelected.bind(this);
         this.toggleSelectTemporaryCollection = this.toggleSelectTemporaryCollection.bind(this);
+        this.deselectAllCollections = this.deselectAllCollections.bind(this);
         this.cancelSelection = this.cancelSelection.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
@@ -110,6 +111,10 @@ export default class CollectionsSelectionModal extends React.Component {
             this.selectTemporaryCollection(collection);
         else
             this.removeTemporaryCollectionOfId(collection.id);
+    }
+
+    deselectAllCollections() {
+        this.setState({ temporarySelectedCollections: [] });
     }
 
     cancelSelection() {
@@ -294,6 +299,13 @@ export default class CollectionsSelectionModal extends React.Component {
                         isSecondary
                         onClick={ () => this.cancelSelection() }>
                         {__('Cancel', 'tainacan')}
+                    </Button>
+                    <Button
+                        style={{ marginInlineStart: 'auto', marginInlineEnd: '8px' }}
+                        isSecondary
+                        disabled={ !this.state.temporarySelectedCollections.length }
+                        onClick={ () => this.deselectAllCollections() }>
+                        {__('Deselect all', 'tainacan')}
                     </Button>
                     <Button
                         isPrimary
