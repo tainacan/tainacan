@@ -8,11 +8,14 @@ class Migrations {
 
 	static function run_migrations() {
 
-		$migrations = get_class_methods('Tainacan\Migrations');
+		// Only public static methods are migrations; private helpers such as add_missing_columns() are not.
+		// (ReflectionClass::getMethods() ORs its flags, so visibility and staticness are checked separately.)
+		$methods = ( new \ReflectionClass( __CLASS__ ) )->getMethods( \ReflectionMethod::IS_PUBLIC );
 
-		foreach ($migrations as $migration) {
+		foreach ($methods as $method) {
+			$migration = $method->getName();
 			$option_name = '_migration_' . $migration;
-			if ('run_migrations' == $migration || get_option($option_name)) {
+			if ( ! $method->isStatic() || 'run_migrations' == $migration || get_option($option_name)) {
 				continue;
 			}
 
@@ -24,6 +27,36 @@ class Migrations {
 
 	}
 
+	/**
+	 * Adds the columns that are missing from a table, in a single ALTER TABLE.
+	 *
+	 * The existing columns are read once with SHOW COLUMNS, which only looks at the
+	 * table of the connected database (a table with the same name in another schema
+	 * on the same server is never considered). `ADD COLUMN IF NOT EXISTS` would avoid
+	 * the read, but it is MariaDB syntax: MySQL 8 rejects it.
+	 *
+	 * @param string $table_name Full table name (with prefix)
+	 * @param array  $columns    Column name => column definition, in the order they should be added
+	 * @return void
+	 */
+	private static function add_missing_columns( $table_name, $columns ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table names cannot be prepared; only the prefix is interpolated.
+		$existing = $wpdb->get_col( "SHOW COLUMNS FROM `$table_name`" );
+
+		$clauses = [];
+		foreach ( $columns as $column_name => $definition ) {
+			if ( ! in_array( $column_name, $existing, true ) ) {
+				$clauses[] = "ADD `$column_name` $definition";
+			}
+		}
+
+		if ( ! empty( $clauses ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- DDL built from the fixed definitions passed by the migrations.
+			$wpdb->query( "ALTER TABLE `$table_name` " . implode( ', ', $clauses ) );
+		}
+	}
 
 	// Migrations methods below
 
@@ -66,43 +99,13 @@ class Migrations {
 
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
 
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'progress_label'"  );
-
-	    if(empty($column_exists)) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD progress_label text,
-	        ADD progress_value int
-	        ");
-		}
-
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'name'"  );
-
-	    if(empty($column_exists)) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD name text NOT NULL
-	        ");
-		}
-
-
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'output'"  );
-
-	    if(empty($column_exists)) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD output longtext
-	        ");
-		}
-
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{$wpdb->prefix}tnc_bg_process' AND column_name = 'status'"  );
-
-        if(empty($column_exists)) {
-            $wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD status ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')
-	        ");
-        }
+		self::add_missing_columns( $table_name, [
+			'progress_label' => 'text',
+			'progress_value' => 'int',
+			'name'           => 'text NOT NULL',
+			'output'         => 'longtext',
+			'status'         => "ENUM('waiting','running','paused','cancelled','errored','finished','finished-errors')",
+		] );
 
 	}
 
@@ -491,7 +494,7 @@ class Migrations {
 				)"
 				,\Tainacan\Entities\Metadata_Section::$default_section_slug
 				,\Tainacan\Entities\Metadatum::$post_type
-				,\Tainacan\Entities\Metadata_Section::$default_section_slug
+				,'metadata_section_id'
 			)
 		);
 	}
@@ -525,15 +528,8 @@ class Migrations {
 		global $wpdb;
 		// update default order by "creation_date" to "date"
 		$table_name = $wpdb->prefix . 'tnc_bg_process';
-		$database_name = DB_NAME;
-		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'bg_uuid' AND table_schema = '$database_name'"  );
 
-	    if(empty($column_exists)) {
-			$wpdb->query("
-	        ALTER TABLE $table_name
-	        ADD bg_uuid text NULL
-	        ");
-		}
+		self::add_missing_columns( $table_name, [ 'bg_uuid' => 'text NULL' ] );
 	}
 
 	/**
@@ -597,27 +593,11 @@ class Migrations {
 		$table_name    = $wpdb->prefix . 'tnc_bg_process';
 		$database_name = DB_NAME;
 
-		// Add retry_count column if it does not exist.
-		$column_exists = $wpdb->get_results(
-			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'retry_count' AND table_schema = '$database_name'"
-		);
-
-		if ( empty( $column_exists ) ) {
-			$wpdb->query(
-				"ALTER TABLE $table_name ADD retry_count int unsigned NOT NULL default 0"
-			);
-		}
-
-		// Add max_retries column if it does not exist.
-		$column_exists = $wpdb->get_results(
-			"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'max_retries' AND table_schema = '$database_name'"
-		);
-
-		if ( empty( $column_exists ) ) {
-			$wpdb->query(
-				"ALTER TABLE $table_name ADD max_retries int unsigned NOT NULL default 3"
-			);
-		}
+		// Add the retry_count and max_retries columns if they do not exist.
+		self::add_missing_columns( $table_name, [
+			'retry_count' => 'int unsigned NOT NULL default 0',
+			'max_retries' => 'int unsigned NOT NULL default 3',
+		] );
 
 		// Add an index on the status column to speed up watchdog queries.
 		$index_exists = $wpdb->get_var(
