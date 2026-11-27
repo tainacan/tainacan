@@ -42,13 +42,83 @@ export const setAdvancedSearchQuery = (state, advancedSearchQuery) => {
 };
 
 /**
+ * Returns a meta/tax query group as an array of clauses.
+ * qs parses `metaquery[0][key]=...&metaquery[relation]=OR` as a plain object keyed by index,
+ * so a group may arrive either as an array or as such an object. The group `relation`, when
+ * present, is kept as a non-index property of the returned array.
+ * @param {Array|Object} group - Query group as stored in postquery.
+ * @returns {Array} Array of clauses.
+ */
+const normalizeQueryGroup = ( group ) => {
+    if ( Array.isArray( group ) )
+        return group;
+
+    if ( ! group || typeof group !== 'object' )
+        return [];
+
+    const normalized = Object.keys( group )
+        .filter( ( key ) => key !== 'relation' && group[ key ] && typeof group[ key ] === 'object' )
+        .map( ( key ) => group[ key ] );
+
+    if ( typeof group.relation === 'string' )
+        normalized.relation = group.relation;
+
+    return normalized;
+};
+
+/**
+ * Converts a group back to a shape that survives JSON serialization: an array loses extra
+ * properties on JSON.stringify, so a group with a `relation` is stored as an object keyed by index.
+ * @param {Array} group - Normalized query group.
+ * @returns {Array|Object} Group ready to be stored in postquery.
+ */
+const denormalizeQueryGroup = ( group ) => {
+    return ( typeof group.relation === 'string' ) ? Object.assign( {}, group ) : group;
+};
+
+/**
+ * Facet filters narrow the results. When the current clauses are joined by OR (an OR advanced
+ * search), they are wrapped into a nested OR group so the new clause is ANDed to the whole group.
+ * AND is WP_Query's default relation, so no outer `relation` is written and the outer group
+ * stays a plain array, which is the shape the filter components read.
+ * @param {Array} group - Normalized query group.
+ * @returns {Array} Group whose top level is joined by AND.
+ */
+const nestOrGroup = ( group ) => {
+    if ( typeof group.relation !== 'string' || group.relation.toUpperCase() !== 'OR' )
+        return group;
+
+    // Already nested once: never wrap a group inside another group
+    if ( group.some( ( clause ) => isQueryGroup( clause ) ) )
+        return group;
+
+    return [ Object.assign( {}, group, { relation: 'OR' } ) ];
+};
+
+/**
+ * A nested group is an entry without its own key/taxonomy whose entries are clauses,
+ * e.g. { relation: 'OR', 0: { key, compare, value }, 1: { ... } }.
+ * @param {*} clause - Query group entry.
+ * @returns {boolean} Whether the entry is a nested group.
+ */
+const isQueryGroup = ( clause ) => {
+    return !!(
+        clause &&
+        typeof clause === 'object' &&
+        clause.key === undefined &&
+        clause.taxonomy === undefined &&
+        Object.keys( clause ).some( ( key ) => key !== 'relation' && clause[ key ] && typeof clause[ key ] === 'object' )
+    );
+};
+
+/**
  * Commits `search/addMetaQuery` state changes.
  * @param {Object} state - Module state.
  * @param {*} filter - Mutation payload.
  * @returns {void} No return value.
  */
 export const addMetaQuery = ( state, filter ) => {
-    state.postquery.metaquery = ( ! state.postquery.metaquery  || state.postquery.metaquery.length == undefined ) ? [] : state.postquery.metaquery;
+    state.postquery.metaquery = nestOrGroup( normalizeQueryGroup( state.postquery.metaquery ) );
 
     let metaquery = {
         key: filter.metadatum_id,
@@ -66,6 +136,8 @@ export const addMetaQuery = ( state, filter ) => {
         Object.assign( state.postquery.metaquery, { [index]: metaquery } );
     else
         state.postquery.metaquery.push(metaquery);
+
+    state.postquery.metaquery = denormalizeQueryGroup( state.postquery.metaquery );
 };
 
 /**
@@ -75,7 +147,7 @@ export const addMetaQuery = ( state, filter ) => {
  * @returns {void} No return value.
  */
 export const addTaxQuery = ( state, filter ) => {
-    state.postquery.taxquery = ( ! state.postquery.taxquery || state.postquery.taxquery.length == undefined ) ? [] : state.postquery.taxquery;
+    state.postquery.taxquery = nestOrGroup( normalizeQueryGroup( state.postquery.taxquery ) );
 
     let taxquery = {
         taxonomy: filter.taxonomy,
@@ -89,6 +161,8 @@ export const addTaxQuery = ( state, filter ) => {
         Object.assign( state.postquery.taxquery, { [index]: taxquery } );
     else
         state.postquery.taxquery.push(taxquery);
+
+    state.postquery.taxquery = denormalizeQueryGroup( state.postquery.taxquery );
 };
 
 /**
@@ -152,7 +226,8 @@ export const removeFetchOnlyMeta = ( state, metadatum ) => {
  * @returns {void} No return value.
  */
 export const removeMetaQuery = ( state, filter ) => {
-    state.postquery.metaquery = ( ! state.postquery.metaquery ) ? [] : state.postquery.metaquery;
+    // Nested groups have no `key` of their own, so only top-level clauses can be removed here
+    state.postquery.metaquery = normalizeQueryGroup( state.postquery.metaquery );
 
     let index = state.postquery.metaquery.findIndex( item => item.key == filter.metadatum_id);
 
@@ -178,6 +253,8 @@ export const removeMetaQuery = ( state, filter ) => {
             }
         }
     }
+
+    state.postquery.metaquery = denormalizeQueryGroup( state.postquery.metaquery );
 };
 
 /**
@@ -187,7 +264,8 @@ export const removeMetaQuery = ( state, filter ) => {
  * @returns {void} No return value.
  */
 export const removeTaxQuery = ( state, filter ) => {
-    state.postquery.taxquery = ( ! state.postquery.taxquery ) ? [] : state.postquery.taxquery;
+    // Nested groups have no `taxonomy` of their own, so only top-level clauses can be removed here
+    state.postquery.taxquery = normalizeQueryGroup( state.postquery.taxquery );
 
     let index = state.postquery.taxquery.findIndex( item => item.taxonomy == filter.taxonomy);
     
@@ -200,6 +278,8 @@ export const removeTaxQuery = ( state, filter ) => {
         } else
             state.postquery.taxquery.splice(index, 1);
     }
+
+    state.postquery.taxquery = denormalizeQueryGroup( state.postquery.taxquery );
 };
 
 /**

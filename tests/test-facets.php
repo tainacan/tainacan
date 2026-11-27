@@ -986,6 +986,268 @@ class Facets extends TAINACAN_UnitApiTestCase {
 	}
 	
 	/**
+	 * meta_query with a root 'relation' key (sent by the admin advanced search) must not
+	 * break fetch_all_metadatum_values (PHP 8 TypeError on string offset).
+	 */
+	function test_fetch_all_metadatum_values_meta_query_with_relation() {
+
+		// relation + one clause on another metadatum: same result as without relation
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'items_filter' => [
+				'meta_query' => [
+					'relation' => 'AND',
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 1', 'Value 10', 'Value 20', 'Value 30', 'Value 40', 'Value 50', 'Value 60', 'Value 70', 'Value 80']
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 3, sizeof($values) );
+
+		// relation OR + two clauses on other metadata
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'items_filter' => [
+				'meta_query' => [
+					'relation' => 'OR',
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 1', 'Value 10']
+					],
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => 'odd'
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
+
+		// relation AND + clause on the metadatum itself: the clause is dropped, nothing else is filtered
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'items_filter' => [
+				'meta_query' => [
+					'relation' => 'AND',
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => 'Value 1'
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		$this->assertEquals( 80, sizeof($values) );
+
+		// relation OR + clause on the metadatum itself: the clause is kept (dropping a disjunct would narrow the set)
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_repo->get_id(), [
+			'items_filter' => [
+				'meta_query' => [
+					'relation' => 'OR',
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 1', 'Value 2']
+					],
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => 'odd'
+					]
+				]
+			]
+		]);
+		$values = $this->get_values($values);
+		// odd items of collection 1 (20) + 'Value 2' (even)
+		$this->assertEquals( 21, sizeof($values) );
+	}
+
+	/**
+	 * tax_query with a root 'relation' key must not break fetch_all_metadatum_values.
+	 */
+	function test_fetch_all_metadatum_values_tax_query_with_relation() {
+
+		// relation + one clause on a taxonomy other than the facet's one
+		$values = $this->repository->fetch_all_metadatum_values( $this->metadatum_text->get_id(), [
+			'count_items' => true,
+			'items_filter' => [
+				'tax_query' => [
+					'relation' => 'AND',
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'field'     => 'name',
+						'terms'     => 'Term for collection 1 child'
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 2, sizeof($values) );
+		$this->assertEquals(5, $values[0]['total_items']);
+		$this->assertEquals(5, $values[1]['total_items']);
+
+		// relation AND + clause on the facet's own taxonomy: the clause is dropped, result equals the unfiltered one
+		$unfiltered = $this->get_values( $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+		] ) );
+		$this->assertEquals( 2, sizeof($unfiltered) );
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'items_filter' => [
+				'tax_query' => [
+					'relation' => 'AND',
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'field'     => 'name',
+						'terms'     => 'Term for collection 1 child'
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( sizeof($unfiltered), sizeof($values) );
+
+		// relation OR + clause on the facet's own taxonomy: the clause is kept, so only the matching root remains
+		$values = $this->repository->fetch_all_metadatum_values( $this->meta_1_tax->get_id(), [
+			'collection_id' => $this->collection1->get_id(),
+			'count_items' => true,
+			'items_filter' => [
+				'tax_query' => [
+					'relation' => 'OR',
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'field'     => 'name',
+						'terms'     => 'Term for collection 1 child'
+					]
+				]
+			]
+		] );
+		$values = $this->get_values($values);
+		$this->assertEquals( 1, sizeof($values) );
+		$this->assertEquals( 'Term for collection 1', $values[0]['label'] );
+		$this->assertEquals( 10, $values[0]['total_items'] );
+	}
+
+	/**
+	 * The facets REST endpoint must answer 200 when the current query carries
+	 * metaquery[relation] with two or more clauses (admin advanced search).
+	 */
+	function test_facets_endpoint_meta_query_with_relation() {
+
+		$term = get_term_by('name', 'Term for collection 1', $this->taxonomy->get_db_identifier());
+
+		// taxonomy facet: taxquery on its own taxonomy (with relation) goes through the getSelected branch
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection1->get_id() . '/facets/' . $this->meta_1_tax->get_id());
+		$request->set_query_params([
+			'getSelected' => 1,
+			'current_query' => [
+				'metaquery' => [
+					'relation' => 'AND',
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 1', 'Value 10'],
+						'compare' => 'IN'
+					],
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => 'odd',
+						'compare' => '='
+					]
+				],
+				'taxquery' => [
+					'relation' => 'AND',
+					[
+						'taxonomy' => $this->taxonomy->get_db_identifier(),
+						'terms'    => [ $term->term_id ]
+					]
+				]
+			]
+		]);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$data = $response->get_data();
+		$this->assertArrayHasKey( 'values', $data );
+		// item 1 only (Value 1 AND odd) => root term "Term for collection 1"
+		$this->assertEquals( 1, sizeof($data['values']) );
+		$this->assertEquals( $term->term_id, $data['values'][0]['value'] );
+		$this->assertEquals( 1, $data['values'][0]['total_items'] );
+
+		// text facet: the metaquery branch of getSelected runs over the 'relation' entry, and the
+		// taxquery (Term for collection 1 child = items 11-20) really narrows the result
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection1->get_id() . '/facets/' . $this->metadatum_text->get_id());
+		$request->set_query_params([
+			'getSelected' => 1,
+			'current_query' => [
+				'metaquery' => [
+					'relation' => 'OR',
+					[
+						'key' => $this->metadatum_repo->get_id(),
+						'value' => ['Value 1', 'Value 10'],
+						'compare' => 'IN'
+					],
+					[
+						'key' => $this->metadatum_text->get_id(),
+						'value' => 'odd',
+						'compare' => '='
+					]
+				],
+				'taxquery' => [
+					'relation' => 'AND',
+					[
+						'taxonomy'  => $this->taxonomy->get_db_identifier(),
+						'metadatum' => 'name',
+						'terms'     => 'Term for collection 1 child'
+					]
+				]
+			]
+		]);
+		$response = $this->server->dispatch($request);
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$data = $response->get_data();
+		// items 11-20 AND (Value 1 OR Value 10 OR odd) => items 11, 13, 15, 17, 19 => only "odd"
+		$this->assertEquals( 1, sizeof($data['values']) );
+		$this->assertEquals( 'odd', $data['values'][0]['value'] );
+		$this->assertEquals( 5, $data['values'][0]['total_items'] );
+	}
+
+	/**
+	 * taxquery[relation]=OR sent to the REST API must reach WP_Query: two clauses whose
+	 * OR yields more items than their AND.
+	 */
+	function test_items_endpoint_tax_query_relation_or_is_preserved() {
+
+		$base_query = [
+			'perpage' => 1,
+			'taxquery' => [
+				[
+					'taxonomy'  => $this->taxonomy->get_db_identifier(),
+					'metadatum' => 'name',
+					'terms'     => 'Term for collection 1'
+				],
+				[
+					'taxonomy'  => $this->taxonomy->get_db_identifier(),
+					'metadatum' => 'name',
+					'terms'     => 'Term for all'
+				]
+			]
+		];
+
+		// AND (default): no item has both terms
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection1->get_id() . '/items');
+		$request->set_query_params( array_merge( $base_query, [ 'taxquery' => array_merge( $base_query['taxquery'], [ 'relation' => 'AND' ] ) ] ) );
+		$response = $this->server->dispatch($request);
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$this->assertEquals( 0, (int) $response->get_headers()['X-WP-Total'] );
+
+		// OR: items 1-20 (Term for collection 1 and its child) + items 21-40 (Term for all and its child)
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection1->get_id() . '/items');
+		$request->set_query_params( array_merge( $base_query, [ 'taxquery' => array_merge( $base_query['taxquery'], [ 'relation' => 'OR' ] ) ] ) );
+		$response = $this->server->dispatch($request);
+		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $response->get_data() ) );
+		$this->assertEquals( 40, (int) $response->get_headers()['X-WP-Total'] );
+	}
+
+	/**
 	* @group term_tree
 	*/
 	public function test_process_term_tree() {
