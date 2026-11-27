@@ -23,6 +23,8 @@ classDiagram
         +get_multivalue_prefix()
         +get_multivalue_suffix()
         +get_multivalue_separator()
+        +get_html_formatting()
+        +get_value_as_plain_text(metadata_type_object)
         +get_value_as_html()
         +get_value_as_string()
         +get_value_as_array()
@@ -167,6 +169,14 @@ protected $value
 
 ***
 
+### force_inline_formatting
+
+```php
+protected $force_inline_formatting
+```
+
+***
+
 ## Methods
 
 ### __construct
@@ -218,6 +228,37 @@ to display item metadata value as html or string
 ```php
 public get_multivalue_separator(): string
 ```
+
+***
+
+### get_html_formatting
+
+Get the HTML formatting used to render this value.
+
+```php
+public get_html_formatting(): string|null
+```
+
+It is always inline while the value is rendered as plain text.
+
+***
+
+### get_value_as_plain_text
+
+Get the value as HTML without its tags.
+
+```php
+public get_value_as_plain_text(\Tainacan\Metadata_Types\Metadata_Type|null $metadata_type_object = null): string
+```
+
+The list formatting only makes sense in HTML, so the value is rendered with the inline formatting,
+otherwise multiple values would lose their separator.
+
+**Parameters:**
+
+| Parameter               | Type                                             | Description                                                          |
+|-------------------------|--------------------------------------------------|----------------------------------------------------------------------|
+| `$metadata_type_object` | **\Tainacan\Metadata_Types\Metadata_Type\|null** | Type object used to render the value. Defaults to the metadatum one. |
 
 ***
 
