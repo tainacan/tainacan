@@ -120,6 +120,16 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 			</tr>
 			
 			<tr>
+				<th scope="row"><?php esc_html_e( 'PDF document covers', 'tainacan' ); ?></th>
+				<td>
+					<?php $this->check_pdf_cover(); ?>
+					<p class="description">
+						<?php esc_html_e( 'Tainacan uses Imagick and Ghostscript to create a thumbnail from the first page of PDF documents. This test renders a small PDF right now. Failures are also written to the PHP error log.', 'tainacan' ); ?>
+					</p>
+				</td>
+			</tr>
+
+			<tr>
 				<th scope="row"><?php esc_html_e('Protecting private uploads folders', 'tainacan'); ?></th>
 				<td>
 					<?php $this->check_protected_upload_folders(); ?>

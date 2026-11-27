@@ -526,18 +526,35 @@ class Media {
 	}
 
 	/**
+	 * Why the last call to get_pdf_cover() could not create a cover, or null if it did.
+	 *
+	 * @var string|null
+	 */
+	private $last_pdf_cover_error = null;
+
+	/**
 	 * Extract an image from the first page of a pdf file
+	 *
+	 * When the cover cannot be created, the reason is written to the PHP error log, passed to the
+	 * `tainacan-pdf-cover-failed` action and kept for get_last_pdf_cover_error(). A file that is not
+	 * a PDF is not a failure. See https://github.com/tainacan/tainacan/issues/1113.
 	 *
 	 * @param  string $filepath The pdf filepath in the server
 	 * @return blob           bitstream of the image in jpg format
 	 */
 	public function get_pdf_cover($filepath) {
+		$this->last_pdf_cover_error = null;
+
 		$blob = apply_filters('tainacan-extract-pdf-cover', null, $filepath);
 		if ($blob) {
 			return $blob;
 		}
 
-		if (!class_exists('\Imagick')) {
+		if ( ! is_string( $filepath ) || ! is_readable( realpath( $filepath ) ) ) {
+			// Only a file named as a PDF is a failure: other documents never had a cover to create.
+			if ( is_string( $filepath ) && strtolower( pathinfo( $filepath, PATHINFO_EXTENSION ) ) === 'pdf' ) {
+				return $this->pdf_cover_failed( $filepath, __( 'The file could not be read.', 'tainacan' ) );
+			}
 			return null;
 		}
 
@@ -545,11 +562,15 @@ class Media {
 			return null;
 		}
 
-		if ( !is_readable( realpath($filepath) ) ) {
-			return null;
+		if ( ! class_exists( '\Imagick' ) ) {
+			return $this->pdf_cover_failed( $filepath, __( 'The Imagick PHP extension is not available.', 'tainacan' ) );
 		}
 
 		try {
+			if ( empty( \Imagick::queryFormats( 'PDF' ) ) ) {
+				return $this->pdf_cover_failed( $filepath, __( 'Imagick cannot read PDF files. Ghostscript may be missing from the server.', 'tainacan' ) );
+			}
+
 			register_shutdown_function(array($this, 'shutdown_function'));
 			$this->THROW_EXCPTION_ON_FATAL_ERROR = true;
 			$imagick = new \Imagick();
@@ -558,13 +579,57 @@ class Media {
 			$imagick->setImageFormat('jpg');
 			$imagick->getImageBlob();
 			$imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
-			$this->THROW_EXCPTION_ON_FATAL_ERROR = false;
 			return $imagick;
-		} catch(\Exception $e) {
-			return null;
-		} catch (\Error $ex) {
-			return null;
+		} catch ( \Throwable $e ) {
+			return $this->pdf_cover_failed(
+				$filepath,
+				sprintf(
+					/* translators: %s: the error message given by Imagick or Ghostscript */
+					__( 'Imagick could not render the first page: %s', 'tainacan' ),
+					$e->getMessage()
+				),
+				$e
+			);
+		} finally {
+			// An exception used to leave this on, turning any later shutdown into a fatal error.
+			$this->THROW_EXCPTION_ON_FATAL_ERROR = false;
 		}
+	}
+
+	/**
+	 * Why the last call to get_pdf_cover() could not create a cover.
+	 *
+	 * @return string|null The reason, or null if the cover was created or the file was not a PDF.
+	 */
+	public function get_last_pdf_cover_error() {
+		return $this->last_pdf_cover_error;
+	}
+
+	/**
+	 * Records why a PDF cover could not be created, so the failure is no longer silent.
+	 *
+	 * @param string          $filepath  The PDF file path.
+	 * @param string          $reason    Why the cover could not be created.
+	 * @param \Throwable|null $exception The exception thrown while rendering, if any.
+	 *
+	 * @return null
+	 */
+	private function pdf_cover_failed( $filepath, $reason, $exception = null ) {
+		$this->last_pdf_cover_error = $reason;
+
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Server administrators need this to find out why PDF covers stopped being created.
+		error_log( sprintf( '[Tainacan] Could not create the cover of the PDF "%s": %s', is_string( $filepath ) ? basename( $filepath ) : '', $reason ) );
+
+		/**
+		 * Fires when the cover of a PDF document could not be created.
+		 *
+		 * @param string          $reason    Why the cover could not be created.
+		 * @param string          $filepath  The PDF file path.
+		 * @param \Throwable|null $exception The exception thrown while rendering, if any.
+		 */
+		do_action( 'tainacan-pdf-cover-failed', $reason, $filepath, $exception );
+
+		return null;
 	}
 
 	/**
