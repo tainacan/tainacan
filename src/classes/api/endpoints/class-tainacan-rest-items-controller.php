@@ -473,6 +473,14 @@ class REST_Items_Controller extends REST_Controller {
 		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
 		$rest_response->header('X-WP-ItemsPerPage', (int) $posts_query->query_vars['posts_per_page']);
 
+		$this->add_pagination_links(
+			$rest_response,
+			$request,
+			max( 1, (int) ( $posts_query->query_vars['paged'] ?? 1 ) ),
+			(int) $max_pages,
+			(int) $posts_query->query_vars['posts_per_page']
+		);
+
 		return $rest_response;
 	}
 
@@ -805,6 +813,14 @@ class REST_Items_Controller extends REST_Controller {
 		$rest_response->header('X-WP-ItemsPerPage', (int) $items->query_vars['posts_per_page']);
 		$rest_response->header('X-Tainacan-Query-Time', $query_end - $query_start);
 		$rest_response->header('X-Tainacan-Elapsed-Time', microtime(true) - $query_start);
+
+		$this->add_pagination_links(
+			$rest_response,
+			$request,
+			max( 1, (int) ( $items->query_vars['paged'] ?? 1 ) ),
+			(int) $max_pages,
+			(int) $items->query_vars['posts_per_page']
+		);
 
 		return $rest_response;
 	}

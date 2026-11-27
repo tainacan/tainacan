@@ -992,4 +992,36 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		return $response;
 	}
 
+	protected function add_pagination_links( $response, $request, $page, $total_pages, $per_page, $offset = null ) {
+		$query_params = $request->get_query_params();
+
+		if ( ! isset( $query_params['perpage'] ) && $per_page > 0 ) {
+			$query_params['perpage'] = $per_page;
+		}
+
+		$base_url = rest_url( $request->get_route() );
+
+		if ( $page > 1 ) {
+			$query_params['paged'] = $page - 1;
+
+			if ( null !== $offset ) {
+				$query_params['offset'] = max( 0, $offset - $per_page );
+			}
+
+			$previous_url = add_query_arg( urlencode_deep( $query_params ), $base_url );
+			$response->link_header( 'prev', $previous_url );
+		}
+
+		if ( $page < $total_pages ) {
+			$query_params['paged'] = $page + 1;
+
+			if ( null !== $offset ) {
+				$query_params['offset'] = $offset + $per_page;
+			}
+
+			$next_url = add_query_arg( urlencode_deep( $query_params ), $base_url );
+			$response->link_header( 'next', $next_url );
+		}
+	}
+
 }

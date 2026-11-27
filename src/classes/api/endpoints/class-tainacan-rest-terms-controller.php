@@ -679,6 +679,15 @@ class REST_Terms_Controller extends REST_Controller {
 			$max_pages = ceil( $total_terms / $per_page );
 
 			$response->header( 'X-WP-TotalPages', (int) $max_pages );
+
+			$this->add_pagination_links(
+				$response,
+				$request,
+				(int) $page,
+				(int) $max_pages,
+				$per_page,
+				(int) $prepared_args['offset']
+			);
 		}
 
 		return $response;
