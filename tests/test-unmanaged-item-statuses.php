@@ -69,9 +69,10 @@ class Test_Unmanaged_Item_Statuses extends TAINACAN_UnitApiTestCase {
 		$ids = $items->fetch_unmanaged_status_item_ids( $this->collection );
 
 		sort( $ids );
-		$expected = array( $this->future_id, $this->empty_ids[0], $this->empty_ids[1] );
+		$expected = array( $this->empty_ids[0], $this->empty_ids[1] );
 		sort( $expected );
 		$this->assertSame( $expected, $ids );
+		$this->assertNotContains( $this->future_id, $ids );
 
 		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collections/' . $this->collection->get_id() );
 		$response = $this->server->dispatch( $request );
@@ -99,7 +100,7 @@ class Test_Unmanaged_Item_Statuses extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status(), wp_json_encode( $data ) );
-		$this->assertEquals( 3, $data['items'] );
+		$this->assertEquals( 2, $data['items'] );
 		$this->assertNotEmpty( $data['id'] );
 
 		$handler = \Tainacan\Generic_Process_Handler::get_instance();
@@ -107,6 +108,8 @@ class Test_Unmanaged_Item_Statuses extends TAINACAN_UnitApiTestCase {
 		$this->assertInstanceOf( \Tainacan\GenericProcess\Bulk_Edit_Process::class, $process );
 
 		$process->init_objects();
+		$steps = $process->get_steps();
+		$this->assertSame( 2, $steps[1]['total'] );
 		$steps = 0;
 		while ( false !== $process->run() ) {
 			$steps++;
@@ -118,7 +121,7 @@ class Test_Unmanaged_Item_Statuses extends TAINACAN_UnitApiTestCase {
 		foreach ( $this->empty_ids as $id ) {
 			$this->assertSame( 'draft', get_post_status( $id ) );
 		}
-		$this->assertSame( 'draft', get_post_status( $this->future_id ) );
+		$this->assertSame( 'future', get_post_status( $this->future_id ) );
 
 		foreach ( $this->publish_ids as $id ) {
 			$this->assertSame( 'publish', get_post_status( $id ) );

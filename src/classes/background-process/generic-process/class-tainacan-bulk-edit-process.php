@@ -248,15 +248,26 @@ class Bulk_Edit_Process extends Generic_Process {
 	private function get_total_items() {
 		if (!$this->get_group_id()) return 0;
 
-		// Count the control-metadata rows the process iterates. A WP_Query status
-		// list misses items whose post_status is not registered (see #1394).
-		global $wpdb;
-		$count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s",
-			$this->meta_key,
-			$this->get_group_id()
-		) );
-		return intval( $count );
+		// An explicit ID list is the number of iterations, including items whose
+		// status is not registered. Query-based edits keep the post count, so a
+		// duplicate control-metadata row does not change their progress total.
+		$params = $this->get_options();
+		if ( is_array( $params ) && isset( $params['items_ids'] ) && is_array( $params['items_ids'] ) ) {
+			return count( array_filter( $params['items_ids'], 'is_integer' ) );
+		}
+
+		$args = [
+			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
+			'meta_query' => array(
+				array(
+					'key' => $this->meta_key,
+					'value' => $this->get_group_id(),
+					'compare' => '=',
+				)
+			)
+		];
+		$item = $this->items_repository->fetch($args, [], 'WP_Query');
+		return intval($item->found_posts);
 	}
 
 	private function bulk_list_get_item($count) {

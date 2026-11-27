@@ -544,16 +544,27 @@ export const statusHelper = {
             return this.getManagedItemStatuses().join(',');
         },
         /**
-         * Statuses present in total_items that are not listed and are not WordPress internals or trash.
+         * Statuses WordPress knows. `future` is one of them: hidden from the item
+         * totals unless the managed list includes it, and never treated as stray.
+         */
+        getRegisteredPostStatuses() {
+            if (typeof tainacan_plugin !== 'undefined' && Array.isArray(tainacan_plugin.registered_post_statuses) && tainacan_plugin.registered_post_statuses.length)
+                return tainacan_plugin.registered_post_statuses.slice();
+
+            return ['publish', 'private', 'pending', 'draft', 'future', 'trash', 'inherit', 'auto-draft'];
+        },
+        /**
+         * Counts for statuses that are not registered in WordPress.
          * @returns {{slug: string, count: number}[]}
          */
         getUnmanagedItemStatuses(total_items) {
             if (!total_items || typeof total_items !== 'object')
                 return [];
 
-            const skipped = this.getManagedItemStatuses().concat(this.getItemStatusesNotWarned());
+            const known = this.getRegisteredPostStatuses()
+                .concat(this.getManagedItemStatuses(), this.getItemStatusesNotWarned());
             return Object.entries(total_items)
-                .filter(([slug, count]) => !skipped.includes(slug) && Number(count) > 0)
+                .filter(([slug, count]) => !known.includes(slug) && Number(count) > 0)
                 .map(([slug, count]) => ({ slug: slug, count: Number(count) }));
         },
         getUnmanagedItemsCount(total_items) {
@@ -611,6 +622,19 @@ export const statusHelper = {
                     this.statuses.push({
                         name: tainacan_plugin.i18n['status_trash'],
                         slug: 'trash'
+                    });
+
+                    // A status added to the managed list (for example `future`) gets a tab.
+                    const present = this.statuses.map((status) => status.slug);
+                    this.getManagedItemStatuses().forEach((slug) => {
+                        if (present.includes(slug))
+                            return;
+
+                        const loaded = loadedStatus[slug];
+                        this.statuses.push(loaded && loaded.slug ? loaded : {
+                            name: this.getTotalItemsStatusLabel(slug),
+                            slug: slug
+                        });
                     });
                     
                     /**

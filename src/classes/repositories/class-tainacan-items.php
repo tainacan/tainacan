@@ -47,9 +47,10 @@ class Items extends Repository {
 	/**
 	 * Post statuses Tainacan lists and counts as items.
 	 *
-	 * Trash has its own tab. Statuses outside this list (core statuses such as
-	 * `future`, statuses registered by other plugins, or values that are not
-	 * registered at all) stay out of the total and out of the items query.
+	 * Trash has its own tab. `future` stays a valid WordPress status: it is
+	 * hidden from these totals and from the items query unless a site adds it
+	 * through the `tainacan-managed-item-statuses` filter. Statuses WordPress
+	 * does not know stay out of the total and can be moved to draft.
 	 *
 	 * @return string[]
 	 */
@@ -76,9 +77,11 @@ class Items extends Repository {
 	}
 
 	/**
-	 * Item IDs in this collection whose status Tainacan does not list or count.
+	 * Item IDs in this collection whose post_status WordPress does not know.
 	 *
-	 * WordPress queries only registered statuses, so this lookup is SQL.
+	 * Registered statuses are left alone, including `future` and any status
+	 * the admin already lists as a tab. WordPress queries only registered
+	 * statuses, so this lookup is SQL.
 	 *
 	 * @param \Tainacan\Entities\Collection $collection
 	 * @return int[]
@@ -86,12 +89,16 @@ class Items extends Repository {
 	public function fetch_unmanaged_status_item_ids( $collection ) {
 		global $wpdb;
 
-		$left_alone = array_values( array_unique( array_merge(
-			$this->get_managed_item_statuses(),
-			$this->get_item_statuses_not_warned()
-		) ) );
-		$placeholders = implode( ', ', array_fill( 0, count( $left_alone ), '%s' ) );
-		$params = array_merge( array( $collection->get_db_identifier() ), $left_alone );
+		$registered = array_values( array_unique( array_filter( array_map(
+			'sanitize_key',
+			array_keys( get_post_stati() )
+		) ) ) );
+		if ( empty( $registered ) ) {
+			return array();
+		}
+
+		$placeholders = implode( ', ', array_fill( 0, count( $registered ), '%s' ) );
+		$params = array_merge( array( $collection->get_db_identifier() ), $registered );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholders are a repeated %s list.
 		$ids = $wpdb->get_col( $wpdb->prepare(

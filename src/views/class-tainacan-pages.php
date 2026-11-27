@@ -335,6 +335,7 @@ abstract class Pages {
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 			'managed_item_statuses' 	=> $Tainacan_Items->get_managed_item_statuses(),
 			'item_statuses_not_warned' 	=> $Tainacan_Items->get_item_statuses_not_warned(),
+			'registered_post_statuses' 	=> array_keys( get_post_stati() ),
 			'api_max_terms_batch'       => defined('TAINACAN_API_MAX_BATCH_TERMS') ? TAINACAN_API_MAX_BATCH_TERMS : 200,
 			'wp_elasticpress'    		=> \Tainacan\Integrations\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),

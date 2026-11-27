@@ -6,7 +6,7 @@
             role="status">
         <p>{{ warning.message }}</p>
         <button
-                v-if="warning.canRecover"
+                v-if="warning.canRecover && !busyCollectionIds.includes(warning.collectionId)"
                 type="button"
                 class="button"
                 @click="recover(warning)">
@@ -22,6 +22,11 @@ import CustomDialog from './custom-dialog.vue';
 
 export default {
     name: 'UnmanagedItemsWarning',
+    data() {
+        return {
+            busyCollectionIds: []
+        };
+    },
     computed: {
         ...mapGetters('collection', {
             collection: 'getCollection'
@@ -44,7 +49,7 @@ export default {
     },
     methods: {
         recover(warning) {
-            if (!warning.canRecover)
+            if (!warning.canRecover || this.busyCollectionIds.includes(warning.collectionId))
                 return;
 
             const modalTrigger = this.$modalFocusA11y.captureTrigger();
@@ -55,8 +60,18 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: warning.message + ' ' + this.$i18n.get('info_confirm_move_unmanaged_items_to_draft'),
                     onConfirm: () => {
+                        if (this.busyCollectionIds.includes(warning.collectionId))
+                            return;
+
+                        this.busyCollectionIds.push(warning.collectionId);
                         axios.tainacanApi.post('/collection/' + warning.collectionId + '/bulk-edit/recover-unmanaged-status')
-                            .then(() => {
+                            .then((response) => {
+                                const data = response && response.data ? response.data : {};
+                                if (!data.id) {
+                                    this.busyCollectionIds = this.busyCollectionIds.filter((id) => id !== warning.collectionId);
+                                    return;
+                                }
+
                                 this.$buefy.snackbar.open({
                                     message: this.$i18n.get('info_bulk_edit_process_added'),
                                     type: 'is-primary',
@@ -68,6 +83,7 @@ export default {
                                 });
                             })
                             .catch((error) => {
+                                this.busyCollectionIds = this.busyCollectionIds.filter((id) => id !== warning.collectionId);
                                 const data = error && error.response && error.response.data;
                                 if (data && data.error_message && this.$showApiError)
                                     this.$showApiError(error, data.error_message);
