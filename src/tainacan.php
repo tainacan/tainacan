@@ -19,7 +19,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 // Basic constants
-const TAINACAN_VERSION = '1.4.1';
+const TAINACAN_VERSION = '1.5.0';
 const TAINACAN_BASE_DIR    = __DIR__;
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 
