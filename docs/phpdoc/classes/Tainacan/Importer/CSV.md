@@ -460,6 +460,9 @@ private handle_attachment(mixed $column_value, mixed $item_inserted): mixed
 
 ### handle_item_status
 
+Sets the item status. Accepts any non-internal registered post status
+(so `trash`, `auto-draft`, `inherit`, etc. are rejected); anything else falls back to `draft`.
+
 ```php
 private handle_item_status(mixed $status, mixed $item_inserted): mixed
 ```
