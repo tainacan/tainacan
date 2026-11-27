@@ -1092,6 +1092,12 @@ return apply_filters( 'tainacan-i18n', [
 	'info_editing_items_in_bulk'                     => __( 'Bulk edit items', 'tainacan' ),
 	'info_by_inner'                                  => __( 'by', 'tainacan' ),
 	'info_bulk_edit_process_added'				 	 => __( 'Bulk edit added to process queue.', 'tainacan' ),
+	/* translators: %s is the unrecognized status, for example `empty` */
+	'info_unmanaged_item_status_one_%s'              => __( '1 item in this collection is in a status Tainacan does not recognize (%s).', 'tainacan' ),
+	/* translators: 1: number of items, 2: unrecognized statuses, for example `empty` */
+	'info_unmanaged_item_status_%1$s_%2$s'           => __( '%1$s items in this collection are in a status Tainacan does not recognize (%2$s).', 'tainacan' ),
+	'label_move_unmanaged_items_to_draft'            => __( 'Move to draft', 'tainacan' ),
+	'info_confirm_move_unmanaged_items_to_draft'     => __( 'These items will be moved to draft so you can review them.', 'tainacan' ),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus unchecking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan' ),

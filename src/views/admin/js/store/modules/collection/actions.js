@@ -1,5 +1,6 @@
 import axios from '../../../axios/axios';
 import qs from 'qs';
+import { statusHelper } from '../../../admin-utilities';
 
 // THE ITEMS SEARCH
 /**
@@ -44,10 +45,11 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             )
                 hasFiltered = true;
 
-            // Admin default tab should load publish, private, pending and draft statuses
+            // Admin default tab should load the statuses Tainacan lists and counts.
             if (!isOnTheme && !postQueries.status) {
-                postQueries.status = 'publish,private,pending,draft';
-                dispatch('search/setStatus', 'publish,private,pending,draft', { root: true });
+                const managedStatuses = statusHelper.getManagedItemStatusesQuery();
+                postQueries.status = managedStatuses;
+                dispatch('search/setStatus', managedStatuses, { root: true });
             }
 
             // Guarantees at least status is passed in case none is found

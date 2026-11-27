@@ -247,6 +247,15 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function get_total_items() {
 		if (!$this->get_group_id()) return 0;
+
+		// An explicit ID list is the number of iterations, including items whose
+		// status is not registered. Query-based edits keep the post count, so a
+		// duplicate control-metadata row does not change their progress total.
+		$params = $this->get_options();
+		if ( is_array( $params ) && isset( $params['items_ids'] ) && is_array( $params['items_ids'] ) ) {
+			return count( array_filter( $params['items_ids'], 'is_integer' ) );
+		}
+
 		$args = [
 			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
 			'meta_query' => array(

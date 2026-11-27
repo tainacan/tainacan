@@ -6,7 +6,7 @@
                 data-orientation="horizontal">               
             <li 
                     :tabindex="-1"
-                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,pending,draft' }">
+                    :class="{ 'is-active': isAllItemsTab }">
                 <a
                         id="items-status-tab-all"
                         v-tooltip="{
@@ -16,15 +16,15 @@
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }"
                         role="tab"
-                        :aria-selected="status == undefined || status == '' || status == 'publish,private,pending,draft'"
-                        :tabindex="(status == undefined || status == '' || status == 'publish,private,pending,draft') ? 0 : -1"
+                        :aria-selected="isAllItemsTab"
+                        :tabindex="isAllItemsTab ? 0 : -1"
                         style="font-weight: bold;"
                         @click="onChangeTab('')">
                     {{ $i18n.get('label_all_items') }}
                     <span 
                             v-if="!$adminOptions.hideItemsListStatusTabsTotalItems && !$route.query.authorid"
                             class="has-text-dark">
-                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ $statusHelper.sumTotalItemsByStatus(repositoryTotalItems) })` : (collection && collection.total_items ? ` (${$statusHelper.sumTotalItemsByStatus(collection.total_items)})` : '') }}
+                        &nbsp;{{ isRepositoryLevel ? (repositoryTotalItems ? ` (${ $statusHelper.sumTotalItemsByStatus(repositoryTotalItems) })` : '') : (collection && collection.total_items ? ` (${$statusHelper.sumTotalItemsByStatus(collection.total_items)})` : '') }}
                     </span>
                 </a>
             </li>
@@ -38,7 +38,8 @@
                     <a
                             :id="'items-status-tab-' + statusOption.slug"
                             v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
+                                content: $i18n.getEntityStatusTabTooltip('items', statusOption.slug),
+                                disabled: $i18n.getEntityStatusTabTooltip('items', statusOption.slug) === '',
                                 autoHide: true,
                                 placement: 'auto',
                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
@@ -60,7 +61,7 @@
                         <span 
                                 v-if="!$adminOptions.hideItemsListStatusTabsTotalItems && !$route.query.authorid"
                                 class="has-text-dark">
-                            &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
+                            &nbsp;{{ isRepositoryLevel ? (repositoryTotalItems && repositoryTotalItems[statusOption.slug] !== undefined ? ` (${ repositoryTotalItems[statusOption.slug] })` : '') : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
                         </span>
                     </a>
                 </li>
@@ -77,6 +78,10 @@ export default {
         isRepositoryLevel: Boolean
     },
     computed: {
+        isAllItemsTab() {
+            const managedStatuses = this.$statusHelper.getManagedItemStatusesQuery();
+            return this.status == undefined || this.status == '' || this.status == managedStatuses;
+        },
         ...mapGetters('search', {
             'status': 'getStatus'
         }),
@@ -85,9 +90,9 @@ export default {
         }),
         repositoryTotalItems() {
 
-            if (!this.$adminOptions.hideItemsListStatusTabsTotalItems) {
-                const collections = this.getCollections();
+            const collections = this.getCollections();
 
+            if (!this.$adminOptions.hideItemsListStatusTabsTotalItems && collections.length) {
                 const total_items = {};
 
                 for (const collection of collections) {
