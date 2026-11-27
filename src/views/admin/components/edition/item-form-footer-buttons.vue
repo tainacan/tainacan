@@ -6,6 +6,7 @@
             <button
                     type="button"
                     class="button is-secondary"
+                    :disabled="isDocumentDropBusy"
                     @click="$emit('on-submit')">
                 {{ $i18n.get('label_back_to_related_item') }}
             </button>
@@ -53,6 +54,7 @@
                         v-if="!isOnSequenceEdit && currentUserCanDelete && !$adminOptions.mobileAppMode"
                         type="button"
                         class="button is-outlined is-danger"
+                        :disabled="isDocumentDropBusy"
                         @click="$emit('on-submit', 'trash')">
                     <span v-if="!isMobileScreen">{{ $i18n.get('label_send_to_trash') }}</span>
                     <span v-else>{{ $i18n.get('status_trash') }}</span>
@@ -97,7 +99,7 @@
                                     style="margin-inline-start: 0.5em;"
                                     aria-hidden="true"
                                     class="icon is-small"
-                                    @mouseenter="$refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null">
+                                    @mouseenter="!isDocumentDropBusy && $refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowup" />
                             </span>
                         </button>
@@ -270,6 +272,9 @@ export default {
     ],
     mounted() {
         this.$emitter.on('toggleItemEditionFooterDropdown', () => {
+            if (this.isDocumentDropBusy)
+                return;
+
             if (this.$refs && this.$refs['item-edition-footer-dropdown'])
                 this.$refs['item-edition-footer-dropdown'].toggle();
         });

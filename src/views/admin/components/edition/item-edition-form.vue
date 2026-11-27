@@ -19,7 +19,7 @@
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag is-hidden-mobile"
-                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                        @mouseenter="toggleStatusFooterDropdown">
                     {{ $statusHelper.getStatusLabel(item.status) }}
                 </span>
             </h1>
@@ -31,14 +31,14 @@
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag is-hidden-mobile"
-                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                        @mouseenter="toggleStatusFooterDropdown">
                     {{ $statusHelper.getStatusLabel(item.status) }}
                 </span>
                 <span
                         v-if="$adminOptions.itemEditionStatusOptionOnFooterDropdown && (item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
                         class="icon has-text-dark"
                         style="margin-inline-start: 0.5em;"
-                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                        @mouseenter="toggleStatusFooterDropdown">
                     <i 
                             aria-hidden="true"
                             class="tainacan-icon tainacan-icon-1em"
@@ -1752,12 +1752,20 @@ export default {
         // has to wait. There is no "leave anyway": the response would land on whatever item is loaded next.
         showDocumentDropInProgressDialog() {
             const modalTrigger = this.$modalFocusA11y.captureTrigger();
+            const isOnlyConfirmingReplace = this.isConfirmingDocumentReplace &&
+                this.documentUploadProgress === null &&
+                !this.isSavingDroppedDocument;
+
             this.$buefy.modal.open({
                 component: CustomDialog,
                 props: {
                     icon: 'alert',
                     title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_document_upload_in_progress'),
+                    message: this.$i18n.get(
+                        isOnlyConfirmingReplace
+                            ? 'info_warning_document_replace_pending'
+                            : 'info_warning_document_upload_in_progress'
+                    ),
                     hideCancel: true
                 },
                 trapFocus: true,
@@ -1768,6 +1776,14 @@ export default {
                     beforeClose: () => this.$modalFocusA11y.restoreFocus(modalTrigger, this)
                 }
             });
+        },
+        toggleStatusFooterDropdown() {
+            if ( this.isDocumentDropBusy )
+                return;
+
+            // The footer listens on the event bus; the Vue emit is kept for any parent that still uses it
+            this.$emit('toggleItemEditionFooterDropdown');
+            this.$emitter.emit('toggleItemEditionFooterDropdown');
         },
         // Links outside the Vue router, such as the WordPress admin menu, only get the browser's own prompt
         preventUnloadDuringDocumentUpload(event) {
@@ -2366,6 +2382,11 @@ export default {
             }
         },
         exitToMobileApp() {
+            if ( this.isDocumentDropBusy ) {
+                this.showDocumentDropInProgressDialog();
+                return;
+            }
+
             // In Mobile app, we send a message to inform updates
             if (
                 this.$adminOptions.mobileAppMode &&
