@@ -206,7 +206,7 @@ class CSV extends Exporter {
 				</span>
 			</label>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
+				<input class="input" type="text" name="delimiter" maxlength="1" required value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 			</div>
 		</div>
 
@@ -228,7 +228,7 @@ class CSV extends Exporter {
 					</div>
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
+				<input class="input" type="text" name="enclosure" maxlength="1" required value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 			</div>
 		</div>
 
