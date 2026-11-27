@@ -829,8 +829,31 @@ abstract class Exporter {
 	}
 	
 	// Exporters should override
-	public function get_output() {
+	public function get_output( $for_email = false ) {
 		return '';
+	}
+
+	/**
+	 * Builds the exporter output link.
+	 *
+	 * Email messages direct users to the Processes page, where WordPress
+	 * can generate a REST nonce for the current authenticated session.
+	 *
+	 * @param string $file_url  Exporter file URL.
+	 * @param bool   $for_email Whether the link will be sent by email.
+	 *
+	 * @return string
+	 */
+	protected function get_output_link( $file_url, $for_email = false ) {
+		if ( $for_email ) {
+			return '<a target="_blank" href="'
+				. esc_url( admin_url( 'admin.php?page=tainacan_admin#/processes' ) )
+				. '">'
+				. esc_html__( 'View processes', 'tainacan' )
+				. '</a>';
+		}
+
+		return '<a target="_blank" href="' . $file_url . '">Download</a>';
 	}
 
 	public function finished() {
@@ -838,12 +861,19 @@ abstract class Exporter {
 			$author = $this->get_transient('author');
 			$user = get_userdata( (int) $author );
 			if ($user instanceof \WP_User) {
-				$msg = $this->get_output();
+				$msg = $this->get_output( true );
 				$email_parts = explode('@', $user->user_email);
 				$first_letter = substr($email_parts[0], 0, 1);
 				$anonymized_email = $first_letter . '*****@' . $email_parts[1];
 				$this->add_log('Sending email to ' . $anonymized_email);
-				wp_mail($user->user_email, __('Finished export.', 'tainacan'), $msg);
+				$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+
+				wp_mail(
+					$user->user_email,
+					__( 'Finished export.', 'tainacan' ),
+					$msg,
+					$headers
+				);
 			}
 			
 		}
@@ -857,18 +887,44 @@ abstract class Exporter {
 		return false;
 	}
 
-	private function set_output_files($output_files) {
+	private function set_output_files( $output_files ) {
 		$this->output_files = $output_files;
 	}
+
 	protected function get_output_files() {
 		return $this->output_files;
 	}
+
+	/**
+	 * Associates the output files with their background process and
+	 * starts their expiration period.
+	 *
+	 * @param int $process_id Background process ID.
+	 */
+	public function prepare_output_files_for_download( $process_id ) {
+		$exporter_files = \Tainacan\Exporter_Files::get_instance();
+
+		$this->set_output_files(
+			$exporter_files->prepare_output_files(
+				$this->get_output_files(),
+				$process_id
+			)
+		);
+	}
+
 	/**
 	 * runs one iteration
 	 */
-	public function run() {
-		if ($this->is_finished()) {
-			$this->finished();
+	public function run( $process_id = null ) {
+		if ( $this->is_finished() ) {
+			if ( ! empty( $process_id ) ) {
+				$this->prepare_output_files_for_download( $process_id );
+			}
+
+			if ( ! $this->get_abort() ) {
+				$this->finished();
+			}
+
 			return false;
 		}
 		$steps = $this->get_steps();
@@ -890,8 +946,14 @@ abstract class Exporter {
 			$return = $result;
 		}
 		
-		if (false === $return) {
-			$this->finished();
+		if ( false === $return ) {
+			if ( ! empty( $process_id ) ) {
+				$this->prepare_output_files_for_download( $process_id );
+			}
+
+			if ( ! $this->get_abort() ) {
+				$this->finished();
+			}
 		}
 		
 		return $return;
