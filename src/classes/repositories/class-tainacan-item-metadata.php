@@ -64,6 +64,14 @@ class Item_Metadata extends Repository {
 			}
 			return $item_metadata;
 		} else {
+			if ( $unique && $item_metadata->get_metadatum()->get_parent() > 0 ) {
+				if ( is_null( $item_metadata->get_meta_id() ) ) {
+					$this->join_unique_compound_value( $item_metadata );
+				}
+
+				$this->remove_child_from_other_compound_values( $item_metadata );
+			}
+
 			if ( $unique ) {
 				$item_metadata_value = $this->sanitize_item_metadata_value( $item_metadata, $item_metadata->get_value() );
 				if ( !is_numeric($item_metadata->get_value()) && empty( $item_metadata->get_value() ) ) {
@@ -205,6 +213,133 @@ class Item_Metadata extends Repository {
 				
 				$success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $insert, $taxonomy->get_db_identifier() );
 				
+			}
+		}
+	}
+
+	/**
+	 * Makes a child of a unique compound metadatum, saved without its meta ids, use the compound value
+	 * that the item already has, and the child value already stored there.
+	 *
+	 * This happens, for example, when the item form saves two fields of the compound before the answer
+	 * with the compound meta id arrives. Without it, each save adds another compound value, and only one
+	 * of them is read back. See https://github.com/tainacan/tainacan/issues/711.
+	 *
+	 * @param Entities\Item_Metadata_Entity $item_metadata The child item metadata. Its parent and meta ids are set here.
+	 *
+	 * @return void
+	 */
+	private function join_unique_compound_value( Entities\Item_Metadata_Entity $item_metadata ) {
+		$compound = Metadata::get_instance()->fetch( $item_metadata->get_metadatum()->get_parent() );
+
+		if ( ! $compound instanceof Entities\Metadatum || $compound->is_multiple() ) {
+			return;
+		}
+
+		$item_id = $item_metadata->get_item()->get_id();
+
+		if ( ! ( $item_metadata->get_parent_meta_id() > 0 ) ) {
+			global $wpdb;
+			// The most recent compound value, if older versions left more than one.
+			$parent_meta_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s ORDER BY meta_id DESC LIMIT 1",
+					$item_id,
+					$compound->get_id()
+				)
+			);
+
+			if ( ! $parent_meta_id ) {
+				return;
+			}
+
+			$item_metadata->set_parent_meta_id( (int) $parent_meta_id );
+		}
+
+		$compound_value = get_metadata_by_mid( 'post', $item_metadata->get_parent_meta_id() );
+
+		if ( ! is_object( $compound_value ) || ! is_array( $compound_value->meta_value ) ) {
+			return;
+		}
+
+		// A unique compound holds one value per child, so the one already there is updated.
+		foreach ( array_reverse( wp_parse_id_list( $compound_value->meta_value ) ) as $child_meta_id ) {
+			$child_meta = get_metadata_by_mid( 'post', $child_meta_id );
+
+			if ( is_object( $child_meta ) && (int) $child_meta->post_id === (int) $item_id && (string) $child_meta->meta_key === (string) $item_metadata->get_metadatum()->get_id() ) {
+				$item_metadata->set_meta_id( (int) $child_meta_id );
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Removes the copies of a child of a unique compound metadatum kept in the other compound values of the item.
+	 *
+	 * Older versions could split a unique compound in several values, and reading it joins them, the most
+	 * recently saved value of each child winning. Without this, clearing a child would show an older copy
+	 * of it again, and a child kept only in an older value could not be cleared. Each save also leaves
+	 * the item with fewer split values. See https://github.com/tainacan/tainacan/issues/711.
+	 *
+	 * @param Entities\Item_Metadata_Entity $item_metadata The child item metadata, already joined to the compound value it is saved in.
+	 *
+	 * @return void
+	 */
+	private function remove_child_from_other_compound_values( Entities\Item_Metadata_Entity $item_metadata ) {
+		$parent_meta_id = (int) $item_metadata->get_parent_meta_id();
+
+		// Without a compound value yet, there is no other one to clean.
+		if ( ! ( $parent_meta_id > 0 ) ) {
+			return;
+		}
+
+		$compound = Metadata::get_instance()->fetch( $item_metadata->get_metadatum()->get_parent() );
+
+		if ( ! $compound instanceof Entities\Metadatum || $compound->is_multiple() ) {
+			return;
+		}
+
+		global $wpdb;
+		$item_id   = (int) $item_metadata->get_item()->get_id();
+		$child_key = (string) $item_metadata->get_metadatum()->get_id();
+
+		$other_compound_meta_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s AND meta_id <> %d",
+				$item_id,
+				$compound->get_id(),
+				$parent_meta_id
+			)
+		);
+
+		foreach ( $other_compound_meta_ids as $compound_meta_id ) {
+			$compound_value = get_metadata_by_mid( 'post', $compound_meta_id );
+
+			if ( ! is_object( $compound_value ) || ! is_array( $compound_value->meta_value ) ) {
+				continue;
+			}
+
+			$children      = wp_parse_id_list( $compound_value->meta_value );
+			$kept_children = array();
+
+			foreach ( $children as $child_meta_id ) {
+				$child_meta = get_metadata_by_mid( 'post', $child_meta_id );
+
+				if ( is_object( $child_meta ) && (int) $child_meta->post_id === $item_id && (string) $child_meta->meta_key === $child_key ) {
+					delete_metadata_by_mid( 'post', $child_meta_id );
+				} else {
+					$kept_children[] = $child_meta_id;
+				}
+			}
+
+			if ( count( $kept_children ) === count( $children ) ) {
+				continue;
+			}
+
+			if ( empty( $kept_children ) ) {
+				delete_metadata_by_mid( 'post', $compound_meta_id );
+			} else {
+				update_metadata_by_mid( 'post', $compound_meta_id, $kept_children );
 			}
 		}
 	}
@@ -417,7 +552,8 @@ class Item_Metadata extends Repository {
 
 			global $wpdb;
 			$rows = $wpdb->get_results(
-				$wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() ),
+				// Ordered by creation, so multiple compound values keep their order.
+				$wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s ORDER BY meta_id ASC", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() ),
 				ARRAY_A );
 
 			$return_value = [];
@@ -430,8 +566,13 @@ class Item_Metadata extends Repository {
 					if ( empty($value) )
 						continue;
 					if ( $unique ) {
-						$return_value = $value;
-						break;
+						// Older versions could split a unique compound in several rows (#711). Instead of
+						// reading only the first one, every child is read, the most recently saved winning.
+						foreach ( $value as $child_metadatum_id => $child_item_metadata ) {
+							if ( ! isset( $return_value[ $child_metadatum_id ] ) || (int) $child_item_metadata->get_meta_id() > (int) $return_value[ $child_metadatum_id ]->get_meta_id() ) {
+								$return_value[ $child_metadatum_id ] = $child_item_metadata;
+							}
+						}
 					} else {
 						$return_value[] = $value;
 					}
