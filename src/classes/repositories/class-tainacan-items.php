@@ -565,6 +565,30 @@ class Items extends Repository {
 	}
 
 	/**
+	 * Fetch one Item entity based on query args.
+	 *
+	 * @param array $args WP_Query args
+	 * @param array $collections Array Entities\Collection || Array int collections IDs || int collection id || Entities\Collection collection object
+	 *
+	 * @return false|Entities\Item The Item entity or false if none was found
+	 */
+	public function fetch_one( $args = [], $collections = [] ) {
+		if ( ! is_array( $args ) ) {
+			return false;
+		}
+
+		$args['posts_per_page'] = 1;
+
+		$results = $this->fetch( $args, $collections, 'OBJECT' );
+
+		if ( is_array( $results ) && sizeof( $results ) > 0 && $results[0] instanceof Entities\Item ) {
+			return $results[0];
+		}
+
+		return false;
+	}
+
+	/**
 	 * When querying posts without explictly asking for a post_status, WordPress will
 	 * check current user capabilities and return posts user can read based on read_private_posts capabilities.
 	 *

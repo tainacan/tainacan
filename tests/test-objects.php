@@ -172,5 +172,100 @@ class Objects extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $one instanceof \Tainacan\Entities\Collection );
 		$this->assertEquals( 'teste2', $one->get_name() );
 
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'item_one',
+				'collection' => $collection,
+				'status'     => 'publish'
+			),
+			true
+		);
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'item_two',
+				'collection' => $collection2,
+				'status'     => 'publish'
+			),
+			true
+		);
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+
+		$this->assertFalse( $Tainacan_Items->fetch_one( 'invalid' ) );
+
+		$fetched_item = $Tainacan_Items->fetch_one( [ 'title' => 'item_two' ] );
+		$this->assertTrue( $fetched_item instanceof \Tainacan\Entities\Item );
+		$this->assertEquals( $item2->get_id(), $fetched_item->get_id() );
+
+		$fetched_item_in_col = $Tainacan_Items->fetch_one( [ 'title' => 'item_one' ], $collection );
+		$this->assertTrue( $fetched_item_in_col instanceof \Tainacan\Entities\Item );
+		$this->assertEquals( $item1->get_id(), $fetched_item_in_col->get_id() );
+
+		$fetched_item_wrong_col = $Tainacan_Items->fetch_one( [ 'title' => 'item_one' ], $collection2 );
+		$this->assertFalse( $fetched_item_wrong_col );
+
+		$fetched_item_from_multiple = $Tainacan_Items->fetch_one( [ 'status' => 'publish' ] );
+		$this->assertTrue( $fetched_item_from_multiple instanceof \Tainacan\Entities\Item );
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_fetch_one',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_fetch_one_2',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'term_fetch_one',
+			),
+			true
+		);
+
+		$term2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'term_fetch_two',
+			),
+			true
+		);
+
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+
+		$this->assertFalse( $Tainacan_Terms->fetch_one( 'invalid' ) );
+
+		$fetched_term = $Tainacan_Terms->fetch_one( [ 'name' => 'term_fetch_one' ], $taxonomy );
+		$this->assertTrue( $fetched_term instanceof \Tainacan\Entities\Term );
+		$this->assertEquals( $term->get_id(), $fetched_term->get_id() );
+
+		$fetched_term_wrong_tax = $Tainacan_Terms->fetch_one( [ 'name' => 'term_fetch_one' ], $taxonomy2 );
+		$this->assertFalse( $fetched_term_wrong_tax );
+
+		$fetched_term_without_tax = $Tainacan_Terms->fetch_one( [ 'name' => 'term_fetch_one' ] );
+		$this->assertTrue( $fetched_term_without_tax instanceof \Tainacan\Entities\Term );
+		$this->assertEquals( $term->get_id(), $fetched_term_without_tax->get_id() );
+
+		$fetched_term_from_multiple = $Tainacan_Terms->fetch_one( [], $taxonomy );
+		$this->assertTrue( $fetched_term_from_multiple instanceof \Tainacan\Entities\Term );
+
+		unregister_taxonomy( $taxonomy2->get_db_identifier() );
+		$this->assertFalse( $Tainacan_Terms->fetch_one( [ 'name' => 'term_fetch_one' ] ) );
+
 	}
 }
