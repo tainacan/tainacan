@@ -4870,7 +4870,7 @@ Argument | Type | Description
 `$value` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 76](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L76-L95)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 77](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L77-L96)
 
 ---------------------------------
 <br>
@@ -4886,7 +4886,7 @@ Argument | Type | Description
 `$value` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 98](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L98-L117)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 99](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L99-L118)
 
 ---------------------------------
 <br>
@@ -4902,7 +4902,7 @@ Argument | Type | Description
 `$value` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 120](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L120-L139)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 121](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L121-L140)
 
 ---------------------------------
 <br>
@@ -4917,7 +4917,7 @@ Argument | Type | Description
 `$return` | `string` | the item metadatum value HTML string
 `$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 199](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L199-L207)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 235](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L235-L243)
 
 ---------------------------------
 <br>
@@ -4929,10 +4929,10 @@ Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/ta
 
 Argument | Type | Description
 -------- | ---- | -----------
-`wp_strip_all_tags($this->get_value_as_html())` |  | 
+`$return` | `string` | the item metadatum value string
 `$this` | `\Tainacan\Entities\Item_Metadata_Entity` | the item metadatum entity
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 226](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L226-L234)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 264](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L264-L272)
 
 ---------------------------------
 <br>
@@ -4947,7 +4947,7 @@ Argument | Type | Description
 `$as_array` |  | 
 `$this` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 316](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L316-L344)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 354](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L354-L382)
 
 ---------------------------------
 <br>
@@ -4959,7 +4959,7 @@ Argument | Type | Description
 -------- | ---- | -----------
 `$validation_statuses` |  | 
 
-Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 576](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L576-L576)
+Source: [class-tainacan-item-metadata-entity.php](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php), [line 614](https://github.com/tainacan/tainacan/blob/master/src/classes/entities/class-tainacan-item-metadata-entity.php#L614-L614)
 
 ---------------------------------
 <br>

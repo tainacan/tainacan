@@ -2061,6 +2061,8 @@
       +get_multivalue_prefix()
       +get_multivalue_suffix()
       +get_multivalue_separator()
+      +get_html_formatting()
+      +get_value_as_plain_text(metadata_type_object)
       +get_value_as_html()
       +get_value_as_string()
       +get_value_as_array()
