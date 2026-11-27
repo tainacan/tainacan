@@ -680,29 +680,32 @@ class Metadata extends Repository {
 	 */
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_metadata_order();
-		$section_order = $collection->get_metadata_section_order();
 
 		if ( $order ) {
 
 			if ( is_array( $result ) ) {
+				$section_order = array_column( $collection->get_metadata_section_order(), null, 'id' );
+				$section_order_ids = array_keys( $section_order );
 				$result_ordinate = [];
 				$not_ordinate    = [];
 
 				foreach ( $result as $item ) {
 					$id    = $item->WP_Post->ID;
 					$index = array_search( $id, array_column( $order, 'id' ) );
-					$metadata_section_ids = get_post_meta( $id, 'metadata_section_id');
 
-					$enabled_metadata_section = true;
-					if(!empty($metadata_section_ids) && $metadata_section_ids !== false && !empty($section_order)) {
-						foreach( $metadata_section_ids as $metadata_section_id) {
-							$section_order_index = array_search( $metadata_section_id, array_column( $section_order, 'id' ) );
-							if ( $section_order_index !== false ) {
-								$enabled_metadata_section = boolval($section_order[$section_order_index]['enabled']);
-								break;
-							}
-						}
+					$section_ids = array_intersect( (array) get_post_meta( $id, 'metadata_section_id' ), $section_order_ids );
+					if ( count( $section_ids ) > 1 ) {
+						// Use the saved collection order to resolve section IDs left behind by older moves.
+						$ordered_section_ids = array_filter( $section_ids, static function ( $section_id ) use ( $id, $section_order ) {
+							$metadata_order = $section_order[ $section_id ]['metadata_order'] ?? null;
+							return is_array( $metadata_order ) && in_array( $id, array_column( $metadata_order, 'id' ) );
+						} );
+						$section_ids = $ordered_section_ids ?: $section_ids;
 					}
+					$collection_section_ids = array_diff( $section_ids, [ Entities\Metadata_Section::$default_section_slug ] );
+					$section_ids = $collection_section_ids ?: $section_ids;
+					$section_id = reset( $section_ids );
+					$enabled_metadata_section = $section_id === false || ( $section_order[ $section_id ]['enabled'] ?? true );
 
 					if ( $index !== false ) {
 

@@ -398,6 +398,71 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 
 	}
 
+	function test_repository_metadata_visibility_follows_its_collection_section() {
+		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
+		$collections_repository = \Tainacan\Repositories\Collections::get_instance();
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array( 'name' => 'Collection with a disabled section' ),
+			true
+		);
+		$section = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'       => 'Disabled section',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                => 'Repository field',
+				'collection_id'       => $metadata_repository->get_default_metadata_attribute(),
+				'metadata_type'       => 'Tainacan\Metadata_Types\Text',
+				'metadata_section_id' => array( 'default_section', $section->get_id() ),
+				'status'              => 'publish',
+			),
+			true
+		);
+
+		$section_order = array(
+			array(
+				'id'             => 'default_section',
+				'enabled'        => true,
+				'metadata_order' => array(),
+			),
+			array(
+				'id'             => $section->get_id(),
+				'enabled'        => false,
+				'metadata_order' => array( array( 'id' => $metadatum->get_id(), 'enabled' => true ) ),
+			),
+		);
+		$collection->set_metadata_section_order( $section_order );
+		$this->assertTrue( $collection->validate() );
+		$collection = $collections_repository->update( $collection );
+
+		$visible_metadata = $metadata_repository->fetch_by_collection( $collection );
+		$all_metadata = $metadata_repository->fetch_by_collection( $collection, array( 'include_disabled' => true ) );
+		$get_id = static function ( $field ) {
+			return $field->get_id();
+		};
+
+		$this->assertNotContains( $metadatum->get_id(), array_map( $get_id, $visible_metadata ) );
+		$this->assertContains( $metadatum->get_id(), array_map( $get_id, $all_metadata ) );
+
+		// Older moves could update the section order while retaining the previous section ID.
+		$section_order[0]['metadata_order'] = $section_order[1]['metadata_order'];
+		$section_order[1]['metadata_order'] = array();
+		$collection->set_metadata_section_order( $section_order );
+		$this->assertTrue( $collection->validate() );
+		$collection = $collections_repository->update( $collection );
+
+		$visible_metadata = $metadata_repository->fetch_by_collection( $collection );
+		$this->assertContains( $metadatum->get_id(), array_map( $get_id, $visible_metadata ) );
+	}
+
 	/**
 	 * A child term satisfies a conditional section whose rule is an ancestor.
 	 * A parent does not satisfy a rule written on its child, and a flat taxonomy stays an exact match.
