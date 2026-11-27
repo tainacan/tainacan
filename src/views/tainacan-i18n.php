@@ -661,6 +661,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_view_metadata_details'					 => __( 'View metadata details', 'tainacan'),
 	'label_filter_by_metadata_type'					 => __( 'Filter by metadatum type', 'tainacan'),
 	'label_filter_by_type'							 => __( 'Filter by type', 'tainacan'),
+	'label_filter_by_collection'						 => __( 'Filter by collection', 'tainacan' ),
 	'label_pie_chart'								 => __( 'Pie chart', 'tainacan'),
 	'label_bar_chart'								 => __( 'Bar chart', 'tainacan'),
 	'label_terms_per_page'							 => __( 'Terms per page', 'tainacan'),
@@ -951,6 +952,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_item_trash'			             		=> __( 'This item is on trash and will not be visible outside of the admin panel.', 'tainacan' ),
 
 	'info_no_taxonomy_created'                       => __( 'No taxonomy was created in this repository.', 'tainacan' ),
+	'info_no_taxonomy_used_by_collection'            => __( 'No taxonomy is used by the metadata of this collection.', 'tainacan' ),
 	'info_no_terms_created_on_taxonomy'              => __( 'No term was created for this taxonomy.', 'tainacan' ),
 	'info_no_terms_found'				 			 => __( 'No term was found here', 'tainacan' ),
 	'info_no_more_terms_found'				 		 => __( 'No more terms found', 'tainacan' ),
