@@ -1144,6 +1144,170 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 400, $response->get_status() );
 	}
 
+
+	/**
+	 * Creates a Taxonomy Checkbox filter with some filter type options.
+	 *
+	 * @param array $filter_type_options The options. An empty array uses the defaults.
+	 *
+	 * @return \Tainacan\Entities\Filter The filter, not yet inserted.
+	 */
+	private function build_taxonomy_checkbox_filter( $filter_type_options ) {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Collection with a hierarchical taxonomy',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'        => 'Places',
+				'collections' => [ $collection ],
+				'status'      => 'publish',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                  => 'Place',
+				'collection_id'         => $collection->get_id(),
+				'metadata_type'         => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'                => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $taxonomy->get_id(),
+				],
+			),
+			true
+		);
+
+		$args = array(
+			'name'        => 'Place',
+			'status'      => 'publish',
+			'collection'  => $collection,
+			'metadatum'   => $metadatum,
+			'filter_type' => 'Tainacan\Filter_Types\TaxonomyCheckbox',
+		);
+
+		if ( ! empty( $filter_type_options ) ) {
+			$args['filter_type_options'] = $filter_type_options;
+		}
+
+		return $this->tainacan_entity_factory->create_entity( 'filter', $args );
+	}
+
+	/**
+	 * @see https://github.com/tainacan/tainacan/issues/863
+	 */
+	public function test_taxonomy_checkbox_show_hierarchy_path_option() {
+		// Off by default, so existing filters keep showing only the term name.
+		$filter = $this->build_taxonomy_checkbox_filter( array() );
+		$this->assertTrue( $filter->validate(), print_r( $filter->get_errors(), true ) );
+		$filter = \Tainacan\Repositories\Filters::get_instance()->insert( $filter );
+
+		$response = $this->server->dispatch( new \WP_REST_Request( 'GET', $this->namespace . '/filters/' . $filter->get_id() ) );
+		$this->assertEquals( 'no', $response->get_data()['filter_type_options']['show_hierarchy_path'] );
+
+		// Saved and returned when turned on.
+		$filter = $this->build_taxonomy_checkbox_filter( array( 'show_hierarchy_path' => 'yes' ) );
+		$this->assertTrue( $filter->validate(), print_r( $filter->get_errors(), true ) );
+		$filter = \Tainacan\Repositories\Filters::get_instance()->insert( $filter );
+
+		$response = $this->server->dispatch( new \WP_REST_Request( 'GET', $this->namespace . '/filters/' . $filter->get_id() ) );
+		$this->assertEquals( 'yes', $response->get_data()['filter_type_options']['show_hierarchy_path'] );
+
+		// Anything else is rejected.
+		$filter = $this->build_taxonomy_checkbox_filter( array( 'show_hierarchy_path' => 'sometimes' ) );
+		$this->assertFalse( $filter->validate() );
+	}
+
+	/**
+	 * The facets used by the filter bring the path of the parent terms of a selected child term.
+	 *
+	 * @see https://github.com/tainacan/tainacan/issues/863
+	 */
+	public function test_taxonomy_facets_bring_the_hierarchy_path_of_child_terms() {
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'Collection with places',
+				'status' => 'publish',
+			),
+			true
+		);
+
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'        => 'Brazilian places',
+				'collections' => [ $collection ],
+				'status'      => 'publish',
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'                  => 'Brazilian place',
+				'collection_id'         => $collection->get_id(),
+				'metadata_type'         => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'                => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $taxonomy->get_id(),
+				],
+			),
+			true
+		);
+
+		$country = $this->tainacan_entity_factory->create_entity( 'term', array( 'taxonomy' => $taxonomy->get_db_identifier(), 'name' => 'Brasil' ), true );
+		$region  = $this->tainacan_entity_factory->create_entity( 'term', array( 'taxonomy' => $taxonomy->get_db_identifier(), 'name' => 'Centro-Oeste', 'parent' => $country->get_id() ), true );
+		$state   = $this->tainacan_entity_factory->create_entity( 'term', array( 'taxonomy' => $taxonomy->get_db_identifier(), 'name' => 'Goiás', 'parent' => $region->get_id() ), true );
+
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'Item in Goiás',
+				'collection' => $collection,
+				'status'     => 'publish',
+			),
+			true
+		);
+		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity( $item, $metadatum );
+		$item_metadata->set_value( $state->get_id() );
+		$this->assertTrue( $item_metadata->validate(), print_r( $item_metadata->get_errors(), true ) );
+		\Tainacan\Repositories\Item_Metadata::get_instance()->insert( $item_metadata );
+
+		// The selected child term comes along with the root terms, as in the filter side list.
+		$request = new \WP_REST_Request( 'GET', $this->namespace . '/collection/' . $collection->get_id() . '/facets/' . $metadatum->get_id() );
+		$request->set_query_params(
+			array(
+				'parent'        => 0,
+				'getSelected'   => '1',
+				'current_query' => array(
+					'taxquery' => array(
+						array(
+							'taxonomy' => $taxonomy->get_db_identifier(),
+							'terms'    => array( $state->get_id() ),
+							'compare'  => 'IN',
+						),
+					),
+				),
+			)
+		);
+		$values = $this->server->dispatch( $request )->get_data()['values'];
+		$paths  = array_column( $values, 'hierarchy_path', 'value' );
+
+		$this->assertArrayHasKey( $state->get_id(), $paths, print_r( $values, true ) );
+		$this->assertEquals( 'Brasil>Centro-Oeste>', $paths[ $state->get_id() ] );
+		// Only the ancestors: the filter adds the term name itself after the path.
+		$this->assertStringNotContainsString( 'Goiás', $paths[ $state->get_id() ] );
+	}
 }
 
 ?>

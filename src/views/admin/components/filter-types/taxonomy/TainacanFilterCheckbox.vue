@@ -26,12 +26,19 @@
                                             show: 800,
                                             hide: 100,
                                         },
-                                        content: option.label,
+                                        content: getOptionHierarchyPath(option) ? (getOptionHierarchyPath(option) + ' > ' + option.label) : option.label,
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
-                                    class="checkbox-label-text">
+                                    class="checkbox-label-text"
+                                    :class="{ 'has-hierarchy-path': getOptionHierarchyPath(option) }">
+                                <span
+                                        v-if="getOptionHierarchyPath(option)"
+                                        class="hierarchy-path">
+                                    {{ getOptionHierarchyPath(option) }}
+                                    <span class="sr-only">&gt;</span>
+                                </span>
                                 {{ option.label }}
                             </span> 
                             <span 
@@ -119,6 +126,12 @@
         computed: {
             someOptionHasChildren() {
                 return this.options.some(option => option.total_children > 0);
+            },
+            showHierarchyPath() {
+                const options = this.filterTypeOptions && !Array.isArray(this.filterTypeOptions)
+                    ? this.filterTypeOptions
+                    : (this.filter && this.filter.filter_type_options ? this.filter.filter_type_options : {});
+                return options.show_hierarchy_path === 'yes';
             }
         },
         watch: {
@@ -172,6 +185,18 @@
             this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         }, 
         methods: {
+            getOptionHierarchyPath(option) {
+                // Root terms have an empty path, so only child terms get one
+                if (!this.showHierarchyPath || !option || !option.hierarchy_path)
+                    return '';
+
+                // The API path ends with a separator, as in "Parent>Child>"
+                return option.hierarchy_path
+                    .split('>')
+                    .map(ancestor => ancestor.trim())
+                    .filter(ancestor => ancestor !== '')
+                    .join(' > ');
+            },
             shouldForceViewAllModalOnly() {
                 return this.someOptionHasChildren;
             },
@@ -360,6 +385,21 @@
         line-clamp: 2;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical; 
+    }
+
+    // The path takes one line of its own, so the term name is never the part cut off
+    .checkbox-label-text.has-hierarchy-path {
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+    }
+    .hierarchy-path {
+        display: block;
+        font-size: 0.875em;
+        line-height: 1.35em;
+        color: var(--tainacan-info-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .facet-item-count {
