@@ -247,18 +247,16 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function get_total_items() {
 		if (!$this->get_group_id()) return 0;
-		$args = [
-			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
-			'meta_query' => array(
-				array(
-					'key' => $this->meta_key,
-					'value' => $this->get_group_id(),
-					'compare' => '=',
-				)
-			)
-		];
-		$item = $this->items_repository->fetch($args, [], 'WP_Query');
-		return intval($item->found_posts);
+
+		// Count the control-metadata rows the process iterates. A WP_Query status
+		// list misses items whose post_status is not registered (see #1394).
+		global $wpdb;
+		$count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s",
+			$this->meta_key,
+			$this->get_group_id()
+		) );
+		return intval( $count );
 	}
 
 	private function bulk_list_get_item($count) {

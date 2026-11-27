@@ -193,6 +193,22 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				'schema' => array($this, 'get_actions_schema')
 			)
 		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/recover-unmanaged-status',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'recover_unmanaged_status'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => array(
+						'collection_id' => array(
+							'description' => __( 'Collection ID', 'tainacan' ),
+							'type'        => 'integer',
+							'required'    => true,
+						),
+					),
+				),
+			)
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/sequence/(?P<sequence_index>[\d]+)',
 			array(
 				array(
@@ -261,6 +277,60 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
 	public function set_status($request) {
 		return $this->generic_action('set_status', $request);
+	}
+
+	/**
+	 * Queue a bulk edit that moves items in statuses Tainacan does not list to draft.
+	 *
+	 * @param \WP_REST_Request $request
+	 * @return \WP_REST_Response
+	 */
+	public function recover_unmanaged_status($request) {
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+
+		if ( ! ( $collection instanceof Entities\Collection ) ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'Collection not found.', 'tainacan' ),
+			], 404);
+		}
+
+		$items_repository = Repositories\Items::get_instance();
+		$ids = $items_repository->fetch_unmanaged_status_item_ids( $collection );
+
+		if ( empty( $ids ) ) {
+			return new \WP_REST_Response([
+				'id' => null,
+				'items' => 0,
+			], 200);
+		}
+
+		$handler = \Tainacan\Generic_Process_Handler::get_instance();
+		$bulk = $handler->initialize_generic_process('bulk_edit');
+
+		if ( ! $bulk ) {
+			return new \WP_REST_Response([
+				'error_message' => __( 'Bulk edit could not be started.', 'tainacan' ),
+			], 500);
+		}
+
+		$bulk->create_bulk_edit([
+			'items_ids' => $ids,
+			'collection_id' => $collection->get_id(),
+		]);
+		$bulk->set_bulk_edit_data([
+			'value' => 'draft',
+			'method' => 'set_status',
+			'old_value' => null,
+			'metadatum_id' => null,
+		]);
+		$handler->save_process_instance($bulk);
+		$handler->add_to_queue($bulk);
+
+		return new \WP_REST_Response([
+			'id' => $bulk->get_id(),
+			'items' => count( $ids ),
+			'method' => 'set_status',
+		], 200);
 	}
 
 	public function trash_items($request) {

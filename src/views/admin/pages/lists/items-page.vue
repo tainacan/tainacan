@@ -656,6 +656,9 @@
                     v-if="!$adminOptions.hideItemsListStatusTabs"
                     :is-repository-level="isRepositoryLevel" />
 
+            <unmanaged-items-warning
+                    v-if="!isRepositoryLevel" />
+
             <!-- FILTERS TAG LIST-->
             <template v-if="hasFiltered && !openAdvancedSearch">
                 <filters-tags-list class="filter-tags-list" />
@@ -755,7 +758,7 @@
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
-                        <p v-if="status == undefined || status == '' || status == 'publish,private,pending,draft'">
+                        <p v-if="status == undefined || status == '' || status == $statusHelper.getManagedItemStatusesQuery()">
                             {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : ( ($route.name == 'CollectionMyItemsPage' || $route.name == 'RepositoryMyItemsPage') ? $i18n.get('info_no_item_found_by_you') : $i18n.get('info_no_item_created') )) }}
                         </p>
                         <p v-else>
@@ -848,6 +851,7 @@
             FiltersTagsList: defineAsyncComponent(() => import('../../components/search/filters-tags-list.vue')),
             FiltersItemsList: defineAsyncComponent(() => import('../../components/search/filters-items-list.vue')),
             ItemsStatusTabs: defineAsyncComponent(() => import('../../components/other/items-status-tabs.vue')),
+            UnmanagedItemsWarning: defineAsyncComponent(() => import('../../components/other/unmanaged-items-warning.vue')),
             ItemsPagination,
             AdvancedSearch: defineAsyncComponent(() => import('../../components/search/advanced-search.vue'))
         },

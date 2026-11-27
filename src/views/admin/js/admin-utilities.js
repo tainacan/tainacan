@@ -434,14 +434,8 @@ UserCapabilitiesPlugin.install = function (app) {
     }
 };
 
-/** Slugs excluded from collection total_items sums (trash + core non-content statuses). */
-const TOTAL_ITEMS_SUM_EXCLUDED_SLUGS = ['trash', 'inherit', 'auto-draft'];
-
 // STATUS ICONS PLUGIN - Sets icon for status option
-export const StatusHelperPlugin = {};
-StatusHelperPlugin.install = function (app) {
-    
-    app.config.globalProperties.$statusHelper = {
+export const statusHelper = {
         statuses: [
             {
                 name: tainacan_plugin.i18n['status_publish'],
@@ -520,35 +514,64 @@ StatusHelperPlugin.install = function (app) {
             return slug;
         },
         /**
-         * Sums per-status counts from API (e.g. collection.total_items). Excludes trash and core internal rows by default.
+         * Statuses Tainacan lists and counts. Comes from PHP so the items query uses the same list.
          */
-        sumTotalItemsByStatus(total_items, excludeSlugs) {
-            if (!excludeSlugs) {
-                excludeSlugs = TOTAL_ITEMS_SUM_EXCLUDED_SLUGS;
-            }
-            if (!total_items || typeof total_items !== 'object') {
+        getManagedItemStatuses() {
+            if (typeof tainacan_plugin !== 'undefined' && Array.isArray(tainacan_plugin.managed_item_statuses) && tainacan_plugin.managed_item_statuses.length)
+                return tainacan_plugin.managed_item_statuses.slice();
+
+            return ['publish', 'private', 'pending', 'draft'];
+        },
+        /**
+         * Statuses that stay out of the unrecognized-status warning: trash has its own tab,
+         * and inherit and auto-draft are WordPress internals.
+         */
+        getItemStatusesNotWarned() {
+            if (typeof tainacan_plugin !== 'undefined' && Array.isArray(tainacan_plugin.item_statuses_not_warned))
+                return tainacan_plugin.item_statuses_not_warned.slice();
+
+            return ['trash', 'inherit', 'auto-draft'];
+        },
+        getManagedItemStatusesQuery() {
+            return this.getManagedItemStatuses().join(',');
+        },
+        /**
+         * Statuses present in total_items that are not listed and are not WordPress internals or trash.
+         * @returns {{slug: string, count: number}[]}
+         */
+        getUnmanagedItemStatuses(total_items) {
+            if (!total_items || typeof total_items !== 'object')
+                return [];
+
+            const skipped = this.getManagedItemStatuses().concat(this.getItemStatusesNotWarned());
+            return Object.entries(total_items)
+                .filter(([slug, count]) => !skipped.includes(slug) && Number(count) > 0)
+                .map(([slug, count]) => ({ slug: slug, count: Number(count) }));
+        },
+        getUnmanagedItemsCount(total_items) {
+            return this.getUnmanagedItemStatuses(total_items).reduce((sum, entry) => sum + entry.count, 0);
+        },
+        /**
+         * Sums the statuses Tainacan lists (publish, private, pending, draft).
+         */
+        sumTotalItemsByStatus(total_items) {
+            if (!total_items || typeof total_items !== 'object')
                 return 0;
-            }
-            return Object.entries(total_items).reduce((sum, [sl, val]) => {
-                if (excludeSlugs.includes(sl)) {
-                    return sum;
-                }
-                return sum + Number(val);
+
+            return this.getManagedItemStatuses().reduce((sum, slug) => {
+                return sum + Number(total_items[slug] || 0);
             }, 0);
         },
         /**
-         * HTML breakdown for tooltips: one line per status. Uses translated names from getStatuses() when available.
+         * HTML breakdown for tooltips: one line per status Tainacan lists.
          */
-        getTotalItemsDetailedHtml(total_items, excludeSlugs) {
-            if (!total_items) {
+        getTotalItemsDetailedHtml(total_items) {
+            if (!total_items)
                 return '';
-            }
-            if (!excludeSlugs) {
-                excludeSlugs = ['inherit', 'auto-draft'];
-            }
-            return Object.entries(total_items)
-                .filter(([sl]) => !excludeSlugs.includes(sl))
-                .map(([sl, count]) => `${this.getTotalItemsStatusLabel(sl)}: ${count}`)
+
+            return this.getManagedItemStatuses()
+                .filter((slug) => Object.prototype.hasOwnProperty.call(total_items, slug))
+                .map((slug) => `${this.getTotalItemsStatusLabel(slug)}: ${total_items[slug]}`)
                 .join('<br> ');
         },
         loadStatuses() {
@@ -593,8 +616,12 @@ StatusHelperPlugin.install = function (app) {
                     console.error( error );
                 });
         }
-    }
+};
 
+export const StatusHelperPlugin = {
+    install(app) {
+        app.config.globalProperties.$statusHelper = statusHelper;
+    }
 };
 
 

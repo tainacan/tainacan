@@ -44,6 +44,64 @@ class Items extends Repository {
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
 	}
 
+	/**
+	 * Post statuses Tainacan lists and counts as items.
+	 *
+	 * Trash has its own tab. Statuses outside this list (core statuses such as
+	 * `future`, statuses registered by other plugins, or values that are not
+	 * registered at all) stay out of the total and out of the items query.
+	 *
+	 * @return string[]
+	 */
+	public function get_managed_item_statuses() {
+		$statuses = apply_filters( 'tainacan-managed-item-statuses', array( 'publish', 'private', 'pending', 'draft' ) );
+		$statuses = array_values( array_filter( array_map( 'sanitize_key', (array) $statuses ) ) );
+
+		if ( empty( $statuses ) ) {
+			return array( 'publish', 'private', 'pending', 'draft' );
+		}
+
+		return $statuses;
+	}
+
+	/**
+	 * Statuses that must not be reported as unrecognized.
+	 *
+	 * Trash is a Tainacan tab. `inherit` and `auto-draft` are WordPress internals.
+	 *
+	 * @return string[]
+	 */
+	public function get_item_statuses_not_warned() {
+		return array( 'trash', 'inherit', 'auto-draft' );
+	}
+
+	/**
+	 * Item IDs in this collection whose status Tainacan does not list or count.
+	 *
+	 * WordPress queries only registered statuses, so this lookup is SQL.
+	 *
+	 * @param \Tainacan\Entities\Collection $collection
+	 * @return int[]
+	 */
+	public function fetch_unmanaged_status_item_ids( $collection ) {
+		global $wpdb;
+
+		$left_alone = array_values( array_unique( array_merge(
+			$this->get_managed_item_statuses(),
+			$this->get_item_statuses_not_warned()
+		) ) );
+		$placeholders = implode( ', ', array_fill( 0, count( $left_alone ), '%s' ) );
+		$params = array_merge( array( $collection->get_db_identifier() ), $left_alone );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholders are a repeated %s list.
+		$ids = $wpdb->get_col( $wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status NOT IN ($placeholders)",
+			...$params
+		) );
+
+		return array_map( 'intval', is_array( $ids ) ? $ids : array() );
+	}
+
 	protected function _get_map() {
 		$entity = $this->get_name();
 		return apply_filters( "tainacan-get-map-$entity", [
