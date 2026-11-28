@@ -215,6 +215,65 @@ class Media {
 
 		add_action( 'after_setup_theme', [$this, 'add_image_sizes'] );
 		add_filter( 'image_size_names_choose', [$this, 'add_image_sizes_to_admin'] );
+
+		add_action( 'add_attachment', array( $this, 'set_item_attachment_menu_order' ) );
+	}
+
+	/**
+	 * Gives a new attachment of an item the next menu_order, after the ones the item already has.
+	 *
+	 * Item attachments are listed by menu_order. While they all have the same menu_order (0),
+	 * each place breaks the tie its own way: the item page and the REST API by title and ID,
+	 * the WordPress media modal by date. Pagination could repeat attachments and the modal showed
+	 * them in another order, until one was dragged and the modal saved a menu_order for all.
+	 * Distinct values make every place agree. Older attachments that still share a menu_order are
+	 * renumbered first, keeping the order already shown on the item page.
+	 * See https://github.com/tainacan/tainacan/issues/922.
+	 *
+	 * @param int $attachment_id The attachment just added.
+	 *
+	 * @return void
+	 */
+	public function set_item_attachment_menu_order( $attachment_id ) {
+		$attachment = get_post( $attachment_id );
+
+		// A menu_order chosen by whoever added the attachment is kept.
+		if ( ! $attachment instanceof \WP_Post || 0 >= (int) $attachment->post_parent || 0 !== (int) $attachment->menu_order ) {
+			return;
+		}
+
+		$item_post_type = get_post_type( $attachment->post_parent );
+		$prefix         = \Tainacan\Entities\Collection::$db_identifier_prefix;
+		$suffix         = \Tainacan\Entities\Collection::$db_identifier_sufix;
+		if ( ! is_string( $item_post_type ) || strpos( $item_post_type, $prefix ) !== 0 || substr( $item_post_type, -strlen( $suffix ) ) !== $suffix ) {
+			return;
+		}
+
+		global $wpdb;
+		// The same order as Item::get_attachments() and the REST API: menu_order, title, ID.
+		$siblings = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT ID, menu_order FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'attachment' AND ID <> %d ORDER BY menu_order ASC, post_title ASC, ID ASC",
+				$attachment->post_parent,
+				$attachment->ID
+			)
+		);
+
+		$menu_orders = array_map( 'intval', wp_list_pluck( $siblings, 'menu_order' ) );
+		if ( count( array_unique( $menu_orders ) ) !== count( $menu_orders ) ) {
+			foreach ( $siblings as $index => $sibling ) {
+				if ( (int) $sibling->menu_order !== $index + 1 ) {
+					$wpdb->update( $wpdb->posts, array( 'menu_order' => $index + 1 ), array( 'ID' => $sibling->ID ) );
+					clean_post_cache( $sibling->ID );
+				}
+			}
+			$next = count( $siblings ) + 1;
+		} else {
+			$next = empty( $menu_orders ) ? 1 : max( $menu_orders ) + 1;
+		}
+
+		$wpdb->update( $wpdb->posts, array( 'menu_order' => $next ), array( 'ID' => $attachment->ID ) );
+		clean_post_cache( $attachment->ID );
 	}
 
 	/**
